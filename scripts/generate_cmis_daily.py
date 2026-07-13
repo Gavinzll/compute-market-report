@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 """CMIS Daily report generator.
 
-This script writes final site assets into /workspace:
-latest.html, reports/YYYY-MM-DD.html, index.html, data snapshots, charts.js,
-and a GitHub Actions workflow. It intentionally reads secrets only from
-environment variables and never writes them to generated files.
+This script writes final site assets for GitHub Pages:
+latest.html, reports/YYYY-MM-DD.html, index.html, data snapshots, and charts.js.
+The scheduled job is executed by TRAE automation, not by GitHub Actions.
+GitHub is only used as the static hosting target.
 """
 
 from __future__ import annotations
@@ -766,44 +766,6 @@ def write_index():
     (OUT / "index.html").write_text(html, encoding="utf-8")
 
 
-def write_workflow():
-    workflow = """name: CMIS Daily
-
-on:
-  schedule:
-    - cron: '45 0 * * *'  # 08:45 Asia/Shanghai
-  workflow_dispatch:
-
-permissions:
-  contents: write
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Generate CMIS Daily
-        run: python scripts/generate_cmis_daily.py
-      - name: Commit report
-        run: |
-          git config user.name "cmis-bot"
-          git config user.email "cmis-bot@users.noreply.github.com"
-          git add latest.html index.html reports data assets _shared scripts .github/workflows
-          git commit -m "chore: publish CMIS Daily $(date +%F)" || echo "No changes"
-          git push
-      - name: Feishu notification
-        if: always()
-        env:
-          FEISHU_WEBHOOK: ${{ secrets.CMIS_FEISHU_WEBHOOK }}
-        run: |
-          python scripts/notify_feishu.py
-"""
-    (OUT / ".github/workflows/cmis-daily.yml").write_text(workflow, encoding="utf-8")
-
-
 def write_notify_script():
     code = r'''#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
@@ -855,15 +817,16 @@ def write_readme():
 - `assets/charts.js`：ECharts 图表逻辑
 - `scripts/generate_cmis_daily.py`：日报生成器
 - `scripts/notify_feishu.py`：飞书 Webhook 通知脚本
-- `.github/workflows/cmis-daily.yml`：每日 08:45（北京时间）自动运行
+## 自动化方式
 
-## Secrets
+定时任务由 TRAE 自动化执行。GitHub 仓库只作为静态站点托管与历史报告归档，不负责运行日报生成任务。
 
-请在 GitHub 仓库 Settings → Secrets and variables → Actions 中配置：
+TRAE 自动化执行顺序：
 
-- `CMIS_FEISHU_WEBHOOK`：飞书机器人 Webhook
-
-GitHub Actions 使用仓库自带 `GITHUB_TOKEN` 提交更新；如需使用 Fine-grained Token，请仅配置为 GitHub Secret，不要写入仓库文件。
+1. 采集并生成 HTML / data / assets 文件。
+2. 将结果提交到本仓库 main 分支。
+3. GitHub Pages 展示 `latest.html` 和历史归档。
+4. TRAE 通过飞书 Webhook 推送简短摘要与报告链接。
 
 ## 数据口径
 
@@ -873,7 +836,7 @@ GitHub Actions 使用仓库自带 `GITHUB_TOKEN` 提交更新；如需使用 Fin
 
 
 def main():
-    for d in ["reports", "data", "assets", "_shared/js", "_shared/fonts", "scripts", ".github/workflows"]:
+    for d in ["reports", "data", "assets", "_shared/js", "_shared/fonts", "scripts"]:
         (OUT / d).mkdir(parents=True, exist_ok=True)
     (OUT / "data" / f"cmis_snapshot_{DATE}.json").write_text(json.dumps(SNAPSHOT, ensure_ascii=False, indent=2), encoding="utf-8")
     with (OUT / "data" / "history.jsonl").open("a", encoding="utf-8") as f:
@@ -882,7 +845,6 @@ def main():
     (OUT / "latest.html").write_text(render_html("./"), encoding="utf-8")
     (OUT / "reports" / f"{DATE}.html").write_text(render_html("../"), encoding="utf-8")
     write_index()
-    write_workflow()
     write_notify_script()
     write_readme()
 
