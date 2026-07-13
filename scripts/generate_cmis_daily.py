@@ -702,7 +702,7 @@ def render_html(relative_prefix="./"):
     </footer>
   </main>
   <script src="{relative_prefix}_shared/js/echarts.min.js"></script>
-  <script src="{relative_prefix}assets/charts.js"></script>
+  <script src="{relative_prefix}assets/charts.js?v={DATE.replace('-', '')}"></script>
 </body>
 </html>"""
 
@@ -863,8 +863,20 @@ def main():
     for d in ["reports", "data", "assets", "_shared/js", "_shared/fonts", "scripts"]:
         (OUT / d).mkdir(parents=True, exist_ok=True)
     (OUT / "data" / f"cmis_snapshot_{DATE}.json").write_text(json.dumps(SNAPSHOT, ensure_ascii=False, indent=2), encoding="utf-8")
-    with (OUT / "data" / "history.jsonl").open("a", encoding="utf-8") as f:
-        f.write(json.dumps(SNAPSHOT, ensure_ascii=False) + "\n")
+    history_path = OUT / "data" / "history.jsonl"
+    history_rows = []
+    if history_path.exists():
+        for line in history_path.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            try:
+                row = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if row.get("date") != DATE:
+                history_rows.append(row)
+    history_rows.append(SNAPSHOT)
+    history_path.write_text("\n".join(json.dumps(row, ensure_ascii=False) for row in history_rows) + "\n", encoding="utf-8")
     write_charts()
     (OUT / "latest.html").write_text(render_html("./"), encoding="utf-8")
     (OUT / "reports" / f"{DATE}.html").write_text(render_html("../"), encoding="utf-8")
