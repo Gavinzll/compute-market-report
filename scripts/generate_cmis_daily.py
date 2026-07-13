@@ -12,12 +12,13 @@ from __future__ import annotations
 
 import json
 import math
+import os
 from copy import deepcopy
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from statistics import median
 
-OUT = Path("/workspace")
+OUT = Path(os.environ.get("CMIS_OUT", "/workspace"))
 DATE = datetime.now(timezone(timedelta(hours=8))).date().isoformat()
 STAMP = datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d %H:%M:%S %Z")
 FX_USD_CNY = 7.18
@@ -107,6 +108,27 @@ SOURCES = [
         "url": "https://www.trendforce.com/presscenter/news/20260408-13003.html",
         "note": "TrendForce 对 Blackwell 高端 GPU 出货结构和 Rubin 延迟风险的观察。",
     },
+    {
+        "id": 13,
+        "tier": "官方",
+        "title": "阿里云百炼模型价格",
+        "url": "https://help.aliyun.com/zh/model-studio/model-pricing",
+        "note": "阿里云百炼官方模型价格页，搜索摘要可见 qwen-max、qwen-plus、qwen-flash 等输入/输出价。",
+    },
+    {
+        "id": 14,
+        "tier": "官方",
+        "title": "火山方舟模型价格",
+        "url": "https://www.volcengine.com/docs/82379/1544106?lang=zh",
+        "note": "火山方舟官方模型价格页，搜索摘要可见豆包文本输入、缓存命中和输出价格区间。",
+    },
+    {
+        "id": 15,
+        "tier": "公开文档/需复核",
+        "title": "百度千帆大模型平台价格文档",
+        "url": "https://wenxinyiyan.apifox.cn/doc-3261316",
+        "note": "公开价格文档与社区转引，需回到百度智能云控制台或官方价格页复核。",
+    },
 ]
 
 
@@ -125,20 +147,22 @@ def fmt(v, suffix=""):
 
 
 TOKEN_MODELS = [
-    ["OpenAI", "GPT-5.5", "海外", "未公开/需复核", "USD", 5.00, 30.00, None, None, "Official Price", 1, "高", "官方页已抓取"],
-    ["OpenAI", "GPT-5.4", "海外", "未公开/需复核", "USD", 2.50, 15.00, None, None, "Official Price", 1, "高", "官方页已抓取"],
-    ["OpenAI", "GPT-5.4 mini", "海外", "未公开/需复核", "USD", 0.75, 4.50, None, None, "Official Price", 1, "高", "官方页已抓取"],
+    ["OpenAI", "GPT-5.6 Sol", "海外", "官方页注明 <270K", "USD", 5.00, 30.00, None, None, "Official Price", 1, "高", "官方页已抓取"],
+    ["OpenAI", "GPT-5.6 Terra", "海外", "官方页注明 <270K", "USD", 2.50, 15.00, None, None, "Official Price", 1, "高", "官方页已抓取"],
+    ["OpenAI", "GPT-5.6 Luna", "海外", "官方页注明 <270K", "USD", 1.00, 6.00, None, None, "Official Price", 1, "高", "官方页已抓取"],
     ["Anthropic", "Claude Opus 4.6", "海外", "1M（搜索摘要）", "USD", 5.00, 25.00, None, None, "Official Price", 5, "中", "页面访问受限，需人工复核"],
     ["Anthropic", "Claude Sonnet 4.6", "海外", "1M（搜索摘要）", "USD", 3.00, 15.00, None, None, "Official Price", 5, "中", "页面访问受限，需人工复核"],
     ["Google", "Gemini 2.5 Pro", "海外", "≤200K/分层", "USD", 1.25, 10.00, None, None, "Official Price", 4, "中", "官方页连接不稳定，搜索摘要校验"],
     ["DeepSeek", "deepseek-v4-flash", "国产", "1M", "CNY", 1.00, 2.00, None, None, "Official Price", 2, "高", "缓存未命中输入价"],
     ["DeepSeek", "deepseek-v4-pro", "国产", "1M", "CNY", 3.00, 6.00, None, None, "Official Price", 2, "高", "缓存未命中输入价"],
-    ["阿里云/通义千问", "qwen3.7-max", "国产", "1M", "CNY", 12.00, 36.00, None, None, "Official Price", 3, "高", "中国大陆标准价，有限时折扣需另行标注"],
-    ["阿里云/通义千问", "qwen3-max", "国产", "≤32K", "CNY", 2.50, 10.00, None, None, "Official Price", 3, "高", "中国大陆标准价"],
-    ["阿里云/通义千问", "qwen-plus-latest", "国产", "≤128K", "CNY", 0.80, 2.00, None, None, "Official Price", 3, "高", "非思考输出价"],
+    ["阿里云/通义千问", "qwen-max", "国产", "官方页/摘要", "CNY", 2.40, 9.60, None, None, "Official Price", 13, "中", "搜索摘要抓取，需复核快照版本"],
+    ["阿里云/通义千问", "qwen-plus-character", "国产", "中国内地", "CNY", 0.80, 2.00, None, None, "Official Price", 13, "中", "搜索摘要抓取，Session Cache 折扣另计"],
+    ["阿里云/通义千问", "qwen-flash-character", "国产", "中国内地", "CNY", 0.25, 1.50, None, None, "Official Price", 13, "中", "搜索摘要抓取，Session Cache 折扣另计"],
     ["智谱", "GLM/GLM-Z", "国产", "官方未发布/未抓取", "CNY", None, None, None, None, "Official Missing", None, "低", "需补接官方计费页"],
-    ["百度", "ERNIE/文心", "国产", "官方未发布/未抓取", "CNY", None, None, None, None, "Official Missing", None, "低", "需补接千帆计费页"],
-    ["火山引擎", "Doubao/豆包", "国产", "官方未发布/未抓取", "CNY", None, None, None, None, "Official Missing", None, "低", "需补接火山方舟计费页"],
+    ["百度", "ERNIE 4.0", "国产", "公开文档/需复核", "CNY", 30.00, 90.00, None, None, "Reference Price", 15, "低", "公开文档与社区转引，需官方控制台复核"],
+    ["百度", "ERNIE 3.5", "国产", "公开文档/需复核", "CNY", 4.00, 8.00, None, None, "Reference Price", 15, "低", "公开文档与社区转引，需官方控制台复核"],
+    ["火山引擎", "Doubao 文本模型", "国产", "火山方舟", "CNY", 6.00, 80.00, None, None, "Official Price", 14, "中", "搜索摘要抓取，具体模型和输入长度分档需复核"],
+    ["火山引擎", "Doubao 低价入口", "国产", "产品页起价", "CNY", 0.15, None, None, None, "Official Price", 14, "中", "产品页摘要显示百万输入 tokens 起价，输出价需复核"],
     ["Moonshot", "Kimi", "国产", "官方未发布/未抓取", "CNY", None, None, None, None, "Official Missing", None, "低", "需补接 Moonshot 官方定价"],
     ["MiniMax", "MiniMax/海螺", "国产", "官方未发布/未抓取", "CNY", None, None, None, None, "Official Missing", None, "低", "需补接官方定价"],
     ["百川智能", "Baichuan", "国产", "官方未发布/未抓取", "CNY", None, None, None, None, "Official Missing", None, "低", "需补接官方定价"],
@@ -725,7 +749,7 @@ def write_charts():
     c.setOption(option);
     window.addEventListener('resize', function() {{ c.resize(); }});
   }}
-  function grid() {{ return {{ left: 56, right: 28, top: 42, bottom: 110 }}; }}
+    function grid() {{ return {{ left: 72, right: 40, top: 56, bottom: 150, containLabel:true }}; }}
   function axis() {{ return {{ axisLine: {{ lineStyle: {{ color: rule }} }}, axisTick: {{ show:false }}, axisLabel: {{ color: muted }}, splitLine: {{ lineStyle: {{ color: rule }} }} }}; }}
   function bar(id, labels, values, name, color) {{
     init(id, {{
@@ -738,10 +762,10 @@ def write_charts():
   function hbar(id, labels, values, name, color) {{
     init(id, {{
       animation:false, color:[color], tooltip:{{ trigger:'axis', appendToBody:true }},
-      grid:{{ left:150, right:36, top:30, bottom:36 }},
+      grid:{{ left:210, right:92, top:38, bottom:44, containLabel:false }},
       xAxis:Object.assign({{ type:'value', name:name, nameTextStyle:{{ color:muted }} }}, axis()),
-      yAxis:{{ type:'category', data:labels.reverse(), axisLabel:{{ color:muted, fontSize:10 }}, axisLine:{{lineStyle:{{color:rule}}}}, axisTick:{{show:false}} }},
-      series:[{{ type:'bar', data:values.reverse(), label:{{ show:true, position:'right', color:ink, fontSize:10 }}, itemStyle:{{ borderRadius:[0,6,6,0] }} }}]
+      yAxis:{{ type:'category', data:labels.reverse(), axisLabel:{{ color:muted, fontSize:10, lineHeight:14, width:190, overflow:'break' }}, axisLine:{{lineStyle:{{color:rule}}}}, axisTick:{{show:false}} }},
+      series:[{{ type:'bar', data:values.reverse(), label:{{ show:true, position:'right', color:ink, fontSize:10, formatter:function(p){{ return p.value + ' 元'; }} }}, itemStyle:{{ borderRadius:[0,6,6,0] }} }}]
     }});
   }}
   bar('chart-token-input', DATA.tokenLabels, DATA.tokenInput, '人民币/百万Token（输入）', accent);
@@ -759,10 +783,10 @@ def write_charts():
 
 def write_index():
     reports = sorted((OUT / "reports").glob("*.html"), reverse=True)
-    items = "\n".join(f'<li><a href="reports/{p.name}">{p.stem}</a></li>' for p in reports)
+    items = "\n".join(f'<article class="archive-item"><a href="reports/{p.name}">{p.stem}</a><span>HTML 归档报告</span></article>' for p in reports[:30])
     html = f"""<!-- Generated by Trae Work -->
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>CMIS Daily 归档</title><style>
-@font-face{{font-family:InstrumentSans;src:url('./_shared/fonts/InstrumentSans-Regular.ttf')}}:root{{--bg:#07111f;--bg2:#101b2d;--ink:#ecf4ff;--muted:#9eb0c7;--rule:#23344f;--accent:#68e1fd;--accent2:#f7c76b}}body{{margin:0;background:var(--bg);color:var(--ink);font-family:InstrumentSans,system-ui,sans-serif}}main{{width:min(960px,92vw);margin:0 auto;padding:64px 0}}a{{color:var(--accent);text-decoration:none}}.card{{background:var(--bg2);border:1px solid var(--rule);border-radius:20px;padding:24px;margin:18px 0}}h1{{font-size:48px}}li{{margin:12px 0}}</style></head><body><main><h1>CMIS Daily 归档</h1><div class="card"><p>最新报告：<a href="latest.html">latest.html</a></p><p>固定发布链接：<a href="https://gavinzll.github.io/compute-market-report/latest.html">GitHub Pages latest</a></p></div><div class="card"><h2>历史报告</h2><ul>{items}</ul></div></main></body></html>"""
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>CMIS Daily｜全球算力市场情报门户</title><style>
+@font-face{{font-family:InstrumentSans;src:url('./_shared/fonts/InstrumentSans-Regular.ttf')}}@font-face{{font-family:InstrumentSans;src:url('./_shared/fonts/InstrumentSans-Bold.ttf');font-weight:700}}@font-face{{font-family:JetBrainsMono;src:url('./_shared/fonts/JetBrainsMono-Regular.ttf')}}:root{{--bg:#07111f;--bg2:#101b2d;--ink:#ecf4ff;--muted:#9eb0c7;--rule:#23344f;--accent:#68e1fd;--accent2:#f7c76b}}*{{box-sizing:border-box}}body{{margin:0;background:radial-gradient(circle at 18% 0%,rgba(104,225,253,.22),transparent 34%),radial-gradient(circle at 88% 12%,rgba(247,199,107,.15),transparent 30%),var(--bg);color:var(--ink);font-family:InstrumentSans,system-ui,sans-serif;line-height:1.65}}a{{color:var(--accent);text-decoration:none}}main{{width:min(1180px,94vw);margin:0 auto;padding:44px 0 72px}}.eyebrow{{color:var(--accent2);font-family:JetBrainsMono,monospace;letter-spacing:.1em;text-transform:uppercase;font-size:12px}}h1{{font-size:clamp(38px,7vw,82px);line-height:1;margin:16px 0;letter-spacing:-.05em}}.lead{{max-width:820px;color:var(--muted);font-size:18px}}.hero{{padding:50px 0 28px;border-bottom:1px solid var(--rule)}}.actions{{display:flex;gap:14px;flex-wrap:wrap;margin:28px 0}}.btn{{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--rule);border-radius:999px;padding:12px 18px;background:rgba(255,255,255,.04);font-weight:700}}.btn.primary{{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#07111f;border:0}}.grid{{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:28px 0}}.card,.archive-item{{background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.018));border:1px solid var(--rule);border-radius:22px;padding:20px;box-shadow:0 20px 50px rgba(0,0,0,.24)}}.card b{{display:block;font-size:28px;color:var(--accent);margin:8px 0}}.card span,.archive-item span{{display:block;color:var(--muted);font-size:14px}}h2{{margin-top:44px;border-left:4px solid var(--accent);padding-left:14px}}.portal{{display:grid;grid-template-columns:1fr 1fr;gap:18px}}.archive{{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}}.archive-item a{{font-size:20px;font-weight:700}}.note{{color:var(--muted)}}code{{font-family:JetBrainsMono,monospace;color:var(--accent2)}}@media(max-width:900px){{main{{width:min(94vw,760px)}}.grid,.portal,.archive{{grid-template-columns:1fr}}.actions{{flex-direction:column}}.btn{{justify-content:center}}}}</style></head><body><main><section class="hero"><div class="eyebrow">Compute Market Intelligence System</div><h1>全球算力市场情报门户</h1><p class="lead">CMIS Daily 聚合 Token 服务价格、国内/海外算力租赁、GPU 采购价格、利润测算、供需监测和生命周期判断。GitHub Pages 仅用于静态托管与历史归档，日报运行由 TRAE 自动化执行。</p><div class="actions"><a class="btn primary" href="latest.html">打开最新日报</a><a class="btn" href="reports/{DATE}.html">查看今日归档</a><a class="btn" href="data/cmis_snapshot_{DATE}.json">下载今日数据</a></div></section><section class="grid"><article class="card"><span>最新日期</span><b>{DATE}</b><span>北京时间自动生成</span></article><article class="card"><span>固定入口</span><b>latest.html</b><span>适合飞书与手机端打开</span></article><article class="card"><span>价格口径</span><b>3 类</b><span>Token / 租赁 / 采购严格分离</span></article><article class="card"><span>归档数量</span><b>{len(reports)}</b><span>历史 HTML 报告</span></article></section><section class="portal"><article class="card"><h2>指标入口</h2><p class="note">报告包含今日摘要、Token Official vs Market、国内租赁、海外租赁、采购价格、利润测算、供需信号、Top 10+ 覆盖表、生命周期、趋势和 AI 总结。</p></article><article class="card"><h2>数据说明</h2><p class="note">国内租赁以 SMM 为主口径；海外小时价以 ComputeStacker 为主口径；Token 价格以官方定价为唯一 Official Price；采购价按官方/权威/市场/传闻/估算和置信度分层。</p></article></section><section><h2>历史归档</h2><div class="archive">{items}</div></section></main></body></html>"""
     (OUT / "index.html").write_text(html, encoding="utf-8")
 
 

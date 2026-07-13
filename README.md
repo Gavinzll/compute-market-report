@@ -12,15 +12,16 @@
 - `assets/charts.js`：ECharts 图表逻辑
 - `scripts/generate_cmis_daily.py`：日报生成器
 - `scripts/notify_feishu.py`：飞书 Webhook 通知脚本
-- `scripts/` 可用于后续接入每日 08:45 自动运行；当前专用 Token 缺少 GitHub workflow 写入权限，因此工作流文件未随本次发布推送。
+## 自动化方式
 
-## Secrets
+定时任务由 TRAE 自动化执行。GitHub 仓库只作为静态站点托管与历史报告归档，不负责运行日报生成任务。
 
-请在 GitHub 仓库 Settings → Secrets and variables → Actions 中配置：
+TRAE 自动化执行顺序：
 
-- `CMIS_FEISHU_WEBHOOK`：飞书机器人 Webhook
-
-如需启用 GitHub Actions 自动运行，请使用具备 `workflow` 权限的凭据添加工作流，并将飞书 Webhook 配置为 Secret，不要写入仓库文件。
+1. 采集并生成 HTML / data / assets 文件。
+2. 将结果提交到本仓库 main 分支。
+3. GitHub Pages 展示 `latest.html` 和历史归档。
+4. TRAE 通过飞书 Webhook 推送简短摘要与报告链接。
 
 ## 数据口径
 
