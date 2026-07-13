@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>算力市场情报系统 CMIS</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f8fb;
+      --card: #ffffff;
+      --text: #172033;
+      --muted: #667085;
+      --blue: #2563eb;
+      --green: #059669;
+      --orange: #ea580c;
+      --border: #e5e7eb;
+      --shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: radial-gradient(circle at top left, #e0f2fe 0, transparent 34%), var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 28px 18px 48px; }
+    .hero {
+      background: linear-gradient(135deg, #111827 0%, #1d4ed8 55%, #0f766e 100%);
+      color: white;
+      border-radius: 28px;
+      padding: 34px 28px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+    }
+    .hero:after {
+      content: "";
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      right: -80px;
+      top: -90px;
+      background: rgba(255,255,255,0.16);
+      border-radius: 999px;
+    }
+    .kicker { font-size: 14px; opacity: .84; letter-spacing: .08em; text-transform: uppercase; }
+    h1 { margin: 10px 0 12px; font-size: clamp(30px, 5vw, 52px); line-height: 1.08; }
+    .hero p { max-width: 780px; margin: 0; font-size: 17px; opacity: .9; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 18px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .primary { background: #fff; color: #1d4ed8; }
+    .secondary { border: 1px solid rgba(255,255,255,.45); color: white; }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 18px; }
+    .card {
+      background: rgba(255,255,255,.92);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(15,23,42,.05);
+    }
+    .card h2 { margin: 0 0 8px; font-size: 18px; }
+    .card p { margin: 0; color: var(--muted); font-size: 14px; }
+    .section-title { margin: 30px 0 12px; font-size: 22px; }
+    .timeline { display: grid; gap: 12px; }
+    .report-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px 18px;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .report-link strong { display: block; }
+    .report-link span { color: var(--muted); font-size: 14px; }
+    .tag { color: var(--blue); font-weight: 700; white-space: nowrap; }
+    footer { margin-top: 34px; color: var(--muted); font-size: 13px; text-align: center; }
+    @media (max-width: 760px) {
+      .grid { grid-template-columns: 1fr; }
+      .hero { padding: 28px 22px; border-radius: 22px; }
+      .report-link { align-items: flex-start; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="kicker">Compute Market Intelligence System</div>
+      <h1>算力市场情报系统</h1>
+      <p>每日维护 Token 价格、GPU 租赁、GPU 采购、利润指数、供需指数和行业基础设施信号，生成适合手机阅读的 HTML 日报。</p>
+      <div class="actions">
+        <a class="btn primary" href="./latest.html">查看最新日报</a>
+        <a class="btn secondary" href="./reports/">查看历史归档</a>
+      </div>
+    </section>
+
+    <section class="grid" aria-label="核心模块">
+      <article class="card">
+        <h2>🤖 Token 价格</h2>
+        <p>覆盖海外与国产主流模型，区分 Official Price 与 Market Price。</p>
+      </article>
+      <article class="card">
+        <h2>💻 算力租赁</h2>
+        <p>国内 SMM 主指数，海外 ComputeStacker 主指数，多源校验。</p>
+      </article>
+      <article class="card">
+        <h2>💰 利润与供需</h2>
+        <p>基于采购价、租赁价、库存变化和利用率自动测算 ROI 与回本周期。</p>
+      </article>
+    </section>
+
+    <h2 class="section-title">最新入口</h2>
+    <div class="timeline">
+      <a class="report-link" href="./latest.html">
+        <div>
+          <strong>📌 最新《算力三指数/六指数日度报告》</strong>
+          <span>定时任务每天更新这里，飞书推送也会指向这个页面。</span>
+        </div>
+        <div class="tag">打开 latest.html</div>
+      </a>
+    </div>
+
+    <footer>Generated for CMIS · GitHub Pages static report</footer>
+  </main>
+</body>
+</html>

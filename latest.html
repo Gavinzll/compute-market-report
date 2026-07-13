@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>最新算力三指数/六指数日度报告</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: rgba(255,255,255,.08);
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #667085;
+      --border: #e5e7eb;
+      --blue: #2563eb;
+      --green: #059669;
+      --red: #dc2626;
+      --orange: #ea580c;
+      --purple: #7c3aed;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: linear-gradient(180deg, var(--bg) 0, #111827 320px, #f6f8fb 321px);
+      color: var(--text);
+      line-height: 1.55;
+    }
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 22px 16px 48px; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; color: white; margin-bottom: 18px; }
+    .topbar a { color: #bfdbfe; text-decoration: none; font-size: 14px; }
+    .hero {
+      color: white;
+      padding: 22px 0 24px;
+    }
+    .eyebrow { color: #93c5fd; font-weight: 700; letter-spacing: .06em; font-size: 13px; text-transform: uppercase; }
+    h1 { margin: 8px 0 8px; font-size: clamp(28px, 5vw, 48px); line-height: 1.08; }
+    .hero p { margin: 0; color: rgba(255,255,255,.78); max-width: 760px; }
+    .cards { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px; margin: 18px 0; }
+    .metric {
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.16);
+      color: white;
+      border-radius: 20px;
+      padding: 16px;
+      backdrop-filter: blur(14px);
+    }
+    .metric span { display: block; color: rgba(255,255,255,.68); font-size: 13px; }
+    .metric strong { display: block; margin-top: 6px; font-size: 24px; }
+    .section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 20px;
+      margin-top: 16px;
+      box-shadow: 0 14px 40px rgba(15,23,42,.06);
+    }
+    .section h2 { margin: 0 0 12px; font-size: 22px; }
+    .note { color: var(--muted); font-size: 14px; margin: 0 0 12px; }
+    .pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pill { padding: 7px 10px; border-radius: 999px; background: #eff6ff; color: #1d4ed8; font-size: 13px; font-weight: 700; }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 16px; }
+    table { width: 100%; border-collapse: collapse; min-width: 760px; }
+    th, td { padding: 11px 12px; border-bottom: 1px solid var(--border); text-align: left; font-size: 14px; vertical-align: top; }
+    th { background: #f9fafb; color: #475467; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+    tr:last-child td { border-bottom: 0; }
+    .status-high { color: var(--green); font-weight: 800; }
+    .status-mid { color: var(--orange); font-weight: 800; }
+    .status-low { color: var(--red); font-weight: 800; }
+    .bars { display: grid; gap: 10px; margin-top: 12px; }
+    .bar { display: grid; grid-template-columns: 140px 1fr 70px; gap: 10px; align-items: center; font-size: 14px; }
+    .track { height: 12px; border-radius: 999px; background: #eef2ff; overflow: hidden; }
+    .fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #2563eb, #7c3aed); }
+    .summary {
+      display: grid;
+      grid-template-columns: 1.4fr .8fr;
+      gap: 16px;
+    }
+    .callout {
+      border-left: 5px solid var(--blue);
+      background: #eff6ff;
+      border-radius: 16px;
+      padding: 14px 16px;
+      color: #1e3a8a;
+    }
+    footer { text-align: center; margin-top: 26px; color: #667085; font-size: 13px; }
+    @media (max-width: 860px) {
+      .cards { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .summary { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      .cards { grid-template-columns: 1fr; }
+      .bar { grid-template-columns: 96px 1fr 58px; }
+      .section { padding: 16px; border-radius: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <nav class="topbar">
+      <div>CMIS · 最新日报</div>
+      <a href="./index.html">返回首页</a>
+    </nav>
+
+    <section class="hero">
+      <div class="eyebrow">Daily Compute Market Report</div>
+      <h1>📌 算力三指数/六指数日度报告</h1>
+      <p>这是 GitHub Pages 发布链路的测试版页面。正式定时任务会每天覆盖本页，并同步生成历史归档。</p>
+      <div class="cards">
+        <div class="metric"><span>Token价格指数</span><strong>待采集</strong></div>
+        <div class="metric"><span>国内租赁指数</span><strong>待采集</strong></div>
+        <div class="metric"><span>海外租赁指数</span><strong>待采集</strong></div>
+        <div class="metric"><span>GPU利润指数</span><strong>待计算</strong></div>
+      </div>
+    </section>
+
+    <section class="section summary">
+      <div>
+        <h2>🧠 AI总结</h2>
+        <p class="note">正式运行后，这里会显示当天全球算力价格、国内/海外租赁、Token官方价、GPU采购、供需、利润指数和未来一周价格压力方向。</p>
+        <div class="callout">当前页面用于验证 HTML 报告发布、手机浏览和飞书链接跳转效果。</div>
+      </div>
+      <div>
+        <h2>⚠️ 异动提醒</h2>
+        <div class="pill-row">
+          <span class="pill">价格异动 &gt; 5%</span>
+          <span class="pill">库存异动 &gt; 30%</span>
+          <span class="pill">利润改善/恶化</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>🤖 Token价格指数（Official vs Market）</h2>
+      <p class="note">正式报告会扩大模型覆盖，尤其增强国产模型，并在柱状图中展示主要模型输入 Token 官方价对比。</p>
+      <div class="bars" aria-label="示例柱状图">
+        <div class="bar"><span>DeepSeek</span><div class="track"><div class="fill" style="width:38%"></div></div><strong>示例</strong></div>
+        <div class="bar"><span>Qwen</span><div class="track"><div class="fill" style="width:52%"></div></div><strong>示例</strong></div>
+        <div class="bar"><span>Kimi</span><div class="track"><div class="fill" style="width:64%"></div></div><strong>示例</strong></div>
+        <div class="bar"><span>GPT</span><div class="track"><div class="fill" style="width:86%"></div></div><strong>示例</strong></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>💻 国内/🌍 海外算力租赁指数</h2>
+      <p class="note">正式报告会统一国内与海外租赁表格列结构，保持相同的图表模板、排序逻辑和单位说明。</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>GPU型号</th>
+              <th>市场</th>
+              <th>主数据源</th>
+              <th>单卡小时价</th>
+              <th>8卡等效月租</th>
+              <th>库存/可用性</th>
+              <th>置信度</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>H100 80G</td>
+              <td>国内</td>
+              <td>SMM</td>
+              <td>待采集</td>
+              <td>待采集</td>
+              <td>待采集</td>
+              <td class="status-high">高</td>
+            </tr>
+            <tr>
+              <td>H100 80G</td>
+              <td>海外</td>
+              <td>ComputeStacker</td>
+              <td>待采集</td>
+              <td>待换算</td>
+              <td>待采集</td>
+              <td class="status-mid">中</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>🧮 GPU采购价格与💰利润指数</h2>
+      <p class="note">正式报告会按热度排序，区分官方价、市场流通价、传闻价、估算价和置信度，并尽量避免利润测算空项。</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>热度</th>
+              <th>GPU型号</th>
+              <th>生命周期</th>
+              <th>采购价口径</th>
+              <th>进入利润测算</th>
+              <th>数据置信度</th>
+              <th>备注</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>GB200</td>
+              <td>试商用</td>
+              <td>机柜/系统报价</td>
+              <td>参考测算</td>
+              <td class="status-low">低-中</td>
+              <td>正式报告需注明非官方或估算口径</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>H200</td>
+              <td>增长</td>
+              <td>整机/单卡报价</td>
+              <td>参考测算</td>
+              <td class="status-mid">中</td>
+              <td>按热度优先展示</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>✅ 数据源与口径说明</h2>
+      <p class="note">正式报告会为每条数据标注来源、采集时间、币种、换算汇率、口径说明、来源类型和置信度。非官方数据必须明确标注，不会伪装成官方价格。</p>
+    </section>
+
+    <footer>此页面为部署测试版 · 正式日报将在定时任务中自动覆盖</footer>
+  </main>
+</body>
+</html>
