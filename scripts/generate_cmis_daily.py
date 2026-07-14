@@ -755,7 +755,6 @@ TOKEN_COLUMNS = [
     "官方-海外三方价差",
     "官方-境内三方价差",
     "三方价格匹配级别",
-    "同价原因",
     "较昨日变化",
     "官方来源",
     "海外三方来源",
@@ -1048,7 +1047,6 @@ def overseas_rows() -> list[dict]:
             "Confidence Score": conf,
             "Source Consensus": consensus,
             "校验状态": status,
-            "备注": "海外 GPU Cloud 已统一折算为 8卡整机月租，仍只进入海外参考，不进入国内租赁指数。" if cny is not None else note,
         })
     return rows
 
@@ -1336,20 +1334,20 @@ def render_html(relative_prefix: str = "./") -> str:
 
     <section id="overseas">
       <h2>海外 GPU Cloud 参考</h2>
-      <p class="note">海外 GPU Cloud 原始来源多为美元/卡/小时，本报告统一折算为人民币口径“万元/8卡整机/月”绘图和展示，单卡小时价保留在表格中作为辅助字段；海外月租仍不进入国内租赁指数。</p>
+      <p class="note">海外 GPU Cloud 原始来源多为美元/卡/小时，已统一折算为人民币口径"万元/8卡整机/月"绘图和展示，单卡小时价保留在表格中作为辅助字段；海外月租仍只进入海外参考，不进入国内租赁指数。</p>
       <figure><figcaption>海外 GPU Cloud：统一折算为万元/8卡整机/月，仅供参考</figcaption><div id="chart-overseas" class="chart"></div></figure>
       {table(overseas_pass)}
     </section>
 
     <section id="audit">
       <h2>Rejected / Review 样本</h2>
-      <p class="note">以下数据不进入主图、主指数、ROI、历史结论或 AI 总结，只用于审计追踪。</p>
-      {table(domestic_review)}
+      <p class="note">以下数据不进入主图、主指数、ROI、历史结论或 AI 总结，只用于审计追踪。每日运行时应优先检索更高置信的新报价；若无新来源，沿用当前主口径样本并保留审计备注。</p>
+      {table(domestic_review, [c for c in domestic_review[0].keys() if c not in ("category", "价格更新规则")] if domestic_review else None)}
     </section>
 
     <section id="token">
       <h2>Token 价格</h2>
-      <p class="note">Token 表按“厂商 + 主流模型”覆盖，官方价来自厂商官网、官方文档或云平台官方计费页；三方价拆分为海外三方与境内三方，精确项不可得时以同系列或近似参考补齐并在来源列标注。</p>
+      <p class="note">Token 表按"厂商 + 主流模型"覆盖，官方价来自厂商官网、官方文档或云平台官方计费页；三方价拆分为海外三方与境内三方，精确项不可得时以同系列或近似参考补齐并在来源列标注。<br><b>同价原则：</b>当官方价与三方价完全相等时，通常系第三方同步官方定价、同名模型当前标价一致，或参考价巧合重合；不等同于市场溢价或折扣缺失。</p>
       <figure><figcaption>Token 输入价：官方 vs 海外三方 vs 境内三方</figcaption><div id="chart-token-input" class="chart"></div></figure>
       <figure><figcaption>Token 输出价：官方 vs 海外三方 vs 境内三方</figcaption><div id="chart-token-output" class="chart"></div></figure>
       <figure><figcaption>三方输入价差：境内三方 - 海外三方</figcaption><div id="chart-token-third-diff" class="chart"></div></figure>
