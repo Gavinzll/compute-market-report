@@ -762,44 +762,44 @@ DOMESTIC_RENTAL_INPUT = {
         "note": "910B 子型号、形态和异地部署限制未拆清；因属于国产战略关注卡，按 SMM 区间中点进入国内指数展示，但不进入 ROI 或方向性结论。",
     },
     "寒武纪 MLU": {
-        "original": "天翼云 GPU 云主机价格线索：Cambricon MLU370 S4 1卡月价 6241.02 元，按 8 卡等效折算约 4.99 万元/月",
-        "monthly_wan": 4.99,
-        "source": "天翼云价格总览（MLU370 S4 云主机，按 1卡月价等效 8卡折算）",
-        "confidence": 58,
+        "original": "未取得寒武纪 MLU 标准 8卡整机长租公开价；不再采用云主机单卡价 ×8。按国产战略关注低置信口径，以 910B 8卡整机月租区间为上锚，暂估 1.0 万元/8卡/月。",
+        "monthly_wan": 1.0,
+        "source": "寒武纪 MLU 8卡整机价格待补；以 910B 8卡整机月租为国产锚的低置信战略观察价",
+        "confidence": 38,
         "consensus": "Low",
         "historical": "HIST_INSUFFICIENT",
         "status": "REVIEW",
-        "note": "寒武纪 MLU 属于国产战略关注卡；当前价格来自云主机单卡公开价等效折算，不是 8卡整机长租主口径，进入柱状图但标注低置信并继续扩源。",
+        "note": "寒武纪 MLU 属于国产战略关注卡；当前未确认具体 8卡整机架构和长租价，禁止用云主机单卡价直接乘 8。暂按低置信 8卡整机战略观察价入图，继续补采精确报价。",
     },
     "海光 DCU": {
-        "original": "财富号/产业线索：海光 DCU 单卡月租约 1.3 万元，按 8 卡等效折算约 10.4 万元/月",
-        "monthly_wan": 10.4,
-        "source": "东方财富财富号海光 DCU 单卡月租线索（按 8卡等效折算）",
-        "confidence": 42,
-        "consensus": "Low",
-        "historical": "HIST_INSUFFICIENT",
-        "status": "REVIEW",
-        "note": "海光 DCU 属于国产战略关注卡；当前价格来自单卡月租产业线索等效折算，不是标准 8卡整机报价，进入柱状图但标注低置信并继续扩源。",
-    },
-    "壁仞": {
-        "original": "公开媒体线索：国产 GPU 8卡集群、算力约 200P FLOPS 套餐曾报约 8 万元/月；壁仞精确型号月租待补",
-        "monthly_wan": 8.0,
-        "source": "国产 GPU 8卡集群公开套餐线索（壁仞精确月租待补，战略关注参考价）",
+        "original": "未取得海光 DCU 标准 8卡整机长租公开价；不再采用单卡月租 ×8。按国产战略关注低置信口径，以 910B 8卡整机月租区间为上锚，暂估 1.1 万元/8卡/月。",
+        "monthly_wan": 1.1,
+        "source": "海光 DCU 8卡整机价格待补；以 910B 8卡整机月租为国产锚的低置信战略观察价",
         "confidence": 35,
         "consensus": "Low",
         "historical": "HIST_INSUFFICIENT",
         "status": "REVIEW",
-        "note": "壁仞属于国产战略关注卡；当前未获得壁仞精确 8卡整机月租，暂用国产 GPU 8卡集群公开套餐作低置信战略关注参考价，继续扩源。",
+        "note": "海光 DCU 属于国产战略关注卡；当前未确认具体 8卡整机架构和长租价，禁止用单卡月租直接乘 8。暂按低置信 8卡整机战略观察价入图，继续补采精确报价。",
     },
-    "摩尔线程": {
-        "original": "UCache 公开页确认摩尔线程 S4000 8卡训推一体机可租赁，但未披露月租；暂按国产同类低置信参考价 4 万元/月占位",
-        "monthly_wan": 4.0,
-        "source": "UCache 摩尔线程 S4000 8卡训推一体机租赁供给线索（价格待补，战略关注参考价）",
-        "confidence": 32,
+    "壁仞": {
+        "original": "未取得壁仞标准 8卡整机长租公开价；公开套餐未能确认型号、卡数和整机口径。按国产战略关注低置信口径，以 910B 8卡整机月租区间为上锚，暂估 0.9 万元/8卡/月。",
+        "monthly_wan": 0.9,
+        "source": "壁仞 8卡整机价格待补；以 910B 8卡整机月租为国产锚的低置信战略观察价",
+        "confidence": 30,
         "consensus": "Low",
         "historical": "HIST_INSUFFICIENT",
         "status": "REVIEW",
-        "note": "摩尔线程属于国产战略关注卡；公开来源确认 8卡租赁供给但未披露价格，暂用国产同类低置信占位价进入柱状图并继续补采精确报价。",
+        "note": "壁仞属于国产战略关注卡；当前未确认具体 8卡整机架构和长租价，不再使用未确认卡数/型号的高价套餐。暂按低置信 8卡整机战略观察价入图，继续补采精确报价。",
+    },
+    "摩尔线程": {
+        "original": "UCache 公开页确认摩尔线程 S4000 8卡训推一体机可租赁，但未披露月租。按国产战略关注低置信口径，以 910B 8卡整机月租区间为上锚，暂估 0.8 万元/8卡/月。",
+        "monthly_wan": 0.8,
+        "source": "UCache 摩尔线程 S4000 8卡训推一体机供给线索；价格待补，低置信 8卡整机战略观察价",
+        "confidence": 30,
+        "consensus": "Low",
+        "historical": "HIST_INSUFFICIENT",
+        "status": "REVIEW",
+        "note": "摩尔线程属于国产战略关注卡；公开来源确认 8卡供给但未披露价格。暂按低置信 8卡整机战略观察价入图，继续补采精确报价。",
     },
 }
 
@@ -1214,7 +1214,10 @@ def write_charts():
     data = {
         "domesticLabels": [r["GPU 型号"] for r in domestic_chart_rows],
         "domesticValues": [r["标准化价格"] for r in domestic_chart_rows],
-        "domesticRatios": [r.get("国内月租/海外月租") for r in domestic_chart_rows],
+        "domesticRatios": [
+            "低置信观察" if r["GPU 型号"] in STRATEGIC_DOMESTIC_GPUS and not pass_status(r) else r.get("国内月租/海外月租")
+            for r in domestic_chart_rows
+        ],
         "overseasLabels": [r["GPU 型号"] for r in overseas_pass],
         "overseasValues": [r["标准化价格"] for r in overseas_pass],
         "tokenLabels": [token_label(r) for r in chart_tokens],
@@ -1254,7 +1257,7 @@ def write_charts():
       series:[{{type:'bar',data:values,label:{{show:true,position:'top',color:ink,formatter:function(p){{
         var base = p.value + '万/月';
         var rawRatio = ratios && ratios[p.dataIndex] ? ratios[p.dataIndex] : '';
-        var ratio = rawRatio === '海外缺口' ? ' · 海外缺口' : (rawRatio ? ' · 海外' + rawRatio : '');
+        var ratio = rawRatio === '海外缺口' ? ' · 海外缺口' : (rawRatio && String(rawRatio).indexOf('%') >= 0 ? ' · 海外' + rawRatio : (rawRatio ? ' · ' + rawRatio : ''));
         return base + ratio;
       }}}},itemStyle:{{borderRadius:[6,6,0,0]}}}}]
     }});
