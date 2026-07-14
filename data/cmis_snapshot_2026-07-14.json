@@ -1,8 +1,8 @@
 {
   "date": "2026-07-14",
-  "freeze_time": "2026-07-14T10:40:00+08:00",
+  "freeze_time": "2026-07-14T10:55:00+08:00",
   "report_version": "v1.2.0",
-  "prompt_version": "b02103d",
+  "prompt_version": "40e4988",
   "prompt_files": [
     "prompts/system_prompt.md",
     "prompts/report_config.md",
@@ -331,7 +331,7 @@
   "token_prices": [
     {
       "厂商": "OpenAI",
-      "模型": "GPT-5.5",
+      "模型": "GPT-5.6 Sol",
       "国家/地区": "海外",
       "输入官方价（原币/百万Token）": "USD 5.00",
       "输出官方价（原币/百万Token）": "USD 30.00",
@@ -339,22 +339,22 @@
       "输出官方价（人民币/百万Token）": 215.4,
       "官方来源": "cite-4",
       "市场来源": "OpenRouter/替代市场待抓取",
-      "采集时间": "2026-07-14 10:40:26 UTC+08:00",
+      "采集时间": "2026-07-14 10:55:06 UTC+08:00",
       "Confidence Score": 95,
       "校验状态": "PASS",
       "备注": "OpenAI 官方价格页；缓存输入价单列，不混入标准输入价。"
     },
     {
       "厂商": "OpenAI",
-      "模型": "GPT-5.4 mini",
+      "模型": "GPT-5.6 Luna",
       "国家/地区": "海外",
-      "输入官方价（原币/百万Token）": "USD 0.75",
-      "输出官方价（原币/百万Token）": "USD 4.50",
-      "输入官方价（人民币/百万Token）": 5.38,
-      "输出官方价（人民币/百万Token）": 32.31,
+      "输入官方价（原币/百万Token）": "USD 1.00",
+      "输出官方价（原币/百万Token）": "USD 6.00",
+      "输入官方价（人民币/百万Token）": 7.18,
+      "输出官方价（人民币/百万Token）": 43.08,
       "官方来源": "cite-4",
       "市场来源": "OpenRouter/替代市场待抓取",
-      "采集时间": "2026-07-14 10:40:26 UTC+08:00",
+      "采集时间": "2026-07-14 10:55:06 UTC+08:00",
       "Confidence Score": 95,
       "校验状态": "PASS",
       "备注": "OpenAI 官方价格页。"
@@ -363,13 +363,28 @@
       "厂商": "DeepSeek",
       "模型": "deepseek-v4-flash",
       "国家/地区": "国产",
-      "输入官方价（原币/百万Token）": "USD 0.14（Cache Miss）",
-      "输出官方价（原币/百万Token）": "USD 0.28",
-      "输入官方价（人民币/百万Token）": 1.01,
-      "输出官方价（人民币/百万Token）": 2.01,
+      "输入官方价（原币/百万Token）": "CNY 1.00（Cache Miss）",
+      "输出官方价（原币/百万Token）": "CNY 2.00",
+      "输入官方价（人民币/百万Token）": 1.0,
+      "输出官方价（人民币/百万Token）": 2.0,
       "官方来源": "cite-5",
       "市场来源": "OpenRouter/替代市场待抓取",
-      "采集时间": "2026-07-14 10:40:26 UTC+08:00",
+      "采集时间": "2026-07-14 10:55:06 UTC+08:00",
+      "Confidence Score": 95,
+      "校验状态": "PASS",
+      "备注": "DeepSeek 官方页；Cache Hit 另列，不替代标准输入价。"
+    },
+    {
+      "厂商": "DeepSeek",
+      "模型": "deepseek-v4-pro",
+      "国家/地区": "国产",
+      "输入官方价（原币/百万Token）": "CNY 3.00（Cache Miss）",
+      "输出官方价（原币/百万Token）": "CNY 6.00",
+      "输入官方价（人民币/百万Token）": 3.0,
+      "输出官方价（人民币/百万Token）": 6.0,
+      "官方来源": "cite-5",
+      "市场来源": "OpenRouter/替代市场待抓取",
+      "采集时间": "2026-07-14 10:55:06 UTC+08:00",
       "Confidence Score": 95,
       "校验状态": "PASS",
       "备注": "DeepSeek 官方页；Cache Hit 另列，不替代标准输入价。"
@@ -384,7 +399,7 @@
       "输出官方价（人民币/百万Token）": 36.0,
       "官方来源": "cite-6",
       "市场来源": "OpenRouter/替代市场待抓取",
-      "采集时间": "2026-07-14 10:40:26 UTC+08:00",
+      "采集时间": "2026-07-14 10:55:06 UTC+08:00",
       "Confidence Score": 95,
       "校验状态": "PASS",
       "备注": "阿里云百炼官方标准价，限时折扣另列不混入标准价。"
@@ -399,10 +414,280 @@
       "输出官方价（人民币/百万Token）": 2.0,
       "官方来源": "cite-6",
       "市场来源": "OpenRouter/替代市场待抓取",
-      "采集时间": "2026-07-14 10:40:26 UTC+08:00",
+      "采集时间": "2026-07-14 10:55:06 UTC+08:00",
       "Confidence Score": 95,
       "校验状态": "PASS",
       "备注": "阿里云百炼官方标准价。"
+    },
+    {
+      "厂商": "Anthropic Claude",
+      "模型": "官方 API 价格待补采",
+      "国家/地区": "待确认",
+      "输入官方价（原币/百万Token）": null,
+      "输出官方价（原币/百万Token）": null,
+      "输入官方价（人民币/百万Token）": null,
+      "输出官方价（人民币/百万Token）": null,
+      "官方来源": "https://www.anthropic.com/pricing",
+      "市场来源": "不得用市场价替代官方价",
+      "采集时间": "2026-07-14 10:55:06 UTC+08:00",
+      "Confidence Score": 50,
+      "校验状态": "REVIEW",
+      "备注": "Official Missing：保留厂商覆盖行，后续补采官方价格页/API 文档。"
+    },
+    {
+      "厂商": "Google Gemini",
+      "模型": "官方 API 价格待补采",
+      "国家/地区": "待确认",
+      "输入官方价（原币/百万Token）": null,
+      "输出官方价（原币/百万Token）": null,
+      "输入官方价（人民币/百万Token）": null,
+      "输出官方价（人民币/百万Token）": null,
+      "官方来源": "https://ai.google.dev/gemini-api/docs/pricing",
+      "市场来源": "不得用市场价替代官方价",
+      "采集时间": "2026-07-14 10:55:06 UTC+08:00",
+      "Confidence Score": 50,
+      "校验状态": "REVIEW",
+      "备注": "Official Missing：保留厂商覆盖行，后续补采官方价格页/API 文档。"
+    },
+    {
+      "厂商": "Mistral",
+      "模型": "官方 API 价格待补采",
+      "国家/地区": "待确认",
+      "输入官方价（原币/百万Token）": null,
+      "输出官方价（原币/百万Token）": null,
+      "输入官方价（人民币/百万Token）": null,
+      "输出官方价（人民币/百万Token）": null,
+      "官方来源": "https://mistral.ai/products/la-plateforme",
+      "市场来源": "不得用市场价替代官方价",
+      "采集时间": "2026-07-14 10:55:06 UTC+08:00",
+      "Confidence Score": 50,
+      "校验状态": "REVIEW",
+      "备注": "Official Missing：保留厂商覆盖行，后续补采官方价格页/API 文档。"
+    },
+    {
+      "厂商": "Cohere",
+      "模型": "官方 API 价格待补采",
+      "国家/地区": "待确认",
+      "输入官方价（原币/百万Token）": null,
+      "输出官方价（原币/百万Token）": null,
+      "输入官方价（人民币/百万Token）": null,
+      "输出官方价（人民币/百万Token）": null,
+      "官方来源": "https://cohere.com/pricing",
+      "市场来源": "不得用市场价替代官方价",
+      "采集时间": "2026-07-14 10:55:06 UTC+08:00",
+      "Confidence Score": 50,
+      "校验状态": "REVIEW",
+      "备注": "Official Missing：保留厂商覆盖行，后续补采官方价格页/API 文档。"
+    },
+    {
+      "厂商": "xAI Grok",
+      "模型": "官方 API 价格待补采",
+      "国家/地区": "待确认",
+      "输入官方价（原币/百万Token）": null,
+      "输出官方价（原币/百万Token）": null,
+      "输入官方价（人民币/百万Token）": null,
+      "输出官方价（人民币/百万Token）": null,
+      "官方来源": "https://docs.x.ai/docs/models",
+      "市场来源": "不得用市场价替代官方价",
+      "采集时间": "2026-07-14 10:55:06 UTC+08:00",
+      "Confidence Score": 50,
+      "校验状态": "REVIEW",
+      "备注": "Official Missing：保留厂商覆盖行，后续补采官方价格页/API 文档。"
+    },
+    {
+      "厂商": "火山方舟/豆包",
+      "模型": "官方 API 价格待补采",
+      "国家/地区": "待确认",
+      "输入官方价（原币/百万Token）": null,
+      "输出官方价（原币/百万Token）": null,
+      "输入官方价（人民币/百万Token）": null,
+      "输出官方价（人民币/百万Token）": null,
+      "官方来源": "https://www.volcengine.com/docs/82379/1099320",
+      "市场来源": "不得用市场价替代官方价",
+      "采集时间": "2026-07-14 10:55:06 UTC+08:00",
+      "Confidence Score": 50,
+      "校验状态": "REVIEW",
+      "备注": "Official Missing：保留厂商覆盖行，后续补采官方价格页/API 文档。"
+    },
+    {
+      "厂商": "百度千帆",
+      "模型": "官方 API 价格待补采",
+      "国家/地区": "待确认",
+      "输入官方价（原币/百万Token）": null,
+      "输出官方价（原币/百万Token）": null,
+      "输入官方价（人民币/百万Token）": null,
+      "输出官方价（人民币/百万Token）": null,
+      "官方来源": "https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Blfmc9dlf",
+      "市场来源": "不得用市场价替代官方价",
+      "采集时间": "2026-07-14 10:55:06 UTC+08:00",
+      "Confidence Score": 50,
+      "校验状态": "REVIEW",
+      "备注": "Official Missing：保留厂商覆盖行，后续补采官方价格页/API 文档。"
+    },
+    {
+      "厂商": "腾讯混元",
+      "模型": "官方 API 价格待补采",
+      "国家/地区": "待确认",
+      "输入官方价（原币/百万Token）": null,
+      "输出官方价（原币/百万Token）": null,
+      "输入官方价（人民币/百万Token）": null,
+      "输出官方价（人民币/百万Token）": null,
+      "官方来源": "https://cloud.tencent.com/document/product/1729/97731",
+      "市场来源": "不得用市场价替代官方价",
+      "采集时间": "2026-07-14 10:55:06 UTC+08:00",
+      "Confidence Score": 50,
+      "校验状态": "REVIEW",
+      "备注": "Official Missing：保留厂商覆盖行，后续补采官方价格页/API 文档。"
+    },
+    {
+      "厂商": "智谱 GLM",
+      "模型": "官方 API 价格待补采",
+      "国家/地区": "待确认",
+      "输入官方价（原币/百万Token）": null,
+      "输出官方价（原币/百万Token）": null,
+      "输入官方价（人民币/百万Token）": null,
+      "输出官方价（人民币/百万Token）": null,
+      "官方来源": "https://open.bigmodel.cn/pricing",
+      "市场来源": "不得用市场价替代官方价",
+      "采集时间": "2026-07-14 10:55:06 UTC+08:00",
+      "Confidence Score": 50,
+      "校验状态": "REVIEW",
+      "备注": "Official Missing：保留厂商覆盖行，后续补采官方价格页/API 文档。"
+    },
+    {
+      "厂商": "Moonshot/Kimi",
+      "模型": "官方 API 价格待补采",
+      "国家/地区": "待确认",
+      "输入官方价（原币/百万Token）": null,
+      "输出官方价（原币/百万Token）": null,
+      "输入官方价（人民币/百万Token）": null,
+      "输出官方价（人民币/百万Token）": null,
+      "官方来源": "https://platform.moonshot.cn/docs/pricing",
+      "市场来源": "不得用市场价替代官方价",
+      "采集时间": "2026-07-14 10:55:06 UTC+08:00",
+      "Confidence Score": 50,
+      "校验状态": "REVIEW",
+      "备注": "Official Missing：保留厂商覆盖行，后续补采官方价格页/API 文档。"
+    },
+    {
+      "厂商": "MiniMax",
+      "模型": "官方 API 价格待补采",
+      "国家/地区": "待确认",
+      "输入官方价（原币/百万Token）": null,
+      "输出官方价（原币/百万Token）": null,
+      "输入官方价（人民币/百万Token）": null,
+      "输出官方价（人民币/百万Token）": null,
+      "官方来源": "https://platform.minimaxi.com/document/Price",
+      "市场来源": "不得用市场价替代官方价",
+      "采集时间": "2026-07-14 10:55:06 UTC+08:00",
+      "Confidence Score": 50,
+      "校验状态": "REVIEW",
+      "备注": "Official Missing：保留厂商覆盖行，后续补采官方价格页/API 文档。"
+    },
+    {
+      "厂商": "讯飞星火",
+      "模型": "官方 API 价格待补采",
+      "国家/地区": "待确认",
+      "输入官方价（原币/百万Token）": null,
+      "输出官方价（原币/百万Token）": null,
+      "输入官方价（人民币/百万Token）": null,
+      "输出官方价（人民币/百万Token）": null,
+      "官方来源": "https://www.xfyun.cn/doc/spark/Price.html",
+      "市场来源": "不得用市场价替代官方价",
+      "采集时间": "2026-07-14 10:55:06 UTC+08:00",
+      "Confidence Score": 50,
+      "校验状态": "REVIEW",
+      "备注": "Official Missing：保留厂商覆盖行，后续补采官方价格页/API 文档。"
+    },
+    {
+      "厂商": "Meta Llama",
+      "模型": "官方托管/云市场价格待补采",
+      "国家/地区": "待确认",
+      "输入官方价（原币/百万Token）": null,
+      "输出官方价（原币/百万Token）": null,
+      "输入官方价（人民币/百万Token）": null,
+      "输出官方价（人民币/百万Token）": null,
+      "官方来源": "Official Missing",
+      "市场来源": "不得用市场价替代官方价",
+      "采集时间": "2026-07-14 10:55:06 UTC+08:00",
+      "Confidence Score": 50,
+      "校验状态": "REVIEW",
+      "备注": "Official Missing：保留厂商覆盖行，后续补采官方价格页/API 文档。"
+    },
+    {
+      "厂商": "百川",
+      "模型": "官方价格待补采",
+      "国家/地区": "待确认",
+      "输入官方价（原币/百万Token）": null,
+      "输出官方价（原币/百万Token）": null,
+      "输入官方价（人民币/百万Token）": null,
+      "输出官方价（人民币/百万Token）": null,
+      "官方来源": "Official Missing",
+      "市场来源": "不得用市场价替代官方价",
+      "采集时间": "2026-07-14 10:55:06 UTC+08:00",
+      "Confidence Score": 50,
+      "校验状态": "REVIEW",
+      "备注": "Official Missing：保留厂商覆盖行，后续补采官方价格页/API 文档。"
+    },
+    {
+      "厂商": "零一万物",
+      "模型": "官方价格待补采",
+      "国家/地区": "待确认",
+      "输入官方价（原币/百万Token）": null,
+      "输出官方价（原币/百万Token）": null,
+      "输入官方价（人民币/百万Token）": null,
+      "输出官方价（人民币/百万Token）": null,
+      "官方来源": "Official Missing",
+      "市场来源": "不得用市场价替代官方价",
+      "采集时间": "2026-07-14 10:55:06 UTC+08:00",
+      "Confidence Score": 50,
+      "校验状态": "REVIEW",
+      "备注": "Official Missing：保留厂商覆盖行，后续补采官方价格页/API 文档。"
+    },
+    {
+      "厂商": "阶跃星辰",
+      "模型": "官方价格待补采",
+      "国家/地区": "待确认",
+      "输入官方价（原币/百万Token）": null,
+      "输出官方价（原币/百万Token）": null,
+      "输入官方价（人民币/百万Token）": null,
+      "输出官方价（人民币/百万Token）": null,
+      "官方来源": "Official Missing",
+      "市场来源": "不得用市场价替代官方价",
+      "采集时间": "2026-07-14 10:55:06 UTC+08:00",
+      "Confidence Score": 50,
+      "校验状态": "REVIEW",
+      "备注": "Official Missing：保留厂商覆盖行，后续补采官方价格页/API 文档。"
+    },
+    {
+      "厂商": "商汤日日新",
+      "模型": "官方价格待补采",
+      "国家/地区": "待确认",
+      "输入官方价（原币/百万Token）": null,
+      "输出官方价（原币/百万Token）": null,
+      "输入官方价（人民币/百万Token）": null,
+      "输出官方价（人民币/百万Token）": null,
+      "官方来源": "Official Missing",
+      "市场来源": "不得用市场价替代官方价",
+      "采集时间": "2026-07-14 10:55:06 UTC+08:00",
+      "Confidence Score": 50,
+      "校验状态": "REVIEW",
+      "备注": "Official Missing：保留厂商覆盖行，后续补采官方价格页/API 文档。"
+    },
+    {
+      "厂商": "昆仑万维天工",
+      "模型": "官方价格待补采",
+      "国家/地区": "待确认",
+      "输入官方价（原币/百万Token）": null,
+      "输出官方价（原币/百万Token）": null,
+      "输入官方价（人民币/百万Token）": null,
+      "输出官方价（人民币/百万Token）": null,
+      "官方来源": "Official Missing",
+      "市场来源": "不得用市场价替代官方价",
+      "采集时间": "2026-07-14 10:55:06 UTC+08:00",
+      "Confidence Score": 50,
+      "校验状态": "REVIEW",
+      "备注": "Official Missing：保留厂商覆盖行，后续补采官方价格页/API 文档。"
     }
   ],
   "domestic_rental": [
@@ -1231,7 +1516,7 @@
   "audit": [
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "GB300",
       "source": "未采集到合格来源",
@@ -1250,7 +1535,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "GB200",
       "source": "未采集到合格来源",
@@ -1269,7 +1554,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "B300",
       "source": "未采集到合格来源",
@@ -1288,7 +1573,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "B200",
       "source": "未采集到合格来源",
@@ -1307,7 +1592,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "H200",
       "source": "未采集到合格来源",
@@ -1326,7 +1611,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "H100 80G",
       "source": "SMM（主口径）",
@@ -1345,7 +1630,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "H800",
       "source": "估算/待复核",
@@ -1364,7 +1649,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "H20",
       "source": "SMM 算力直播（主口径候选）",
@@ -1383,7 +1668,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "A100 80G",
       "source": "SMM 算力直播（主口径候选）",
@@ -1402,7 +1687,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "A800",
       "source": "未采集到合格来源",
@@ -1421,7 +1706,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "L40S",
       "source": "未采集到合格来源",
@@ -1440,7 +1725,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "L20",
       "source": "未采集到合格来源",
@@ -1459,7 +1744,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "L4",
       "source": "未采集到合格来源",
@@ -1478,7 +1763,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "RTX 5090",
       "source": "SMM（主口径）",
@@ -1497,7 +1782,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "RTX 4090",
       "source": "SMM 算力直播（辅助主口径）",
@@ -1516,7 +1801,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "昇腾 910C",
       "source": "SMM 算力直播（国产候选）",
@@ -1535,7 +1820,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "昇腾 910B",
       "source": "SMM 算力直播（子型号待拆）",
@@ -1554,7 +1839,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "寒武纪 MLU",
       "source": "未采集到合格来源",
@@ -1573,7 +1858,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "海光 DCU",
       "source": "未采集到合格来源",
@@ -1592,7 +1877,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "壁仞",
       "source": "未采集到合格来源",
@@ -1611,7 +1896,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "摩尔线程",
       "source": "未采集到合格来源",
@@ -1632,7 +1917,7 @@
   "rejected": [
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "GB300",
       "source": "未采集到合格来源",
@@ -1651,7 +1936,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "GB200",
       "source": "未采集到合格来源",
@@ -1670,7 +1955,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "B300",
       "source": "未采集到合格来源",
@@ -1689,7 +1974,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "B200",
       "source": "未采集到合格来源",
@@ -1708,7 +1993,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "H200",
       "source": "未采集到合格来源",
@@ -1727,7 +2012,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "H800",
       "source": "估算/待复核",
@@ -1746,7 +2031,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "A800",
       "source": "未采集到合格来源",
@@ -1765,7 +2050,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "L40S",
       "source": "未采集到合格来源",
@@ -1784,7 +2069,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "L20",
       "source": "未采集到合格来源",
@@ -1803,7 +2088,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "L4",
       "source": "未采集到合格来源",
@@ -1822,7 +2107,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "昇腾 910B",
       "source": "SMM 算力直播（子型号待拆）",
@@ -1841,7 +2126,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "寒武纪 MLU",
       "source": "未采集到合格来源",
@@ -1860,7 +2145,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "海光 DCU",
       "source": "未采集到合格来源",
@@ -1879,7 +2164,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "壁仞",
       "source": "未采集到合格来源",
@@ -1898,7 +2183,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:40:00+08:00",
+      "freeze_time": "2026-07-14T10:55:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "摩尔线程",
       "source": "未采集到合格来源",
@@ -1916,6 +2201,259 @@
       "notes": "当日未获得符合国内主口径的可信样本。"
     }
   ],
+  "source_diagnostics": {
+    "searched_sources": [
+      {
+        "title": "SMM 算力快讯：H100/A100/RTX 5090 月租报价",
+        "url": "https://news.metal.com/featured-category.html/newscontent/103972175-smm-computing-power-flash-an-intelligent-computing-company-quoted-monthly-rental-prices-for-multiple-gpu-models-includin",
+        "source_layer": "主口径/行业"
+      },
+      {
+        "title": "ComputeStacker GPU cloud pricing guide",
+        "url": "https://computestacker.com/insights/gpu-cloud-pricing-guide-2026/",
+        "source_layer": "主口径/行业"
+      },
+      {
+        "title": "Lambda GPU cloud pricing",
+        "url": "https://lambda.ai/pricing",
+        "source_layer": "官方/校验"
+      },
+      {
+        "title": "OpenAI API Pricing",
+        "url": "https://openai.com/api/pricing/",
+        "source_layer": "官方"
+      },
+      {
+        "title": "DeepSeek API Pricing",
+        "url": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing",
+        "source_layer": "官方"
+      },
+      {
+        "title": "阿里云百炼模型价格",
+        "url": "https://help.aliyun.com/zh/model-studio/model-pricing",
+        "source_layer": "官方"
+      },
+      {
+        "title": "RunPod GPU Cloud Pricing",
+        "url": "https://www.runpod.io/pricing",
+        "source_layer": "海外云价"
+      },
+      {
+        "title": "Lambda AI Cloud Pricing",
+        "url": "https://lambda.ai/pricing",
+        "source_layer": "海外云价"
+      },
+      {
+        "title": "Vast.ai GPU Pricing",
+        "url": "https://vast.ai/pricing",
+        "source_layer": "海外云价/Marketplace"
+      },
+      {
+        "title": "BIZON ZX9000 GPU Server",
+        "url": "https://bizon-tech.com/bizon-zx9000.html",
+        "source_layer": "采购/整机辅助"
+      },
+      {
+        "title": "NVIDIA H200 GPU",
+        "url": "https://www.nvidia.com/en-us/data-center/h200/",
+        "source_layer": "官方规格"
+      },
+      {
+        "title": "中国政府采购网",
+        "url": "http://www.ccgp.gov.cn/",
+        "source_layer": "采购/招投标"
+      },
+      {
+        "title": "Cloud-GPUs.com",
+        "url": "https://cloud-gpus.com/",
+        "source_layer": "海外云价/聚合源"
+      },
+      {
+        "title": "GPUCloudPricing",
+        "url": "https://www.gpucloudpricing.com/",
+        "source_layer": "海外云价/聚合源"
+      },
+      {
+        "title": "llmpricing",
+        "url": "https://sanand0.github.io/llmpricing/",
+        "source_layer": "Token 市场价/性价比"
+      },
+      {
+        "title": "morph-llm LLM Cost Calculator",
+        "url": "https://www.morphllm.com/llm-cost-calculator",
+        "source_layer": "Token 市场价/辅助矩阵"
+      },
+      {
+        "title": "LiteLLM model_prices_and_context_window.json",
+        "url": "https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json",
+        "source_layer": "Token 结构化/开源"
+      },
+      {
+        "title": "OpenRouter Models API",
+        "url": "https://openrouter.ai/api/v1/models",
+        "source_layer": "Token 市场价/API"
+      },
+      {
+        "title": "models.dev API",
+        "url": "https://models.dev/api.json",
+        "source_layer": "Token 结构化/目录"
+      },
+      {
+        "title": "BenchLM pricing JSON",
+        "url": "https://www.benchlm.ai/data/pricing.json",
+        "source_layer": "Token 结构化/辅助"
+      },
+      {
+        "title": "Artificial Analysis",
+        "url": "https://artificialanalysis.ai/",
+        "source_layer": "Token 性能/市场辅助"
+      },
+      {
+        "title": "TensorDock Hostnodes API",
+        "url": "https://dashboard.tensordock.com/api/docs/fetch-hostnodes",
+        "source_layer": "海外云价/API"
+      },
+      {
+        "title": "DataCrunch Pricing",
+        "url": "https://datacrunch.io/pricing",
+        "source_layer": "海外云价"
+      },
+      {
+        "title": "CUDO Compute Pricing",
+        "url": "https://www.cudocompute.com/pricing",
+        "source_layer": "海外云价/Marketplace"
+      },
+      {
+        "title": "CoreWeave GPU Cloud",
+        "url": "https://www.coreweave.com/products/gpu-cloud",
+        "source_layer": "海外云价/企业云"
+      },
+      {
+        "title": "Nebius AI Cloud Prices",
+        "url": "https://nebius.com/prices",
+        "source_layer": "海外云价/官方"
+      },
+      {
+        "title": "Oracle Cloud Infrastructure Price List",
+        "url": "https://www.oracle.com/cloud/price-list/",
+        "source_layer": "海外云价/官方"
+      },
+      {
+        "title": "Modal Pricing",
+        "url": "https://modal.com/pricing",
+        "source_layer": "海外云价/Serverless"
+      },
+      {
+        "title": "阿里云 GPU 云服务器价格",
+        "url": "https://www.aliyun.com/price/product?productCode=ecs",
+        "source_layer": "国内云价/辅助"
+      },
+      {
+        "title": "腾讯云 GPU 云服务器",
+        "url": "https://cloud.tencent.com/product/gpu",
+        "source_layer": "国内云价/辅助"
+      },
+      {
+        "title": "华为云 GPU 加速型云服务器",
+        "url": "https://www.huaweicloud.com/product/gpu.html",
+        "source_layer": "国内云价/辅助"
+      },
+      {
+        "title": "AutoDL 价格",
+        "url": "https://www.autodl.com/price",
+        "source_layer": "国内云价/辅助"
+      },
+      {
+        "title": "矩池云主机市场",
+        "url": "https://matpool.com/host-market",
+        "source_layer": "国内云价/辅助"
+      },
+      {
+        "title": "高校采购与公共资源交易中心",
+        "url": "https://www.ccgp.gov.cn/cggg/dfgg/",
+        "source_layer": "采购/招投标"
+      },
+      {
+        "title": "NVIDIA Data Center GPUs",
+        "url": "https://www.nvidia.com/en-us/data-center/",
+        "source_layer": "官方规格/OEM"
+      },
+      {
+        "title": "Supermicro GPU Systems",
+        "url": "https://www.supermicro.com/en/products/gpu",
+        "source_layer": "整机规格/OEM"
+      },
+      {
+        "title": "Exxact GPU Systems",
+        "url": "https://www.exxactcorp.com/",
+        "source_layer": "采购/整机辅助"
+      },
+      {
+        "title": "Thinkmate GPU Servers",
+        "url": "https://www.thinkmate.com/",
+        "source_layer": "采购/整机辅助"
+      },
+      {
+        "title": "SMM 算力金属直播",
+        "url": "https://news.smm.cn/live/metal/143",
+        "source_layer": "国内租赁/SMM 深扒"
+      },
+      {
+        "title": "SMM 移动详情页：H100/A100/5090 月租",
+        "url": "https://m.smm.cn/news/detail/103972174",
+        "source_layer": "国内租赁/SMM 移动页"
+      },
+      {
+        "title": "SMM news.metal.com 镜像：H100/A100/5090 月租",
+        "url": "https://news.metal.com/about-us.html/newscontent/103972175-smm-computing-power-flash-an-intelligent-computing-company-quoted-monthly-rental-prices-for-multiple-gpu-models-includin",
+        "source_layer": "国内租赁/SMM 镜像"
+      },
+      {
+        "title": "GoGPU / 捷智算 H100 租赁线索",
+        "url": "https://gogpu.cn/news/detail/596.html",
+        "source_layer": "国内租赁/门户线索"
+      },
+      {
+        "title": "墨天轮 H100 租用榜单",
+        "url": "https://www.modb.pro/db/2068888499013640192",
+        "source_layer": "国内租赁/门户线索"
+      },
+      {
+        "title": "OmniYQ GPU 算力租赁平台",
+        "url": "https://www.omniyq.com/",
+        "source_layer": "国内租赁/个人站线索"
+      },
+      {
+        "title": "东方财富财富号 GPU 租金走势线索",
+        "url": "https://caifuhao.eastmoney.com/news/1739405719",
+        "source_layer": "国内租赁/自媒体线索"
+      }
+    ],
+    "successful_sources": [
+      "OpenAI API Pricing",
+      "DeepSeek API Pricing",
+      "阿里云百炼模型价格",
+      "SMM 算力金属直播/移动页/镜像",
+      "RunPod/Lambda/Vast.ai/ComputeStacker 海外云价辅助"
+    ],
+    "failed_sources": [
+      {
+        "source": "Google Gemini API Pricing",
+        "reason": "本次抓取连接关闭，保留为 Official Missing，下一期重试。"
+      },
+      {
+        "source": "Anthropic API Pricing",
+        "reason": "公开页面优先返回订阅套餐内容，API Token 价格需继续深挖开发者文档。"
+      }
+    ],
+    "usage_class": {
+      "Main Index": "Validate == PASS 且 Confidence>=70 的国内 8卡整机月租样本。",
+      "Auxiliary Quotes": "海外 GPU Cloud、国内云价、采购价、整机价和市场 Token 价。",
+      "Candidate Samples": "来源明确但口径、数量、地区或多源校验不足的样本。",
+      "Rejected Samples": "单位错误、口径错误、低可信或历史波动异常样本。",
+      "Missing with searched sources": "已检索但未获得可验证价格或访问受限的缺口。"
+    }
+  },
   "coverage": [
     {
       "GPU 型号": "GB300",
