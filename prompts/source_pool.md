@@ -86,9 +86,38 @@
 
 国内主指数只接受“中国大陆、8卡整机、万元/台/月、长租、含机柜/电力/网络/运维”的数据。其它国内云厂商、按量、包月、抢占式、单卡小时价一律进入 `Auxiliary Quotes` 或 `Candidate Samples`。
 
+### 3.1 SMM 深扒规则
+
+SMM 是国内服务器租赁价格的高优先级来源，不得只抓单篇历史文章。每次运行必须做多入口深扒：
+
+| 入口 | URL / 检索方式 | 抓取重点 | 入库层级 |
+|---|---|---|---|
+| SMM 算力金属直播 | https://news.smm.cn/live/metal/143 | 当日与近 7 日快讯、H100/H200/H20/A100/4090/5090/昇腾等价格、成交区间、供需、交付周期 | 可进入 Main Index / Candidate |
+| SMM 移动详情页 | `https://m.smm.cn/news/detail/{id}` | 原文标题、发布时间、来源、价格原句 | 与桌面页交叉验证 |
+| SMM 英文/多语言镜像 | `https://news.metal.com/.../newscontent/{id}` | 同一条快讯的英文/多语言摘要 | 用于补全文本和校验 |
+| SMM 站内搜索 | `site:news.smm.cn/live/detail SMM算力快讯 H100 月租`、`site:m.smm.cn/news/detail SMM算力快讯 A100 80G` | 历史快讯、同型号多日行情 | Candidate / 历史趋势 |
+| SMM 关键词滚动 | `H100 裸金属`、`A100 80G IB组网`、`H20 141G`、`5090 月租`、`4090 市场报价`、`昇腾910C 月租` | 型号级补采 | Missing with searched sources |
+
+SMM 深扒必须抽取以下字段：
+
+- `smm_item_id`、标题、发布时间、原文链接、移动端链接、镜像链接
+- GPU 型号、显存版本、服务器数量、每台 GPU 数、是否 IB 组网、地区、合同期、押付方式、是否闭口长协
+- 原始价格、价格区间、成交价/报价/买方出价/卖方报价的区别
+- 供需描述、库存/上线时间、交付周期、主体资质要求
+- 是否云上服务价、裸金属价、IDC 长租价、采购价或集群价
+- `usage_class` 和 `confidence`
+
+SMM 价格分类规则：
+
+- 明确为“8卡服务器/单台/月/一年起签/含服务”的 SMM 样本，可进入国内主指数候选；通过单位、数量、历史波动和合理性校验后进入 Main Index。
+- “买方出价”“期货”“大单意向”“居间报价”“高端算力系统价”“单台采购价”不得直接进入主指数，只能进入 Candidate 或 Procurement。
+- SMM 同一型号多条价格若存在区间，应保留 `min / median / max` 或 `bid / ask / transaction`，不得只取最高价。
+- SMM 低价尾货、散租平台、短租、云上溢价、单卡小时价必须标明口径，进入 Auxiliary。
+
 | 层级 | 来源 | URL | 用途 | 注意事项 |
 |---|---|---|---|---|
 | P1 行业 | SMM 算力快讯 | https://news.metal.com/featured-category.html | 国内 8卡整机月租主口径 | 优先进入主指数，仍需合理性校验 |
+| P1 行业 | SMM 算力金属直播 | https://news.smm.cn/live/metal/143 | 国内服务器租赁深扒主入口 | 必须抓取近 7 日并按型号归类 |
 | P0 官方 | 阿里云 GPU 云服务器 | https://www.aliyun.com/price/product?spm=5176.28103460&productCode=ecs | 国内云厂商实例价 | 只能做辅助，不进国内主指数 |
 | P0 官方 | 腾讯云 GPU 云服务器 | https://cloud.tencent.com/product/gpu | 国内云厂商实例价 | 包月/按量/竞价分列 |
 | P0 官方 | 华为云 GPU 加速型 | https://www.huaweicloud.com/product/gpu.html | 国内云厂商实例价 | 地域与实例规格分列 |
@@ -97,6 +126,26 @@
 | P2 平台 | AutoDL | https://www.autodl.com/price | 国内 GPU 租赁平台价 | 多为单卡/容器价，进辅助 |
 | P2 平台 | 矩池云 | https://matpool.com/host-market | 国内 GPU 租赁平台价 | 单卡小时价，进辅助 |
 | P2 平台 | UCloud GPU 云主机 | https://www.ucloud.cn/site/product/gpu.html | 国内云厂商实例价 | 作为辅助样本 |
+| P2/P3 门户 | GoGPU、墨天轮、东方财富财富号、CSDN、掘金、51CTO 等 | 逐站点检索 | 服务器价格榜单、行业文章、价格走势线索 | 只作为 Candidate / Lead，必须标注低置信度 |
+| P3 自媒体 | 微信公众号、视频号、抖音、B站、小红书、知乎等公开可访问内容 | 平台内搜索或公开网页索引 | 渠道报价、截图、供需线索、联系方式 | 不进入主指数；截图/口述必须保留来源、发布时间和原始上下文 |
+
+### 3.2 自媒体与低置信线索规则
+
+公众号、抖音、视频号、B站、小红书、知乎、CSDN、掘金、墨天轮、东方财富财富号、个人站、IDC 门户等可以用于“有数据先留痕”，但必须严格降级：
+
+- 能公开访问并可保留 URL 的，进入 `Candidate Samples` 或 `Auxiliary Quotes`。
+- 只有截图、口述、群聊或转述的，进入 `Lead`，不得进入主图、主指数、ROI 或 AI 总结。
+- 若低置信线索与 SMM / IDC / 运营商 / 云厂商公开价一致，可用于提高 Source Consensus，但不能单独决定价格。
+- 必须记录 `platform`、`author/account`、`publish_time`、`capture_time`、`raw_text`、`raw_image_path`（如有）、`confidence_reason`。
+- 平台内容如果需要登录、无法公开访问或无法稳定引用，记录为 `failed_sources` 或 `access_limited`，不得伪造。
+
+重点检索词：
+
+- `H100 8卡 月租`、`H100 裸金属 月租`、`H100 服务器 租赁 7万 8万`
+- `H200 8卡 月租`、`H20 141G 月租`、`A100 80G 8卡 租赁`
+- `RTX 4090 八卡服务器 月租`、`RTX 5090 八卡整机 月租`
+- `昇腾 910C 服务器 月租`、`昇腾 910B 租赁`
+- `算力租赁 报价 单台/月`、`智算中心 H100 出租`、`GPU服务器租赁价格`
 
 ## 4. 采购价、招投标与整机规格源池
 

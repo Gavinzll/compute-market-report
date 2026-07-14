@@ -311,6 +311,55 @@ SOURCES = [
         "url": "https://www.thinkmate.com/",
         "note": "GPU 服务器配置价辅助源；单一渠道最多进入 Auxiliary 或 Candidate。",
     },
+    {
+        "id": 39,
+        "tier": "国内租赁/SMM 深扒",
+        "title": "SMM 算力金属直播",
+        "url": "https://news.smm.cn/live/metal/143",
+        "note": "国内服务器租赁价格深扒主入口，需按近 7 日快讯抽取 H100/H200/H20/A100/4090/5090/昇腾等价格和供需信号。",
+    },
+    {
+        "id": 40,
+        "tier": "国内租赁/SMM 移动页",
+        "title": "SMM 移动详情页：H100/A100/5090 月租",
+        "url": "https://m.smm.cn/news/detail/103972174",
+        "note": "SMM 原文移动页，用于校验 H100 7.6 万、A100 40G 1.3 万、八卡 5090 1.2 万/月等原始样本。",
+    },
+    {
+        "id": 41,
+        "tier": "国内租赁/SMM 镜像",
+        "title": "SMM news.metal.com 镜像：H100/A100/5090 月租",
+        "url": "https://news.metal.com/about-us.html/newscontent/103972175-smm-computing-power-flash-an-intelligent-computing-company-quoted-monthly-rental-prices-for-multiple-gpu-models-includin",
+        "note": "SMM 多语言镜像，用于补全文本和跨页面校验，不作为独立来源重复计数。",
+    },
+    {
+        "id": 42,
+        "tier": "国内租赁/门户线索",
+        "title": "GoGPU / 捷智算 H100 租赁线索",
+        "url": "https://gogpu.cn/news/detail/596.html",
+        "note": "国内 H100 服务器租赁价格线索，仅进入 Candidate / Lead，需与 SMM/IDC/运营商交叉验证。",
+    },
+    {
+        "id": 43,
+        "tier": "国内租赁/门户线索",
+        "title": "墨天轮 H100 租用榜单",
+        "url": "https://www.modb.pro/db/2068888499013640192",
+        "note": "H100 租赁榜单和平台特性线索，低置信辅助，不进入主指数。",
+    },
+    {
+        "id": 44,
+        "tier": "国内租赁/个人站线索",
+        "title": "OmniYQ GPU 算力租赁平台",
+        "url": "https://www.omniyq.com/",
+        "note": "国内外裸金属八卡机报价线索，作为 Candidate / Lead 保存，需逐条复核。",
+    },
+    {
+        "id": 45,
+        "tier": "国内租赁/自媒体线索",
+        "title": "东方财富财富号 GPU 租金走势线索",
+        "url": "https://caifuhao.eastmoney.com/news/1739405719",
+        "note": "自媒体价格走势线索，仅用于发现缺口和候选样本，不进入主指数或 AI 总结。",
+    },
 ]
 
 GPU_GROUPS = [
@@ -449,14 +498,14 @@ DOMESTIC_RENTAL_INPUT = {
         "note": "消费级多卡整机口径，进入辅助指数，不与 HGX 训练卡混为同一价格层级。",
     },
     "A100 80G": {
-        "original": "旧样本：约 1.3 万元/月，口径疑似非 A100 80G 8卡 HGX",
-        "monthly_wan": None,
-        "source": "待复核",
-        "confidence": 55,
-        "consensus": "Low",
+        "original": "SMM 样本：江苏 32 台 A100 80G IB 组网整租约 3.15-3.8 万元/台/月",
+        "monthly_wan": 3.15,
+        "source": "SMM 算力直播（主口径候选）",
+        "confidence": 86,
+        "consensus": "Medium",
         "historical": "HIST_INSUFFICIENT",
-        "status": "REJECT",
-        "note": "低于 A100 80G 国内合理区间，口径不明，不进入主图和利润测算。",
+        "status": "PASS",
+        "note": "同日 SMM 存在 3.15 万与 3.8 万两个报价，保守采用低端成交/供给价进入主指数，区间保留在审计备注。",
     },
     "H800": {
         "original": "旧估算：58 元/卡/小时",
@@ -467,6 +516,46 @@ DOMESTIC_RENTAL_INPUT = {
         "historical": "HIST_INSUFFICIENT",
         "status": "REJECT",
         "note": "旧脚本把估算小时价误混入国内租赁主口径，已剔除。",
+    },
+    "H20": {
+        "original": "SMM 样本：华东某大型城市 141GB H20 八卡服务器单台月租报价 4.8 万元",
+        "monthly_wan": 4.8,
+        "source": "SMM 算力直播（主口径候选）",
+        "confidence": 85,
+        "consensus": "Medium",
+        "historical": "HIST_INSUFFICIENT",
+        "status": "PASS",
+        "note": "H20 141GB 八卡服务器，SMM 报价且有上线即锁定的供需信号。",
+    },
+    "RTX 4090": {
+        "original": "SMM 样本：4090 八卡服务器市场报价约 0.68-0.88 万元/台/月，批量报价约 0.73 万元/月",
+        "monthly_wan": 0.73,
+        "source": "SMM 算力直播（辅助主口径）",
+        "confidence": 82,
+        "consensus": "Medium",
+        "historical": "HIST_INSUFFICIENT",
+        "status": "PASS",
+        "note": "消费级八卡服务器租赁价，按 SMM 多路渠道报价区间保守取中部参考。",
+    },
+    "昇腾 910C": {
+        "original": "SMM 样本：华南 910C 服务器买方出价 5.3 万/月，当前行业均价约 6.2 万/月上下",
+        "monthly_wan": 6.2,
+        "source": "SMM 算力直播（国产候选）",
+        "confidence": 78,
+        "consensus": "Medium",
+        "historical": "HIST_INSUFFICIENT",
+        "status": "PASS",
+        "note": "国产算力服务器价格，样本含买方出价与行业均价，需继续扩源校验。",
+    },
+    "昇腾 910B": {
+        "original": "SMM 样本：910B2 月租约 1.2-1.5 万元，但存在 B2/B3/B4 子型号和搬迁限制差异",
+        "monthly_wan": None,
+        "source": "SMM 算力直播（子型号待拆）",
+        "confidence": 68,
+        "consensus": "Low",
+        "historical": "HIST_INSUFFICIENT",
+        "status": "REVIEW",
+        "note": "910B 子型号、形态和异地部署限制未拆清，暂不进入主指数。",
     },
 }
 
@@ -822,7 +911,7 @@ def render_html(relative_prefix: str = "./") -> str:
     <section id="ai-summary">
       <h2>AI 总结</h2>
       <div class="panel">
-        <p>本期可进入结论的数据非常有限：H100 80G 国内 8卡整机月租约 7.6 万元，RTX 5090 多卡整机约 1.2 万元/月。其余国内卡型因口径、可信度或来源共识不足，只保留为 Review / Rejected 样本。当前不能据此判断 H800 或其它卡型存在夸张的国内外倍数差。</p>
+        <p>本期 SMM 深扒后，国内服务器价格覆盖明显扩大：H100 80G 约 7.6 万元/8卡整机/月，A100 80G 约 3.15-3.8 万元/月，H20 141GB 约 4.8 万元/月，RTX 5090 约 1.2 万元/月，RTX 4090 约 0.68-0.88 万元/月，昇腾 910C 行业均价约 6.2 万元/月。H800 和昇腾 910B 因当前口径或子型号未拆清，仍不进入主指数；后续需继续沿 SMM、IDC、运营商、门户和自媒体线索扩源。</p>
       </div>
     </section>
 

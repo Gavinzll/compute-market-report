@@ -1,5 +1,5 @@
 (function(){
-  var DATA = {"domesticLabels": ["H100 80G", "RTX 5090"], "domesticValues": [7.6, 1.2], "overseasLabels": ["B300", "B200", "H200", "H100 80G", "A100 80G", "L40S", "L4", "RTX 5090", "RTX 4090"], "overseasValues": [53.06, 48.03, 31.52, 21.47, 10.7, 7.11, 2.8, 7.11, 4.95]};
+  var DATA = {"domesticLabels": ["H100 80G", "H20", "A100 80G", "RTX 5090", "RTX 4090", "昇腾 910C"], "domesticValues": [7.6, 4.8, 3.15, 1.2, 0.73, 6.2], "overseasLabels": ["B300", "B200", "H200", "H100 80G", "A100 80G", "L40S", "L4", "RTX 5090", "RTX 4090"], "overseasValues": [53.06, 48.03, 31.52, 21.47, 10.7, 7.11, 2.8, 7.11, 4.95]};
   var style = getComputedStyle(document.documentElement);
   var accent = style.getPropertyValue('--accent').trim();
   var accent2 = style.getPropertyValue('--accent2').trim();
