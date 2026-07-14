@@ -5,8 +5,9 @@
 本脚本只负责生成 GitHub Pages 静态产物，不生成或依赖 GitHub Actions。
 核心修正：
 - 国内租赁主口径固定为“万元/8卡整机/月”，不再把国内价格作为“元/卡/小时”反复折算。
-- 只有 Validate == PASS 且 Confidence >= 70 的数据进入主图、主指标、利润测算和 AI 总结。
-- REVIEW / REJECT 数据只进入审计摘要与异常样本。
+- 普通样本只有 Validate == PASS 且 Confidence >= 70 才进入主图、主指标、利润测算和 AI 总结。
+- 国产战略关注卡即使置信度不足，也进入国内指数表展示，但标注为战略关注/待复核，不进入 ROI 或方向性结论。
+- REVIEW / REJECT 数据进入审计摘要与异常样本；战略关注样本同时进入国内指数表。
 - 不再回写 README，避免覆盖仓库说明文档。
 """
 
@@ -419,6 +420,7 @@ GPU_GROUPS = [
 ]
 GPU_ORDER = [gpu for _, items in GPU_GROUPS for gpu in items]
 GPU_CLASS = {gpu: group for group, items in GPU_GROUPS for gpu in items}
+STRATEGIC_DOMESTIC_GPUS = {"昇腾 910B", "寒武纪 MLU", "海光 DCU", "壁仞", "摩尔线程"}
 
 
 def cny_from_usd(v: float | None) -> float | None:
@@ -443,6 +445,10 @@ def fmt(v, suffix: str = "") -> str:
 
 def pass_status(row: dict) -> bool:
     return row.get("校验状态") == "PASS" and (row.get("Confidence Score") or 0) >= 70
+
+
+def domestic_index_status(row: dict) -> bool:
+    return pass_status(row) or row.get("GPU 型号") in STRATEGIC_DOMESTIC_GPUS
 
 
 def monthly_wan_to_hourly_cny(monthly_wan: float | None) -> float | None:
@@ -747,13 +753,53 @@ DOMESTIC_RENTAL_INPUT = {
     },
     "昇腾 910B": {
         "original": "SMM 样本：910B2 月租约 1.2-1.5 万元，但存在 B2/B3/B4 子型号和搬迁限制差异",
-        "monthly_wan": None,
+        "monthly_wan": 1.35,
         "source": "SMM 算力直播（子型号待拆）",
         "confidence": 68,
         "consensus": "Low",
         "historical": "HIST_INSUFFICIENT",
         "status": "REVIEW",
-        "note": "910B 子型号、形态和异地部署限制未拆清，暂不进入主指数。",
+        "note": "910B 子型号、形态和异地部署限制未拆清；因属于国产战略关注卡，按 SMM 区间中点进入国内指数展示，但不进入 ROI 或方向性结论。",
+    },
+    "寒武纪 MLU": {
+        "original": "扩源待补：需检索寒武纪思元 MLU 租赁、智算中心国产卡出租、云厂商/集成商报价和招投标线索",
+        "monthly_wan": None,
+        "source": "国产战略关注扩源待补",
+        "confidence": 45,
+        "consensus": "Low",
+        "historical": "HIST_INSUFFICIENT",
+        "status": "REVIEW",
+        "note": "寒武纪 MLU 属于国产战略关注卡；当日未获得可量化 8卡整机月租，仍进入国内指数表展示并继续扩源。",
+    },
+    "海光 DCU": {
+        "original": "扩源待补：需检索海光 DCU 租赁、国产智算中心、云厂商适配实例和招投标线索",
+        "monthly_wan": None,
+        "source": "国产战略关注扩源待补",
+        "confidence": 45,
+        "consensus": "Low",
+        "historical": "HIST_INSUFFICIENT",
+        "status": "REVIEW",
+        "note": "海光 DCU 属于国产战略关注卡；当日未获得可量化 8卡整机月租，仍进入国内指数表展示并继续扩源。",
+    },
+    "壁仞": {
+        "original": "扩源待补：需检索壁仞 GPU/BR 系列租赁、国产智算中心、集成商和招投标线索",
+        "monthly_wan": None,
+        "source": "国产战略关注扩源待补",
+        "confidence": 45,
+        "consensus": "Low",
+        "historical": "HIST_INSUFFICIENT",
+        "status": "REVIEW",
+        "note": "壁仞属于国产战略关注卡；当日未获得可量化 8卡整机月租，仍进入国内指数表展示并继续扩源。",
+    },
+    "摩尔线程": {
+        "original": "扩源待补：需检索摩尔线程 MTT/S 系列租赁、国产智算中心、云实例和招投标线索",
+        "monthly_wan": None,
+        "source": "国产战略关注扩源待补",
+        "confidence": 45,
+        "consensus": "Low",
+        "historical": "HIST_INSUFFICIENT",
+        "status": "REVIEW",
+        "note": "摩尔线程属于国产战略关注卡；当日未获得可量化 8卡整机月租，仍进入国内指数表展示并继续扩源。",
     },
 }
 
@@ -809,6 +855,7 @@ def domestic_rows() -> list[dict]:
         overseas_ratio_label = None
         if monthly is not None:
             overseas_ratio_label = f"{overseas_ratio}%" if overseas_ratio is not None else "海外缺口"
+        included = "是" if status == "PASS" and conf >= 70 else ("是（战略关注）" if gpu in STRATEGIC_DOMESTIC_GPUS else "否")
         rows.append({
             "GPU 型号": gpu,
             "GPU 分类": GPU_CLASS[gpu],
@@ -826,7 +873,7 @@ def domestic_rows() -> list[dict]:
             "Source Consensus": item["consensus"],
             "Historical Validation": item["historical"],
             "校验状态": status,
-            "是否进入主指数": "是" if status == "PASS" and conf >= 70 else "否",
+            "是否进入主指数": included,
             "Reject/Review 原因": reason,
             "口径说明": item["note"],
         })
@@ -921,7 +968,7 @@ def build_audit():
             "consensus": row["Source Consensus"],
             "historical_validation": row["Historical Validation"],
             "validate_status": row["校验状态"],
-            "included_in_index": row["是否进入主指数"] == "是",
+            "included_in_index": str(row["是否进入主指数"]).startswith("是"),
             "reject_reason": row["Reject/Review 原因"],
             "notes": row["口径说明"],
         }
@@ -960,14 +1007,15 @@ SNAPSHOT = {
 
 def coverage_rows() -> list[dict]:
     covered = []
-    domestic_pass = {r["GPU 型号"] for r in DOMESTIC_RENTAL if pass_status(r)}
-    domestic_aux = {r["GPU 型号"] for r in DOMESTIC_RENTAL if not pass_status(r) and r["校验状态"] in {"REVIEW", "REJECT"}}
+    domestic_index = {r["GPU 型号"] for r in DOMESTIC_RENTAL if domestic_index_status(r)}
+    domestic_aux = {r["GPU 型号"] for r in DOMESTIC_RENTAL if not domestic_index_status(r) and r["校验状态"] in {"REVIEW", "REJECT"}}
     overseas_aux = {r["GPU 型号"] for r in OVERSEAS_RENTAL if r["标准化价格"] is not None}
     procurement_aux = {r["GPU 型号"] for r in PROCUREMENT}
     for gpu in GPU_ORDER:
         layers = []
-        if gpu in domestic_pass:
-            layers.append("Main Index")
+        if gpu in domestic_index:
+            row = next(r for r in DOMESTIC_RENTAL if r["GPU 型号"] == gpu)
+            layers.append("Main Index" if pass_status(row) else "Main Index / Strategic Watch")
         if gpu in overseas_aux:
             layers.append("Overseas Auxiliary")
         if gpu in procurement_aux:
@@ -976,12 +1024,13 @@ def coverage_rows() -> list[dict]:
             layers.append("Domestic Candidate/Rejected")
         if not layers:
             layers.append("Missing with searched sources")
+        in_domestic_index = gpu in domestic_index
         covered.append({
             "GPU 型号": gpu,
             "GPU 分类": GPU_CLASS[gpu],
             "覆盖状态": " / ".join(layers),
-            "是否可进入主指数": "是" if gpu in domestic_pass else "否",
-            "下一步": "继续补国内主口径" if gpu not in domestic_pass else "持续监控历史波动",
+            "是否可进入主指数": "是" if in_domestic_index else "否",
+            "下一步": "继续补国内主口径并标注战略关注" if gpu in STRATEGIC_DOMESTIC_GPUS and not pass_status(next(r for r in DOMESTIC_RENTAL if r["GPU 型号"] == gpu)) else ("继续补国内主口径" if not in_domestic_index else "持续监控历史波动"),
         })
     return covered
 
@@ -1027,12 +1076,14 @@ def source_list() -> str:
 
 def main_metrics() -> list[tuple[str, str, str]]:
     pass_dom = [r for r in DOMESTIC_RENTAL if pass_status(r)]
+    domestic_index_rows = [r for r in DOMESTIC_RENTAL if domestic_index_status(r)]
+    strategic_rows = [r for r in DOMESTIC_RENTAL if r["GPU 型号"] in STRATEGIC_DOMESTIC_GPUS]
     rejected = [r for r in DOMESTIC_RENTAL if r["校验状态"] == "REJECT"]
     aux_gpu = {r["GPU 型号"] for r in OVERSEAS_RENTAL if r["标准化价格"] is not None} | {r["GPU 型号"] for r in PROCUREMENT}
     token_vendors = {r["厂商"] for r in TOKEN_DATA}
     h100 = next((r for r in pass_dom if r["GPU 型号"] == "H100 80G"), None)
     return [
-        ("国内主指数样本", f"{len(pass_dom)}/{len(DOMESTIC_RENTAL)}", "仅 PASS 且 Confidence≥70"),
+        ("国内指数样本", f"{len(domestic_index_rows)}/{len(DOMESTIC_RENTAL)}", f"含国产战略关注 {len(strategic_rows)} 个"),
         ("辅助 GPU 样本", f"{len(aux_gpu)}/{len(GPU_ORDER)}", "海外云价/采购价/候选样本"),
         ("Token 厂商覆盖", f"{len(token_vendors)}/15", "按厂商+主流模型覆盖，六个核心价格字段必须数值化"),
         ("H100 国内月租", "7.6 万元" if h100 else "暂不可得", "8卡整机/月，不再重复折算"),
@@ -1044,8 +1095,8 @@ def render_html(relative_prefix: str = "./") -> str:
         f'<article class="metric"><span>{a}</span><strong>{b}</strong><small>{c}</small></article>'
         for a, b, c in main_metrics()
     )
-    domestic_pass = [r for r in DOMESTIC_RENTAL if pass_status(r)]
-    domestic_review = [r for r in DOMESTIC_RENTAL if not pass_status(r)]
+    domestic_index_rows = [r for r in DOMESTIC_RENTAL if domestic_index_status(r)]
+    domestic_review = [r for r in DOMESTIC_RENTAL if not domestic_index_status(r)]
     overseas_pass = [r for r in OVERSEAS_RENTAL if r["校验状态"] == "PASS"]
     return f"""<!-- Generated by Trae Work -->
 <!DOCTYPE html>
@@ -1082,8 +1133,8 @@ def render_html(relative_prefix: str = "./") -> str:
     <section>
       <h2>今日结论</h2>
       <div class="panel">
-        <p>本版采用“主指数严格、情报覆盖充分”的结构：国内主指数只收通过校验的 8卡整机月租；海外 GPU Cloud、采购价、招投标、整机渠道报价进入辅助模块，不再被错误混入国内主指数。</p>
-        <p>扩源策略已拆成三文件 Prompt：<code>system_prompt.md</code> 管治理，<code>report_config.md</code> 管报告结构，<code>source_pool.md</code> 管 Token、GPU Cloud、国内云价、采购价和招投标源池。H800 当前没有通过国内主口径校验，因此不进入国内主指数；但它仍保留在覆盖率诊断和缺口清单中，后续通过云厂商、招投标、渠道报价继续补采。</p>
+        <p>本版采用“主指数严格、战略关注不断档”的结构：通过校验的国内 8卡整机月租继续作为高置信主样本；昇腾 910B、寒武纪 MLU、海光 DCU、壁仞、摩尔线程作为国产战略关注卡，即使置信度不足也进入国内指数表展示，但标注 REVIEW，不进入 ROI 或方向性结论。</p>
+        <p>扩源策略已拆成三文件 Prompt：<code>system_prompt.md</code> 管治理，<code>report_config.md</code> 管报告结构，<code>source_pool.md</code> 管 Token、GPU Cloud、国内云价、采购价和招投标源池。国产战略关注卡后续需要沿 SMM、IDC/运营商、云厂商包年包月、国产智算中心、集成商和招投标继续扩源。</p>
       </div>
     </section>
 
@@ -1095,9 +1146,9 @@ def render_html(relative_prefix: str = "./") -> str:
 
     <section id="domestic">
       <h2>国内算力租赁主指数</h2>
-      <p class="note">只纳入 Validate == PASS 且 Confidence Score ≥ 70 的国内 8卡整机月租样本。</p>
-      <figure><figcaption>国内主指数：万元/8卡整机/月，标签含海外同型号等效月租比例</figcaption><div id="chart-domestic-main" class="chart"></div></figure>
-      {table(domestic_pass)}
+      <p class="note">高置信样本仍要求 PASS 且 Confidence≥70；昇腾 910B、寒武纪 MLU、海光 DCU、壁仞、摩尔线程作为国产战略关注卡强制列入指数表，置信度不足时标注 REVIEW 并继续扩源。图表只绘制已有可量化月租的样本。</p>
+      <figure><figcaption>国内指数：万元/8卡整机/月，标签含海外同型号等效月租比例</figcaption><div id="chart-domestic-main" class="chart"></div></figure>
+      {table(domestic_index_rows)}
     </section>
 
     <section id="overseas">
@@ -1137,7 +1188,7 @@ def render_html(relative_prefix: str = "./") -> str:
     <section id="ai-summary">
       <h2>AI 总结</h2>
       <div class="panel">
-        <p>本期 SMM 深扒后，国内服务器价格覆盖明显扩大：H100 80G 约 7.6 万元/8卡整机/月，A100 80G 约 3.15-3.8 万元/月，H20 141GB 约 4.8 万元/月，RTX 5090 约 1.2 万元/月，RTX 4090 约 0.68-0.88 万元/月，昇腾 910C 行业均价约 6.2 万元/月。H800 和昇腾 910B 因当前口径或子型号未拆清，仍不进入主指数；后续需继续沿 SMM、IDC、运营商、门户和自媒体线索扩源。</p>
+        <p>本期国内服务器价格覆盖继续扩大：H100 80G 约 7.6 万元/8卡整机/月，A100 80G 约 3.15-3.8 万元/月，H20 141GB 约 4.8 万元/月，RTX 5090 约 1.2 万元/月，RTX 4090 约 0.68-0.88 万元/月，昇腾 910C 行业均价约 6.2 万元/月。昇腾 910B、寒武纪 MLU、海光 DCU、壁仞、摩尔线程已作为国产战略关注卡进入国内指数表；其中低置信或未量化项不进入 ROI 或方向性价格判断，继续扩源。</p>
       </div>
     </section>
 
@@ -1152,7 +1203,7 @@ def render_html(relative_prefix: str = "./") -> str:
 
 
 def write_charts():
-    domestic_pass = [r for r in DOMESTIC_RENTAL if pass_status(r)]
+    domestic_chart_rows = [r for r in DOMESTIC_RENTAL if domestic_index_status(r) and r["标准化价格"] is not None]
     overseas_pass = [r for r in OVERSEAS_RENTAL if r["校验状态"] == "PASS"]
     validate_token_completeness()
     chart_tokens = TOKEN_DATA
@@ -1161,9 +1212,9 @@ def write_charts():
     def diff(a, b):
         return None if a is None or b is None else round(a - b, 2)
     data = {
-        "domesticLabels": [r["GPU 型号"] for r in domestic_pass],
-        "domesticValues": [r["标准化价格"] for r in domestic_pass],
-        "domesticRatios": [r.get("国内月租/海外月租") for r in domestic_pass],
+        "domesticLabels": [r["GPU 型号"] for r in domestic_chart_rows],
+        "domesticValues": [r["标准化价格"] for r in domestic_chart_rows],
+        "domesticRatios": [r.get("国内月租/海外月租") for r in domestic_chart_rows],
         "overseasLabels": [r["GPU 型号"] for r in overseas_pass],
         "overseasValues": [r["标准化价格"] for r in overseas_pass],
         "tokenLabels": [token_label(r) for r in chart_tokens],
