@@ -185,7 +185,8 @@ SMM 价格分类规则：
 
 当覆盖不足时，按以下顺序自动补采：
 
-1. Token 官方价缺失：先检索厂商官方价格页和开发者文档，再查云平台官方计费页，最后用 LiteLLM / OpenRouter / models.dev / BenchLM / llmpricing / morph-llm 作为辅助。
+0. **Token 模型目录更新（最高优先级）**：每次运行必须先检索各家厂商最新模型矩阵，按"主流/核心/先进"标准筛选模型目录，淘汰 deprecated 模型和无数据旧模型，更新脚本中的模型清单后再进入价格采集。此步骤不依赖价格数据，只依赖厂商官网/文档/发布页的模型列表。
+1. Token 官方价缺失：在已更新的模型目录基础上，检索各模型的官方价格页和开发者文档，再查云平台官方计费页，最后用 LiteLLM / OpenRouter / models.dev / BenchLM / llmpricing / morph-llm 作为辅助。
 2. 海外 GPU Cloud 覆盖不足：先抓 RunPod、Lambda、Vast.ai、TensorDock、DataCrunch、CUDO，再用 Cloud-GPUs 和 GPUCloudPricing 补齐 provider 与中位价。
 3. 国内主指数 PASS 少于 3，或国产战略关注卡缺价格：先查 SMM 和 IDC/运营商线索，再查国内云厂商包月/包年、AutoDL/矩池云等辅助价，最后查招投标、集成商、国产智算中心和媒体线索。
 4. 采购价不足：先查政府采购/高校招标、运营商/银行/央国企框架协议和中标公告，再查整机厂商和渠道配置价，最后查媒体/研报/社区线索；若精确采购价不可得但配置或单卡价可确认，形成市场核价区间并标注估算。
