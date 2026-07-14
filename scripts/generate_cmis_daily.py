@@ -27,7 +27,7 @@ FREEZE_TIME = NOW.replace(second=0, microsecond=0).isoformat()
 FREEZE_LABEL = NOW.strftime("%Y-%m-%d %H:%M")
 STAMP = NOW.strftime("%Y-%m-%d %H:%M:%S UTC+08:00")
 FX_USD_CNY = 7.18
-REPORT_VERSION = "v1.1.0"
+REPORT_VERSION = "v1.2.0"
 
 
 def git_commit() -> str:
@@ -156,6 +156,160 @@ SOURCES = [
         "title": "morph-llm LLM Cost Calculator",
         "url": "https://www.morphllm.com/llm-cost-calculator",
         "note": "可作为模型价格、上下文窗口和限流信息的辅助源，需标注为 Market / Reference。",
+    },
+    {
+        "id": 17,
+        "tier": "Token 结构化/开源",
+        "title": "LiteLLM model_prices_and_context_window.json",
+        "url": "https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json",
+        "note": "机器可读模型价格、上下文窗口和 provider 映射源；只作 Market / Structured Auxiliary，不替代官方价。",
+    },
+    {
+        "id": 18,
+        "tier": "Token 市场价/API",
+        "title": "OpenRouter Models API",
+        "url": "https://openrouter.ai/api/v1/models",
+        "note": "机器可读模型、上下文和市场路由价格源；官方价缺失时只能标注为市场价。",
+    },
+    {
+        "id": 19,
+        "tier": "Token 结构化/目录",
+        "title": "models.dev API",
+        "url": "https://models.dev/api.json",
+        "note": "多 provider 模型目录和价格结构化源，用于发现缺失模型和交叉校验。",
+    },
+    {
+        "id": 20,
+        "tier": "Token 结构化/辅助",
+        "title": "BenchLM pricing JSON",
+        "url": "https://www.benchlm.ai/data/pricing.json",
+        "note": "模型价格矩阵辅助源，用于补充 Token 市场价和冲突审计。",
+    },
+    {
+        "id": 21,
+        "tier": "Token 性能/市场辅助",
+        "title": "Artificial Analysis",
+        "url": "https://artificialanalysis.ai/",
+        "note": "可提供模型价格、速度、质量、上下文等市场对比信息；不替代官方价格页。",
+    },
+    {
+        "id": 22,
+        "tier": "海外云价/API",
+        "title": "TensorDock Hostnodes API",
+        "url": "https://dashboard.tensordock.com/api/docs/fetch-hostnodes",
+        "note": "可抓取节点级 GPU price_per_hr、availableCount、vCPU/RAM/storage 单价，用于海外 GPU Cloud 辅助样本。",
+    },
+    {
+        "id": 23,
+        "tier": "海外云价",
+        "title": "DataCrunch Pricing",
+        "url": "https://datacrunch.io/pricing",
+        "note": "可抓取海外 GPU 实例价、GPU 数和区域，用于 GPU_CLOUD 标准化。",
+    },
+    {
+        "id": 24,
+        "tier": "海外云价/Marketplace",
+        "title": "CUDO Compute Pricing",
+        "url": "https://www.cudocompute.com/pricing",
+        "note": "GPU Marketplace 价格和可用性辅助源，进入海外 GPU Cloud 模块。",
+    },
+    {
+        "id": 25,
+        "tier": "海外云价/企业云",
+        "title": "CoreWeave GPU Cloud",
+        "url": "https://www.coreweave.com/products/gpu-cloud",
+        "note": "企业 GPU 云产品源；公开价缺失时记录为 Price Missing，不推断。",
+    },
+    {
+        "id": 26,
+        "tier": "海外云价/官方",
+        "title": "Nebius AI Cloud Prices",
+        "url": "https://nebius.com/prices",
+        "note": "海外 GPU 云实例价、区域和 GPU 数来源，用于 GPU_CLOUD 辅助校验。",
+    },
+    {
+        "id": 27,
+        "tier": "海外云价/官方",
+        "title": "Oracle Cloud Infrastructure Price List",
+        "url": "https://www.oracle.com/cloud/price-list/",
+        "note": "OCI GPU 实例公开价；必须解析实例 GPU 数后再标准化。",
+    },
+    {
+        "id": 28,
+        "tier": "海外云价/Serverless",
+        "title": "Modal Pricing",
+        "url": "https://modal.com/pricing",
+        "note": "Serverless GPU 价格源；按 GPU 秒/小时归类为海外辅助，不进入国内租赁指数。",
+    },
+    {
+        "id": 29,
+        "tier": "国内云价/辅助",
+        "title": "阿里云 GPU 云服务器价格",
+        "url": "https://www.aliyun.com/price/product?productCode=ecs",
+        "note": "国内云厂商实例价，只进入 Auxiliary Quotes，不进入国内 8卡整机主指数。",
+    },
+    {
+        "id": 30,
+        "tier": "国内云价/辅助",
+        "title": "腾讯云 GPU 云服务器",
+        "url": "https://cloud.tencent.com/product/gpu",
+        "note": "国内 GPU 云实例辅助源；包月、按量和竞价需分列。",
+    },
+    {
+        "id": 31,
+        "tier": "国内云价/辅助",
+        "title": "华为云 GPU 加速型云服务器",
+        "url": "https://www.huaweicloud.com/product/gpu.html",
+        "note": "国内 GPU 云实例辅助源；不得直接进入国内租赁主口径。",
+    },
+    {
+        "id": 32,
+        "tier": "国内云价/辅助",
+        "title": "AutoDL 价格",
+        "url": "https://www.autodl.com/price",
+        "note": "国内 GPU 租赁平台单卡/容器价，进入辅助样本和覆盖率诊断。",
+    },
+    {
+        "id": 33,
+        "tier": "国内云价/辅助",
+        "title": "矩池云主机市场",
+        "url": "https://matpool.com/host-market",
+        "note": "国内 GPU 租赁平台市场价，作为辅助线索和候选样本。",
+    },
+    {
+        "id": 34,
+        "tier": "采购/招投标",
+        "title": "高校采购与公共资源交易中心",
+        "url": "https://www.ccgp.gov.cn/cggg/dfgg/",
+        "note": "检索高校、科研院所和地方公共资源 AI 服务器中标公告，进入采购价或候选样本。",
+    },
+    {
+        "id": 35,
+        "tier": "官方规格/OEM",
+        "title": "NVIDIA Data Center GPUs",
+        "url": "https://www.nvidia.com/en-us/data-center/",
+        "note": "用于 GPU 型号、显存、系统形态和生命周期校验，不提供成交价。",
+    },
+    {
+        "id": 36,
+        "tier": "整机规格/OEM",
+        "title": "Supermicro GPU Systems",
+        "url": "https://www.supermicro.com/en/products/gpu",
+        "note": "用于确认 4卡/8卡/多卡服务器形态，价格需另行验证。",
+    },
+    {
+        "id": 37,
+        "tier": "采购/整机辅助",
+        "title": "Exxact GPU Systems",
+        "url": "https://www.exxactcorp.com/",
+        "note": "整机配置价辅助源；需区分工作站、服务器、GPU 数和税费。",
+    },
+    {
+        "id": 38,
+        "tier": "采购/整机辅助",
+        "title": "Thinkmate GPU Servers",
+        "url": "https://www.thinkmate.com/",
+        "note": "GPU 服务器配置价辅助源；单一渠道最多进入 Auxiliary 或 Candidate。",
     },
 ]
 
@@ -477,6 +631,11 @@ SNAPSHOT = {
     "freeze_time": FREEZE_TIME,
     "report_version": REPORT_VERSION,
     "prompt_version": PROMPT_VERSION,
+    "prompt_files": [
+        "prompts/system_prompt.md",
+        "prompts/report_config.md",
+        "prompts/source_pool.md",
+    ],
     "fx": {"USD/CNY": FX_USD_CNY},
     "sources": SOURCES,
     "token_prices": TOKEN_DATA,
@@ -613,7 +772,7 @@ def render_html(relative_prefix: str = "./") -> str:
       <h2>今日结论</h2>
       <div class="panel">
         <p>本版采用“主指数严格、情报覆盖充分”的结构：国内主指数只收通过校验的 8卡整机月租；海外 GPU Cloud、采购价、招投标、整机渠道报价进入辅助模块，不再被错误混入国内主指数。</p>
-        <p>H800 当前没有通过国内主口径校验，因此不进入国内主指数；但它仍保留在覆盖率诊断和缺口清单中，后续通过云厂商、招投标、渠道报价继续补采。</p>
+        <p>扩源策略已拆成三文件 Prompt：<code>system_prompt.md</code> 管治理，<code>report_config.md</code> 管报告结构，<code>source_pool.md</code> 管 Token、GPU Cloud、国内云价、采购价和招投标源池。H800 当前没有通过国内主口径校验，因此不进入国内主指数；但它仍保留在覆盖率诊断和缺口清单中，后续通过云厂商、招投标、渠道报价继续补采。</p>
       </div>
     </section>
 

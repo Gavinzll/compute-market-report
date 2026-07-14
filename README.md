@@ -12,6 +12,9 @@
 - `assets/charts.js`：ECharts 图表逻辑
 - `scripts/generate_cmis_daily.py`：日报生成器
 - `scripts/notify_feishu.py`：飞书 Webhook 通知脚本
+- `prompts/system_prompt.md`：稳定数据治理底座
+- `prompts/report_config.md`：报告模块、字段和发布配置
+- `prompts/source_pool.md`：Token、GPU Cloud、国内租赁、采购价、招投标和规格校验扩源清单
 ## 自动化方式
 
 定时任务由 TRAE 自动化执行。GitHub 仓库只作为静态站点托管与历史报告归档，不负责运行日报生成任务。
@@ -25,4 +28,6 @@ TRAE 自动化执行顺序：
 
 ## 数据口径
 
-国内租赁以 SMM 为主口径；海外租赁以 ComputeStacker 为主口径；Token 价格以官方 API 定价为 Official Price；硬件采购价需区分官方/权威/市场/传闻/估算和置信度。
+国内租赁以 SMM / IDC / 运营商等 8卡整机月租为主口径；海外 GPU Cloud 以 RunPod、Lambda、Vast.ai、Cloud-GPUs、GPUCloudPricing、TensorDock、DataCrunch、CUDO 等公开小时价为辅助；Token 价格以厂商官方 API 定价为 Official Price，LiteLLM、OpenRouter、models.dev、BenchLM、llmpricing、morph-llm 等只作为结构化市场辅助；硬件采购价需区分官方规格、整机渠道、招投标成交、市场报价和估算置信度。
+
+扩源治理目标不是减少报告内容，而是做到“主指数严格、情报覆盖充分”。未通过国内主口径的数据不得进入主图、主指数、ROI 或 AI 总结，但必须进入辅助样本、候选样本、Rejected 样本或缺口清单。

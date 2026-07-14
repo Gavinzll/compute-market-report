@@ -25,7 +25,7 @@
     <header>
       <div class="eyebrow">Compute Market Intelligence System · CMIS Daily</div>
       <h1>全球算力市场情报日报</h1>
-      <p class="note">日期：2026-07-14｜Data Freeze：2026-07-14 10:26｜Report Version：v1.1.0｜Prompt Version：e781b24。本页已按最新数据治理规范重生成，国内租赁主口径为“万元/8卡整机/月”。</p>
+      <p class="note">日期：2026-07-14｜Data Freeze：2026-07-14 10:35｜Report Version：v1.2.0｜Prompt Version：a140945。本页已按最新数据治理规范重生成，国内租赁主口径为“万元/8卡整机/月”。</p>
       <section class="metrics grid"><article class="metric"><span>国内主指数样本</span><strong>2/21</strong><small>仅 PASS 且 Confidence≥70</small></article>
 <article class="metric"><span>辅助 GPU 样本</span><strong>10/21</strong><small>海外云价/采购价/候选样本</small></article>
 <article class="metric"><span>Token 官方价</span><strong>5/5</strong><small>官方页可追溯</small></article>
@@ -36,7 +36,7 @@
       <h2>今日结论</h2>
       <div class="panel">
         <p>本版采用“主指数严格、情报覆盖充分”的结构：国内主指数只收通过校验的 8卡整机月租；海外 GPU Cloud、采购价、招投标、整机渠道报价进入辅助模块，不再被错误混入国内主指数。</p>
-        <p>H800 当前没有通过国内主口径校验，因此不进入国内主指数；但它仍保留在覆盖率诊断和缺口清单中，后续通过云厂商、招投标、渠道报价继续补采。</p>
+        <p>扩源策略已拆成三文件 Prompt：<code>system_prompt.md</code> 管治理，<code>report_config.md</code> 管报告结构，<code>source_pool.md</code> 管 Token、GPU Cloud、国内云价、采购价和招投标源池。H800 当前没有通过国内主口径校验，因此不进入国内主指数；但它仍保留在覆盖率诊断和缺口清单中，后续通过云厂商、招投标、渠道报价继续补采。</p>
       </div>
     </section>
 
@@ -116,11 +116,11 @@
     <section id="token">
       <h2>Token 价格</h2>
       <p class="note">Token 官方价来自厂商官方价格页，市场价后续由 OpenRouter / Artificial Analysis 等补充，官方价和市场价分列展示。</p>
-      <div class="table-wrap"><table><thead><tr><th>厂商</th><th>模型</th><th>国家/地区</th><th>输入官方价（原币/百万Token）</th><th>输出官方价（原币/百万Token）</th><th>输入官方价（人民币/百万Token）</th><th>输出官方价（人民币/百万Token）</th><th>官方来源</th><th>市场来源</th><th>采集时间</th><th>Confidence Score</th><th>校验状态</th><th>备注</th></tr></thead><tbody><tr><td>OpenAI</td><td>GPT-5.5</td><td>海外</td><td>USD 5.00</td><td>USD 30.00</td><td>35.9</td><td>215.4</td><td>cite-4</td><td>OpenRouter/替代市场待抓取</td><td>2026-07-14 10:26:54 UTC+08:00</td><td>95</td><td>PASS</td><td>OpenAI 官方价格页；缓存输入价单列，不混入标准输入价。</td></tr>
-<tr><td>OpenAI</td><td>GPT-5.4 mini</td><td>海外</td><td>USD 0.75</td><td>USD 4.50</td><td>5.38</td><td>32.31</td><td>cite-4</td><td>OpenRouter/替代市场待抓取</td><td>2026-07-14 10:26:54 UTC+08:00</td><td>95</td><td>PASS</td><td>OpenAI 官方价格页。</td></tr>
-<tr><td>DeepSeek</td><td>deepseek-v4-flash</td><td>国产</td><td>USD 0.14（Cache Miss）</td><td>USD 0.28</td><td>1.01</td><td>2.01</td><td>cite-5</td><td>OpenRouter/替代市场待抓取</td><td>2026-07-14 10:26:54 UTC+08:00</td><td>95</td><td>PASS</td><td>DeepSeek 官方页；Cache Hit 另列，不替代标准输入价。</td></tr>
-<tr><td>阿里云/通义千问</td><td>qwen3.7-max</td><td>国产</td><td>CNY 12</td><td>CNY 36</td><td>12</td><td>36</td><td>cite-6</td><td>OpenRouter/替代市场待抓取</td><td>2026-07-14 10:26:54 UTC+08:00</td><td>95</td><td>PASS</td><td>阿里云百炼官方标准价，限时折扣另列不混入标准价。</td></tr>
-<tr><td>阿里云/通义千问</td><td>qwen-plus-latest</td><td>国产</td><td>CNY 0.8</td><td>CNY 2</td><td>0.8</td><td>2</td><td>cite-6</td><td>OpenRouter/替代市场待抓取</td><td>2026-07-14 10:26:54 UTC+08:00</td><td>95</td><td>PASS</td><td>阿里云百炼官方标准价。</td></tr></tbody></table></div>
+      <div class="table-wrap"><table><thead><tr><th>厂商</th><th>模型</th><th>国家/地区</th><th>输入官方价（原币/百万Token）</th><th>输出官方价（原币/百万Token）</th><th>输入官方价（人民币/百万Token）</th><th>输出官方价（人民币/百万Token）</th><th>官方来源</th><th>市场来源</th><th>采集时间</th><th>Confidence Score</th><th>校验状态</th><th>备注</th></tr></thead><tbody><tr><td>OpenAI</td><td>GPT-5.5</td><td>海外</td><td>USD 5.00</td><td>USD 30.00</td><td>35.9</td><td>215.4</td><td>cite-4</td><td>OpenRouter/替代市场待抓取</td><td>2026-07-14 10:35:21 UTC+08:00</td><td>95</td><td>PASS</td><td>OpenAI 官方价格页；缓存输入价单列，不混入标准输入价。</td></tr>
+<tr><td>OpenAI</td><td>GPT-5.4 mini</td><td>海外</td><td>USD 0.75</td><td>USD 4.50</td><td>5.38</td><td>32.31</td><td>cite-4</td><td>OpenRouter/替代市场待抓取</td><td>2026-07-14 10:35:21 UTC+08:00</td><td>95</td><td>PASS</td><td>OpenAI 官方价格页。</td></tr>
+<tr><td>DeepSeek</td><td>deepseek-v4-flash</td><td>国产</td><td>USD 0.14（Cache Miss）</td><td>USD 0.28</td><td>1.01</td><td>2.01</td><td>cite-5</td><td>OpenRouter/替代市场待抓取</td><td>2026-07-14 10:35:21 UTC+08:00</td><td>95</td><td>PASS</td><td>DeepSeek 官方页；Cache Hit 另列，不替代标准输入价。</td></tr>
+<tr><td>阿里云/通义千问</td><td>qwen3.7-max</td><td>国产</td><td>CNY 12</td><td>CNY 36</td><td>12</td><td>36</td><td>cite-6</td><td>OpenRouter/替代市场待抓取</td><td>2026-07-14 10:35:21 UTC+08:00</td><td>95</td><td>PASS</td><td>阿里云百炼官方标准价，限时折扣另列不混入标准价。</td></tr>
+<tr><td>阿里云/通义千问</td><td>qwen-plus-latest</td><td>国产</td><td>CNY 0.8</td><td>CNY 2</td><td>0.8</td><td>2</td><td>cite-6</td><td>OpenRouter/替代市场待抓取</td><td>2026-07-14 10:35:21 UTC+08:00</td><td>95</td><td>PASS</td><td>阿里云百炼官方标准价。</td></tr></tbody></table></div>
     </section>
 
     <section id="profit">
@@ -150,7 +150,29 @@
 <li id="cite-13"><b>[海外云价/聚合源] Cloud-GPUs.com</b><br><a href="https://cloud-gpus.com/" target="_blank" rel="noopener">https://cloud-gpus.com/</a><br><span>覆盖 30+ providers、75+ GPU models、5000+ instance configurations，适合补齐海外 GPU Cloud 覆盖率和中位价。</span></li>
 <li id="cite-14"><b>[海外云价/聚合源] GPUCloudPricing</b><br><a href="https://www.gpucloudpricing.com/" target="_blank" rel="noopener">https://www.gpucloudpricing.com/</a><br><span>提供 GPU 云厂商特性和价格横向对比，适合作为 RunPod、Vast.ai、Novita、Salad 等平台的辅助参考。</span></li>
 <li id="cite-15"><b>[Token 市场价/性价比] llmpricing</b><br><a href="https://sanand0.github.io/llmpricing/" target="_blank" rel="noopener">https://sanand0.github.io/llmpricing/</a><br><span>提供 LLM 输入价格与 LMSYS/LMArena Elo 的性价比视图，适合做 Token 市场参考，不替代官方价。</span></li>
-<li id="cite-16"><b>[Token 市场价/辅助矩阵] morph-llm LLM Cost Calculator</b><br><a href="https://www.morphllm.com/llm-cost-calculator" target="_blank" rel="noopener">https://www.morphllm.com/llm-cost-calculator</a><br><span>可作为模型价格、上下文窗口和限流信息的辅助源，需标注为 Market / Reference。</span></li></ol>
+<li id="cite-16"><b>[Token 市场价/辅助矩阵] morph-llm LLM Cost Calculator</b><br><a href="https://www.morphllm.com/llm-cost-calculator" target="_blank" rel="noopener">https://www.morphllm.com/llm-cost-calculator</a><br><span>可作为模型价格、上下文窗口和限流信息的辅助源，需标注为 Market / Reference。</span></li>
+<li id="cite-17"><b>[Token 结构化/开源] LiteLLM model_prices_and_context_window.json</b><br><a href="https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json" target="_blank" rel="noopener">https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json</a><br><span>机器可读模型价格、上下文窗口和 provider 映射源；只作 Market / Structured Auxiliary，不替代官方价。</span></li>
+<li id="cite-18"><b>[Token 市场价/API] OpenRouter Models API</b><br><a href="https://openrouter.ai/api/v1/models" target="_blank" rel="noopener">https://openrouter.ai/api/v1/models</a><br><span>机器可读模型、上下文和市场路由价格源；官方价缺失时只能标注为市场价。</span></li>
+<li id="cite-19"><b>[Token 结构化/目录] models.dev API</b><br><a href="https://models.dev/api.json" target="_blank" rel="noopener">https://models.dev/api.json</a><br><span>多 provider 模型目录和价格结构化源，用于发现缺失模型和交叉校验。</span></li>
+<li id="cite-20"><b>[Token 结构化/辅助] BenchLM pricing JSON</b><br><a href="https://www.benchlm.ai/data/pricing.json" target="_blank" rel="noopener">https://www.benchlm.ai/data/pricing.json</a><br><span>模型价格矩阵辅助源，用于补充 Token 市场价和冲突审计。</span></li>
+<li id="cite-21"><b>[Token 性能/市场辅助] Artificial Analysis</b><br><a href="https://artificialanalysis.ai/" target="_blank" rel="noopener">https://artificialanalysis.ai/</a><br><span>可提供模型价格、速度、质量、上下文等市场对比信息；不替代官方价格页。</span></li>
+<li id="cite-22"><b>[海外云价/API] TensorDock Hostnodes API</b><br><a href="https://dashboard.tensordock.com/api/docs/fetch-hostnodes" target="_blank" rel="noopener">https://dashboard.tensordock.com/api/docs/fetch-hostnodes</a><br><span>可抓取节点级 GPU price_per_hr、availableCount、vCPU/RAM/storage 单价，用于海外 GPU Cloud 辅助样本。</span></li>
+<li id="cite-23"><b>[海外云价] DataCrunch Pricing</b><br><a href="https://datacrunch.io/pricing" target="_blank" rel="noopener">https://datacrunch.io/pricing</a><br><span>可抓取海外 GPU 实例价、GPU 数和区域，用于 GPU_CLOUD 标准化。</span></li>
+<li id="cite-24"><b>[海外云价/Marketplace] CUDO Compute Pricing</b><br><a href="https://www.cudocompute.com/pricing" target="_blank" rel="noopener">https://www.cudocompute.com/pricing</a><br><span>GPU Marketplace 价格和可用性辅助源，进入海外 GPU Cloud 模块。</span></li>
+<li id="cite-25"><b>[海外云价/企业云] CoreWeave GPU Cloud</b><br><a href="https://www.coreweave.com/products/gpu-cloud" target="_blank" rel="noopener">https://www.coreweave.com/products/gpu-cloud</a><br><span>企业 GPU 云产品源；公开价缺失时记录为 Price Missing，不推断。</span></li>
+<li id="cite-26"><b>[海外云价/官方] Nebius AI Cloud Prices</b><br><a href="https://nebius.com/prices" target="_blank" rel="noopener">https://nebius.com/prices</a><br><span>海外 GPU 云实例价、区域和 GPU 数来源，用于 GPU_CLOUD 辅助校验。</span></li>
+<li id="cite-27"><b>[海外云价/官方] Oracle Cloud Infrastructure Price List</b><br><a href="https://www.oracle.com/cloud/price-list/" target="_blank" rel="noopener">https://www.oracle.com/cloud/price-list/</a><br><span>OCI GPU 实例公开价；必须解析实例 GPU 数后再标准化。</span></li>
+<li id="cite-28"><b>[海外云价/Serverless] Modal Pricing</b><br><a href="https://modal.com/pricing" target="_blank" rel="noopener">https://modal.com/pricing</a><br><span>Serverless GPU 价格源；按 GPU 秒/小时归类为海外辅助，不进入国内租赁指数。</span></li>
+<li id="cite-29"><b>[国内云价/辅助] 阿里云 GPU 云服务器价格</b><br><a href="https://www.aliyun.com/price/product?productCode=ecs" target="_blank" rel="noopener">https://www.aliyun.com/price/product?productCode=ecs</a><br><span>国内云厂商实例价，只进入 Auxiliary Quotes，不进入国内 8卡整机主指数。</span></li>
+<li id="cite-30"><b>[国内云价/辅助] 腾讯云 GPU 云服务器</b><br><a href="https://cloud.tencent.com/product/gpu" target="_blank" rel="noopener">https://cloud.tencent.com/product/gpu</a><br><span>国内 GPU 云实例辅助源；包月、按量和竞价需分列。</span></li>
+<li id="cite-31"><b>[国内云价/辅助] 华为云 GPU 加速型云服务器</b><br><a href="https://www.huaweicloud.com/product/gpu.html" target="_blank" rel="noopener">https://www.huaweicloud.com/product/gpu.html</a><br><span>国内 GPU 云实例辅助源；不得直接进入国内租赁主口径。</span></li>
+<li id="cite-32"><b>[国内云价/辅助] AutoDL 价格</b><br><a href="https://www.autodl.com/price" target="_blank" rel="noopener">https://www.autodl.com/price</a><br><span>国内 GPU 租赁平台单卡/容器价，进入辅助样本和覆盖率诊断。</span></li>
+<li id="cite-33"><b>[国内云价/辅助] 矩池云主机市场</b><br><a href="https://matpool.com/host-market" target="_blank" rel="noopener">https://matpool.com/host-market</a><br><span>国内 GPU 租赁平台市场价，作为辅助线索和候选样本。</span></li>
+<li id="cite-34"><b>[采购/招投标] 高校采购与公共资源交易中心</b><br><a href="https://www.ccgp.gov.cn/cggg/dfgg/" target="_blank" rel="noopener">https://www.ccgp.gov.cn/cggg/dfgg/</a><br><span>检索高校、科研院所和地方公共资源 AI 服务器中标公告，进入采购价或候选样本。</span></li>
+<li id="cite-35"><b>[官方规格/OEM] NVIDIA Data Center GPUs</b><br><a href="https://www.nvidia.com/en-us/data-center/" target="_blank" rel="noopener">https://www.nvidia.com/en-us/data-center/</a><br><span>用于 GPU 型号、显存、系统形态和生命周期校验，不提供成交价。</span></li>
+<li id="cite-36"><b>[整机规格/OEM] Supermicro GPU Systems</b><br><a href="https://www.supermicro.com/en/products/gpu" target="_blank" rel="noopener">https://www.supermicro.com/en/products/gpu</a><br><span>用于确认 4卡/8卡/多卡服务器形态，价格需另行验证。</span></li>
+<li id="cite-37"><b>[采购/整机辅助] Exxact GPU Systems</b><br><a href="https://www.exxactcorp.com/" target="_blank" rel="noopener">https://www.exxactcorp.com/</a><br><span>整机配置价辅助源；需区分工作站、服务器、GPU 数和税费。</span></li>
+<li id="cite-38"><b>[采购/整机辅助] Thinkmate GPU Servers</b><br><a href="https://www.thinkmate.com/" target="_blank" rel="noopener">https://www.thinkmate.com/</a><br><span>GPU 服务器配置价辅助源；单一渠道最多进入 Auxiliary 或 Candidate。</span></li></ol>
     </section>
 
     <section id="ai-summary">
@@ -161,7 +183,7 @@
     </section>
 
     <footer>
-      <p class="muted">CMIS Daily v1.1.0 | Prompt e781b24 | Freeze 2026-07-14 10:26</p>
+      <p class="muted">CMIS Daily v1.2.0 | Prompt a140945 | Freeze 2026-07-14 10:35</p>
     </footer>
   </main>
   <script src="./_shared/js/echarts.min.js"></script>
