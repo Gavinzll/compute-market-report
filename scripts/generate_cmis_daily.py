@@ -1648,7 +1648,8 @@ def write_charts():
     var rawRatio = ratios && ratios[p.dataIndex] ? ratios[p.dataIndex] : '';
     var base = rawRatio === '价格待补' ? '价格待补' : (p.value + '万/月');
     var ratio = rawRatio === '海外缺口' ? '海外缺口' : (rawRatio && String(rawRatio).indexOf('%') >= 0 ? '海外' + rawRatio : (rawRatio ? rawRatio : ''));
-    return rawRatio === '价格待补' || !ratio ? base : base + '\\n' + ratio;
+    if (rawRatio === '价格待补' || !ratio) return base;
+    return isMobile ? (base + ' ' + ratio) : (base + '\\n' + ratio);
   }}
   var isMobile = window.innerWidth <= 768;
   function bar(id, labels, values, name, color, ratios, kinds) {{
@@ -1662,10 +1663,10 @@ def write_charts():
     var labelPos = isMobile ? 'right' : 'top';
     if (legend) {{
       series = legend.map(function(kind) {{
-        return {{name:kind,type:'bar',data:seriesData.map(function(d, i){{return kinds[i] === kind ? d : null;}}),barGap:'-100%',label:{{show:true,position:labelPos,color:ink,formatter:function(p){{return formatBarLabel(p, ratios);}}}},itemStyle:{{borderRadius:isMobile?[0,6,6,0]:[6,6,0,0]}}}};
+        return {{name:kind,type:'bar',data:seriesData.map(function(d, i){{return kinds[i] === kind ? d : null;}}),barGap:'-100%',label:{{show:true,position:labelPos,color:ink,fontSize:isMobile?11:12,formatter:function(p){{return formatBarLabel(p, ratios);}}}},itemStyle:{{borderRadius:isMobile?[0,6,6,0]:[6,6,0,0]}}}};
       }});
     }} else {{
-      series = [{{type:'bar',data:seriesData,label:{{show:true,position:labelPos,color:ink,formatter:function(p){{
+      series = [{{type:'bar',data:seriesData,label:{{show:true,position:labelPos,color:ink,fontSize:isMobile?11:12,formatter:function(p){{
         return formatBarLabel(p, ratios);
       }}}},itemStyle:{{borderRadius:isMobile?[0,6,6,0]:[6,6,0,0]}}}}];
     }}
@@ -1675,8 +1676,8 @@ def write_charts():
         color:legend ? legend.map(function(k){{return domesticPalette[k] || color;}}) : [color],
         tooltip:{{trigger:'axis', appendToBody:true}},
         legend:legend ? {{top:0,textStyle:{{color:muted}}}} : undefined,
-        grid:{{left:90,right:30,top:legend?72:44,bottom:30,containLabel:true}},
-        yAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}},inverse:true}},
+        grid:{{left:110,right:70,top:legend?72:44,bottom:30,containLabel:true}},
+        yAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0,fontSize:11}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}},inverse:true}},
         xAxis:{{type:'value',name:name,nameTextStyle:{{color:muted}},axisLabel:{{color:muted}},splitLine:{{lineStyle:{{color:rule}}}}}},
         series:series
       }});
@@ -1701,8 +1702,8 @@ def write_charts():
         color:[accent, accent2, muted],
         tooltip:{{trigger:'axis', appendToBody:true}},
         legend:{{top:0,textStyle:{{color:muted}}}},
-        grid:{{left:90,right:30,top:56,bottom:40,containLabel:true}},
-        yAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}},inverse:true}},
+        grid:{{left:110,right:70,top:56,bottom:40,containLabel:true}},
+        yAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0,fontSize:11}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}},inverse:true}},
         xAxis:{{type:'value',name:yName,nameTextStyle:{{color:muted}},axisLabel:{{color:muted}},splitLine:{{lineStyle:{{color:rule}}}}}},
         series:s
       }});
@@ -1724,8 +1725,8 @@ def write_charts():
       init(id, {{
         animation:false,
         tooltip:{{trigger:'axis', appendToBody:true}},
-        grid:{{left:90,right:30,top:44,bottom:40,containLabel:true}},
-        yAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}},inverse:true}},
+        grid:{{left:110,right:70,top:44,bottom:40,containLabel:true}},
+        yAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0,fontSize:11}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}},inverse:true}},
         xAxis:{{type:'value',name:'元/百万Token',nameTextStyle:{{color:muted}},axisLabel:{{color:muted}},splitLine:{{lineStyle:{{color:rule}}}}}},
         series:[{{name:name,type:'bar',data:values,itemStyle:{{borderRadius:[0,4,4,0],color:function(p){{return p.value >= 0 ? accent : accent2;}}}},label:{{show:true,position:'right',color:ink,formatter:function(p){{return p.value === undefined ? '' : p.value;}}}}}}]
       }});

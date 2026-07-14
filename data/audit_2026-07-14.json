@@ -1,7 +1,7 @@
 [
   {
     "date": "2026-07-14",
-    "freeze_time": "2026-07-14T15:28:00+08:00",
+    "freeze_time": "2026-07-14T15:38:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "GB300",
     "source": "未采集到合格来源",
@@ -20,7 +20,7 @@
   },
   {
     "date": "2026-07-14",
-    "freeze_time": "2026-07-14T15:28:00+08:00",
+    "freeze_time": "2026-07-14T15:38:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "GB200",
     "source": "未采集到合格来源",
@@ -39,7 +39,7 @@
   },
   {
     "date": "2026-07-14",
-    "freeze_time": "2026-07-14T15:28:00+08:00",
+    "freeze_time": "2026-07-14T15:38:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "B300",
     "source": "未采集到合格来源",
@@ -58,7 +58,7 @@
   },
   {
     "date": "2026-07-14",
-    "freeze_time": "2026-07-14T15:28:00+08:00",
+    "freeze_time": "2026-07-14T15:38:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "B200",
     "source": "未采集到合格来源",
@@ -77,7 +77,7 @@
   },
   {
     "date": "2026-07-14",
-    "freeze_time": "2026-07-14T15:28:00+08:00",
+    "freeze_time": "2026-07-14T15:38:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "H200",
     "source": "未采集到合格来源",
@@ -96,7 +96,7 @@
   },
   {
     "date": "2026-07-14",
-    "freeze_time": "2026-07-14T15:28:00+08:00",
+    "freeze_time": "2026-07-14T15:38:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "H100 80G",
     "source": "SMM（主口径）",
@@ -115,7 +115,7 @@
   },
   {
     "date": "2026-07-14",
-    "freeze_time": "2026-07-14T15:28:00+08:00",
+    "freeze_time": "2026-07-14T15:38:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "H800",
     "source": "估算/待复核",
@@ -134,7 +134,7 @@
   },
   {
     "date": "2026-07-14",
-    "freeze_time": "2026-07-14T15:28:00+08:00",
+    "freeze_time": "2026-07-14T15:38:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "H20",
     "source": "SMM 算力直播（主口径候选）",
@@ -153,7 +153,7 @@
   },
   {
     "date": "2026-07-14",
-    "freeze_time": "2026-07-14T15:28:00+08:00",
+    "freeze_time": "2026-07-14T15:38:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "A100 80G",
     "source": "SMM 算力直播（主口径候选）",
@@ -172,7 +172,7 @@
   },
   {
     "date": "2026-07-14",
-    "freeze_time": "2026-07-14T15:28:00+08:00",
+    "freeze_time": "2026-07-14T15:38:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "A800",
     "source": "未采集到合格来源",
@@ -191,7 +191,7 @@
   },
   {
     "date": "2026-07-14",
-    "freeze_time": "2026-07-14T15:28:00+08:00",
+    "freeze_time": "2026-07-14T15:38:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "L40S",
     "source": "未采集到合格来源",
@@ -210,7 +210,7 @@
   },
   {
     "date": "2026-07-14",
-    "freeze_time": "2026-07-14T15:28:00+08:00",
+    "freeze_time": "2026-07-14T15:38:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "L20",
     "source": "未采集到合格来源",
@@ -229,7 +229,7 @@
   },
   {
     "date": "2026-07-14",
-    "freeze_time": "2026-07-14T15:28:00+08:00",
+    "freeze_time": "2026-07-14T15:38:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "L4",
     "source": "未采集到合格来源",
@@ -248,7 +248,7 @@
   },
   {
     "date": "2026-07-14",
-    "freeze_time": "2026-07-14T15:28:00+08:00",
+    "freeze_time": "2026-07-14T15:38:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "RTX 5090",
     "source": "SMM（主口径）",
@@ -267,7 +267,7 @@
   },
   {
     "date": "2026-07-14",
-    "freeze_time": "2026-07-14T15:28:00+08:00",
+    "freeze_time": "2026-07-14T15:38:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "RTX 4090",
     "source": "SMM 算力直播（辅助主口径）",
@@ -286,7 +286,7 @@
   },
   {
     "date": "2026-07-14",
-    "freeze_time": "2026-07-14T15:28:00+08:00",
+    "freeze_time": "2026-07-14T15:38:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "昇腾 910C",
     "source": "SMM 算力直播（国产候选）",
@@ -305,7 +305,7 @@
   },
   {
     "date": "2026-07-14",
-    "freeze_time": "2026-07-14T15:28:00+08:00",
+    "freeze_time": "2026-07-14T15:38:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "昇腾 910B",
     "source": "SMM 算力直播（子型号待拆）",
@@ -324,7 +324,7 @@
   },
   {
     "date": "2026-07-14",
-    "freeze_time": "2026-07-14T15:28:00+08:00",
+    "freeze_time": "2026-07-14T15:38:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "寒武纪 MLU370-X8",
     "source": "天翼云 PCH1：4×MLU370-S4 云主机包月价折算为 8卡云实例等效价（非8卡整机长租成交价）",
@@ -343,7 +343,7 @@
   },
   {
     "date": "2026-07-14",
-    "freeze_time": "2026-07-14T15:28:00+08:00",
+    "freeze_time": "2026-07-14T15:38:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "海光 DCU K100",
     "source": "金品 KG4208-H73 海光双路8卡服务器配置确认；行业租赁模型与国产裸机可比区间核价（非公开成交价）",
@@ -362,7 +362,7 @@
   },
   {
     "date": "2026-07-14",
-    "freeze_time": "2026-07-14T15:28:00+08:00",
+    "freeze_time": "2026-07-14T15:38:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "壁仞 BR100",
     "source": "壁仞 BR100/BR104 8卡 OAM 服务器形态确认；行业租赁模型与国产高端训练卡可比区间核价（非公开成交价）",
@@ -381,7 +381,7 @@
   },
   {
     "date": "2026-07-14",
-    "freeze_time": "2026-07-14T15:28:00+08:00",
+    "freeze_time": "2026-07-14T15:38:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "摩尔线程 MTT S4000",
     "source": "UCache S4000 8卡训推一体机租赁供给、摩尔线程 S4000 官方单机8卡能力、Gitee AI S5000 8卡互联规格；市场核价区间（非公开成交价）",
