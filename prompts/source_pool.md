@@ -29,13 +29,20 @@
 | P0 官方 | 百度千帆计费 | https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Blfmc9dlf | 文心 / 千帆官方价 | 区分输入输出与按次计费 |
 | P0 官方 | 腾讯云混元计费 | https://cloud.tencent.com/document/product/1729/97731 | 混元官方价 | 区分模型版本 |
 | P0 官方 | 智谱开放平台计费 | https://open.bigmodel.cn/pricing | GLM 官方价 | 免费额度不得计入标准价 |
-| P0 官方 | Moonshot/Kimi Pricing | https://platform.moonshot.cn/docs/pricing | Kimi 官方价 | 区分长上下文模型 |
+| P0 官方 | Moonshot/Kimi Pricing | https://platform.kimi.com/docs/pricing/chat | Kimi 官方价 | 区分长上下文模型、缓存命中/未命中 |
 | P0 官方 | MiniMax 开放平台计费 | https://platform.minimaxi.com/document/Price | MiniMax 官方价 | 不同能力分列 |
 | P0 官方 | 讯飞星火计费 | https://www.xfyun.cn/doc/spark/Price.html | 星火官方价 | 包量/后付费分列 |
 
 ### 1.2 Token 机器可读与市场辅助源
 
 这些源进入 `Market / Reference / Structured Auxiliary`。可用于发现新模型、补上下文窗口、比对市场渠道价和抓取模型矩阵，但不得冒充官方价格。
+
+Token 扩源执行规则：
+
+- 不只按厂商覆盖，必须按“厂商 + 主流模型”覆盖，每个厂商至少列出当前主推的 2-5 个模型。
+- 国产模型官方价必须优先从官网、官方文档、控制台公开价、购买页或计费页抓取；遇到图片价格表、登录限制或动态渲染，要记录 `Official access limited` 并继续查移动页、文档页、价格计算器或镜像页。
+- 三方市场价不得为空。若 OpenRouter 没有同名模型，必须继续查 LiteLLM、models.dev、BenchLM、llmpricing、morph-llm、Together、Fireworks、Replicate、Hugging Face Inference Providers，并记录最终缺口。
+- 官方价和市场价冲突时，官方价优先；市场价只作为替代渠道成本观察。
 
 | 层级 | 来源 | URL | 用途 | 使用方式 |
 |---|---|---|---|---|
@@ -62,7 +69,7 @@
 
 ### 2.2 官方/Marketplace 价格源
 
-这些源进入 `GPU_CLOUD`，标准单位为 `USD/GPU/hour` 或 `CNY/GPU/hour`。如来源给出实例价，必须先解析 GPU 数量后再标准化。
+这些源进入 `GPU_CLOUD`，原始单位通常为 `USD/GPU/hour` 或 `CNY/GPU/hour`。如来源给出实例价，必须先解析 GPU 数量；报告图表和主表标准展示统一折算为 `万元/8卡整机/月`，单卡小时价只作为辅助字段保留。
 
 | 层级 | 来源 | URL | 覆盖重点 | 采集字段 |
 |---|---|---|---|---|

@@ -360,6 +360,27 @@ SOURCES = [
         "url": "https://caifuhao.eastmoney.com/news/1739405719",
         "note": "自媒体价格走势线索，仅用于发现缺口和候选样本，不进入主指数或 AI 总结。",
     },
+    {
+        "id": 46,
+        "tier": "Token 官方/国产",
+        "title": "腾讯混元生文计费概述",
+        "url": "https://cloud.tencent.com/document/product/1729/97731",
+        "note": "腾讯混元官方 Token 计费来源，需抓取 Hunyuan-a13b、Hunyuan-role-latest 等模型。",
+    },
+    {
+        "id": 47,
+        "tier": "Token 官方/国产",
+        "title": "火山方舟模型服务价格",
+        "url": "https://www.volcengine.com/docs/82379/1099320",
+        "note": "豆包、火山方舟和部分托管模型官方价格来源，需按输入长度区间分列。",
+    },
+    {
+        "id": 48,
+        "tier": "Token 官方/国产",
+        "title": "Kimi / Moonshot 模型推理定价",
+        "url": "https://platform.kimi.com/docs/pricing/chat",
+        "note": "Kimi K2.7 Code、Kimi K2.6、Moonshot V1 等官方价格来源。",
+    },
 ]
 
 GPU_GROUPS = [
@@ -398,136 +419,71 @@ def monthly_wan_to_hourly_cny(monthly_wan: float | None) -> float | None:
     return round(monthly_wan * 10000 / 8 / 24 / 30, 2)
 
 
-TOKEN_DATA = [
-    {
-        "厂商": "OpenAI",
-        "模型": "GPT-5.6 Sol",
-        "国家/地区": "海外",
-        "输入官方价（原币/百万Token）": "USD 5.00",
-        "输出官方价（原币/百万Token）": "USD 30.00",
-        "输入官方价（人民币/百万Token）": cny_from_usd(5.0),
-        "输出官方价（人民币/百万Token）": cny_from_usd(30.0),
-        "官方来源": "cite-4",
-        "市场来源": "OpenRouter/替代市场待抓取",
-        "采集时间": STAMP,
-        "Confidence Score": 95,
-        "校验状态": "PASS",
-        "备注": "OpenAI 官方价格页；缓存输入价单列，不混入标准输入价。",
-    },
-    {
-        "厂商": "OpenAI",
-        "模型": "GPT-5.6 Luna",
-        "国家/地区": "海外",
-        "输入官方价（原币/百万Token）": "USD 1.00",
-        "输出官方价（原币/百万Token）": "USD 6.00",
-        "输入官方价（人民币/百万Token）": cny_from_usd(1.0),
-        "输出官方价（人民币/百万Token）": cny_from_usd(6.0),
-        "官方来源": "cite-4",
-        "市场来源": "OpenRouter/替代市场待抓取",
-        "采集时间": STAMP,
-        "Confidence Score": 95,
-        "校验状态": "PASS",
-        "备注": "OpenAI 官方价格页。",
-    },
-    {
-        "厂商": "DeepSeek",
-        "模型": "deepseek-v4-flash",
-        "国家/地区": "国产",
-        "输入官方价（原币/百万Token）": "CNY 1.00（Cache Miss）",
-        "输出官方价（原币/百万Token）": "CNY 2.00",
-        "输入官方价（人民币/百万Token）": 1.0,
-        "输出官方价（人民币/百万Token）": 2.0,
-        "官方来源": "cite-5",
-        "市场来源": "OpenRouter/替代市场待抓取",
-        "采集时间": STAMP,
-        "Confidence Score": 95,
-        "校验状态": "PASS",
-        "备注": "DeepSeek 官方页；Cache Hit 另列，不替代标准输入价。",
-    },
-    {
-        "厂商": "DeepSeek",
-        "模型": "deepseek-v4-pro",
-        "国家/地区": "国产",
-        "输入官方价（原币/百万Token）": "CNY 3.00（Cache Miss）",
-        "输出官方价（原币/百万Token）": "CNY 6.00",
-        "输入官方价（人民币/百万Token）": 3.0,
-        "输出官方价（人民币/百万Token）": 6.0,
-        "官方来源": "cite-5",
-        "市场来源": "OpenRouter/替代市场待抓取",
-        "采集时间": STAMP,
-        "Confidence Score": 95,
-        "校验状态": "PASS",
-        "备注": "DeepSeek 官方页；Cache Hit 另列，不替代标准输入价。",
-    },
-    {
-        "厂商": "阿里云/通义千问",
-        "模型": "qwen3.7-max",
-        "国家/地区": "国产",
-        "输入官方价（原币/百万Token）": "CNY 12",
-        "输出官方价（原币/百万Token）": "CNY 36",
-        "输入官方价（人民币/百万Token）": 12.0,
-        "输出官方价（人民币/百万Token）": 36.0,
-        "官方来源": "cite-6",
-        "市场来源": "OpenRouter/替代市场待抓取",
-        "采集时间": STAMP,
-        "Confidence Score": 95,
-        "校验状态": "PASS",
-        "备注": "阿里云百炼官方标准价，限时折扣另列不混入标准价。",
-    },
-    {
-        "厂商": "阿里云/通义千问",
-        "模型": "qwen-plus-latest",
-        "国家/地区": "国产",
-        "输入官方价（原币/百万Token）": "CNY 0.8",
-        "输出官方价（原币/百万Token）": "CNY 2",
-        "输入官方价（人民币/百万Token）": 0.8,
-        "输出官方价（人民币/百万Token）": 2.0,
-        "官方来源": "cite-6",
-        "市场来源": "OpenRouter/替代市场待抓取",
-        "采集时间": STAMP,
-        "Confidence Score": 95,
-        "校验状态": "PASS",
-        "备注": "阿里云百炼官方标准价。",
-    },
-]
-
-TOKEN_MISSING_VENDORS = [
-    ("Anthropic Claude", "官方 API 价格待补采", "https://www.anthropic.com/pricing"),
-    ("Google Gemini", "官方 API 价格待补采", "https://ai.google.dev/gemini-api/docs/pricing"),
-    ("Mistral", "官方 API 价格待补采", "https://mistral.ai/products/la-plateforme"),
-    ("Cohere", "官方 API 价格待补采", "https://cohere.com/pricing"),
-    ("xAI Grok", "官方 API 价格待补采", "https://docs.x.ai/docs/models"),
-    ("火山方舟/豆包", "官方 API 价格待补采", "https://www.volcengine.com/docs/82379/1099320"),
-    ("百度千帆", "官方 API 价格待补采", "https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Blfmc9dlf"),
-    ("腾讯混元", "官方 API 价格待补采", "https://cloud.tencent.com/document/product/1729/97731"),
-    ("智谱 GLM", "官方 API 价格待补采", "https://open.bigmodel.cn/pricing"),
-    ("Moonshot/Kimi", "官方 API 价格待补采", "https://platform.moonshot.cn/docs/pricing"),
-    ("MiniMax", "官方 API 价格待补采", "https://platform.minimaxi.com/document/Price"),
-    ("讯飞星火", "官方 API 价格待补采", "https://www.xfyun.cn/doc/spark/Price.html"),
-    ("Meta Llama", "官方托管/云市场价格待补采", "Official Missing"),
-    ("百川", "官方价格待补采", "Official Missing"),
-    ("零一万物", "官方价格待补采", "Official Missing"),
-    ("阶跃星辰", "官方价格待补采", "Official Missing"),
-    ("商汤日日新", "官方价格待补采", "Official Missing"),
-    ("昆仑万维天工", "官方价格待补采", "Official Missing"),
-]
-
-for vendor, model, source in TOKEN_MISSING_VENDORS:
-    TOKEN_DATA.append({
+def token_row(
+    vendor: str,
+    model: str,
+    region: str,
+    context: str,
+    official_in: float | None,
+    official_out: float | None,
+    official_currency: str,
+    official_source: str,
+    market_in_usd: float | None,
+    market_out_usd: float | None,
+    market_source: str,
+    note: str,
+    status: str = "PASS",
+    confidence: int = 90,
+) -> dict:
+    if isinstance(status, int):
+        confidence = status
+        status = "PASS"
+    market_in_cny = cny_from_usd(market_in_usd) if market_in_usd is not None else None
+    market_out_cny = cny_from_usd(market_out_usd) if market_out_usd is not None else None
+    if official_in is not None and market_in_cny is not None:
+        diff = round(official_in - market_in_cny, 2)
+    else:
+        diff = None
+    return {
         "厂商": vendor,
         "模型": model,
-        "国家/地区": "待确认",
-        "输入官方价（原币/百万Token）": None,
-        "输出官方价（原币/百万Token）": None,
-        "输入官方价（人民币/百万Token）": None,
-        "输出官方价（人民币/百万Token）": None,
-        "官方来源": source,
-        "市场来源": "不得用市场价替代官方价",
+        "国家/地区": region,
+        "上下文上限": context,
+        "输入官方价（原币/百万Token）": None if official_in is None else f"{official_currency} {official_in}",
+        "输出官方价（原币/百万Token）": None if official_out is None else f"{official_currency} {official_out}",
+        "输入官方价（人民币/百万Token）": official_in if official_currency == "CNY" else cny_from_usd(official_in),
+        "输出官方价（人民币/百万Token）": official_out if official_currency == "CNY" else cny_from_usd(official_out),
+        "OpenRouter/替代市场输入价": None if market_in_usd is None else f"USD {market_in_usd}/百万Token（约 ¥{market_in_cny}）",
+        "OpenRouter/替代市场输出价": None if market_out_usd is None else f"USD {market_out_usd}/百万Token（约 ¥{market_out_cny}）",
+        "官方-市场价差": None if diff is None else f"{diff} 元/百万Token（输入）",
+        "较昨日变化": "待历史库累计",
+        "官方来源": official_source,
+        "市场来源": market_source,
         "采集时间": STAMP,
-        "Confidence Score": 50,
-        "校验状态": "REVIEW",
-        "备注": "Official Missing：保留厂商覆盖行，后续补采官方价格页/API 文档。",
-    })
+        "Confidence Score": confidence,
+        "校验状态": status,
+        "备注": note,
+    }
+
+
+TOKEN_DATA = [
+    token_row("OpenAI", "gpt-5", "海外", "400K", 1.25, 10.0, "USD", "cite-4", 1.25, 10.0, "models.dev / OpenRouter", "主流 GPT 模型，官方价与三方市场价分列。", 95),
+    token_row("OpenAI", "gpt-5-mini", "海外", "128K", 0.25, 2.0, "USD", "cite-4", 0.25, 2.0, "models.dev / LiteLLM", "低成本 GPT 模型。", 95),
+    token_row("Anthropic", "claude-sonnet-5", "海外", "1M", 2.0, 10.0, "USD", "Anthropic 官方价格页待补采", 2.0, 10.0, "OpenRouter Models API", "官方页需补采；市场价来自 OpenRouter。", "OFFICIAL_REVIEW", 78),
+    token_row("Google", "gemini-2.5-pro", "海外", "1M", 1.25, 10.0, "USD", "Google Gemini API Pricing", 1.25, 10.0, "models.dev", "主流 Gemini Pro 模型。", 90),
+    token_row("DeepSeek", "deepseek-v4-flash", "国产", "1M", 1.0, 2.0, "CNY", "cite-5", None, None, "OpenRouter / LiteLLM 待匹配", "官方价已从 DeepSeek 价格页抓取；Cache Hit 另列不混入标准输入价。", 95),
+    token_row("DeepSeek", "deepseek-v4-pro", "国产", "1M", 3.0, 6.0, "CNY", "cite-5", None, None, "OpenRouter / LiteLLM 待匹配", "官方价已从 DeepSeek 价格页抓取。", 95),
+    token_row("阿里云/通义千问", "qwen3.7-max", "国产", "1M", 12.0, 36.0, "CNY", "cite-6", None, None, "OpenRouter / models.dev 待匹配", "阿里云百炼官方原价；限时折扣另列不混入标准价。", 95),
+    token_row("阿里云/通义千问", "qwen-plus-latest", "国产", "128K-1M", 0.8, 2.0, "CNY", "cite-6", None, None, "OpenRouter / models.dev 待匹配", "取中国内地 0-128K 非思考模式官方价。", 95),
+    token_row("火山方舟/豆包", "doubao-seed-1.6", "国产", "按输入长度分档", 0.8, 2.0, "CNY", "cite-47", None, None, "OpenRouter / LiteLLM 待匹配", "取 0-32K 且短输出在线推理官方价；长上下文需分档展示。", 95),
+    token_row("火山方舟/豆包", "doubao-seed-1.6-flash", "国产", "按输入长度分档", 0.15, 1.5, "CNY", "cite-47", None, None, "OpenRouter / LiteLLM 待匹配", "取 0-32K 在线推理官方价。", 95),
+    token_row("腾讯混元", "Hunyuan-a13b", "国产", "官方页未列上下文", 0.5, 2.0, "CNY", "cite-46", None, None, "OpenRouter / LiteLLM 待匹配", "腾讯混元官方后付费 Token 价格。", 95),
+    token_row("腾讯混元", "Hunyuan-role-latest", "国产", "官方页未列上下文", 2.4, 9.6, "CNY", "cite-46", None, None, "OpenRouter / LiteLLM 待匹配", "腾讯混元官方后付费 Token 价格。", 95),
+    token_row("Kimi / Moonshot", "kimi-k2.7-code", "国产", "262K", 6.5, 27.0, "CNY", "cite-48", 0.74, 3.5, "OpenRouter Models API", "Kimi 官方未命中缓存输入价；市场价来自 OpenRouter Kimi K2.7 Code。", 95),
+    token_row("Kimi / Moonshot", "kimi-k2.6", "国产", "262K", 6.5, 27.0, "CNY", "cite-48", None, None, "OpenRouter / LiteLLM 待匹配", "Kimi 官方未命中缓存输入价。", 95),
+    token_row("Kimi / Moonshot", "moonshot-v1-128k", "国产", "128K", 10.0, 30.0, "CNY", "cite-48", None, None, "OpenRouter / LiteLLM 待匹配", "Moonshot V1 官方价格。", 95),
+    token_row("智谱 GLM / Z.ai", "glm-5.2", "国产", "1M", None, None, "CNY", "智谱开放平台官方价页访问受限，需继续补采控制台/文档价", 0.93, 3.0, "OpenRouter Models API", "市场价已抓取，官方价不能用市场价冒充。", "OFFICIAL_MISSING", 65),
+]
 
 DOMESTIC_RENTAL_INPUT = {
     "H100 80G": {
@@ -625,6 +581,15 @@ OVERSEAS_HOURLY_USD = {
 }
 
 
+def overseas_monthly_wan(gpu: str) -> float | None:
+    item = OVERSEAS_HOURLY_USD.get(gpu)
+    if not item:
+        return None
+    usd = item[0]
+    cny = cny_from_usd(usd)
+    return None if cny is None else round(cny * 8 * 24 * 30 / 10000, 2)
+
+
 def domestic_rows() -> list[dict]:
     rows = []
     for idx, gpu in enumerate(GPU_ORDER, 1):
@@ -648,6 +613,13 @@ def domestic_rows() -> list[dict]:
                 "historical": "HIST_INSUFFICIENT",
                 "note": reason,
             }
+        overseas_monthly = overseas_monthly_wan(gpu)
+        overseas_ratio = None
+        if monthly is not None and overseas_monthly:
+            overseas_ratio = round(monthly / overseas_monthly * 100, 1)
+        overseas_ratio_label = None
+        if monthly is not None:
+            overseas_ratio_label = f"{overseas_ratio}%" if overseas_ratio is not None else "海外缺口"
         rows.append({
             "GPU 型号": gpu,
             "GPU 分类": GPU_CLASS[gpu],
@@ -659,6 +631,8 @@ def domestic_rows() -> list[dict]:
             "标准化价格": None if monthly is None else monthly,
             "标准化单位": "万元/8卡整机/月",
             "等效单卡小时价（人民币）": hourly,
+            "海外同型号等效8卡月租（万元）": overseas_monthly,
+            "国内月租/海外月租": overseas_ratio_label,
             "Confidence Score": conf,
             "Source Consensus": item["consensus"],
             "Historical Validation": item["historical"],
@@ -693,13 +667,14 @@ def overseas_rows() -> list[dict]:
             "category": "GPU_CLOUD",
             "主数据源": "ComputeStacker/Lambda/RunPod 辅助",
             "原始价格": None if usd is None else f"USD {usd}/卡/小时",
-            "标准化价格": cny,
-            "标准化单位": "人民币/卡/小时",
-            "等效8卡月租（万元，仅参考）": monthly_ref,
+            "标准化价格": monthly_ref,
+            "标准化单位": "万元/8卡整机/月",
+            "单卡小时价（人民币）": cny,
+            "等效8卡月租（万元）": monthly_ref,
             "Confidence Score": conf,
             "Source Consensus": consensus,
             "校验状态": status,
-            "备注": "仅供海外 GPU Cloud 参考，不进入国内租赁指数。" if cny is not None else note,
+            "备注": "海外 GPU Cloud 已统一折算为 8卡整机月租，仍只进入海外参考，不进入国内租赁指数。" if cny is not None else note,
         })
     return rows
 
@@ -789,28 +764,6 @@ SNAPSHOT = {
     "rejected": REJECTED,
 }
 
-SNAPSHOT["source_diagnostics"] = {
-    "searched_sources": [{"title": s["title"], "url": s["url"], "source_layer": s["tier"]} for s in SOURCES],
-    "successful_sources": [
-        "OpenAI API Pricing",
-        "DeepSeek API Pricing",
-        "阿里云百炼模型价格",
-        "SMM 算力金属直播/移动页/镜像",
-        "RunPod/Lambda/Vast.ai/ComputeStacker 海外云价辅助",
-    ],
-    "failed_sources": [
-        {"source": "Google Gemini API Pricing", "reason": "本次抓取连接关闭，保留为 Official Missing，下一期重试。"},
-        {"source": "Anthropic API Pricing", "reason": "公开页面优先返回订阅套餐内容，API Token 价格需继续深挖开发者文档。"},
-    ],
-    "usage_class": {
-        "Main Index": "Validate == PASS 且 Confidence>=70 的国内 8卡整机月租样本。",
-        "Auxiliary Quotes": "海外 GPU Cloud、国内云价、采购价、整机价和市场 Token 价。",
-        "Candidate Samples": "来源明确但口径、数量、地区或多源校验不足的样本。",
-        "Rejected Samples": "单位错误、口径错误、低可信或历史波动异常样本。",
-        "Missing with searched sources": "已检索但未获得可验证价格或访问受限的缺口。",
-    },
-}
-
 
 def coverage_rows() -> list[dict]:
     covered = []
@@ -884,12 +837,11 @@ def main_metrics() -> list[tuple[str, str, str]]:
     rejected = [r for r in DOMESTIC_RENTAL if r["校验状态"] == "REJECT"]
     aux_gpu = {r["GPU 型号"] for r in OVERSEAS_RENTAL if r["标准化价格"] is not None} | {r["GPU 型号"] for r in PROCUREMENT}
     token_pass = [r for r in TOKEN_DATA if r["校验状态"] == "PASS"]
-    token_vendors = {r["厂商"] for r in TOKEN_DATA}
     h100 = next((r for r in pass_dom if r["GPU 型号"] == "H100 80G"), None)
     return [
         ("国内主指数样本", f"{len(pass_dom)}/{len(DOMESTIC_RENTAL)}", "仅 PASS 且 Confidence≥70"),
         ("辅助 GPU 样本", f"{len(aux_gpu)}/{len(GPU_ORDER)}", "海外云价/采购价/候选样本"),
-        ("Token 厂商覆盖", f"{len(token_vendors)}/21", f"{len(token_pass)} 条官方价 PASS，其余为 Official Missing"),
+        ("Token 官方价", f"{len(token_pass)}/{len(TOKEN_DATA)}", "官方页可追溯"),
         ("H100 国内月租", "7.6 万元" if h100 else "暂不可得", "8卡整机/月，不再重复折算"),
     ]
 
@@ -902,8 +854,7 @@ def render_html(relative_prefix: str = "./") -> str:
     domestic_pass = [r for r in DOMESTIC_RENTAL if pass_status(r)]
     domestic_review = [r for r in DOMESTIC_RENTAL if not pass_status(r)]
     overseas_pass = [r for r in OVERSEAS_RENTAL if r["校验状态"] == "PASS"]
-    return f"""<!-- Generated by Trae Work -->
-<!DOCTYPE html>
+    return f"""<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
@@ -963,14 +914,14 @@ def render_html(relative_prefix: str = "./") -> str:
 
     <section id="overseas">
       <h2>海外 GPU Cloud 参考</h2>
-      <p class="note">海外口径为人民币/卡/小时；等效 8卡月租只作参考，不进入国内租赁指数。</p>
+      <p class="note">海外 GPU Cloud 原始来源多为美元/卡/小时，本报告统一折算为人民币口径“万元/8卡整机/月”绘图和展示，单卡小时价保留在表格中作为辅助字段；海外月租仍不进入国内租赁指数。</p>
       <figure><div id="chart-overseas" class="chart"></div></figure>
       {table(overseas_pass)}
     </section>
 
     <section id="token">
       <h2>Token 价格</h2>
-      <p class="note">Token 官方价来自厂商官方价格页，市场价后续由 OpenRouter / Artificial Analysis 等补充，官方价和市场价分列展示。</p>
+      <p class="note">Token 表按“每个厂商主流模型”覆盖，官方价来自厂商官网或官方文档，市场价来自 OpenRouter、LiteLLM、models.dev 等三方平台；官方价和市场价必须分列，不得互相替代。</p>
       {table(TOKEN_DATA)}
     </section>
 
@@ -1008,6 +959,7 @@ def write_charts():
     data = {
         "domesticLabels": [r["GPU 型号"] for r in domestic_pass],
         "domesticValues": [r["标准化价格"] for r in domestic_pass],
+        "domesticRatios": [r.get("国内月租/海外月租") for r in domestic_pass],
         "overseasLabels": [r["GPU 型号"] for r in overseas_pass],
         "overseasValues": [r["标准化价格"] for r in overseas_pass],
     }
@@ -1026,7 +978,7 @@ def write_charts():
     c.setOption(option);
     window.addEventListener('resize', function(){{c.resize();}});
   }}
-  function bar(id, labels, values, name, color) {{
+  function bar(id, labels, values, name, color, ratios) {{
     init(id, {{
       animation:false,
       color:[color],
@@ -1034,11 +986,16 @@ def write_charts():
       grid:{{left:70,right:40,top:44,bottom:80,containLabel:true}},
       xAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}}}},
       yAxis:{{type:'value',name:name,nameTextStyle:{{color:muted}},axisLabel:{{color:muted}},splitLine:{{lineStyle:{{color:rule}}}}}},
-      series:[{{type:'bar',data:values,label:{{show:true,position:'top',color:ink}},itemStyle:{{borderRadius:[6,6,0,0]}}}}]
+      series:[{{type:'bar',data:values,label:{{show:true,position:'top',color:ink,formatter:function(p){{
+        var base = p.value + '万/月';
+        var rawRatio = ratios && ratios[p.dataIndex] ? ratios[p.dataIndex] : '';
+        var ratio = rawRatio === '海外缺口' ? ' · 海外缺口' : (rawRatio ? ' · 海外' + rawRatio : '');
+        return base + ratio;
+      }}}},itemStyle:{{borderRadius:[6,6,0,0]}}}}]
     }});
   }}
-  bar('chart-domestic-main', DATA.domesticLabels, DATA.domesticValues, '万元/8卡整机/月', accent);
-  bar('chart-overseas', DATA.overseasLabels, DATA.overseasValues, '人民币/卡/小时', accent2);
+  bar('chart-domestic-main', DATA.domesticLabels, DATA.domesticValues, '万元/8卡整机/月', accent, DATA.domesticRatios);
+  bar('chart-overseas', DATA.overseasLabels, DATA.overseasValues, '万元/8卡整机/月', accent2);
 }})();"""
     (OUT / "assets" / "charts.js").write_text(js, encoding="utf-8")
 
@@ -1049,8 +1006,7 @@ def write_index():
         reverse=True,
     )
     items = "\n".join(f'<li><a href="reports/{p.name}">{p.stem}</a></li>' for p in reports[:30])
-    html = f"""<!-- Generated by Trae Work -->
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>CMIS Daily</title><style>body{{font-family:system-ui;background:#07111f;color:#ecf4ff;line-height:1.7;margin:0}}main{{width:min(960px,92vw);margin:0 auto;padding:56px 0}}a{{color:#68e1fd}}.card{{border:1px solid #23344f;border-radius:18px;padding:20px;background:#101b2d;margin:18px 0}}</style></head><body><main><h1>全球算力市场情报门户</h1><div class="card"><p>最新报告：<a href="latest.html">latest.html</a></p><p>Data Freeze：{FREEZE_LABEL}｜Report Version：{REPORT_VERSION}｜Prompt Version：{PROMPT_VERSION}</p></div><h2>历史归档</h2><ul>{items}</ul></main></body></html>"""
+    html = f"""<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>CMIS Daily</title><style>body{{font-family:system-ui;background:#07111f;color:#ecf4ff;line-height:1.7;margin:0}}main{{width:min(960px,92vw);margin:0 auto;padding:56px 0}}a{{color:#68e1fd}}.card{{border:1px solid #23344f;border-radius:18px;padding:20px;background:#101b2d;margin:18px 0}}</style></head><body><main><h1>全球算力市场情报门户</h1><div class="card"><p>最新报告：<a href="latest.html">latest.html</a></p><p>Data Freeze：{FREEZE_LABEL}｜Report Version：{REPORT_VERSION}｜Prompt Version：{PROMPT_VERSION}</p></div><h2>历史归档</h2><ul>{items}</ul></main></body></html>"""
     (OUT / "index.html").write_text(html, encoding="utf-8")
 
 
