@@ -437,7 +437,7 @@ SOURCES = [
         "tier": "国产租赁/供给线索",
         "title": "UCache 摩尔线程 S4000 8卡训推一体机租赁",
         "url": "https://ucache.cn/enterprise/new/302.html",
-        "note": "用于确认摩尔线程 S4000 8卡训推一体机可租赁；未提供公开月租价格。",
+        "note": "用于确认摩尔线程 MTT S4000 8卡训推一体机可租赁；未提供公开月租价格。",
     },
     {
         "id": 57,
@@ -526,9 +526,9 @@ SOURCES = [
     {
         "id": 69,
         "tier": "采购/国产卡渠道",
-        "title": "摩尔线程 S4000 公开渠道价线索",
+        "title": "摩尔线程 MTT S4000 公开渠道价线索",
         "url": "https://mobile-phone.taobao.com/chanpin/1ca179511e98d3df4d1359ff998a7792.html",
-        "note": "公开渠道页显示 MTT S4000 48GB 算力卡约 5.9-7.0 万元/张，用于摩尔线程 8卡整机采购价区间低端锚点。",
+        "note": "公开渠道页显示 MTT S4000 48GB 算力卡约 5.9-7.0 万元/张，用于摩尔线程 MTT S4000 8卡整机采购价区间低端锚点。",
     },
 ]
 
@@ -536,11 +536,11 @@ GPU_GROUPS = [
     ("Training", ["GB300", "GB200", "B300", "B200", "H200", "H100 80G", "H800", "H20", "A100 80G", "A800"]),
     ("Inference", ["L40S", "L20", "L4"]),
     ("Consumer", ["RTX 5090", "RTX 4090"]),
-    ("国产", ["昇腾 910C", "昇腾 910B", "寒武纪 MLU", "海光 DCU", "壁仞", "摩尔线程"]),
+    ("国产", ["昇腾 910C", "昇腾 910B", "寒武纪 MLU370-X8", "海光 DCU K100", "壁仞 BR100", "摩尔线程 MTT S4000"]),
 ]
 GPU_ORDER = [gpu for _, items in GPU_GROUPS for gpu in items]
 GPU_CLASS = {gpu: group for group, items in GPU_GROUPS for gpu in items}
-STRATEGIC_DOMESTIC_GPUS = {"昇腾 910B", "寒武纪 MLU", "海光 DCU", "壁仞", "摩尔线程"}
+STRATEGIC_DOMESTIC_GPUS = {"昇腾 910B", "寒武纪 MLU370-X8", "海光 DCU K100", "壁仞 BR100", "摩尔线程 MTT S4000"}
 
 
 def cny_from_usd(v: float | None) -> float | None:
@@ -883,7 +883,7 @@ DOMESTIC_RENTAL_INPUT = {
         "status": "REVIEW",
         "note": "910B 子型号、形态和异地部署限制未拆清；因属于国产战略关注卡，按 SMM 区间中点进入国内指数展示，但不进入 ROI 或方向性结论。",
     },
-    "寒武纪 MLU": {
+    "寒武纪 MLU370-X8": {
         "original": "天翼云 PCH1 寒武纪云主机最大公开规格 pch1.21xlarge.3：84 vCPU / 252GB / 4×MLU370-S4 / 包月 24964.07 元；折算 8 卡云实例等效价=24964.07×2×0.85≈4.24 万元/月（国产计算加速型云主机 1-3 年 8.5 折）。另按国产8卡整机供给、云价溢价和可比租赁模型给出裸机市场核价区间 2.8-3.8 万元/月，仅作估算。",
         "monthly_wan": 4.24,
         "price_basis": "云价折算",
@@ -896,7 +896,7 @@ DOMESTIC_RENTAL_INPUT = {
         "status": "REVIEW",
         "note": "寒武纪 MLU 属于国产战略关注卡；当前入图价格基于天翼云明确 4卡云主机配置与包月价折算到 8卡云实例等效价，不是8卡整机长租成交价。裸机市场核价区间 2.8-3.8 万元/月仅用于价格带判断，不进入 ROI。",
     },
-    "海光 DCU": {
+    "海光 DCU K100": {
         "original": "已确认金品 KG4208-H73 为海光 7300 双路 4U 8卡国产化 GPU 服务器，支持 8×全高全长双宽 GPU 卡。未取得公开成交月租价；按已确认 8卡服务器形态、国产智算供给线索、H100 8卡租赁研报锚点和可比国产裸机租赁带，市场核价区间估为 3.5-4.5 万元/月，中位数 4.0 万元入图。",
         "monthly_wan": 4.0,
         "price_basis": "市场核价区间（估算）",
@@ -909,7 +909,7 @@ DOMESTIC_RENTAL_INPUT = {
         "status": "REVIEW",
         "note": "海光 DCU 属于国产战略关注卡；已确认 8卡服务器架构，但未取得公开成交月租。本期不是单卡价×8，也不是 910B 系数价，而是按 8卡形态、行业按台/月计租模型和可比国产供给做市场核价区间；需继续寻找 SMM、运营商或集成商公开报价复核，不进入 ROI。",
     },
-    "壁仞": {
+    "壁仞 BR100": {
         "original": "已确认壁仞 BR100/BR104 具备 OAM/PCIe 板卡形态，8个 OAM 模组可置于 UBB 形成单节点8卡全互联；海玄 OAM 服务器为 8PFLOPS / 512GB HBM2e / 最大功耗 7kW。未取得公开成交月租价；按 8卡 OAM 整机形态、H100 8卡租赁研报锚点和国产高端训练卡折价，市场核价区间估为 3.8-4.8 万元/月，中位数 4.3 万元入图。",
         "monthly_wan": 4.3,
         "price_basis": "市场核价区间（估算）",
@@ -920,9 +920,9 @@ DOMESTIC_RENTAL_INPUT = {
         "consensus": "Low",
         "historical": "HIST_INSUFFICIENT",
         "status": "REVIEW",
-        "note": "壁仞属于国产战略关注卡；已补充 BR100/BR104 8卡 OAM 服务器形态依据，但未取得公开成交月租。本期按市场核价区间展示，不使用未确认卡数/型号的套餐价，不进入 ROI。",
+        "note": "壁仞 BR100 属于国产战略关注卡；已补充 BR100/BR104 8卡 OAM 服务器形态依据，但未取得公开成交月租。本期按市场核价区间展示，不使用未确认卡数/型号的套餐价，不进入 ROI。",
     },
-    "摩尔线程": {
+    "摩尔线程 MTT S4000": {
         "original": "UCache 公开页确认摩尔线程 S4000 8卡训推一体机可租赁；摩尔线程官方 S4000 支持单机8卡和多机多卡，Gitee AI 文档显示 MTT S5000 面向大模型训练推理，80GB 显存、Dense 1000 TFlops、MTLink 8卡全连接拓扑。未取得公开成交月租价；按已确认 8卡供给、S5000 规格提升和国产租赁可比带，市场核价区间估为 3.0-4.0 万元/月，中位数 3.5 万元入图。",
         "monthly_wan": 3.5,
         "price_basis": "市场核价区间（估算）",
@@ -933,7 +933,7 @@ DOMESTIC_RENTAL_INPUT = {
         "consensus": "Low",
         "historical": "HIST_INSUFFICIENT",
         "status": "REVIEW",
-        "note": "摩尔线程属于国产战略关注卡；已确认 8卡 S4000 租赁供给、官方单机8卡能力，并补充 S5000 8卡互联规格。本期按市场核价区间展示，不把小模型项目费用或单卡价折成整机月租，不进入 ROI。",
+        "note": "摩尔线程 MTT S4000 属于国产战略关注卡；已确认 8卡 S4000 租赁供给、官方单机8卡能力，并补充 S5000 8卡互联规格。本期按市场核价区间展示，不把小模型项目费用或单卡价折成整机月租，不进入 ROI。",
     },
 }
 
@@ -1062,10 +1062,10 @@ PROCUREMENT_INPUT = {
     "RTX 4090": {"purchase_min_wan": 18, "purchase_mid_wan": 23, "purchase_max_wan": 28, "basis": "三方渠道价", "source": "ZOL RTX 4090 8卡服务器约 26 万元、1688 4090/5090 一体机区间作交叉参考", "confidence": 62, "status": "REVIEW", "note": "RTX 4090 单卡与整机渠道充足，但税费、保修、供电散热和品牌差异明显；按 18-28 万元做参考测算。"},
     "昇腾 910C": {"purchase_min_wan": 170, "purchase_mid_wan": 220, "purchase_max_wan": 270, "basis": "市场核价区间（估算）", "source": "昇腾 910B 框架协议价、910C 供需溢价和国产高端训练服务器市场核价", "confidence": 48, "status": "REVIEW", "note": "910C 明确 8卡整机采购成交价仍少；按 910B 框架协议训练服务器价格带上修估算，需继续追踪运营商和银行集采。"},
     "昇腾 910B": {"purchase_min_wan": 155, "purchase_mid_wan": 190, "purchase_max_wan": 225, "basis": "框架协议线索/市场核价", "source": "农业发展银行国产 GPU 服务器框架协议线索：910B 推理服务器 154.5 万元/台、训练服务器 212.2 万元/台、配件约 9.7 万元", "confidence": 52, "status": "REVIEW", "note": "910B 采购价有框架协议线索，但原始公告仍需追溯；租赁端价格受 B2/B3/B4 子型号、库存和生态迁移影响，毛回本仅作风险观察。"},
-    "寒武纪 MLU": {"purchase_min_wan": 20, "purchase_mid_wan": 30, "purchase_max_wan": 40, "basis": "三方渠道价/市场核价", "source": "MLU370-S4/X8 公开卡价与国产 8卡整机渠道核价", "confidence": 40, "status": "REVIEW", "note": "寒武纪当前租赁价为云价折算，采购价按 MLU370 卡价和整机集成成本估算；二者口径不同，毛回本不进入 ROI 结论。"},
-    "海光 DCU": {"purchase_min_wan": 60, "purchase_mid_wan": 78, "purchase_max_wan": 95, "basis": "公开卡价/市场核价", "source": "海光 K100 64GB GPU 卡高校采购单价 4.6 万元、公开渠道 8.4 万元/张，加服务器底座和集成成本核价", "confidence": 56, "status": "REVIEW", "note": "海光 DCU 采购价按单卡公开价×8加整机底座、网络、电源、维保和集成成本估算；需继续补 8卡整机中标价。"},
-    "壁仞": {"purchase_min_wan": 60, "purchase_mid_wan": 80, "purchase_max_wan": 100, "basis": "市场核价区间（估算）", "source": "壁仞 BR100/BR104 8卡 OAM 服务器形态、国产高端训练卡可比价格、渠道核价", "confidence": 35, "status": "REVIEW", "note": "未取得壁仞 8卡整机公开采购价；按已确认 8卡 OAM 服务器形态和国产训练卡可比区间估算，需重点扩源。"},
-    "摩尔线程": {"purchase_min_wan": 65, "purchase_mid_wan": 80, "purchase_max_wan": 95, "basis": "公开卡价/市场核价", "source": "MTT S4000 公开报价约 5.9-8.64 万元/张，叠加 8卡服务器底座、网络、供电和维保核价", "confidence": 52, "status": "REVIEW", "note": "摩尔线程 8卡整机采购价按公开单卡价和整机集成成本估算；S5000/SGX5000 需继续查官方和集成商报价。"},
+    "寒武纪 MLU370-X8": {"purchase_min_wan": 20, "purchase_mid_wan": 30, "purchase_max_wan": 40, "basis": "三方渠道价/市场核价", "source": "MLU370-S4/X8 公开卡价与国产 8卡整机渠道核价", "confidence": 40, "status": "REVIEW", "note": "寒武纪 MLU370-X8 当前租赁价为云价折算，采购价按 MLU370 卡价和整机集成成本估算；二者口径不同，毛回本不进入 ROI 结论。"},
+    "海光 DCU K100": {"purchase_min_wan": 60, "purchase_mid_wan": 78, "purchase_max_wan": 95, "basis": "公开卡价/市场核价", "source": "海光 K100 64GB GPU 卡高校采购单价 4.6 万元、公开渠道 8.4 万元/张，加服务器底座和集成成本核价", "confidence": 56, "status": "REVIEW", "note": "海光 DCU K100 采购价按单卡公开价×8加整机底座、网络、电源、维保和集成成本估算；需继续补 8卡整机中标价。"},
+    "壁仞 BR100": {"purchase_min_wan": 60, "purchase_mid_wan": 80, "purchase_max_wan": 100, "basis": "市场核价区间（估算）", "source": "壁仞 BR100/BR104 8卡 OAM 服务器形态、国产高端训练卡可比价格、渠道核价", "confidence": 35, "status": "REVIEW", "note": "未取得壁仞 BR100 8卡整机公开采购价；按已确认 8卡 OAM 服务器形态和国产训练卡可比区间估算，需重点扩源。"},
+    "摩尔线程 MTT S4000": {"purchase_min_wan": 65, "purchase_mid_wan": 80, "purchase_max_wan": 95, "basis": "公开卡价/市场核价", "source": "MTT S4000 公开报价约 5.9-8.64 万元/张，叠加 8卡服务器底座、网络、供电和维保核价", "confidence": 52, "status": "REVIEW", "note": "摩尔线程 MTT S4000 8卡整机采购价按公开单卡价和整机集成成本估算；S5000/SGX5000 需继续查官方和集成商报价。"},
 }
 
 
@@ -1314,7 +1314,7 @@ def render_html(relative_prefix: str = "./") -> str:
     <section>
       <h2>今日结论</h2>
       <div class="panel">
-        <p>本版采用“主指数严格、战略关注不断档、估算分层标注”的结构：通过校验的国内 8卡整机月租继续作为高置信主样本；昇腾 910B、寒武纪 MLU、海光 DCU、壁仞、摩尔线程作为国产战略关注卡，即使置信度不足也进入国内指数表展示，但标注 REVIEW，不进入 ROI 或方向性结论。</p>
+        <p>本版采用“主指数严格、战略关注不断档、估算分层标注”的结构：通过校验的国内 8卡整机月租继续作为高置信主样本；昇腾 910B、寒武纪 MLU370-X8、海光 DCU K100、壁仞 BR100、摩尔线程 MTT S4000 作为国产战略关注卡，即使置信度不足也进入国内指数表展示，但标注 REVIEW，不进入 ROI 或方向性结论。</p>
         <p>国产战略 GPU 的价格口径拆成三层：公开成交/主口径价、云价折算、市场核价区间（估算）。每日运行时应先检索新出现的明确市场价格；若找到更高置信的 8卡整机/裸机/月租样本，更新标准化价格；若没有新样本，则沿用既有市场核价区间和中位数，不得冒充公开成交价。</p>
       </div>
     </section>
@@ -1327,7 +1327,7 @@ def render_html(relative_prefix: str = "./") -> str:
 
     <section id="domestic">
       <h2>国内算力租赁主指数</h2>
-      <p class="note">高置信样本仍要求 PASS 且 Confidence≥70；昇腾 910B、寒武纪 MLU、海光 DCU、壁仞、摩尔线程作为国产战略关注卡强制列入指数表和柱状图。寒武纪为天翼云 4卡实例折算的 8卡云价；海光/壁仞/摩尔线程采用市场核价区间中位数入图，并在表格中显示区间、依据和价格更新规则。柱状图按价格口径分色：主口径、低置信观察、云价折算、市场核价和价格待补分别展示。</p>
+      <p class="note">高置信样本仍要求 PASS 且 Confidence≥70；昇腾 910B、寒武纪 MLU370-X8、海光 DCU K100、壁仞 BR100、摩尔线程 MTT S4000 作为国产战略关注卡强制列入指数表和柱状图。寒武纪为天翼云 4卡实例折算的 8卡云价；海光/壁仞/摩尔线程采用市场核价区间中位数入图，并在表格中显示区间、依据和价格更新规则。柱状图按价格口径分色：主口径、低置信观察、云价折算、市场核价和价格待补分别展示。</p>
       <figure><figcaption>国内指数：万元/8卡整机/月；颜色区分主口径、低置信观察、云价折算与市场核价</figcaption><div id="chart-domestic-main" class="chart"></div></figure>
       {table(domestic_index_rows)}
     </section>
@@ -1372,7 +1372,7 @@ def render_html(relative_prefix: str = "./") -> str:
     <section id="ai-summary">
       <h2>AI 总结</h2>
       <div class="panel">
-        <p>本期国内服务器价格覆盖继续扩大：H100 80G 约 7.6 万元/8卡整机/月，A100 80G 约 3.15-3.8 万元/月，H20 141GB 约 4.8 万元/月，RTX 5090 约 1.2 万元/月，RTX 4090 约 0.68-0.88 万元/月，昇腾 910C 行业均价约 6.2 万元/月。昇腾 910B、寒武纪 MLU、海光 DCU、壁仞、摩尔线程已作为国产战略关注卡进入国内指数表和柱状图；寒武纪使用云实例折算口径，海光/壁仞/摩尔线程使用市场核价区间中位数展示，均不进入 ROI。</p>
+        <p>本期国内服务器价格覆盖继续扩大：H100 80G 约 7.6 万元/8卡整机/月，A100 80G 约 3.15-3.8 万元/月，H20 141GB 约 4.8 万元/月，RTX 5090 约 1.2 万元/月，RTX 4090 约 0.68-0.88 万元/月，昇腾 910C 行业均价约 6.2 万元/月。昇腾 910B、寒武纪 MLU370-X8、海光 DCU K100、壁仞 BR100、摩尔线程 MTT S4000已作为国产战略关注卡进入国内指数表和柱状图；寒武纪使用云实例折算口径，海光/壁仞/摩尔线程使用市场核价区间中位数展示，均不进入 ROI。</p>
       </div>
     </section>
 
@@ -1400,7 +1400,7 @@ def write_charts():
             return "价格待补"
         if row.get("价格口径") == "市场核价区间（估算）":
             return "市场核价"
-        if row["GPU 型号"] == "寒武纪 MLU":
+        if row["GPU 型号"] == "寒武纪 MLU370-X8":
             return "云价折算"
         if row["GPU 型号"] in STRATEGIC_DOMESTIC_GPUS and not pass_status(row):
             return "低置信观察"
