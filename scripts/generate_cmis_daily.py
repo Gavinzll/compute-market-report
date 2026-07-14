@@ -1467,6 +1467,7 @@ def render_html(relative_prefix: str = "./") -> str:
 
     <footer>
       <p class="muted">CMIS Daily {REPORT_VERSION} | Prompt {PROMPT_VERSION} | Freeze {FREEZE_LABEL}</p>
+      <p class="muted" style="margin-top:8px;font-size:12px">© Gavin YszY · 算力市场情报日报</p>
     </footer>
   </main>
   <script src="{relative_prefix}_shared/js/echarts.min.js"></script>
@@ -1570,6 +1571,9 @@ def render_mobile_html(relative_prefix: str = "./", desktop_href: str = "latest.
       <h2>异常与待复核</h2>
       <details><summary>Rejected / Review 样本（{len(domestic_review)} 条）</summary><div class="details-body">{mobile_gpu_cards(domestic_review)}</div></details>
     </section>
+    <footer style="text-align:center;padding:20px 0 8px;font-size:11px;color:var(--muted)">
+      © Gavin YszY · 算力市场情报日报
+    </footer>
   </main>
   <nav class="quick-nav">
     <a href="#summary">结论</a><a href="#domestic">国内</a><a href="#overseas">海外</a><a href="#token">Token</a><a href="#profit">利润</a><a href="#audit">审计</a>
