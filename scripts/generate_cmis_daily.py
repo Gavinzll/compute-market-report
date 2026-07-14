@@ -1256,18 +1256,13 @@ def mobile_gpu_cards(rows: list[dict]) -> str:
         status = row.get("校验状态", "")
         price = fmt(row.get("标准化价格"))
         cards.append(f"""
-        <article class="m-card">
-          <div class="m-card-head">
-            <div><h3>{html_escape(row.get("GPU 型号"))}</h3><small>{html_escape(row.get("GPU 分类"))} · {html_escape(row.get("价格口径", row.get("category", "")))}</small></div>
-            <span class="status {'ok' if status == 'PASS' else 'warn'}">{html_escape(status)}</span>
-          </div>
-          <div class="m-price">{price}<em>万元/8卡整机/月</em></div>
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>{html_escape(row.get("GPU 型号"))}</h3><span class="status {'ok' if status == 'PASS' else 'warn'}">{html_escape(status)}</span></div>
           <div class="pill-row">
+            {pill("月租", f'{price} 万')}
+            {pill("口径", row.get("价格口径", row.get("category", "—")))}
             {pill("置信度", row.get("Confidence Score"))}
-            {pill("共识", row.get("Source Consensus"))}
-            {pill("区间", row.get("核价区间（万元/月）") or "无")}
           </div>
-          <p>{html_escape(row.get("口径说明", row.get("主数据源", "")))}</p>
         </article>""")
     return "\n".join(cards)
 
