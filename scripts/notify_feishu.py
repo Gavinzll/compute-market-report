@@ -13,14 +13,23 @@ if not url:
     raise SystemExit(0)
 
 text = f"""📌 全球算力市场情报日报
-日期：{date}
-核心摘要：
-1. Token 官方价、租赁价、采购价已分口径更新。
-2. 国内 H100 仍以 SMM 为主口径，现货供给偏紧。
-3. 海外 GPU 小时价以 ComputeStacker 为主口径，公开云价作校验。
-4. GPU 利润测算已按采购价、租赁价和利用率联动刷新。
-⚠️ 关键异动：首个样本日暂无真实环比，后续按 5% 价格阈值和 30% 库存阈值报警。
-🧠 AI总结：高端卡租赁仍受供给约束支撑，未来一周关注 B/H 系列交付与现货价格压力。
+📅 日期：{date}
+
+📈 GPU 租赁：
+国内 H100 8卡整机月租采用 SMM 主口径；低置信度卡型仅作待复核观察。
+
+💰 GPU 采购：
+采购价以低置信度和协议价缺口为主，本期不进入投资结论。
+
+🪙 Token 价格：
+OpenAI、DeepSeek 等官方 Token 价已按原币和人民币口径更新，缺失官方价保留为缺口。
+
+⚡ 关键异动：
+样本起始/延续日按七层校验写入审计；共识 Low 的数据不做方向性判断。
+
+🧠 AI 一句话：
+通过校验的数据支持 H100 长租口径仍处高位，其它分歧样本等待进一步确认。
+
 📊 完整报告：https://gavinzll.github.io/compute-market-report/latest.html?v={stamp}"""
 
 payload = json.dumps({"msg_type": "text", "content": {"text": text}}, ensure_ascii=False).encode("utf-8")

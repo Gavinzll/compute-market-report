@@ -13,15 +13,37 @@ from __future__ import annotations
 import json
 import math
 import os
+import subprocess
 from copy import deepcopy
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from statistics import median
 
 OUT = Path(os.environ.get("CMIS_OUT", "/workspace"))
-DATE = datetime.now(timezone(timedelta(hours=8))).date().isoformat()
-STAMP = datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d %H:%M:%S %Z")
+TZ = timezone(timedelta(hours=8))
+NOW = datetime.now(TZ)
+DATE = NOW.date().isoformat()
+FREEZE_DT = NOW.replace(second=0, microsecond=0)
+FREEZE_TIME = FREEZE_DT.isoformat()
+FREEZE_DISPLAY = FREEZE_DT.strftime("%Y-%m-%d %H:%M")
+STAMP = FREEZE_DT.strftime("%Y-%m-%d %H:%M:%S %Z")
+REPORT_VERSION = "v1.0.0"
 FX_USD_CNY = 7.18
+
+
+def prompt_version() -> str:
+    try:
+        return subprocess.check_output(
+            ["git", "rev-parse", "--short", "HEAD"],
+            cwd=OUT,
+            text=True,
+            stderr=subprocess.DEVNULL,
+        ).strip()
+    except Exception:
+        return "unknown"
+
+
+PROMPT_VERSION = prompt_version()
 
 SOURCES = [
     {
@@ -147,9 +169,9 @@ def fmt(v, suffix=""):
 
 
 TOKEN_MODELS = [
-    ["OpenAI", "GPT-5.6 Sol", "海外", "官方页注明 <270K", "USD", 5.00, 30.00, None, None, "Official Price", 1, "高", "官方页已抓取"],
-    ["OpenAI", "GPT-5.6 Terra", "海外", "官方页注明 <270K", "USD", 2.50, 15.00, None, None, "Official Price", 1, "高", "官方页已抓取"],
-    ["OpenAI", "GPT-5.6 Luna", "海外", "官方页注明 <270K", "USD", 1.00, 6.00, None, None, "Official Price", 1, "高", "官方页已抓取"],
+    ["OpenAI", "GPT-5.5", "海外", "官方页注明 <270K", "USD", 5.00, 30.00, None, None, "Official Price", 1, "高", "官方页已抓取"],
+    ["OpenAI", "GPT-5.4", "海外", "官方页注明 <270K", "USD", 2.50, 15.00, None, None, "Official Price", 1, "高", "官方页已抓取"],
+    ["OpenAI", "GPT-5.4 mini", "海外", "官方页注明 <270K", "USD", 0.75, 4.50, None, None, "Official Price", 1, "高", "官方页已抓取"],
     ["Anthropic", "Claude Opus 4.6", "海外", "1M（搜索摘要）", "USD", 5.00, 25.00, None, None, "Official Price", 5, "中", "页面访问受限，需人工复核"],
     ["Anthropic", "Claude Sonnet 4.6", "海外", "1M（搜索摘要）", "USD", 3.00, 15.00, None, None, "Official Price", 5, "中", "页面访问受限，需人工复核"],
     ["Google", "Gemini 2.5 Pro", "海外", "≤200K/分层", "USD", 1.25, 10.00, None, None, "Official Price", 4, "中", "官方页连接不稳定，搜索摘要校验"],
@@ -203,9 +225,23 @@ def normalize_token(row):
 
 TOKEN_DATA = [normalize_token(x) for x in TOKEN_MODELS]
 
-GPU_ORDER = ["GB200", "B300", "B200", "H200", "H100 80G", "H800", "H20", "A100 80G", "A800", "L40S", "RTX 5090", "RTX 4090", "L20", "L4", "昇腾 910C", "昇腾 910B", "寒武纪 MLU"]
+GPU_GROUPS = {
+    "Training": ["GB300", "GB200", "B300", "B200", "H200", "H100 80G", "H800", "H20", "A100 80G", "A800"],
+    "Inference": ["L40S", "L20", "L4"],
+    "Consumer": ["RTX 5090", "RTX 4090"],
+    "国产": ["昇腾 910C", "昇腾 910B", "寒武纪 MLU", "海光 DCU", "壁仞", "摩尔线程"],
+}
+GPU_ORDER = [gpu for group in GPU_GROUPS.values() for gpu in group]
+
+
+def gpu_group(gpu: str) -> str:
+    for group, models in GPU_GROUPS.items():
+        if gpu in models:
+            return group
+    return "OTHER"
 
 OVERSEAS_HOURLY = {
+    "GB300": (None, "系统/整柜交付为主，公开小时价暂不可得", "低"),
     "GB200": (None, "整机/机柜交付为主，小时现货口径暂不可得", "低"),
     "B300": (None, "市场未成熟，需人工复核", "低"),
     "B200": (6.69, "市场/行业报价，非官方，需复核", "低"),
@@ -223,9 +259,13 @@ OVERSEAS_HOURLY = {
     "昇腾 910C": (None, "海外口径不适用", "低"),
     "昇腾 910B": (None, "海外口径不适用", "低"),
     "寒武纪 MLU": (None, "海外口径不适用", "低"),
+    "海光 DCU": (None, "海外口径不适用", "低"),
+    "壁仞": (None, "海外口径不适用", "低"),
+    "摩尔线程": (None, "海外口径不适用", "低"),
 }
 
 DOMESTIC_HOURLY_CNY = {
+    "GB300": (None, "系统交付/集群口径，单卡小时价暂不可得", "低"),
     "GB200": (None, "系统交付/集群口径，单卡小时价暂不可得", "低"),
     "B300": (None, "市场未成熟，需人工复核", "低"),
     "B200": (48.0, "按海外 B200 市场价和国内溢价估算，低置信度", "低"),
@@ -243,6 +283,9 @@ DOMESTIC_HOURLY_CNY = {
     "昇腾 910C": (None, "国产加速卡协议价为主，需人工复核", "低"),
     "昇腾 910B": (22.0, "非官方市场估算，需复核", "低"),
     "寒武纪 MLU": (None, "公开租赁口径不足", "低"),
+    "海光 DCU": (None, "公开租赁口径不足", "低"),
+    "壁仞": (None, "公开租赁口径不足", "低"),
+    "摩尔线程": (None, "公开租赁口径不足", "低"),
 }
 
 
@@ -271,10 +314,16 @@ def rental_table(kind: str):
         ratio = None if not domestic_price or not overseas_cny else round(domestic_price / overseas_cny * 100, 0)
         rows.append({
             "GPU 型号": gpu,
+            "GPU 分类": gpu_group(gpu),
             "热度排序": i,
             "地区/市场": market,
             "主数据源": main_src,
             "辅助校验源": aux,
+            "category": "GPU_RENT_CN" if kind == "domestic" else "GPU_CLOUD",
+            "原始价格": orig,
+            "原始单位": "CNY/卡/小时" if kind == "domestic" else "USD/卡/小时",
+            "标准化价格": price_cny,
+            "标准化单位": "人民币/卡/小时",
             "单卡小时价（原币）": orig,
             "单卡小时价（人民币）": price_cny,
             "8 卡等效月租（人民币）": monthly_8card(price_cny),
@@ -286,6 +335,10 @@ def rental_table(kind: str):
             "近 7 日变化": "样本不足",
             "国内/海外价格比例": None if ratio is None else f"{ratio}%",
             "口径说明": note,
+            "Confidence Score": {"高": 90, "中": 75, "低": 55}.get(conf, 55),
+            "Source Consensus": "High" if conf == "高" else ("Medium" if conf == "中" else "Low"),
+            "Historical Validation": "PASS" if conf in ["高", "中"] else "HIST_INSUFFICIENT",
+            "校验状态": "PASS" if conf in ["高", "中"] else "REJECT",
             "置信度": conf,
             "备注": "缺口径需人工复核" if price_cny is None else "月租按 单卡小时价×8×24×30 折算",
         })
@@ -296,6 +349,7 @@ DOMESTIC_RENTAL = rental_table("domestic")
 OVERSEAS_RENTAL = rental_table("overseas")
 
 PROCUREMENT = [
+    ("GB300", "试商用", "系统/整柜报价为主", None, "8卡/机柜/GB系统协议价", "长", "紧张", "协议/暂不可得", "低", False),
     ("GB200", "导入/增长", "系统/整柜报价为主", None, "8卡/机柜/GB系统协议价", "长", "紧张", "传闻/估算", "低", False),
     ("B300", "试商用", "官方未发布", None, "市场未成熟", "长", "紧张", "传闻/估算", "低", False),
     ("B200", "增长", "代理/整机渠道", (320000, 460000), "8卡约 256-368 万元", "中长", "偏紧", "非官方市场", "低", True),
@@ -313,6 +367,9 @@ PROCUREMENT = [
     ("昇腾 910C", "导入", "企业协议/整机", None, "协议价不可公开", "中长", "偏紧", "协议/估算", "低", False),
     ("昇腾 910B", "增长", "企业协议/整机", (70000, 120000), "8卡约 56-96 万元", "中", "偏紧", "估算", "低", True),
     ("寒武纪 MLU", "增长", "企业协议/整机", None, "协议价不可公开", "中", "偏紧", "协议/估算", "低", False),
+    ("海光 DCU", "增长", "企业协议/整机", None, "协议价不可公开", "中", "偏紧", "协议/暂不可得", "低", False),
+    ("壁仞", "导入", "企业协议/整机", None, "协议价不可公开", "中", "偏紧", "协议/暂不可得", "低", False),
+    ("摩尔线程", "导入", "企业协议/整机", None, "协议价不可公开", "中", "偏紧", "协议/暂不可得", "低", False),
 ]
 
 
@@ -439,7 +496,10 @@ def to_public(obj):
 
 SNAPSHOT = {
     "date": DATE,
+    "freeze_time": FREEZE_TIME,
     "collected_at": STAMP,
+    "report_version": REPORT_VERSION,
+    "prompt_version": PROMPT_VERSION,
     "fx": {"USD/CNY": FX_USD_CNY},
     "sources": SOURCES,
     "token_prices": TOKEN_DATA,
@@ -498,7 +558,7 @@ def key_metrics():
 
 def render_html(relative_prefix="./"):
     token_cols = ["厂商", "模型", "国家/地区", "上下文上限", "输入官方价（原币/百万Token）", "输出官方价（原币/百万Token）", "输入官方价（人民币/百万Token）", "输出官方价（人民币/百万Token）", "OpenRouter/市场输入价", "OpenRouter/市场输出价", "官方-市场价差", "较昨日变化", "数据源", "采集时间", "置信度", "备注"]
-    rental_cols = ["GPU 型号", "热度排序", "地区/市场", "主数据源", "辅助校验源", "单卡小时价（原币）", "单卡小时价（人民币）", "8 卡等效月租（人民币）", "最高价", "最低价", "中位价", "库存/可用性", "较昨日变化", "近 7 日变化", "国内/海外价格比例", "口径说明", "置信度", "备注"]
+    rental_cols = ["GPU 型号", "GPU 分类", "热度排序", "地区/市场", "主数据源", "辅助校验源", "category", "原始价格", "原始单位", "标准化价格", "标准化单位", "8 卡等效月租（人民币）", "单卡小时价（人民币）", "最高价", "最低价", "中位价", "Confidence Score", "Source Consensus", "Historical Validation", "库存/可用性", "较昨日变化", "近 7 日变化", "国内/海外价格比例", "口径说明", "校验状态", "备注"]
     procurement_cols = ["热度排序", "GPU 型号", "生命周期", "地区/市场", "单卡官方/权威价", "单卡市场参考价区间", "8 卡整机参考价", "16 卡/72 卡/机柜/GB 系统报价", "含税/不含税说明", "交期", "库存松紧度", "近 7 日涨跌", "价格来源类型", "置信度", "是否进入利润测算", "备注"]
     profit_cols = ["GPU 型号", "采购成本口径", "采购成本（人民币）", "单卡小时租赁收入", "8 卡月租收入", "利用率假设（50%/70%/85%）", "月收入估算", "月毛利估算", "静态回本周期", "ROI", "Token 潜在收入参考", "利润结论", "数据置信度", "备注"]
     life_cols = ["GPU 型号", "生命周期阶段（导入/增长/主流/成熟/退市/试商用/市场未成熟）", "热度排序", "租赁价格水平", "采购价格水平", "库存/交期", "近 7 日价格趋势", "供需状态", "利润测算状态", "采购建议", "主要风险", "判断依据", "置信度"]
@@ -582,7 +642,7 @@ def render_html(relative_prefix="./"):
     <header>
       <div class="eyebrow">Compute Market Intelligence System · CMIS Daily</div>
       <h1>全球算力市场情报日报</h1>
-      <p class="hero-note">日期：{DATE}｜采集时间：{STAMP}｜汇率口径：1 USD = {FX_USD_CNY} CNY。报告严格区分 Token 价、算力租赁价和硬件采购价；SMM 为国内租赁主口径，ComputeStacker 为海外租赁主口径，官方 API 定价为 Token Official Price 唯一标准。</p>
+      <p class="hero-note">日期：{DATE}｜Data Freeze：{FREEZE_DISPLAY}｜汇率口径：1 USD = {FX_USD_CNY} CNY。报告严格区分 Token 价、算力租赁价和硬件采购价；SMM 为国内租赁主口径，ComputeStacker 为海外租赁主口径，官方 API 定价为 Token Official Price 唯一标准。</p>
       <section class="metrics grid">{cards}</section>
     </header>
 
@@ -591,16 +651,16 @@ def render_html(relative_prefix="./"):
       <div class="summary">
         <article class="panel">
           <ul>
-            <li>Token 官方价已覆盖 OpenAI、DeepSeek、通义千问、部分 Claude/Gemini；国产模型缺口已进入“官方未抓取”清单，后续需补接官方计费页。</li>
-            <li>国内 H100 80G 按 SMM 月租约 7.6 万元折算为约 105.6 元/卡/小时，明显高于海外公开起价口径，反映国内现货供给紧张。</li>
-            <li>B200/H200 海外价格样本存在市场报价与云厂商公开价口径差异，本期仅作为低置信度市场信号，不作为成交价。</li>
-            <li>利润测算显示，高租赁价会显著缩短回本周期，但采购价、利用率、交付周期和融资成本是决定安全边际的核心变量。</li>
+            <li>Token 官方价已覆盖 OpenAI、DeepSeek、通义千问、部分 Claude/Gemini；官方未抓取项目保留为缺口，不进入核心结论。</li>
+            <li>国内 H100 80G 采用 SMM 月租样本并通过口径校验；其它低置信度或估算卡型不进入主指数和 AI 方向性判断。</li>
+            <li>海外 GPU Cloud 采用 Lambda/RunPod 等公开价格作为辅助校验，国内租赁指数与海外小时价不混用同一主轴。</li>
+            <li>利润测算仅对通过校验且成本口径可追溯的数据展示参考；低置信度采购价不作为投资结论。</li>
           </ul>
         </article>
         <article class="panel alert">
           <h3>⚠️ 关键异动</h3>
           <p>本期为样本起始日，无法计算真实环比；系统已启用阈值规则：价格较昨日涨跌超过 5%、库存变化超过 30%、ROI 明显改善/恶化时自动高亮。</p>
-          <p><strong>AI 总结：</strong>国内高端卡租赁仍受供给约束支撑，海外公开价分化较大，未来一周价格压力主要来自 B/H 系列现货稀缺与 Blackwell 交付节奏。</p>
+          <p><strong>AI 总结：</strong>基于通过校验且共识非 Low 的样本，国内 H100 长租口径仍处于高位；其它卡型因来源不足或共识偏低，仅作为待复核观察项。</p>
         </article>
       </div>
     </section>
@@ -650,7 +710,7 @@ def render_html(relative_prefix="./"):
 
     <section id="infra">
       <h2>🏭 AI 基础设施市场信号</h2>
-      <p>HBM、CoWoS、先进封装、GB/NVL 系统交付和云厂商资本开支共同决定高端卡可得性。TrendForce 的 CoWoS 缺口收敛与 Blackwell 出货占比提升信号说明，供给边际改善可能出现，但高端整机/机柜交付仍可能维持项目制和长协优先。</p>
+      <p>HBM、CoWoS、先进封装、GB/NVL 系统交付和云厂商资本开支共同决定高端卡可得性。TrendForce 的 CoWoS 缺口收敛与 Blackwell 出货占比提升信号仅作为供应链背景，不替代租赁或采购成交价格。</p>
     </section>
 
     <section id="coverage">
@@ -690,7 +750,7 @@ def render_html(relative_prefix="./"):
     <section id="ai-summary">
       <h2>🧠 AI 总结</h2>
       <div class="panel">
-        <p>今日全球算力市场呈现“Token 服务价格透明化、硬件租赁价格高端分化、国内 H100 现货偏紧、Blackwell 交付预期增强”的组合特征。未来一周价格压力方向仍偏上，尤其集中在 B200/H200/H100 等高端训练与推理卡；但 CoWoS 供给边际改善和新一代卡放量可能逐步压缩老卡溢价，采购端应优先核验真实交期、含税口径和长期利用率。</p>
+        <p>今日可用于 AI 总结的有效样本主要集中在官方 Token 定价、SMM H100 国内长租口径，以及 Lambda/RunPod 的海外公开 GPU Cloud 价格。对共识为 Low 或置信度不足的 GPU 租赁、采购和国产卡样本，本期不做上涨或下跌方向判断，只记录为待复核数据缺口。</p>
       </div>
     </section>
 
@@ -699,6 +759,7 @@ def render_html(relative_prefix="./"):
         <h2>Sources</h2>
         <ol>{sources_html}</ol>
       </div>
+      <p class="note">CMIS Daily {REPORT_VERSION} | Prompt {PROMPT_VERSION} | Freeze {FREEZE_DISPLAY}</p>
     </footer>
   </main>
   <script src="{relative_prefix}_shared/js/echarts.min.js"></script>
@@ -781,6 +842,86 @@ def write_charts():
     (OUT / "assets/charts.js").write_text(js, encoding="utf-8")
 
 
+def confidence_score(label: str) -> int:
+    return {"高": 90, "中": 75, "低": 55}.get(label, 55)
+
+
+def audit_records():
+    records, rejected = [], []
+
+    def add(record):
+        records.append(record)
+        if record["validate_status"] == "REJECT":
+            rejected.append(record)
+
+    for row in TOKEN_DATA:
+        score = confidence_score(row["置信度"])
+        status = "PASS" if score >= 70 and row["输入官方价（人民币/百万Token）"] is not None else "REJECT"
+        add({
+            "date": DATE, "freeze_time": FREEZE_TIME, "asset_type": "TOKEN_PRICE",
+            "gpu_or_model": row["模型"], "source": row["数据源"], "url": "", "title": row["厂商"],
+            "original_price": row["输入官方价（原币/百万Token）"], "original_unit": "原币/百万 Token",
+            "original_currency": "USD" if str(row["输入官方价（原币/百万Token）"]).startswith("USD") else "CNY",
+            "category": "TOKEN_PRICE", "normalized_price": row["输入官方价（人民币/百万Token）"],
+            "normalized_unit": "人民币/百万 Token", "formula": "USD×7.18=CNY；CNY 原币不换算",
+            "source_priority": "官方价格页/API 文档", "confidence": score,
+            "consensus": "High" if status == "PASS" else "Low", "historical_validation": "HIST_INSUFFICIENT",
+            "validate_status": status, "included_in_index": status == "PASS",
+            "reject_reason": "" if status == "PASS" else "官方价格缺失或置信度不足，保留行但不进入指数",
+            "notes": row["备注"],
+        })
+
+    for section_name, rows in [("GPU_RENT_CN", DOMESTIC_RENTAL), ("GPU_CLOUD", OVERSEAS_RENTAL)]:
+        for row in rows:
+            status = row["校验状态"]
+            add({
+                "date": DATE, "freeze_time": FREEZE_TIME, "asset_type": section_name,
+                "gpu_or_model": row["GPU 型号"], "source": row["主数据源"], "url": "", "title": row["口径说明"],
+                "original_price": row["原始价格"], "original_unit": row["原始单位"],
+                "original_currency": "CNY" if section_name == "GPU_RENT_CN" else "USD",
+                "category": row["category"], "normalized_price": row["标准化价格"], "normalized_unit": row["标准化单位"],
+                "formula": "国内已为 CNY/卡/小时；海外 USD/卡/小时×7.18=CNY/卡/小时；8卡月租=单卡小时价×8×24×30",
+                "source_priority": "SMM > IDC 一手 > 运营商" if section_name == "GPU_RENT_CN" else "ComputeStacker > RunPod > Lambda > Vast.ai",
+                "confidence": row["Confidence Score"], "consensus": row["Source Consensus"],
+                "historical_validation": row["Historical Validation"], "validate_status": status,
+                "included_in_index": status == "PASS" and row["Source Consensus"] != "Low",
+                "reject_reason": "" if status == "PASS" else "Confidence <70、价格缺失或口径无法核验",
+                "notes": row["备注"],
+            })
+
+    for row in GPU_PROCUREMENT:
+        status = "PASS" if row["置信度"] in ["高", "中"] and row["_mid_cost"] is not None else "REJECT"
+        add({
+            "date": DATE, "freeze_time": FREEZE_TIME, "asset_type": "GPU_PURCHASE",
+            "gpu_or_model": row["GPU 型号"], "source": row["单卡官方/权威价"], "url": "", "title": row["8 卡整机参考价"],
+            "original_price": row["单卡市场参考价区间"], "original_unit": "人民币/单卡或协议价", "original_currency": "CNY",
+            "category": "GPU_PURCHASE", "normalized_price": row["_mid_cost"], "normalized_unit": "人民币/单卡",
+            "formula": "区间中位数=(最低价+最高价)/2；协议价不计算",
+            "source_priority": "SMM/代理/整机厂商/招投标 > 公开渠道 > 估算",
+            "confidence": confidence_score(row["置信度"]), "consensus": "Medium" if status == "PASS" else "Low",
+            "historical_validation": "HIST_INSUFFICIENT", "validate_status": status, "included_in_index": False,
+            "reject_reason": "" if status == "PASS" else "采购价为低置信度、协议价不可见或来源不足，不进入主结论",
+            "notes": row["备注"],
+        })
+    return records, rejected
+
+
+def write_audit_files():
+    records, rejected = audit_records()
+    (OUT / "data" / f"audit_{DATE}.json").write_text(json.dumps({
+        "date": DATE,
+        "freeze_time": FREEZE_TIME,
+        "report_version": REPORT_VERSION,
+        "prompt_version": PROMPT_VERSION,
+        "records": records,
+    }, ensure_ascii=False, indent=2), encoding="utf-8")
+    (OUT / "data" / f"rejected_{DATE}.json").write_text(json.dumps({
+        "date": DATE,
+        "freeze_time": FREEZE_TIME,
+        "records": rejected,
+    }, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
 def write_index():
     reports = sorted(
         [p for p in (OUT / "reports").glob("*.html") if len(p.stem) == 10 and p.stem[:4].isdigit()],
@@ -790,6 +931,10 @@ def write_index():
     html = f"""<!-- Generated by Trae Work -->
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>CMIS Daily｜全球算力市场情报门户</title><style>
 @font-face{{font-family:InstrumentSans;src:url('./_shared/fonts/InstrumentSans-Regular.ttf')}}@font-face{{font-family:InstrumentSans;src:url('./_shared/fonts/InstrumentSans-Bold.ttf');font-weight:700}}@font-face{{font-family:JetBrainsMono;src:url('./_shared/fonts/JetBrainsMono-Regular.ttf')}}:root{{--bg:#07111f;--bg2:#101b2d;--ink:#ecf4ff;--muted:#9eb0c7;--rule:#23344f;--accent:#68e1fd;--accent2:#f7c76b}}*{{box-sizing:border-box}}body{{margin:0;background:radial-gradient(circle at 18% 0%,rgba(104,225,253,.22),transparent 34%),radial-gradient(circle at 88% 12%,rgba(247,199,107,.15),transparent 30%),var(--bg);color:var(--ink);font-family:InstrumentSans,system-ui,sans-serif;line-height:1.65}}a{{color:var(--accent);text-decoration:none}}main{{width:min(1180px,94vw);margin:0 auto;padding:44px 0 72px}}.eyebrow{{color:var(--accent2);font-family:JetBrainsMono,monospace;letter-spacing:.1em;text-transform:uppercase;font-size:12px}}h1{{font-size:clamp(38px,7vw,82px);line-height:1;margin:16px 0;letter-spacing:-.05em}}.lead{{max-width:820px;color:var(--muted);font-size:18px}}.hero{{padding:50px 0 28px;border-bottom:1px solid var(--rule)}}.actions{{display:flex;gap:14px;flex-wrap:wrap;margin:28px 0}}.btn{{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--rule);border-radius:999px;padding:12px 18px;background:rgba(255,255,255,.04);font-weight:700}}.btn.primary{{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#07111f;border:0}}.grid{{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:28px 0}}.card,.archive-item{{background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.018));border:1px solid var(--rule);border-radius:22px;padding:20px;box-shadow:0 20px 50px rgba(0,0,0,.24)}}.card b{{display:block;font-size:28px;color:var(--accent);margin:8px 0}}.card span,.archive-item span{{display:block;color:var(--muted);font-size:14px}}h2{{margin-top:44px;border-left:4px solid var(--accent);padding-left:14px}}.portal{{display:grid;grid-template-columns:1fr 1fr;gap:18px}}.archive{{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}}.archive-item a{{font-size:20px;font-weight:700}}.note{{color:var(--muted)}}code{{font-family:JetBrainsMono,monospace;color:var(--accent2)}}@media(max-width:900px){{main{{width:min(94vw,760px)}}.grid,.portal,.archive{{grid-template-columns:1fr}}.actions{{flex-direction:column}}.btn{{justify-content:center}}}}</style></head><body><main><section class="hero"><div class="eyebrow">Compute Market Intelligence System</div><h1>全球算力市场情报门户</h1><p class="lead">CMIS Daily 聚合 Token 服务价格、国内/海外算力租赁、GPU 采购价格、利润测算、供需监测和生命周期判断。GitHub Pages 仅用于静态托管与历史归档，日报运行由 TRAE 自动化执行。</p><div class="actions"><a class="btn primary" href="latest.html">打开最新日报</a><a class="btn" href="reports/{DATE}.html">查看今日归档</a><a class="btn" href="data/cmis_snapshot_{DATE}.json">下载今日数据</a></div></section><section class="grid"><article class="card"><span>最新日期</span><b>{DATE}</b><span>北京时间自动生成</span></article><article class="card"><span>固定入口</span><b>latest.html</b><span>适合飞书与手机端打开</span></article><article class="card"><span>价格口径</span><b>3 类</b><span>Token / 租赁 / 采购严格分离</span></article><article class="card"><span>归档数量</span><b>{len(reports)}</b><span>历史 HTML 报告</span></article></section><section class="portal"><article class="card"><h2>指标入口</h2><p class="note">报告包含今日摘要、Token Official vs Market、国内租赁、海外租赁、采购价格、利润测算、供需信号、Top 10+ 覆盖表、生命周期、趋势和 AI 总结。</p></article><article class="card"><h2>数据说明</h2><p class="note">国内租赁以 SMM 为主口径；海外小时价以 ComputeStacker 为主口径；Token 价格以官方定价为唯一 Official Price；采购价按官方/权威/市场/传闻/估算和置信度分层。</p></article></section><section><h2>历史归档</h2><div class="archive">{items}</div></section></main></body></html>"""
+    html = html.replace(
+        "</main></body></html>",
+        f"<footer style=\"margin-top:48px;color:var(--muted);border-top:1px solid var(--rule);padding-top:18px\">CMIS Daily {REPORT_VERSION} | Prompt {PROMPT_VERSION} | Freeze {FREEZE_DISPLAY}</footer></main></body></html>",
+    )
     (OUT / "index.html").write_text(html, encoding="utf-8")
 
 
@@ -809,14 +954,23 @@ if not url:
     raise SystemExit(0)
 
 text = f"""📌 全球算力市场情报日报
-日期：{date}
-核心摘要：
-1. Token 官方价、租赁价、采购价已分口径更新。
-2. 国内 H100 仍以 SMM 为主口径，现货供给偏紧。
-3. 海外 GPU 小时价以 ComputeStacker 为主口径，公开云价作校验。
-4. GPU 利润测算已按采购价、租赁价和利用率联动刷新。
-⚠️ 关键异动：首个样本日暂无真实环比，后续按 5% 价格阈值和 30% 库存阈值报警。
-🧠 AI总结：高端卡租赁仍受供给约束支撑，未来一周关注 B/H 系列交付与现货价格压力。
+📅 日期：{date}
+
+📈 GPU 租赁：
+国内 H100 8卡整机月租采用 SMM 主口径；低置信度卡型仅作待复核观察。
+
+💰 GPU 采购：
+采购价以低置信度和协议价缺口为主，本期不进入投资结论。
+
+🪙 Token 价格：
+OpenAI、DeepSeek 等官方 Token 价已按原币和人民币口径更新，缺失官方价保留为缺口。
+
+⚡ 关键异动：
+样本起始/延续日按七层校验写入审计；共识 Low 的数据不做方向性判断。
+
+🧠 AI 一句话：
+通过校验的数据支持 H100 长租口径仍处高位，其它分歧样本等待进一步确认。
+
 📊 完整报告：https://gavinzll.github.io/compute-market-report/latest.html?v={stamp}"""
 
 payload = json.dumps({"msg_type": "text", "content": {"text": text}}, ensure_ascii=False).encode("utf-8")
@@ -880,6 +1034,7 @@ def main():
                 history_rows.append(row)
     history_rows.append(SNAPSHOT)
     history_path.write_text("\n".join(json.dumps(row, ensure_ascii=False) for row in history_rows) + "\n", encoding="utf-8")
+    write_audit_files()
     write_charts()
     (OUT / "latest.html").write_text(render_html("./"), encoding="utf-8")
     (OUT / "reports" / f"{DATE}.html").write_text(render_html("../"), encoding="utf-8")
