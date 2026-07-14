@@ -410,6 +410,41 @@ SOURCES = [
         "url": "https://siliconflow.cn/pricing",
         "note": "境内三方模型价格基准，仅精确匹配模型写入精确价，近似匹配需标注。",
     },
+    {
+        "id": 53,
+        "tier": "国产云价/官方",
+        "title": "天翼云 GPU 云主机价格总览",
+        "url": "https://www.ctyun.cn/document/10029787/10047957",
+        "note": "用于寒武纪 PCH1 云实例价格与 1-3 年 8.5 折政策，云价折算不得伪装成整机长租成交价。",
+    },
+    {
+        "id": 54,
+        "tier": "国产云价/官方",
+        "title": "天翼云寒武纪计算加速型云主机规格",
+        "url": "https://www.ctyun.cn/document/10029787/10349603",
+        "note": "用于确认 PCH1 最大公开规格为 4×MLU370-S4，折算到 8卡云实例等效价。",
+    },
+    {
+        "id": 55,
+        "tier": "国产整机/配置",
+        "title": "金品 KG4208-H73 海光双路 8卡 GPU 服务器",
+        "url": "https://www.scsi.cn/newsarc/id/586.html",
+        "note": "用于确认海光平台 4U 双路 8卡国产化 GPU 服务器配置；未提供公开租赁价格。",
+    },
+    {
+        "id": 56,
+        "tier": "国产租赁/供给线索",
+        "title": "UCache 摩尔线程 S4000 8卡训推一体机租赁",
+        "url": "https://ucache.cn/enterprise/new/302.html",
+        "note": "用于确认摩尔线程 S4000 8卡训推一体机可租赁；未提供公开月租价格。",
+    },
+    {
+        "id": 57,
+        "tier": "国产规格/官方",
+        "title": "摩尔线程 MTT S4000 官方规格",
+        "url": "https://www.mthreads.com/product/S4000",
+        "note": "用于确认 MTT S4000 支持单机 8卡和多机多卡训练策略。",
+    },
 ]
 
 GPU_GROUPS = [
@@ -762,44 +797,44 @@ DOMESTIC_RENTAL_INPUT = {
         "note": "910B 子型号、形态和异地部署限制未拆清；因属于国产战略关注卡，按 SMM 区间中点进入国内指数展示，但不进入 ROI 或方向性结论。",
     },
     "寒武纪 MLU": {
-        "original": "未取得寒武纪 MLU 标准 8卡整机长租公开价；不再采用云主机单卡价 ×8。按国产战略关注低置信口径，以 910B 8卡整机月租区间为上锚，暂估 1.0 万元/8卡/月。",
-        "monthly_wan": 1.0,
-        "source": "寒武纪 MLU 8卡整机价格待补；以 910B 8卡整机月租为国产锚的低置信战略观察价",
-        "confidence": 38,
+        "original": "天翼云 PCH1 寒武纪云主机最大公开规格 pch1.21xlarge.3：84 vCPU / 252GB / 4×MLU370-S4 / 包月 24964.07 元；折算 8 卡云实例等效价=24964.07×2×0.85≈4.24 万元/月（国产计算加速型云主机 1-3 年 8.5 折）。",
+        "monthly_wan": 4.24,
+        "source": "天翼云 PCH1：4×MLU370-S4 云主机包月价折算为 8卡云实例等效价（非8卡整机长租成交价）",
+        "confidence": 62,
         "consensus": "Low",
         "historical": "HIST_INSUFFICIENT",
         "status": "REVIEW",
-        "note": "寒武纪 MLU 属于国产战略关注卡；当前未确认具体 8卡整机架构和长租价，禁止用云主机单卡价直接乘 8。暂按低置信 8卡整机战略观察价入图，继续补采精确报价。",
+        "note": "寒武纪 MLU 属于国产战略关注卡；当前价格基于天翼云明确 4卡云主机配置与包月价折算到 8卡云实例等效价，不是8卡整机长租成交价，需与SMM整机租赁价分开理解。",
     },
     "海光 DCU": {
-        "original": "未取得海光 DCU 标准 8卡整机长租公开价；不再采用单卡月租 ×8。按国产战略关注低置信口径，以 910B 8卡整机月租区间为上锚，暂估 1.1 万元/8卡/月。",
-        "monthly_wan": 1.1,
-        "source": "海光 DCU 8卡整机价格待补；以 910B 8卡整机月租为国产锚的低置信战略观察价",
+        "original": "已确认金品 KG4208-H73 为海光 7300 双路 4U 8卡国产化 GPU 服务器，支持 8×全高全长双宽 GPU 卡；未取得公开月租价。",
+        "monthly_wan": None,
+        "source": "金品 KG4208-H73 海光双路8卡服务器配置确认；公开租赁价格待补",
         "confidence": 35,
         "consensus": "Low",
         "historical": "HIST_INSUFFICIENT",
         "status": "REVIEW",
-        "note": "海光 DCU 属于国产战略关注卡；当前未确认具体 8卡整机架构和长租价，禁止用单卡月租直接乘 8。暂按低置信 8卡整机战略观察价入图，继续补采精确报价。",
+        "note": "海光 DCU 属于国产战略关注卡；已确认存在海光平台 8卡服务器架构，但没有可验证月租价，图表保留价格待补，不再使用单卡月租×8。",
     },
     "壁仞": {
-        "original": "未取得壁仞标准 8卡整机长租公开价；公开套餐未能确认型号、卡数和整机口径。按国产战略关注低置信口径，以 910B 8卡整机月租区间为上锚，暂估 0.9 万元/8卡/月。",
-        "monthly_wan": 0.9,
-        "source": "壁仞 8卡整机价格待补；以 910B 8卡整机月租为国产锚的低置信战略观察价",
+        "original": "已检索到壁仞 BR100/国产 GPU 租赁与服务器线索，但未确认具体型号、卡数、整机架构和公开月租价。",
+        "monthly_wan": None,
+        "source": "壁仞 8卡整机架构与公开租赁价格待补",
         "confidence": 30,
         "consensus": "Low",
         "historical": "HIST_INSUFFICIENT",
         "status": "REVIEW",
-        "note": "壁仞属于国产战略关注卡；当前未确认具体 8卡整机架构和长租价，不再使用未确认卡数/型号的高价套餐。暂按低置信 8卡整机战略观察价入图，继续补采精确报价。",
+        "note": "壁仞属于国产战略关注卡；当前未确认具体 8卡整机架构和公开月租价，图表保留价格待补，不再使用未确认卡数/型号的套餐价。",
     },
     "摩尔线程": {
-        "original": "UCache 公开页确认摩尔线程 S4000 8卡训推一体机可租赁，但未披露月租。按国产战略关注低置信口径，以 910B 8卡整机月租区间为上锚，暂估 0.8 万元/8卡/月。",
-        "monthly_wan": 0.8,
-        "source": "UCache 摩尔线程 S4000 8卡训推一体机供给线索；价格待补，低置信 8卡整机战略观察价",
+        "original": "UCache 公开页确认摩尔线程 S4000 8卡训推一体机可租赁；摩尔线程官方 S4000 支持单机8卡和多机多卡，但公开页未披露月租。",
+        "monthly_wan": None,
+        "source": "UCache 摩尔线程 S4000 8卡训推一体机租赁供给线索；公开租赁价格待补",
         "confidence": 30,
         "consensus": "Low",
         "historical": "HIST_INSUFFICIENT",
         "status": "REVIEW",
-        "note": "摩尔线程属于国产战略关注卡；公开来源确认 8卡供给但未披露价格。暂按低置信 8卡整机战略观察价入图，继续补采精确报价。",
+        "note": "摩尔线程属于国产战略关注卡；已确认 8卡 S4000 训推一体机供给与官方单机8卡能力，但未披露月租，图表保留价格待补。",
     },
 }
 
@@ -1146,7 +1181,7 @@ def render_html(relative_prefix: str = "./") -> str:
 
     <section id="domestic">
       <h2>国内算力租赁主指数</h2>
-      <p class="note">高置信样本仍要求 PASS 且 Confidence≥70；昇腾 910B、寒武纪 MLU、海光 DCU、壁仞、摩尔线程作为国产战略关注卡强制列入指数表和柱状图。置信度不足时标注 REVIEW，并以可追溯低置信参考价或等效 8卡月租占位，继续扩源。</p>
+      <p class="note">高置信样本仍要求 PASS 且 Confidence≥70；昇腾 910B、寒武纪 MLU、海光 DCU、壁仞、摩尔线程作为国产战略关注卡强制列入指数表和柱状图。寒武纪为天翼云 4卡实例折算的 8卡云价，海光/壁仞/摩尔线程因缺公开月租价仅显示价格待补，继续扩源。</p>
       <figure><figcaption>国内指数：万元/8卡整机/月，标签含海外同型号等效月租比例</figcaption><div id="chart-domestic-main" class="chart"></div></figure>
       {table(domestic_index_rows)}
     </section>
@@ -1188,7 +1223,7 @@ def render_html(relative_prefix: str = "./") -> str:
     <section id="ai-summary">
       <h2>AI 总结</h2>
       <div class="panel">
-        <p>本期国内服务器价格覆盖继续扩大：H100 80G 约 7.6 万元/8卡整机/月，A100 80G 约 3.15-3.8 万元/月，H20 141GB 约 4.8 万元/月，RTX 5090 约 1.2 万元/月，RTX 4090 约 0.68-0.88 万元/月，昇腾 910C 行业均价约 6.2 万元/月。昇腾 910B、寒武纪 MLU、海光 DCU、壁仞、摩尔线程已作为国产战略关注卡进入国内指数表和柱状图；其中低置信参考价不进入 ROI 或方向性价格判断，继续扩源。</p>
+        <p>本期国内服务器价格覆盖继续扩大：H100 80G 约 7.6 万元/8卡整机/月，A100 80G 约 3.15-3.8 万元/月，H20 141GB 约 4.8 万元/月，RTX 5090 约 1.2 万元/月，RTX 4090 约 0.68-0.88 万元/月，昇腾 910C 行业均价约 6.2 万元/月。昇腾 910B、寒武纪 MLU、海光 DCU、壁仞、摩尔线程已作为国产战略关注卡进入国内指数表和柱状图；寒武纪使用云实例折算口径，海光/壁仞/摩尔线程价格待补，不进入 ROI 或方向性价格判断。</p>
       </div>
     </section>
 
@@ -1203,7 +1238,7 @@ def render_html(relative_prefix: str = "./") -> str:
 
 
 def write_charts():
-    domestic_chart_rows = [r for r in DOMESTIC_RENTAL if domestic_index_status(r) and r["标准化价格"] is not None]
+    domestic_chart_rows = [r for r in DOMESTIC_RENTAL if domestic_index_status(r)]
     overseas_pass = [r for r in OVERSEAS_RENTAL if r["校验状态"] == "PASS"]
     validate_token_completeness()
     chart_tokens = TOKEN_DATA
@@ -1211,13 +1246,18 @@ def write_charts():
         return f'{row["厂商"]}\\n{row["模型"]}'
     def diff(a, b):
         return None if a is None or b is None else round(a - b, 2)
+    def domestic_chart_tag(row: dict) -> str:
+        if row["GPU 型号"] in STRATEGIC_DOMESTIC_GPUS and row["标准化价格"] is None:
+            return "价格待补"
+        if row["GPU 型号"] == "寒武纪 MLU":
+            return "云价折算"
+        if row["GPU 型号"] in STRATEGIC_DOMESTIC_GPUS and not pass_status(row):
+            return "低置信观察"
+        return row.get("国内月租/海外月租")
     data = {
         "domesticLabels": [r["GPU 型号"] for r in domestic_chart_rows],
-        "domesticValues": [r["标准化价格"] for r in domestic_chart_rows],
-        "domesticRatios": [
-            "低置信观察" if r["GPU 型号"] in STRATEGIC_DOMESTIC_GPUS and not pass_status(r) else r.get("国内月租/海外月租")
-            for r in domestic_chart_rows
-        ],
+        "domesticValues": [r["标准化价格"] if r["标准化价格"] is not None else 0 for r in domestic_chart_rows],
+        "domesticRatios": [domestic_chart_tag(r) for r in domestic_chart_rows],
         "overseasLabels": [r["GPU 型号"] for r in overseas_pass],
         "overseasValues": [r["标准化价格"] for r in overseas_pass],
         "tokenLabels": [token_label(r) for r in chart_tokens],
@@ -1255,10 +1295,10 @@ def write_charts():
       xAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}}}},
       yAxis:{{type:'value',name:name,nameTextStyle:{{color:muted}},axisLabel:{{color:muted}},splitLine:{{lineStyle:{{color:rule}}}}}},
       series:[{{type:'bar',data:values,label:{{show:true,position:'top',color:ink,formatter:function(p){{
-        var base = p.value + '万/月';
         var rawRatio = ratios && ratios[p.dataIndex] ? ratios[p.dataIndex] : '';
+        var base = rawRatio === '价格待补' ? '价格待补' : (p.value + '万/月');
         var ratio = rawRatio === '海外缺口' ? ' · 海外缺口' : (rawRatio && String(rawRatio).indexOf('%') >= 0 ? ' · 海外' + rawRatio : (rawRatio ? ' · ' + rawRatio : ''));
-        return base + ratio;
+        return rawRatio === '价格待补' ? base : base + ratio;
       }}}},itemStyle:{{borderRadius:[6,6,0,0]}}}}]
     }});
   }}
