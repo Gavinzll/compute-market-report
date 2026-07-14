@@ -467,6 +467,69 @@ SOURCES = [
         "url": "https://pdf.dfcfw.com/pdf/H3_AP202504111654883638_1.pdf",
         "note": "用于校验算力租赁按“每台服务器（含8张GPU）/台/月”计租的行业模型，并以 8卡 H100 设备五年租期月租 7万元作为租赁核价锚点之一。",
     },
+    {
+        "id": 61,
+        "tier": "采购/招投标",
+        "title": "郑州大学第一附属医院 8卡 GPU 服务器项目",
+        "url": "http://hnsggzyjy.henan.gov.cn/jyxx/002002/002002003/20260310/e8d630b0-3bb4-4760-875c-6742753deb55.html",
+        "note": "公开资源交易结果显示 8卡 GPU 服务器项目成交单价 149 万元，用于国产/通用 8卡服务器采购价低端锚点；需结合具体 GPU 型号使用。",
+    },
+    {
+        "id": 62,
+        "tier": "采购/招投标",
+        "title": "中国海洋大学八卡 GPU 服务器采购项目中标公告",
+        "url": "http://www.ccgp.gov.cn/cggg/zygg/zbgg/202501/t20250115_24069441.htm",
+        "note": "中标金额 119 万元，用于 8卡 GPU 服务器采购价低端样本；需解析具体 GPU 型号后才可提高置信度。",
+    },
+    {
+        "id": 63,
+        "tier": "采购/渠道报价",
+        "title": "超聚变 8U AI 8卡 H20 GPU 服务器渠道价",
+        "url": "https://pingjia.taobao.com/dHpXeXM5NmFwbjFqTklUZStWZ291Zz09.html",
+        "note": "公开渠道页显示 8卡 H20 96G/141G 服务器约 109 万元，用于 H20 采购价候选；电商渠道需降级为 Candidate。",
+    },
+    {
+        "id": 64,
+        "tier": "采购/渠道报价",
+        "title": "ZOL RTX 4090 8卡 AI 服务器报价",
+        "url": "https://detail.zol.com.cn/server/index2121071.shtml",
+        "note": "公开渠道页显示 RTX 4090 8卡服务器参考报价约 26 万元，用于消费级 8卡整机采购价锚点。",
+    },
+    {
+        "id": 65,
+        "tier": "采购/渠道报价",
+        "title": "1688 4090/5090 8卡 GPU 服务器报价",
+        "url": "http://m.1688.com/offer/919018240266.html",
+        "note": "公开渠道页显示 4090/5090 8卡一体机约 37-37.94 万元，用于消费级采购价上沿候选。",
+    },
+    {
+        "id": 66,
+        "tier": "采购/框架协议线索",
+        "title": "农业发展银行国产 GPU 服务器框架协议线索",
+        "url": "https://xueqiu.com/7686006657/337516792",
+        "note": "公开转述显示昇腾 910B 推理服务器 154.5 万元/台、训练服务器 212.2 万元/台、配件约 9.7 万元；用于 910B/910C 采购价候选，需继续追溯原始公告。",
+    },
+    {
+        "id": 67,
+        "tier": "采购/国产卡渠道",
+        "title": "海光 K100 GPU 卡采购价格线索",
+        "url": "https://jsj.nwpu.edu.cn/info/1599/25675.htm",
+        "note": "高校采购结果显示海光 K100 64GB GPU 卡单价 4.6 万元；另有公开渠道显示 8.4 万元/张，整机采购价需加服务器、网络、维保和集成费用。",
+    },
+    {
+        "id": 68,
+        "tier": "采购/国产卡渠道",
+        "title": "摩尔线程 MTT S4000 显卡报价",
+        "url": "http://detail.xa.zol.com.cn/detail/2161613/price/",
+        "note": "ZOL 公开报价显示 MTT S4000 参考价约 8.64 万元/张；需加服务器底座、网络、电源、维保形成 8卡整机采购价。",
+    },
+    {
+        "id": 69,
+        "tier": "采购/国产卡渠道",
+        "title": "摩尔线程 S4000 公开渠道价线索",
+        "url": "https://mobile-phone.taobao.com/chanpin/1ca179511e98d3df4d1359ff998a7792.html",
+        "note": "公开渠道页显示 MTT S4000 48GB 算力卡约 5.9-7.0 万元/张，用于摩尔线程 8卡整机采购价区间低端锚点。",
+    },
 ]
 
 GPU_GROUPS = [
@@ -993,29 +1056,74 @@ def overseas_rows() -> list[dict]:
 DOMESTIC_RENTAL = domestic_rows()
 OVERSEAS_RENTAL = overseas_rows()
 
-PROCUREMENT = [
-    {"GPU 型号": "H200", "GPU 分类": "Training", "采购成本口径": "BIZON 2卡水冷配置价", "8卡整机参考价": "不可直接折算；2x H200 NVL 加价 USD 99,000", "Confidence Score": 70, "校验状态": "AUXILIARY", "备注": "采购辅助报价，非 8卡 HGX 成交价，不进入 ROI。"},
-    {"GPU 型号": "H100 80G", "GPU 分类": "Training", "采购成本口径": "BIZON 2卡水冷配置价 + 国内招投标待补", "8卡整机参考价": "不可直接折算；2x H100 NVL 加价 USD 79,500", "Confidence Score": 70, "校验状态": "AUXILIARY", "备注": "采购辅助报价，需与国内招投标/整机渠道交叉。"},
-    {"GPU 型号": "A100 80G", "GPU 分类": "Training", "采购成本口径": "BIZON 2卡水冷配置价", "8卡整机参考价": "不可直接折算；2x A100 80GB 加价 USD 55,726", "Confidence Score": 70, "校验状态": "AUXILIARY", "备注": "采购辅助报价，非国内 8卡 HGX 主口径。"},
-    {"GPU 型号": "8卡 AI 服务器", "GPU 分类": "Training", "采购成本口径": "中国政府采购网/高校招投标", "8卡整机参考价": "需按中标公告逐条解析", "Confidence Score": 85, "校验状态": "CANDIDATE", "备注": "招投标可提高采购价覆盖率，但需解析具体 GPU 型号和数量。"},
-    {"GPU 型号": "RTX 5090", "GPU 分类": "Consumer", "采购成本口径": "公开渠道/电商/整机厂商待补", "8卡整机参考价": "需补采", "Confidence Score": 55, "校验状态": "CANDIDATE", "备注": "消费级价格波动大，必须单独标注渠道和税费。"},
-]
+PROCUREMENT_INPUT = {
+    "H100 80G": {"purchase_min_wan": 230, "purchase_mid_wan": 275, "purchase_max_wan": 320, "basis": "市场核价区间（估算）", "source": "BIZON H100/H200 配置价、公开 8卡 GPU 服务器中标样本、国内渠道核价", "confidence": 58, "status": "REVIEW", "note": "H100 8卡 HGX 国内采购价公开成交样本稀缺；本期按海外整机配置价、国内招投标通用 8卡服务器样本和渠道核价给出 230-320 万元区间。"},
+    "H20": {"purchase_min_wan": 100, "purchase_mid_wan": 120, "purchase_max_wan": 140, "basis": "三方渠道价/市场核价", "source": "超聚变 8U AI 8卡 H20 服务器渠道价约 109 万元；结合 H20 141GB 供需溢价核价", "confidence": 55, "status": "REVIEW", "note": "H20 8卡整机存在公开渠道价线索，但非政府中标或厂商官方报价；按 100-140 万元区间进入参考测算。"},
+    "A100 80G": {"purchase_min_wan": 90, "purchase_mid_wan": 115, "purchase_max_wan": 140, "basis": "市场核价区间（估算）", "source": "BIZON A100 80GB 配置价、国内 8卡 GPU 服务器中标样本、存量卡渠道价", "confidence": 55, "status": "REVIEW", "note": "A100 80G 已进入存量/二级市场，公开 8卡整机成交价分散；按 90-140 万元区间做采购成本参考。"},
+    "RTX 5090": {"purchase_min_wan": 28, "purchase_mid_wan": 34, "purchase_max_wan": 40, "basis": "三方渠道价", "source": "1688 4090/5090 8卡一体机约 37-37.94 万元，结合 RTX 5090 单卡溢价和整机集成成本核价", "confidence": 60, "status": "REVIEW", "note": "消费级 8卡整机渠道价波动大，需持续跟踪显卡现货与整机集成商报价。"},
+    "RTX 4090": {"purchase_min_wan": 18, "purchase_mid_wan": 23, "purchase_max_wan": 28, "basis": "三方渠道价", "source": "ZOL RTX 4090 8卡服务器约 26 万元、1688 4090/5090 一体机区间作交叉参考", "confidence": 62, "status": "REVIEW", "note": "RTX 4090 单卡与整机渠道充足，但税费、保修、供电散热和品牌差异明显；按 18-28 万元做参考测算。"},
+    "昇腾 910C": {"purchase_min_wan": 170, "purchase_mid_wan": 220, "purchase_max_wan": 270, "basis": "市场核价区间（估算）", "source": "昇腾 910B 框架协议价、910C 供需溢价和国产高端训练服务器市场核价", "confidence": 48, "status": "REVIEW", "note": "910C 明确 8卡整机采购成交价仍少；按 910B 框架协议训练服务器价格带上修估算，需继续追踪运营商和银行集采。"},
+    "昇腾 910B": {"purchase_min_wan": 155, "purchase_mid_wan": 190, "purchase_max_wan": 225, "basis": "框架协议线索/市场核价", "source": "农业发展银行国产 GPU 服务器框架协议线索：910B 推理服务器 154.5 万元/台、训练服务器 212.2 万元/台、配件约 9.7 万元", "confidence": 52, "status": "REVIEW", "note": "910B 采购价有框架协议线索，但原始公告仍需追溯；租赁端价格受 B2/B3/B4 子型号、库存和生态迁移影响，毛回本仅作风险观察。"},
+    "寒武纪 MLU": {"purchase_min_wan": 20, "purchase_mid_wan": 30, "purchase_max_wan": 40, "basis": "三方渠道价/市场核价", "source": "MLU370-S4/X8 公开卡价与国产 8卡整机渠道核价", "confidence": 40, "status": "REVIEW", "note": "寒武纪当前租赁价为云价折算，采购价按 MLU370 卡价和整机集成成本估算；二者口径不同，毛回本不进入 ROI 结论。"},
+    "海光 DCU": {"purchase_min_wan": 60, "purchase_mid_wan": 78, "purchase_max_wan": 95, "basis": "公开卡价/市场核价", "source": "海光 K100 64GB GPU 卡高校采购单价 4.6 万元、公开渠道 8.4 万元/张，加服务器底座和集成成本核价", "confidence": 56, "status": "REVIEW", "note": "海光 DCU 采购价按单卡公开价×8加整机底座、网络、电源、维保和集成成本估算；需继续补 8卡整机中标价。"},
+    "壁仞": {"purchase_min_wan": 60, "purchase_mid_wan": 80, "purchase_max_wan": 100, "basis": "市场核价区间（估算）", "source": "壁仞 BR100/BR104 8卡 OAM 服务器形态、国产高端训练卡可比价格、渠道核价", "confidence": 35, "status": "REVIEW", "note": "未取得壁仞 8卡整机公开采购价；按已确认 8卡 OAM 服务器形态和国产训练卡可比区间估算，需重点扩源。"},
+    "摩尔线程": {"purchase_min_wan": 65, "purchase_mid_wan": 80, "purchase_max_wan": 95, "basis": "公开卡价/市场核价", "source": "MTT S4000 公开报价约 5.9-8.64 万元/张，叠加 8卡服务器底座、网络、供电和维保核价", "confidence": 52, "status": "REVIEW", "note": "摩尔线程 8卡整机采购价按公开单卡价和整机集成成本估算；S5000/SGX5000 需继续查官方和集成商报价。"},
+}
+
+
+def procurement_rows() -> list[dict]:
+    rows = []
+    for rent in [r for r in DOMESTIC_RENTAL if domestic_index_status(r)]:
+        gpu = rent["GPU 型号"]
+        item = PROCUREMENT_INPUT.get(gpu, {"purchase_min_wan": None, "purchase_mid_wan": None, "purchase_max_wan": None, "basis": "待补", "source": "未采集到采购价来源", "confidence": 20, "status": "REVIEW", "note": "采购价待补，不能进入利润测算。"})
+        band = "暂不可得" if item["purchase_min_wan"] is None or item["purchase_max_wan"] is None else f'{fmt(item["purchase_min_wan"])}-{fmt(item["purchase_max_wan"])}'
+        rows.append({
+            "GPU 型号": gpu,
+            "GPU 分类": rent["GPU 分类"],
+            "采购价口径": item["basis"],
+            "采购价区间（万元/8卡整机）": band,
+            "采购价中位数（万元）": item["purchase_mid_wan"],
+            "采购数据源": item["source"],
+            "采购 Confidence": item["confidence"],
+            "采购校验状态": item["status"],
+            "采购备注": item["note"],
+        })
+    return rows
+
+
+PROCUREMENT = procurement_rows()
 
 
 def profit_rows() -> list[dict]:
     rows = []
-    domestic = {r["GPU 型号"]: r for r in DOMESTIC_RENTAL if pass_status(r)}
-    for p in PROCUREMENT:
-        gpu = p["GPU 型号"]
+    domestic = {r["GPU 型号"]: r for r in DOMESTIC_RENTAL if domestic_index_status(r)}
+    procurement = {r["GPU 型号"]: r for r in PROCUREMENT}
+    for gpu in [r["GPU 型号"] for r in DOMESTIC_RENTAL if domestic_index_status(r)]:
         rent = domestic.get(gpu)
-        if not rent or p["校验状态"] != "PASS":
-            rows.append({
-                "GPU 型号": gpu,
-                "租赁数据状态": rent["校验状态"] if rent else "无 PASS 租赁价",
-                "采购数据状态": p["校验状态"],
-                "是否进入 ROI": "否",
-                "结论": "采购价或租赁价未完全通过校验，仅保留为观察项。",
-            })
+        p = procurement.get(gpu)
+        rent_monthly = rent.get("标准化价格") if rent else None
+        purchase_mid = p.get("采购价中位数（万元）") if p else None
+        monthly_yield = None if rent_monthly is None or purchase_mid in (None, 0) else round(rent_monthly / purchase_mid * 100, 2)
+        payback = None if rent_monthly in (None, 0) or purchase_mid is None else round(purchase_mid / rent_monthly, 1)
+        strong_roi = bool(rent and p and pass_status(rent) and p["采购校验状态"] == "PASS" and p["采购 Confidence"] >= 70)
+        if strong_roi:
+            roi_status = "可进入 ROI"
+            conclusion = "租赁价与采购价均通过校验，可用于正式 ROI。"
+        else:
+            roi_status = "参考测算"
+            conclusion = "租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。"
+        rows.append({
+            "GPU 型号": gpu,
+            "租赁价格（万元/月）": rent_monthly,
+            "租赁价格口径": rent.get("价格口径") if rent else "无",
+            "采购价区间（万元）": p.get("采购价区间（万元/8卡整机）") if p else "暂不可得",
+            "采购价中位数（万元）": purchase_mid,
+            "采购价口径": p.get("采购价口径") if p else "待补",
+            "月租/采购价中位数": None if monthly_yield is None else f"{monthly_yield}%",
+            "毛回本（月）": payback,
+            "ROI 状态": roi_status,
+            "测算说明": conclusion,
+        })
     return rows
 
 
@@ -1251,7 +1359,10 @@ def render_html(relative_prefix: str = "./") -> str:
 
     <section id="profit">
       <h2>利润测算</h2>
-      <p class="note">利润测算必须同时满足租赁价格和采购价格通过校验。本期采购价未完成多源校验，因此 ROI 不生成方向性结论。</p>
+      <p class="note">利润测算覆盖范围与国内算力租赁指数保持一致。采购价按公开招投标/框架协议、三方渠道、自媒体线索和市场核价区间分层；本期先展示月租收入 ÷ 采购价中位数和毛回本月数，不含电力、机柜、网络、维保、资金成本、税费和空置率。凡租赁价或采购价仍为 REVIEW/估算口径的样本，仅作参考测算，不进入方向性 ROI 结论。</p>
+      <h3>采购价覆盖</h3>
+      {table(PROCUREMENT)}
+      <h3>毛回本参考</h3>
       {table(GPU_PROFIT)}
     </section>
 

@@ -164,6 +164,8 @@ SMM 价格分类规则：
 
 采购价用于 `GPU_PURCHASE / GPU_SYSTEM / GPU_CLUSTER / GPU_RACK`，不得和租赁价混用。招投标数据必须解析 GPU 型号、数量、服务器台数、是否含税、是否含维保、是否含网络/存储。
 
+利润测算覆盖的采购价型号必须与国内租赁指数覆盖范围一致。若某型号有租赁价但缺采购价，必须继续扩源；精确采购价不可得时，可以采用采购价市场核价区间，但必须写明区间、中位数、依据来源、置信度和不可审计边界。
+
 | 层级 | 来源 | URL | 用途 | 注意事项 |
 |---|---|---|---|---|
 | P0 政府 | 中国政府采购网 | http://www.ccgp.gov.cn/ | 中标公告、采购价 | 解析型号、数量、总价、税费 |
@@ -176,6 +178,8 @@ SMM 价格分类规则：
 | P2 渠道 | BIZON GPU Workstations/Servers | https://bizon-tech.com/ | 工作站/服务器公开配置价 | 多为 2卡/4卡，不可直接折 8卡 HGX |
 | P2 渠道 | Exxact GPU Systems | https://www.exxactcorp.com/ | 整机配置价 | 区分工作站和服务器 |
 | P2 渠道 | Thinkmate GPU Servers | https://www.thinkmate.com/ | 整机配置价 | 作为采购辅助 |
+| P2/P3 渠道 | ZOL、1688、淘宝、苏宁、e算商城 | 逐站点检索 | 消费级 8卡整机、国产卡单卡和服务器公开报价 | 只能作为三方渠道或 Candidate，需标注税费/保修/渠道不确定性 |
+| P2/P3 财经/社区 | 雪球、东方财富、CSDN、腾讯云开发者、商业新知 | 逐站点检索 | 国产 GPU 框架协议、集采、市场核价线索 | 必须追溯原始公告；未追溯前只作线索或市场核价依据 |
 
 ## 5. 运行时扩源顺序
 
@@ -184,5 +188,5 @@ SMM 价格分类规则：
 1. Token 官方价缺失：先检索厂商官方价格页和开发者文档，再查云平台官方计费页，最后用 LiteLLM / OpenRouter / models.dev / BenchLM / llmpricing / morph-llm 作为辅助。
 2. 海外 GPU Cloud 覆盖不足：先抓 RunPod、Lambda、Vast.ai、TensorDock、DataCrunch、CUDO，再用 Cloud-GPUs 和 GPUCloudPricing 补齐 provider 与中位价。
 3. 国内主指数 PASS 少于 3，或国产战略关注卡缺价格：先查 SMM 和 IDC/运营商线索，再查国内云厂商包月/包年、AutoDL/矩池云等辅助价，最后查招投标、集成商、国产智算中心和媒体线索。
-4. 采购价不足：先查政府采购/高校招标，再查整机厂商和渠道配置价，最后查媒体/研报。
+4. 采购价不足：先查政府采购/高校招标、运营商/银行/央国企框架协议和中标公告，再查整机厂商和渠道配置价，最后查媒体/研报/社区线索；若精确采购价不可得但配置或单卡价可确认，形成市场核价区间并标注估算。
 5. 任一数据无法确认单位、GPU 数、地区或税费时，不得进入主指数；保留到 `Candidate Samples` 或 `Rejected Samples`。
