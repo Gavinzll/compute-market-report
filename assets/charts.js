@@ -10,7 +10,7 @@
   function init(id, option) {
     var el = document.getElementById(id);
     if (!el || !window.echarts) return;
-    var c = echarts.init(el, undefined, {renderer:'svg'});
+    var c = echarts.init(el, undefined, {renderer:'svg', width:'auto', height:el.offsetHeight || 'auto'});
     c.setOption(option);
     window.addEventListener('resize', function(){c.resize();});
   }
@@ -59,9 +59,9 @@
         color:legend ? legend.map(function(k){return domesticPalette[k] || color;}) : [color],
         tooltip:{trigger:'axis', appendToBody:true},
         legend:legend ? {top:0,textStyle:{color:muted}} : undefined,
-        grid:{left:150,right:170,top:legend?82:50,bottom:32,containLabel:true},
-        yAxis:{type:'category',data:labels,axisLabel:{color:muted,interval:0,fontSize:11},axisLine:{lineStyle:{color:rule}},axisTick:{show:false},inverse:true},
-        xAxis:{type:'value',name:'',axisLabel:{color:muted,fontSize:11},splitLine:{lineStyle:{color:rule}}},
+        grid:{left:108,right:92,top:legend?72:44,bottom:24,containLabel:true},
+        yAxis:{type:'category',data:labels,axisLabel:{color:muted,interval:0,fontSize:10,width:96,overflow:'truncate'},axisLine:{lineStyle:{color:rule}},axisTick:{show:false},inverse:true,position:'left',offset:0},
+        xAxis:{type:'value',name:'',axisLabel:{color:muted,fontSize:10},splitLine:{lineStyle:{color:rule}}},
         series:series
       });
     } else {
@@ -85,9 +85,9 @@
         color:[accent, accent2, muted],
         tooltip:{trigger:'axis', appendToBody:true},
         legend:{top:0,textStyle:{color:muted}},
-        grid:{left:170,right:120,top:64,bottom:40,containLabel:true},
-        yAxis:{type:'category',data:labels,axisLabel:{color:muted,interval:0,fontSize:11},axisLine:{lineStyle:{color:rule}},axisTick:{show:false},inverse:true},
-        xAxis:{type:'value',name:'',axisLabel:{color:muted,fontSize:11},splitLine:{lineStyle:{color:rule}}},
+        grid:{left:108,right:92,top:56,bottom:32,containLabel:true},
+        yAxis:{type:'category',data:labels,axisLabel:{color:muted,interval:0,fontSize:10,width:96,overflow:'truncate'},axisLine:{lineStyle:{color:rule}},axisTick:{show:false},inverse:true,position:'left',offset:0},
+        xAxis:{type:'value',name:'',axisLabel:{color:muted,fontSize:10},splitLine:{lineStyle:{color:rule}}},
         series:s
       });
     } else {
@@ -108,9 +108,9 @@
       init(id, {
         animation:false,
         tooltip:{trigger:'axis', appendToBody:true},
-        grid:{left:170,right:120,top:50,bottom:40,containLabel:true},
-        yAxis:{type:'category',data:labels,axisLabel:{color:muted,interval:0,fontSize:11},axisLine:{lineStyle:{color:rule}},axisTick:{show:false},inverse:true},
-        xAxis:{type:'value',name:'',axisLabel:{color:muted,fontSize:11},splitLine:{lineStyle:{color:rule}}},
+        grid:{left:108,right:92,top:44,bottom:32,containLabel:true},
+        yAxis:{type:'category',data:labels,axisLabel:{color:muted,interval:0,fontSize:10,width:96,overflow:'truncate'},axisLine:{lineStyle:{color:rule}},axisTick:{show:false},inverse:true,position:'left',offset:0},
+        xAxis:{type:'value',name:'',axisLabel:{color:muted,fontSize:10},splitLine:{lineStyle:{color:rule}}},
         series:[{name:name,type:'bar',data:values,itemStyle:{borderRadius:[0,4,4,0],color:function(p){return p.value >= 0 ? accent : accent2;}},label:{show:true,position:'right',color:ink,formatter:function(p){return p.value === undefined ? '' : p.value;}}}]
       });
     } else {

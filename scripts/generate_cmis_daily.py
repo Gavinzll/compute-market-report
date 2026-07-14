@@ -1515,8 +1515,8 @@ def render_mobile_html(relative_prefix: str = "./", desktop_href: str = "latest.
     .pill-row{{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}}
     .pill{{display:inline-flex;gap:5px;align-items:center;padding:5px 8px;border:1px solid var(--rule);border-radius:999px;background:rgba(255,255,255,.035);font-size:11px;color:var(--ink)}}
     .pill b{{color:var(--muted);font-weight:600}}
-    figure{{padding:12px;margin:12px 0 18px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}} figcaption{{font-size:13px;color:var(--accent2);font-weight:650;margin-bottom:8px;position:sticky;left:0}}
-    .chart{{width:820px;min-width:820px;min-height:390px}} #chart-token-input,#chart-token-output,#chart-token-third-diff,#chart-token-official-domestic-diff{{width:980px;min-width:980px;min-height:720px}}
+    figure{{padding:12px;margin:12px 0 18px}} figcaption{{font-size:13px;color:var(--accent2);font-weight:650;margin-bottom:8px}}
+    .chart{{width:100%;min-height:420px}} #chart-token-input,#chart-token-output,#chart-token-third-diff,#chart-token-official-domestic-diff{{min-height:720px}}
     details{{padding:0;margin:10px 0}} summary{{cursor:pointer;padding:14px;font-weight:700;color:var(--accent2)}} details[open] summary{{border-bottom:1px solid var(--rule)}}
     .details-body{{padding:8px 12px 12px}}
     .quick-nav{{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;gap:6px;overflow:auto;padding:8px 12px calc(8px + env(safe-area-inset-bottom));background:rgba(7,17,31,.95);border-top:1px solid var(--rule);backdrop-filter:blur(12px)}}
@@ -1638,7 +1638,7 @@ def write_charts():
   function init(id, option) {{
     var el = document.getElementById(id);
     if (!el || !window.echarts) return;
-    var c = echarts.init(el, undefined, {{renderer:'svg'}});
+    var c = echarts.init(el, undefined, {{renderer:'svg', width:'auto', height:el.offsetHeight || 'auto'}});
     c.setOption(option);
     window.addEventListener('resize', function(){{c.resize();}});
   }}
@@ -1687,9 +1687,9 @@ def write_charts():
         color:legend ? legend.map(function(k){{return domesticPalette[k] || color;}}) : [color],
         tooltip:{{trigger:'axis', appendToBody:true}},
         legend:legend ? {{top:0,textStyle:{{color:muted}}}} : undefined,
-        grid:{{left:150,right:170,top:legend?82:50,bottom:32,containLabel:true}},
-        yAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0,fontSize:11}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}},inverse:true}},
-        xAxis:{{type:'value',name:'',axisLabel:{{color:muted,fontSize:11}},splitLine:{{lineStyle:{{color:rule}}}}}},
+        grid:{{left:108,right:92,top:legend?72:44,bottom:24,containLabel:true}},
+        yAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0,fontSize:10,width:96,overflow:'truncate'}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}},inverse:true,position:'left',offset:0}},
+        xAxis:{{type:'value',name:'',axisLabel:{{color:muted,fontSize:10}},splitLine:{{lineStyle:{{color:rule}}}}}},
         series:series
       }});
     }} else {{
@@ -1713,9 +1713,9 @@ def write_charts():
         color:[accent, accent2, muted],
         tooltip:{{trigger:'axis', appendToBody:true}},
         legend:{{top:0,textStyle:{{color:muted}}}},
-        grid:{{left:170,right:120,top:64,bottom:40,containLabel:true}},
-        yAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0,fontSize:11}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}},inverse:true}},
-        xAxis:{{type:'value',name:'',axisLabel:{{color:muted,fontSize:11}},splitLine:{{lineStyle:{{color:rule}}}}}},
+        grid:{{left:108,right:92,top:56,bottom:32,containLabel:true}},
+        yAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0,fontSize:10,width:96,overflow:'truncate'}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}},inverse:true,position:'left',offset:0}},
+        xAxis:{{type:'value',name:'',axisLabel:{{color:muted,fontSize:10}},splitLine:{{lineStyle:{{color:rule}}}}}},
         series:s
       }});
     }} else {{
@@ -1736,9 +1736,9 @@ def write_charts():
       init(id, {{
         animation:false,
         tooltip:{{trigger:'axis', appendToBody:true}},
-        grid:{{left:170,right:120,top:50,bottom:40,containLabel:true}},
-        yAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0,fontSize:11}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}},inverse:true}},
-        xAxis:{{type:'value',name:'',axisLabel:{{color:muted,fontSize:11}},splitLine:{{lineStyle:{{color:rule}}}}}},
+        grid:{{left:108,right:92,top:44,bottom:32,containLabel:true}},
+        yAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0,fontSize:10,width:96,overflow:'truncate'}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}},inverse:true,position:'left',offset:0}},
+        xAxis:{{type:'value',name:'',axisLabel:{{color:muted,fontSize:10}},splitLine:{{lineStyle:{{color:rule}}}}}},
         series:[{{name:name,type:'bar',data:values,itemStyle:{{borderRadius:[0,4,4,0],color:function(p){{return p.value >= 0 ? accent : accent2;}}}},label:{{show:true,position:'right',color:ink,formatter:function(p){{return p.value === undefined ? '' : p.value;}}}}}}]
       }});
     }} else {{
