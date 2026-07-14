@@ -53,16 +53,6 @@ def build_summary(data):
     overseas_pass = [r for r in overseas if r.get("校验状态") == "PASS"]
     token_vendors = sorted({r.get("厂商") for r in token if r.get("厂商")})
     token_pass = [r for r in token if r.get("校验状态") == "PASS"]
-    h100 = next((r for r in domestic_index if r.get("GPU 型号") == "H100 80G"), None)
-
-    h100_price = fmt(h100.get("标准化价格") if h100 else None, " 万元/8卡整机/月")
-    h100_ratio = h100.get("国内月租/海外月租") if h100 else None
-    if isinstance(h100_ratio, str) and h100_ratio.endswith("%"):
-        h100_ratio_text = f"，约为海外等效月租的 {h100_ratio}"
-    elif isinstance(h100_ratio, (int, float)):
-        h100_ratio_text = f"，约为海外等效月租的 {h100_ratio * 100:.1f}%"
-    else:
-        h100_ratio_text = "，海外同型号对照暂缺"
 
     strategic_text = "无"
     if strategic_watch:
@@ -72,49 +62,72 @@ def build_summary(data):
         strategic_text = names
 
     review_total = len([r for r in audit if r.get("validate_status") in {"REVIEW", "REJECT"}]) or len(rejected)
-    token_min = min(
-        (
-            r.get("输入官方价（人民币/百万Token）")
-            for r in token
-            if isinstance(r.get("输入官方价（人民币/百万Token）"), (int, float))
-            and r.get("输入官方价（人民币/百万Token）") > 0
-        ),
-        default=None,
-    )
-    token_max = max(
-        (r.get("输出官方价（人民币/百万Token）") for r in token if isinstance(r.get("输出官方价（人民币/百万Token）"), (int, float))),
-        default=None,
-    )
 
     return {
         "freeze_time": data.get("freeze_time", "未记录"),
         "report_version": data.get("report_version", "unknown"),
-        "gpu_line": f"国内指数展示 {len(domestic_index)} 个型号，其中 PASS 主口径 {len(domestic_pass)} 个；H100 为 {h100_price}{h100_ratio_text}。",
-        "overseas_line": f"海外 GPU Cloud PASS 参考 {len(overseas_pass)} 个型号，仅作海外对照，不进入国内租赁主指数。",
-        "token_line": f"Token 覆盖 {len(token_vendors)} 家厂商、{len(token)} 个模型，PASS {len(token_pass)} 个；官方输入最低 {fmt(token_min, ' 元/百万Token')}，官方输出最高 {fmt(token_max, ' 元/百万Token')}。",
+        "gpu_line": f"国内指数展示 {len(domestic_index)} 个型号，PASS 主口径 {len(domestic_pass)} 个；海外 GPU Cloud PASS 参考 {len(overseas_pass)} 个型号。",
+        "token_line": f"Token 覆盖 {len(token_vendors)} 家厂商、{len(token)} 个模型，PASS {len(token_pass)} 个。",
         "risk_line": f"待复核/审计样本 {review_total} 条；国产战略关注观察样本：{strategic_text}。",
     }
+
+
+def build_notable_links(data, max_items=5):
+    sources = data.get("sources", [])
+    keyword_score = {
+        "主口径": 100,
+        "官方": 90,
+        "海外云价": 80,
+        "Token": 75,
+        "采购": 65,
+        "聚合源": 55,
+        "Marketplace": 50,
+    }
+    items = []
+    seen = set()
+    for source in sources:
+        url_value = source.get("url")
+        title = source.get("title")
+        if not url_value or not title or url_value in seen:
+            continue
+        seen.add(url_value)
+        tier = source.get("tier", "")
+        note = source.get("note", "")
+        text = f"{tier} {title} {note}"
+        score = max((score for key, score in keyword_score.items() if key in text), default=10)
+        items.append((score, source.get("id", 9999), tier, title, url_value))
+
+    items.sort(key=lambda x: (-x[0], x[1]))
+    selected = items[:max_items]
+    if not selected:
+        return "暂无可展示链接。"
+    lines = []
+    for _, _, tier, title, url_value in selected:
+        prefix = f"{tier}｜" if tier else ""
+        lines.append(f"- {prefix}{title}\n  {url_value}")
+    return "\n".join(lines)
 
 
 data = load_snapshot()
 if data:
     summary = build_summary(data)
+    notable_links = build_notable_links(data)
     text = f"""📌 全球算力市场情报日报
 📅 日期：{date}
 🧊 Freeze：{summary["freeze_time"]}
 🏷️ 版本：{summary["report_version"]}
 
-📈 GPU 租赁：
+📈 GPU / 算力：
 {summary["gpu_line"]}
-
-🌍 海外参考：
-{summary["overseas_line"]}
 
 🪙 Token 价格：
 {summary["token_line"]}
 
 ⚡ 待复核：
 {summary["risk_line"]}
+
+📰 今日值得看：
+{notable_links}
 
 📊 完整报告：https://gavinzll.github.io/compute-market-report/latest.html?v={stamp}"""
 else:
