@@ -19,9 +19,15 @@ Collect → Classify → Normalize → Validate → Publish
 - `Candidate Samples`：尚未完成交叉验证但有来源、有原文、有口径说明的数据，用于后续校验和人工复核。
 - `Rejected Samples`：分类错误、单位错误、历史波动异常、低可信度或来源不可追溯的数据，只用于审计。
 
+GPU 名单管理规则：
+
+- `GPU_ORDER` 为基线名单（当前 20 张卡），确保每期至少覆盖这些型号。该名单不是上限——每次运行采集时若发现市场上出现新的算力卡（如 NVIDIA 新架构、国产新厂商、新系列），必须将其纳入 `Candidate Samples` 并记录来源；连续 3 期均有可追溯数据的新卡应升级加入 `GPU_ORDER`，同时更新脚本中的 `GPU_GROUPS`、`GPU_ORDER`、`GPU_CLASS` 和相关采购价/租赁价配置。
+- 新卡纳入标准：① 有明确 GPU 型号和显存规格；② 至少有一个可追溯的价格来源（官方、渠道、招投标、媒体）；③ 不再是仅以 rumor/概念形态存在的未发布产品。
+- 国产新卡自动适用战略关注逻辑：新纳入的国产 GPU 如果缺乏标准 8卡整机长租成交价，应按"市场核价区间"或"价格待补"处理，不得编造占位价。
+
 最低覆盖率要求：
 
-- GPU 固定名单覆盖率不得低于 80%。覆盖的定义不是全部进入主指数，而是每个 GPU 至少要有一条可解释的数据状态：`PASS`、`Auxiliary`、`Candidate`、`Rejected` 或 `Missing with searched sources`。
+- GPU 基线名单覆盖率不得低于 80%。覆盖的定义不是全部进入主指数，而是每个 GPU 至少要有一条可解释的数据状态：`PASS`、`Auxiliary`、`Candidate`、`Rejected` 或 `Missing with searched sources`。
 - Token 厂商覆盖率不得低于 80%。官方价缺失时必须记录已检索的官方页、云平台页或失败原因。
 - 国内主指数 PASS 样本如果少于 3 个，必须触发扩源补采，不得只输出一张空主图。
 - 海外 GPU Cloud PASS/Auxiliary 样本如果少于 8 个，必须扩展 RunPod、Lambda、Vast.ai、CoreWeave、Nebius、Crusoe、Oracle OCI、Paperspace、Fluidstack、DataCrunch 等来源。
