@@ -43,7 +43,7 @@
     });
     var series = [];
     var legend = legendForKinds(kinds);
-    var labelPos = isMobile ? 'right' : 'top';
+    var labelPos = isMobile ? 'insideRight' : 'top';
     if (legend) {
       series = legend.map(function(kind) {
         return {name:kind,type:'bar',data:seriesData.map(function(d, i){return kinds[i] === kind ? d : null;}),barGap:'-100%',label:{show:true,position:labelPos,color:ink,fontSize:isMobile?11:12,formatter:function(p){return formatBarLabel(p, ratios);}},itemStyle:{borderRadius:isMobile?[0,6,6,0]:[6,6,0,0]}};
@@ -59,7 +59,7 @@
         color:legend ? legend.map(function(k){return domesticPalette[k] || color;}) : [color],
         tooltip:{trigger:'axis', appendToBody:true},
         legend:legend ? {top:0,textStyle:{color:muted}} : undefined,
-        grid:{left:108,right:92,top:legend?72:44,bottom:24,containLabel:true},
+        grid:{left:68,right:10,top:legend?62:36,bottom:20,containLabel:false},
         yAxis:{type:'category',data:labels,axisLabel:{color:muted,interval:0,fontSize:10,width:96,overflow:'truncate'},axisLine:{lineStyle:{color:rule}},axisTick:{show:false},inverse:true,position:'left',offset:0},
         xAxis:{type:'value',name:'',axisLabel:{color:muted,fontSize:10},splitLine:{lineStyle:{color:rule}}},
         series:series
@@ -85,8 +85,8 @@
         color:[accent, accent2, muted],
         tooltip:{trigger:'axis', appendToBody:true},
         legend:{top:0,textStyle:{color:muted}},
-        grid:{left:108,right:92,top:56,bottom:32,containLabel:true},
-        yAxis:{type:'category',data:labels,axisLabel:{color:muted,interval:0,fontSize:10,width:96,overflow:'truncate'},axisLine:{lineStyle:{color:rule}},axisTick:{show:false},inverse:true,position:'left',offset:0},
+        grid:{left:68,right:10,top:50,bottom:28,containLabel:false},
+        yAxis:{type:'category',data:labels,axisLabel:{color:muted,interval:0,fontSize:10,width:60,overflow:'truncate'},axisLine:{lineStyle:{color:rule}},axisTick:{show:false},inverse:true,position:'left',offset:0},
         xAxis:{type:'value',name:'',axisLabel:{color:muted,fontSize:10},splitLine:{lineStyle:{color:rule}}},
         series:s
       });
@@ -108,8 +108,8 @@
       init(id, {
         animation:false,
         tooltip:{trigger:'axis', appendToBody:true},
-        grid:{left:108,right:92,top:44,bottom:32,containLabel:true},
-        yAxis:{type:'category',data:labels,axisLabel:{color:muted,interval:0,fontSize:10,width:96,overflow:'truncate'},axisLine:{lineStyle:{color:rule}},axisTick:{show:false},inverse:true,position:'left',offset:0},
+        grid:{left:68,right:10,top:40,bottom:28,containLabel:false},
+        yAxis:{type:'category',data:labels,axisLabel:{color:muted,interval:0,fontSize:10,width:60,overflow:'truncate'},axisLine:{lineStyle:{color:rule}},axisTick:{show:false},inverse:true,position:'left',offset:0},
         xAxis:{type:'value',name:'',axisLabel:{color:muted,fontSize:10},splitLine:{lineStyle:{color:rule}}},
         series:[{name:name,type:'bar',data:values,itemStyle:{borderRadius:[0,4,4,0],color:function(p){return p.value >= 0 ? accent : accent2;}},label:{show:true,position:'right',color:ink,formatter:function(p){return p.value === undefined ? '' : p.value;}}}]
       });
