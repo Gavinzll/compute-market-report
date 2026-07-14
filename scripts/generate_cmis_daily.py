@@ -810,6 +810,9 @@ DOMESTIC_RENTAL_INPUT = {
     "昇腾 910B": {
         "original": "SMM 样本：910B2 月租约 1.2-1.5 万元，但存在 B2/B3/B4 子型号和搬迁限制差异",
         "monthly_wan": 1.35,
+        "price_basis": "低置信观察",
+        "price_band": "1.2-1.5",
+        "price_refresh_rule": "每日优先检索 SMM、运营商、IDC、集成商和国产智算中心明确 8卡整机月租；若出现更高置信公开价，替换当前 SMM 区间中位数；否则沿用低置信观察价并保持 REVIEW。",
         "source": "SMM 算力直播（子型号待拆）",
         "confidence": 68,
         "consensus": "Low",
@@ -822,6 +825,7 @@ DOMESTIC_RENTAL_INPUT = {
         "monthly_wan": 4.24,
         "price_basis": "云价折算",
         "price_band": "云价折算 4.24；裸机市场核价 2.8-3.8",
+        "price_refresh_rule": "每日优先检索寒武纪 MLU 8卡整机/裸机长租公开价；若找到明确市场价，用公开市场价替代云价折算；若未找到，继续使用天翼云 4卡云实例折算价，并保留裸机市场核价区间作参考。",
         "source": "天翼云 PCH1：4×MLU370-S4 云主机包月价折算为 8卡云实例等效价（非8卡整机长租成交价）",
         "confidence": 62,
         "consensus": "Low",
@@ -834,6 +838,7 @@ DOMESTIC_RENTAL_INPUT = {
         "monthly_wan": 4.0,
         "price_basis": "市场核价区间（估算）",
         "price_band": "3.5-4.5",
+        "price_refresh_rule": "每日优先检索海光 DCU 8卡整机、裸机、智算中心或集成商明确月租；若找到公开市场价，按来源置信度更新价格口径和标准化价格；若未找到，沿用 3.5-4.5 万元/月市场核价区间，中位数入图。",
         "source": "金品 KG4208-H73 海光双路8卡服务器配置确认；行业租赁模型与国产裸机可比区间核价（非公开成交价）",
         "confidence": 48,
         "consensus": "Low",
@@ -846,6 +851,7 @@ DOMESTIC_RENTAL_INPUT = {
         "monthly_wan": 4.3,
         "price_basis": "市场核价区间（估算）",
         "price_band": "3.8-4.8",
+        "price_refresh_rule": "每日优先检索壁仞 BR100/BR104 8卡 OAM 整机、裸机或智算中心明确月租；若找到公开市场价，替换估算区间中位数；若未找到，沿用 3.8-4.8 万元/月市场核价区间，中位数入图。",
         "source": "壁仞 BR100/BR104 8卡 OAM 服务器形态确认；行业租赁模型与国产高端训练卡可比区间核价（非公开成交价）",
         "confidence": 48,
         "consensus": "Low",
@@ -858,6 +864,7 @@ DOMESTIC_RENTAL_INPUT = {
         "monthly_wan": 3.5,
         "price_basis": "市场核价区间（估算）",
         "price_band": "3.0-4.0",
+        "price_refresh_rule": "每日优先检索摩尔线程 S4000/S5000 8卡训推一体机、裸机或智算中心明确月租；若找到公开市场价，替换估算区间中位数；若未找到，沿用 3.0-4.0 万元/月市场核价区间，中位数入图。",
         "source": "UCache S4000 8卡训推一体机租赁供给、摩尔线程 S4000 官方单机8卡能力、Gitee AI S5000 8卡互联规格；市场核价区间（非公开成交价）",
         "confidence": 50,
         "consensus": "Low",
@@ -930,6 +937,7 @@ def domestic_rows() -> list[dict]:
             "原始价格": item["original"],
             "价格口径": item.get("price_basis", "公开成交/主口径价" if status == "PASS" else "待复核"),
             "核价区间（万元/月）": item.get("price_band", ""),
+            "价格更新规则": item.get("price_refresh_rule", "每日优先检索更高置信的新报价；若无新来源，沿用当前主口径样本并保留审计备注。"),
             "标准化价格": None if monthly is None else monthly,
             "标准化单位": "万元/8卡整机/月",
             "等效单卡小时价（人民币）": hourly,
@@ -1200,7 +1208,7 @@ def render_html(relative_prefix: str = "./") -> str:
       <h2>今日结论</h2>
       <div class="panel">
         <p>本版采用“主指数严格、战略关注不断档、估算分层标注”的结构：通过校验的国内 8卡整机月租继续作为高置信主样本；昇腾 910B、寒武纪 MLU、海光 DCU、壁仞、摩尔线程作为国产战略关注卡，即使置信度不足也进入国内指数表展示，但标注 REVIEW，不进入 ROI 或方向性结论。</p>
-        <p>国产战略 GPU 的价格口径拆成三层：公开成交/主口径价、云价折算、市场核价区间（估算）。市场核价只在已确认配置或 8卡形态后，结合行业“按每台8卡服务器/月计租”模型、公开云价/租赁线索和可比价格带给出区间，不得冒充公开成交价。</p>
+        <p>国产战略 GPU 的价格口径拆成三层：公开成交/主口径价、云价折算、市场核价区间（估算）。每日运行时应先检索新出现的明确市场价格；若找到更高置信的 8卡整机/裸机/月租样本，更新标准化价格；若没有新样本，则沿用既有市场核价区间和中位数，不得冒充公开成交价。</p>
       </div>
     </section>
 
@@ -1212,8 +1220,8 @@ def render_html(relative_prefix: str = "./") -> str:
 
     <section id="domestic">
       <h2>国内算力租赁主指数</h2>
-      <p class="note">高置信样本仍要求 PASS 且 Confidence≥70；昇腾 910B、寒武纪 MLU、海光 DCU、壁仞、摩尔线程作为国产战略关注卡强制列入指数表和柱状图。寒武纪为天翼云 4卡实例折算的 8卡云价；海光/壁仞/摩尔线程采用市场核价区间中位数入图，并在表格中显示区间与依据，均不得视作公开成交价。</p>
-      <figure><figcaption>国内指数：万元/8卡整机/月；公开价、云价折算和市场核价分层展示</figcaption><div id="chart-domestic-main" class="chart"></div></figure>
+      <p class="note">高置信样本仍要求 PASS 且 Confidence≥70；昇腾 910B、寒武纪 MLU、海光 DCU、壁仞、摩尔线程作为国产战略关注卡强制列入指数表和柱状图。寒武纪为天翼云 4卡实例折算的 8卡云价；海光/壁仞/摩尔线程采用市场核价区间中位数入图，并在表格中显示区间、依据和价格更新规则。柱状图按价格口径分色：主口径、低置信观察、云价折算、市场核价和价格待补分别展示。</p>
+      <figure><figcaption>国内指数：万元/8卡整机/月；颜色区分主口径、低置信观察、云价折算与市场核价</figcaption><div id="chart-domestic-main" class="chart"></div></figure>
       {table(domestic_index_rows)}
     </section>
 
@@ -1287,10 +1295,21 @@ def write_charts():
         if row["GPU 型号"] in STRATEGIC_DOMESTIC_GPUS and not pass_status(row):
             return "低置信观察"
         return row.get("国内月租/海外月租")
+    def domestic_chart_kind(row: dict) -> str:
+        if row["标准化价格"] is None:
+            return "价格待补"
+        if row.get("价格口径") == "市场核价区间（估算）":
+            return "市场核价"
+        if row.get("价格口径") == "云价折算":
+            return "云价折算"
+        if row.get("价格口径") == "低置信观察" or (row["GPU 型号"] in STRATEGIC_DOMESTIC_GPUS and not pass_status(row)):
+            return "低置信观察"
+        return "公开成交/主口径价"
     data = {
         "domesticLabels": [r["GPU 型号"] for r in domestic_chart_rows],
         "domesticValues": [r["标准化价格"] if r["标准化价格"] is not None else 0 for r in domestic_chart_rows],
         "domesticRatios": [domestic_chart_tag(r) for r in domestic_chart_rows],
+        "domesticKinds": [domestic_chart_kind(r) for r in domestic_chart_rows],
         "overseasLabels": [r["GPU 型号"] for r in overseas_pass],
         "overseasValues": [r["标准化价格"] for r in overseas_pass],
         "tokenLabels": [token_label(r) for r in chart_tokens],
@@ -1319,20 +1338,52 @@ def write_charts():
     c.setOption(option);
     window.addEventListener('resize', function(){{c.resize();}});
   }}
-  function bar(id, labels, values, name, color, ratios) {{
-    init(id, {{
-      animation:false,
-      color:[color],
-      tooltip:{{trigger:'axis', appendToBody:true}},
-      grid:{{left:70,right:40,top:44,bottom:80,containLabel:true}},
-      xAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}}}},
-      yAxis:{{type:'value',name:name,nameTextStyle:{{color:muted}},axisLabel:{{color:muted}},splitLine:{{lineStyle:{{color:rule}}}}}},
-      series:[{{type:'bar',data:values,label:{{show:true,position:'top',color:ink,formatter:function(p){{
+  var domesticPalette = {{
+    '公开成交/主口径价': '#22c55e',
+    '低置信观察': '#f97316',
+    '云价折算': '#8b5cf6',
+    '市场核价': '#38bdf8',
+    '价格待补': '#64748b'
+  }};
+  function legendForKinds(kinds) {{
+    if (!kinds) return undefined;
+    var seen = {{}};
+    return kinds.filter(function(k){{ if (seen[k]) return false; seen[k] = true; return true; }});
+  }}
+  function bar(id, labels, values, name, color, ratios, kinds) {{
+    var seriesData = values.map(function(v, i) {{
+      var kind = kinds && kinds[i] ? kinds[i] : '';
+      return {{value:v, itemStyle:{{color:domesticPalette[kind] || color, borderRadius:[6,6,0,0]}}}};
+    }});
+    var series = [];
+    var legend = legendForKinds(kinds);
+    if (legend) {{
+      series = legend.map(function(kind) {{
+        return {{name:kind,type:'bar',data:seriesData.map(function(d, i){{return kinds[i] === kind ? d : null;}}),barGap:'-100%',label:{{show:false}},itemStyle:{{borderRadius:[6,6,0,0]}}}};
+      }});
+      series.push({{name:'标签',type:'bar',data:seriesData,barGap:'-100%',silent:true,itemStyle:{{opacity:0}},label:{{show:true,position:'top',color:ink,formatter:function(p){{
         var rawRatio = ratios && ratios[p.dataIndex] ? ratios[p.dataIndex] : '';
         var base = rawRatio === '价格待补' ? '价格待补' : (p.value + '万/月');
         var ratio = rawRatio === '海外缺口' ? ' · 海外缺口' : (rawRatio && String(rawRatio).indexOf('%') >= 0 ? ' · 海外' + rawRatio : (rawRatio ? ' · ' + rawRatio : ''));
         return rawRatio === '价格待补' ? base : base + ratio;
-      }}}},itemStyle:{{borderRadius:[6,6,0,0]}}}}]
+      }}}}}});
+    }} else {{
+      series = [{{type:'bar',data:seriesData,label:{{show:true,position:'top',color:ink,formatter:function(p){{
+        var rawRatio = ratios && ratios[p.dataIndex] ? ratios[p.dataIndex] : '';
+        var base = rawRatio === '价格待补' ? '价格待补' : (p.value + '万/月');
+        var ratio = rawRatio === '海外缺口' ? ' · 海外缺口' : (rawRatio && String(rawRatio).indexOf('%') >= 0 ? ' · 海外' + rawRatio : (rawRatio ? ' · ' + rawRatio : ''));
+        return rawRatio === '价格待补' ? base : base + ratio;
+      }}}},itemStyle:{{borderRadius:[6,6,0,0]}}}}];
+    }}
+    init(id, {{
+      animation:false,
+      color:legend ? legend.map(function(k){{return domesticPalette[k] || color;}}) : [color],
+      tooltip:{{trigger:'axis', appendToBody:true}},
+      legend:legend ? {{top:0,textStyle:{{color:muted}}}} : undefined,
+      grid:{{left:70,right:40,top:44,bottom:80,containLabel:true}},
+      xAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}}}},
+      yAxis:{{type:'value',name:name,nameTextStyle:{{color:muted}},axisLabel:{{color:muted}},splitLine:{{lineStyle:{{color:rule}}}}}},
+      series:series
     }});
   }}
   function tokenGrouped(id, labels, series, yName) {{
@@ -1357,7 +1408,7 @@ def write_charts():
       series:[{{name:name,type:'bar',data:values,itemStyle:{{borderRadius:[4,4,0,0],color:function(p){{return p.value >= 0 ? accent : accent2;}}}},label:{{show:true,position:'top',color:ink,formatter:function(p){{return p.value === undefined ? '' : p.value;}}}}}}]
     }});
   }}
-  bar('chart-domestic-main', DATA.domesticLabels, DATA.domesticValues, '万元/8卡整机/月', accent, DATA.domesticRatios);
+  bar('chart-domestic-main', DATA.domesticLabels, DATA.domesticValues, '万元/8卡整机/月', accent, DATA.domesticRatios, DATA.domesticKinds);
   bar('chart-overseas', DATA.overseasLabels, DATA.overseasValues, '万元/8卡整机/月', accent2);
   tokenGrouped('chart-token-input', DATA.tokenLabels, [
     {{name:'官方输入价', data:DATA.tokenOfficialIn}},
