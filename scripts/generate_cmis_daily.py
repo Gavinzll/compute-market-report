@@ -1327,16 +1327,29 @@ def main_metrics() -> list[tuple[str, str, str]]:
     pass_dom = [r for r in DOMESTIC_RENTAL if pass_status(r)]
     domestic_index_rows = [r for r in DOMESTIC_RENTAL if domestic_index_status(r)]
     strategic_rows = [r for r in DOMESTIC_RENTAL if r["GPU 型号"] in STRATEGIC_DOMESTIC_GPUS]
-    rejected = [r for r in DOMESTIC_RENTAL if r["校验状态"] == "REJECT"]
+    review_rows = [r for r in DOMESTIC_RENTAL if r["校验状态"] in {"REVIEW", "REJECT"}]
     aux_gpu = {r["GPU 型号"] for r in OVERSEAS_RENTAL if r["标准化价格"] is not None} | {r["GPU 型号"] for r in PROCUREMENT}
     token_vendors = {r["厂商"] for r in TOKEN_DATA}
-    h100 = next((r for r in pass_dom if r["GPU 型号"] == "H100 80G"), None)
     return [
         ("国内指数样本", f"{len(domestic_index_rows)}/{len(DOMESTIC_RENTAL)}", f"含国产战略关注 {len(strategic_rows)} 个"),
         ("辅助 GPU 样本", f"{len(aux_gpu)}/{len(GPU_ORDER)}", "海外云价/采购价/候选样本"),
         ("Token 厂商覆盖", f"{len(token_vendors)}/15", "按厂商+主流模型覆盖，六个核心价格字段必须数值化"),
-        ("H100 国内月租", "7.6 万元" if h100 else "暂不可得", "8卡整机/月，不再重复折算"),
+        ("待复核样本", f"{len(review_rows)} 条", "REVIEW/REJECT 只进审计，不进方向性结论"),
     ]
+
+
+def market_summary_html() -> str:
+    domestic_index_rows = [r for r in DOMESTIC_RENTAL if domestic_index_status(r)]
+    pass_rows = [r for r in domestic_index_rows if pass_status(r)]
+    strategic_review = [r for r in domestic_index_rows if r["GPU 型号"] in STRATEGIC_DOMESTIC_GPUS and not pass_status(r)]
+    h100 = next((r for r in domestic_index_rows if r["GPU 型号"] == "H100 80G"), None)
+    h100_text = f'H100 80G 国内 8卡整机月租为 {fmt(h100.get("标准化价格"))} 万元' if h100 else "H100 80G 当期主口径价格暂不可得"
+    token_vendors = len({r["厂商"] for r in TOKEN_DATA})
+    return (
+        f"<p>本期国内算力租赁指数共展示 {len(domestic_index_rows)} 个型号，其中 {len(pass_rows)} 个为 PASS 主口径样本，{h100_text}；国产战略关注卡继续保留在指数和图表中，但低置信、云价折算和市场核价样本均标注为观察口径。</p>"
+        f"<p>海外 GPU Cloud 继续作为辅助参考，不与国内长租指数混用；采购覆盖和毛回本测算只跟随国内指数型号展开。Token 价格覆盖 {token_vendors} 家厂商，展示官方价、海外三方价和境内三方价，用于观察模型 API 市场价差。</p>"
+        f"<p>当前需要重点复核的是 {len(strategic_review)} 个国产战略关注样本：若后续采集到明确 8卡整机/裸机/月租或采购价，应优先用新公开价格替换市场核价区间；未取得新价前，不进入 ROI 或方向性市场结论。</p>"
+    )
 
 
 def render_html(relative_prefix: str = "./") -> str:
@@ -1391,8 +1404,7 @@ def render_html(relative_prefix: str = "./") -> str:
     <section>
       <h2>今日结论</h2>
       <div class="panel">
-        <p>本版采用“主指数严格、战略关注不断档、估算分层标注”的结构：通过校验的国内 8卡整机月租继续作为高置信主样本；昇腾 910B、寒武纪 MLU370-X8、海光 DCU K100、壁仞 BR100、摩尔线程 MTT S4000 作为国产战略关注卡，即使置信度不足也进入国内指数表展示，但标注 REVIEW，不进入 ROI 或方向性结论。</p>
-        <p>国产战略 GPU 的价格口径拆成三层：公开成交/主口径价、云价折算、市场核价区间（估算）。每日运行时应先检索新出现的明确市场价格；若找到更高置信的 8卡整机/裸机/月租样本，更新标准化价格；若没有新样本，则沿用既有市场核价区间和中位数，不得冒充公开成交价。</p>
+        {market_summary_html()}
       </div>
     </section>
 
@@ -1503,8 +1515,8 @@ def render_mobile_html(relative_prefix: str = "./", desktop_href: str = "latest.
     .pill-row{{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}}
     .pill{{display:inline-flex;gap:5px;align-items:center;padding:5px 8px;border:1px solid var(--rule);border-radius:999px;background:rgba(255,255,255,.035);font-size:11px;color:var(--ink)}}
     .pill b{{color:var(--muted);font-weight:600}}
-    figure{{padding:12px;margin:12px 0 18px}} figcaption{{font-size:13px;color:var(--accent2);font-weight:650;margin-bottom:8px}}
-    .chart{{width:100%;min-height:390px}} #chart-token-input,#chart-token-output,#chart-token-third-diff,#chart-token-official-domestic-diff{{min-height:720px}}
+    figure{{padding:12px;margin:12px 0 18px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}} figcaption{{font-size:13px;color:var(--accent2);font-weight:650;margin-bottom:8px;position:sticky;left:0}}
+    .chart{{width:820px;min-width:820px;min-height:390px}} #chart-token-input,#chart-token-output,#chart-token-third-diff,#chart-token-official-domestic-diff{{width:980px;min-width:980px;min-height:720px}}
     details{{padding:0;margin:10px 0}} summary{{cursor:pointer;padding:14px;font-weight:700;color:var(--accent2)}} details[open] summary{{border-bottom:1px solid var(--rule)}}
     .details-body{{padding:8px 12px 12px}}
     .quick-nav{{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;gap:6px;overflow:auto;padding:8px 12px calc(8px + env(safe-area-inset-bottom));background:rgba(7,17,31,.95);border-top:1px solid var(--rule);backdrop-filter:blur(12px)}}
@@ -1526,8 +1538,7 @@ def render_mobile_html(relative_prefix: str = "./", desktop_href: str = "latest.
     <section id="summary">
       <h2>今日结论</h2>
       <article class="m-card">
-        <p>手机版只保留手机阅读最关键的信息：价格、口径、置信度、风险提示和图表趋势。完整宽表仍保留在电脑版。</p>
-        <p>国产战略 GPU 继续展示，但所有 REVIEW、云价折算和市场核价区间均只作观察，不进入方向性 ROI 结论。</p>
+        {market_summary_html()}
       </article>
     </section>
 
@@ -1676,9 +1687,9 @@ def write_charts():
         color:legend ? legend.map(function(k){{return domesticPalette[k] || color;}}) : [color],
         tooltip:{{trigger:'axis', appendToBody:true}},
         legend:legend ? {{top:0,textStyle:{{color:muted}}}} : undefined,
-        grid:{{left:110,right:70,top:legend?72:44,bottom:30,containLabel:true}},
+        grid:{{left:150,right:170,top:legend?82:50,bottom:32,containLabel:true}},
         yAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0,fontSize:11}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}},inverse:true}},
-        xAxis:{{type:'value',name:name,nameTextStyle:{{color:muted}},axisLabel:{{color:muted}},splitLine:{{lineStyle:{{color:rule}}}}}},
+        xAxis:{{type:'value',name:'',axisLabel:{{color:muted,fontSize:11}},splitLine:{{lineStyle:{{color:rule}}}}}},
         series:series
       }});
     }} else {{
@@ -1702,9 +1713,9 @@ def write_charts():
         color:[accent, accent2, muted],
         tooltip:{{trigger:'axis', appendToBody:true}},
         legend:{{top:0,textStyle:{{color:muted}}}},
-        grid:{{left:110,right:70,top:56,bottom:40,containLabel:true}},
+        grid:{{left:170,right:120,top:64,bottom:40,containLabel:true}},
         yAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0,fontSize:11}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}},inverse:true}},
-        xAxis:{{type:'value',name:yName,nameTextStyle:{{color:muted}},axisLabel:{{color:muted}},splitLine:{{lineStyle:{{color:rule}}}}}},
+        xAxis:{{type:'value',name:'',axisLabel:{{color:muted,fontSize:11}},splitLine:{{lineStyle:{{color:rule}}}}}},
         series:s
       }});
     }} else {{
@@ -1725,9 +1736,9 @@ def write_charts():
       init(id, {{
         animation:false,
         tooltip:{{trigger:'axis', appendToBody:true}},
-        grid:{{left:110,right:70,top:44,bottom:40,containLabel:true}},
+        grid:{{left:170,right:120,top:50,bottom:40,containLabel:true}},
         yAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0,fontSize:11}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}},inverse:true}},
-        xAxis:{{type:'value',name:'元/百万Token',nameTextStyle:{{color:muted}},axisLabel:{{color:muted}},splitLine:{{lineStyle:{{color:rule}}}}}},
+        xAxis:{{type:'value',name:'',axisLabel:{{color:muted,fontSize:11}},splitLine:{{lineStyle:{{color:rule}}}}}},
         series:[{{name:name,type:'bar',data:values,itemStyle:{{borderRadius:[0,4,4,0],color:function(p){{return p.value >= 0 ? accent : accent2;}}}},label:{{show:true,position:'right',color:ink,formatter:function(p){{return p.value === undefined ? '' : p.value;}}}}}}]
       }});
     }} else {{

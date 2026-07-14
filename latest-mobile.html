@@ -30,8 +30,8 @@
     .pill-row{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
     .pill{display:inline-flex;gap:5px;align-items:center;padding:5px 8px;border:1px solid var(--rule);border-radius:999px;background:rgba(255,255,255,.035);font-size:11px;color:var(--ink)}
     .pill b{color:var(--muted);font-weight:600}
-    figure{padding:12px;margin:12px 0 18px} figcaption{font-size:13px;color:var(--accent2);font-weight:650;margin-bottom:8px}
-    .chart{width:100%;min-height:390px} #chart-token-input,#chart-token-output,#chart-token-third-diff,#chart-token-official-domestic-diff{min-height:720px}
+    figure{padding:12px;margin:12px 0 18px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch} figcaption{font-size:13px;color:var(--accent2);font-weight:650;margin-bottom:8px;position:sticky;left:0}
+    .chart{width:820px;min-width:820px;min-height:390px} #chart-token-input,#chart-token-output,#chart-token-third-diff,#chart-token-official-domestic-diff{width:980px;min-width:980px;min-height:720px}
     details{padding:0;margin:10px 0} summary{cursor:pointer;padding:14px;font-weight:700;color:var(--accent2)} details[open] summary{border-bottom:1px solid var(--rule)}
     .details-body{padding:8px 12px 12px}
     .quick-nav{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;gap:6px;overflow:auto;padding:8px 12px calc(8px + env(safe-area-inset-bottom));background:rgba(7,17,31,.95);border-top:1px solid var(--rule);backdrop-filter:blur(12px)}
@@ -44,20 +44,19 @@
     <header class="hero">
       <div class="eyebrow">CMIS Daily · Mobile</div>
       <h1>全球算力市场情报日报</h1>
-      <p class="note">日期：2026-07-14｜Freeze：2026-07-14 15:38｜版本：v1.2.0</p>
+      <p class="note">日期：2026-07-14｜Freeze：2026-07-14 16:44｜版本：v1.2.0</p>
       <a class="desktop-link" href="latest.html?desktop=1">切换电脑版</a>
     </header>
 
     <section class="metrics"><article class="metric"><span>国内指数样本</span><strong>11/21</strong><small>含国产战略关注 5 个</small></article>
 <article class="metric"><span>辅助 GPU 样本</span><strong>16/21</strong><small>海外云价/采购价/候选样本</small></article>
 <article class="metric"><span>Token 厂商覆盖</span><strong>15/15</strong><small>按厂商+主流模型覆盖，六个核心价格字段必须数值化</small></article>
-<article class="metric"><span>H100 国内月租</span><strong>7.6 万元</strong><small>8卡整机/月，不再重复折算</small></article></section>
+<article class="metric"><span>待复核样本</span><strong>15 条</strong><small>REVIEW/REJECT 只进审计，不进方向性结论</small></article></section>
 
     <section id="summary">
       <h2>今日结论</h2>
       <article class="m-card">
-        <p>手机版只保留手机阅读最关键的信息：价格、口径、置信度、风险提示和图表趋势。完整宽表仍保留在电脑版。</p>
-        <p>国产战略 GPU 继续展示，但所有 REVIEW、云价折算和市场核价区间均只作观察，不进入方向性 ROI 结论。</p>
+        <p>本期国内算力租赁指数共展示 11 个型号，其中 6 个为 PASS 主口径样本，H100 80G 国内 8卡整机月租为 7.6 万元；国产战略关注卡继续保留在指数和图表中，但低置信、云价折算和市场核价样本均标注为观察口径。</p><p>海外 GPU Cloud 继续作为辅助参考，不与国内长租指数混用；采购覆盖和毛回本测算只跟随国内指数型号展开。Token 价格覆盖 15 家厂商，展示官方价、海外三方价和境内三方价，用于观察模型 API 市场价差。</p><p>当前需要重点复核的是 5 个国产战略关注样本：若后续采集到明确 8卡整机/裸机/月租或采购价，应优先用新公开价格替换市场核价区间；未取得新价前，不进入 ROI 或方向性市场结论。</p>
       </article>
     </section>
 
@@ -739,6 +738,6 @@
     <a href="#summary">结论</a><a href="#domestic">国内</a><a href="#overseas">海外</a><a href="#token">Token</a><a href="#profit">利润</a><a href="#audit">审计</a>
   </nav>
   <script src="./_shared/js/echarts.min.js"></script>
-  <script src="./assets/charts.js?v=20260714153817-v1.2.0"></script>
+  <script src="./assets/charts.js?v=20260714164435-v1.2.0"></script>
 </body>
 </html>
