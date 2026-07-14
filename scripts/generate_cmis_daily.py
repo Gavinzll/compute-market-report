@@ -129,6 +129,34 @@ SOURCES = [
         "url": "http://www.ccgp.gov.cn/",
         "note": "用于检索 8卡 AI 训练/推理服务器中标公告和采购价。",
     },
+    {
+        "id": 13,
+        "tier": "海外云价/聚合源",
+        "title": "Cloud-GPUs.com",
+        "url": "https://cloud-gpus.com/",
+        "note": "覆盖 30+ providers、75+ GPU models、5000+ instance configurations，适合补齐海外 GPU Cloud 覆盖率和中位价。",
+    },
+    {
+        "id": 14,
+        "tier": "海外云价/聚合源",
+        "title": "GPUCloudPricing",
+        "url": "https://www.gpucloudpricing.com/",
+        "note": "提供 GPU 云厂商特性和价格横向对比，适合作为 RunPod、Vast.ai、Novita、Salad 等平台的辅助参考。",
+    },
+    {
+        "id": 15,
+        "tier": "Token 市场价/性价比",
+        "title": "llmpricing",
+        "url": "https://sanand0.github.io/llmpricing/",
+        "note": "提供 LLM 输入价格与 LMSYS/LMArena Elo 的性价比视图，适合做 Token 市场参考，不替代官方价。",
+    },
+    {
+        "id": 16,
+        "tier": "Token 市场价/辅助矩阵",
+        "title": "morph-llm LLM Cost Calculator",
+        "url": "https://www.morphllm.com/llm-cost-calculator",
+        "note": "可作为模型价格、上下文窗口和限流信息的辅助源，需标注为 Market / Reference。",
+    },
 ]
 
 GPU_GROUPS = [
