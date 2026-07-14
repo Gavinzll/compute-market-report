@@ -26,16 +26,16 @@
 | P0 官方 | DeepSeek API Pricing | https://api-docs.deepseek.com/zh-cn/quick_start/pricing | DeepSeek 官方 Token 价格 | Cache Hit/Miss 必须分列 |
 | P0 官方 | 阿里云百炼 Model Studio | https://help.aliyun.com/zh/model-studio/model-pricing | Qwen / 通义千问官方价 | 限时折扣不得覆盖标准价 |
 | P0 官方 | 火山方舟模型计费 | https://www.volcengine.com/docs/82379/1099320 | 豆包 / 火山模型官方价 | 区分上下文和推理模式 |
-| P0 官方 | 百度千帆计费 | https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Blfmc9dlf | 文心 / 千帆官方价 | 区分输入输出与按次计费 |
+| P0 官方 | 百度千帆计费 | https://cloud.baidu.com/doc/qianfan/s/wmh4sv6ya | 文心 / 千帆官方价 | 已确认 ERNIE-4.5-Turbo-VL-32K 为 3/9 元/百万 tokens；ERNIE 5.0 需按上下文区间记录 |
 | P0 官方 | 腾讯云混元计费 | https://cloud.tencent.com/document/product/1729/97731 | 混元官方价 | 区分模型版本 |
 | P0 官方 | 智谱开放平台计费 | https://open.bigmodel.cn/pricing | GLM 官方价 | 免费额度不得计入标准价 |
 | P0 官方 | Moonshot/Kimi Pricing | https://platform.kimi.com/docs/pricing/chat | Kimi 官方价 | 区分长上下文模型、缓存命中/未命中 |
-| P0 官方 | MiniMax 开放平台计费 | https://platform.minimaxi.com/document/Price | MiniMax 官方价 | 不同能力分列 |
+| P0 官方 | MiniMax 开放平台计费 | https://platform.minimaxi.com/docs/guides/pricing-paygo | MiniMax 官方价 | 已确认 MiniMax-M3 标准层与优先服务倍率，不同上下文区间分列 |
 | P0 官方 | 讯飞星火计费 | https://www.xfyun.cn/doc/spark/Price.html | 星火官方价 | 包量/后付费分列 |
 
 ### 1.2 Token 机器可读与市场辅助源
 
-这些源进入 `Market / Reference / Structured Auxiliary`。可用于发现新模型、补上下文窗口、比对市场渠道价和抓取模型矩阵，但不得冒充官方价格。
+这些源进入 `Market / Reference / Structured Auxiliary`。可用于发现新模型、补上下文窗口、比对市场渠道价和抓取模型矩阵，但不得冒充官方价格。三方价必须拆分为海外三方价与境内三方价。
 
 Token 扩源执行规则：
 
@@ -57,6 +57,7 @@ Token 扩源执行规则：
 | P2 市场渠道 | Fireworks.ai Pricing | https://fireworks.ai/pricing | 开源模型托管市场价 | 与官方/云市场价分列 |
 | P2 市场渠道 | Replicate Pricing | https://replicate.com/pricing | 模型托管市场价 | 多为按秒/按硬件计费，需单独分类 |
 | P2 市场渠道 | Hugging Face Inference Providers | https://huggingface.co/docs/inference-providers/pricing | 托管市场价 | 不可混入官方 Token 价 |
+| P2 境内三方 | 硅基流动价格页 | https://siliconflow.cn/pricing | 境内三方模型 API 价格基准 | 精确匹配模型才填写精确价；近似模型必须标注近似，不得硬套 |
 
 ## 2. 海外 GPU Cloud 源池
 
