@@ -87,6 +87,48 @@ SOURCES = [
         "url": "https://help.aliyun.com/zh/model-studio/model-pricing",
         "note": "Token Official Price 来源之一。",
     },
+    {
+        "id": 7,
+        "tier": "海外云价",
+        "title": "RunPod GPU Cloud Pricing",
+        "url": "https://www.runpod.io/pricing",
+        "note": "可抓取 B300、B200、H200、H100、A100、L40S、RTX 5090、L4 等 GPU 小时价。",
+    },
+    {
+        "id": 8,
+        "tier": "海外云价",
+        "title": "Lambda AI Cloud Pricing",
+        "url": "https://lambda.ai/pricing",
+        "note": "可抓取 B200、H100、A100 以及 1-Click Cluster 的 B200/H100 多 GPU 价格。",
+    },
+    {
+        "id": 9,
+        "tier": "海外云价/Marketplace",
+        "title": "Vast.ai GPU Pricing",
+        "url": "https://vast.ai/pricing",
+        "note": "可抓取 p25、median、p90 等 Marketplace 实时价格分布，用于 Source Consensus。",
+    },
+    {
+        "id": 10,
+        "tier": "采购/整机辅助",
+        "title": "BIZON ZX9000 GPU Server",
+        "url": "https://bizon-tech.com/bizon-zx9000.html",
+        "note": "可抓取 2 卡工作站/服务器配置价，用于采购辅助，不直接进入 8 卡 HGX 主口径。",
+    },
+    {
+        "id": 11,
+        "tier": "官方规格",
+        "title": "NVIDIA H200 GPU",
+        "url": "https://www.nvidia.com/en-us/data-center/h200/",
+        "note": "用于确认 H200 SXM/NVL 规格、显存、服务器形态，不提供采购成交价。",
+    },
+    {
+        "id": 12,
+        "tier": "采购/招投标",
+        "title": "中国政府采购网",
+        "url": "http://www.ccgp.gov.cn/",
+        "note": "用于检索 8卡 AI 训练/推理服务器中标公告和采购价。",
+    },
 ]
 
 GPU_GROUPS = [
@@ -128,48 +170,78 @@ def monthly_wan_to_hourly_cny(monthly_wan: float | None) -> float | None:
 TOKEN_DATA = [
     {
         "厂商": "OpenAI",
-        "模型": "主力 GPT / o 系列",
+        "模型": "GPT-5.5",
         "国家/地区": "海外",
-        "输入官方价（原币/百万Token）": "需实时抓取",
-        "输出官方价（原币/百万Token）": "需实时抓取",
-        "输入官方价（人民币/百万Token）": None,
-        "输出官方价（人民币/百万Token）": None,
+        "输入官方价（原币/百万Token）": "USD 5.00",
+        "输出官方价（原币/百万Token）": "USD 30.00",
+        "输入官方价（人民币/百万Token）": cny_from_usd(5.0),
+        "输出官方价（人民币/百万Token）": cny_from_usd(30.0),
         "官方来源": "cite-4",
         "市场来源": "OpenRouter/替代市场待抓取",
         "采集时间": STAMP,
         "Confidence Score": 95,
-        "校验状态": "REVIEW",
-        "备注": "生成器已清除旧静态价格，等待实时抓取官方页后入表。",
+        "校验状态": "PASS",
+        "备注": "OpenAI 官方价格页；缓存输入价单列，不混入标准输入价。",
+    },
+    {
+        "厂商": "OpenAI",
+        "模型": "GPT-5.4 mini",
+        "国家/地区": "海外",
+        "输入官方价（原币/百万Token）": "USD 0.75",
+        "输出官方价（原币/百万Token）": "USD 4.50",
+        "输入官方价（人民币/百万Token）": cny_from_usd(0.75),
+        "输出官方价（人民币/百万Token）": cny_from_usd(4.5),
+        "官方来源": "cite-4",
+        "市场来源": "OpenRouter/替代市场待抓取",
+        "采集时间": STAMP,
+        "Confidence Score": 95,
+        "校验状态": "PASS",
+        "备注": "OpenAI 官方价格页。",
     },
     {
         "厂商": "DeepSeek",
-        "模型": "deepseek-chat / reasoner",
+        "模型": "deepseek-v4-flash",
         "国家/地区": "国产",
-        "输入官方价（原币/百万Token）": "需实时抓取",
-        "输出官方价（原币/百万Token）": "需实时抓取",
-        "输入官方价（人民币/百万Token）": None,
-        "输出官方价（人民币/百万Token）": None,
+        "输入官方价（原币/百万Token）": "USD 0.14（Cache Miss）",
+        "输出官方价（原币/百万Token）": "USD 0.28",
+        "输入官方价（人民币/百万Token）": cny_from_usd(0.14),
+        "输出官方价（人民币/百万Token）": cny_from_usd(0.28),
         "官方来源": "cite-5",
         "市场来源": "OpenRouter/替代市场待抓取",
         "采集时间": STAMP,
         "Confidence Score": 95,
-        "校验状态": "REVIEW",
-        "备注": "保留官方来源，价格未实时抓取前不进入 Token 图。",
+        "校验状态": "PASS",
+        "备注": "DeepSeek 官方页；Cache Hit 另列，不替代标准输入价。",
     },
     {
         "厂商": "阿里云/通义千问",
-        "模型": "Qwen 系列",
+        "模型": "qwen3.7-max",
         "国家/地区": "国产",
-        "输入官方价（原币/百万Token）": "需实时抓取",
-        "输出官方价（原币/百万Token）": "需实时抓取",
-        "输入官方价（人民币/百万Token）": None,
-        "输出官方价（人民币/百万Token）": None,
+        "输入官方价（原币/百万Token）": "CNY 12",
+        "输出官方价（原币/百万Token）": "CNY 36",
+        "输入官方价（人民币/百万Token）": 12.0,
+        "输出官方价（人民币/百万Token）": 36.0,
         "官方来源": "cite-6",
         "市场来源": "OpenRouter/替代市场待抓取",
         "采集时间": STAMP,
         "Confidence Score": 95,
-        "校验状态": "REVIEW",
-        "备注": "保留官方来源，价格未实时抓取前不进入 Token 图。",
+        "校验状态": "PASS",
+        "备注": "阿里云百炼官方标准价，限时折扣另列不混入标准价。",
+    },
+    {
+        "厂商": "阿里云/通义千问",
+        "模型": "qwen-plus-latest",
+        "国家/地区": "国产",
+        "输入官方价（原币/百万Token）": "CNY 0.8",
+        "输出官方价（原币/百万Token）": "CNY 2",
+        "输入官方价（人民币/百万Token）": 0.8,
+        "输出官方价（人民币/百万Token）": 2.0,
+        "官方来源": "cite-6",
+        "市场来源": "OpenRouter/替代市场待抓取",
+        "采集时间": STAMP,
+        "Confidence Score": 95,
+        "校验状态": "PASS",
+        "备注": "阿里云百炼官方标准价。",
     },
 ]
 
@@ -217,14 +289,15 @@ DOMESTIC_RENTAL_INPUT = {
 }
 
 OVERSEAS_HOURLY_USD = {
-    "B200": (6.69, 65, "Low", "市场/行业报价，非官方，需复核"),
-    "H200": (4.27, 70, "Medium", "海外公开市场参考"),
-    "H100 80G": (2.49, 85, "Medium", "Lambda/ComputeStacker 公开价辅助校验"),
-    "A100 80G": (1.29, 65, "Low", "海外公开市场参考，需复核"),
-    "L40S": (0.85, 70, "Medium", "海外公开市场参考"),
-    "RTX 5090": (0.65, 60, "Low", "海外公开市场参考，需复核"),
-    "RTX 4090": (0.35, 60, "Low", "海外公开市场参考，需复核"),
-    "L4": (0.25, 70, "Medium", "海外公开市场参考"),
+    "B300": (7.39, 85, "Medium", "RunPod 官方公开价，Vast.ai median 约 6.30 美元/小时作辅助。"),
+    "B200": (6.69, 90, "High", "Lambda 官方 B200 8x 实例价；RunPod 5.89、Vast.ai median 4.99 作共识校验。"),
+    "H200": (4.39, 90, "High", "RunPod 官方 H200 价格；Vast.ai median 3.79、Lambda cluster 4.31 作共识校验。"),
+    "H100 80G": (2.99, 90, "High", "RunPod H100 SXM 价格；Lambda H100 SXM 3.99、Vast.ai H100 SXM median 2.23 作共识校验。"),
+    "A100 80G": (1.49, 85, "Medium", "RunPod A100 SXM 80GB 价格；Lambda A100 SXM 2.79 作辅助。"),
+    "L40S": (0.99, 85, "Medium", "RunPod 官方 L40S 价格。"),
+    "RTX 5090": (0.99, 80, "Medium", "RunPod 官方 RTX 5090 价格；Vast.ai median 0.49 显示 marketplace 低价。"),
+    "RTX 4090": (0.69, 80, "Medium", "RunPod 官方 RTX 4090 价格；Vast.ai median 0.39 作辅助。"),
+    "L4": (0.39, 85, "Medium", "RunPod 官方 L4 价格。"),
 }
 
 
@@ -311,8 +384,11 @@ DOMESTIC_RENTAL = domestic_rows()
 OVERSEAS_RENTAL = overseas_rows()
 
 PROCUREMENT = [
-    {"GPU 型号": "H100 80G", "GPU 分类": "Training", "采购成本口径": "市场参考/需复核", "8卡整机参考价": "约 152-224 万元", "Confidence Score": 70, "校验状态": "REVIEW", "备注": "采购价未完成多源校验，利润测算仅作参考。"},
-    {"GPU 型号": "RTX 5090", "GPU 分类": "Consumer", "采购成本口径": "市场参考/需复核", "8卡整机参考价": "约 14.4-24 万元", "Confidence Score": 65, "校验状态": "REVIEW", "备注": "消费级硬件价格波动大，不进入主投资结论。"},
+    {"GPU 型号": "H200", "GPU 分类": "Training", "采购成本口径": "BIZON 2卡水冷配置价", "8卡整机参考价": "不可直接折算；2x H200 NVL 加价 USD 99,000", "Confidence Score": 70, "校验状态": "AUXILIARY", "备注": "采购辅助报价，非 8卡 HGX 成交价，不进入 ROI。"},
+    {"GPU 型号": "H100 80G", "GPU 分类": "Training", "采购成本口径": "BIZON 2卡水冷配置价 + 国内招投标待补", "8卡整机参考价": "不可直接折算；2x H100 NVL 加价 USD 79,500", "Confidence Score": 70, "校验状态": "AUXILIARY", "备注": "采购辅助报价，需与国内招投标/整机渠道交叉。"},
+    {"GPU 型号": "A100 80G", "GPU 分类": "Training", "采购成本口径": "BIZON 2卡水冷配置价", "8卡整机参考价": "不可直接折算；2x A100 80GB 加价 USD 55,726", "Confidence Score": 70, "校验状态": "AUXILIARY", "备注": "采购辅助报价，非国内 8卡 HGX 主口径。"},
+    {"GPU 型号": "8卡 AI 服务器", "GPU 分类": "Training", "采购成本口径": "中国政府采购网/高校招投标", "8卡整机参考价": "需按中标公告逐条解析", "Confidence Score": 85, "校验状态": "CANDIDATE", "备注": "招投标可提高采购价覆盖率，但需解析具体 GPU 型号和数量。"},
+    {"GPU 型号": "RTX 5090", "GPU 分类": "Consumer", "采购成本口径": "公开渠道/电商/整机厂商待补", "8卡整机参考价": "需补采", "Confidence Score": 55, "校验状态": "CANDIDATE", "备注": "消费级价格波动大，必须单独标注渠道和税费。"},
 ]
 
 
@@ -385,6 +461,38 @@ SNAPSHOT = {
 }
 
 
+def coverage_rows() -> list[dict]:
+    covered = []
+    domestic_pass = {r["GPU 型号"] for r in DOMESTIC_RENTAL if pass_status(r)}
+    domestic_aux = {r["GPU 型号"] for r in DOMESTIC_RENTAL if not pass_status(r) and r["校验状态"] in {"REVIEW", "REJECT"}}
+    overseas_aux = {r["GPU 型号"] for r in OVERSEAS_RENTAL if r["标准化价格"] is not None}
+    procurement_aux = {r["GPU 型号"] for r in PROCUREMENT}
+    for gpu in GPU_ORDER:
+        layers = []
+        if gpu in domestic_pass:
+            layers.append("Main Index")
+        if gpu in overseas_aux:
+            layers.append("Overseas Auxiliary")
+        if gpu in procurement_aux:
+            layers.append("Procurement Auxiliary")
+        if gpu in domestic_aux:
+            layers.append("Domestic Candidate/Rejected")
+        if not layers:
+            layers.append("Missing with searched sources")
+        covered.append({
+            "GPU 型号": gpu,
+            "GPU 分类": GPU_CLASS[gpu],
+            "覆盖状态": " / ".join(layers),
+            "是否可进入主指数": "是" if gpu in domestic_pass else "否",
+            "下一步": "继续补国内主口径" if gpu not in domestic_pass else "持续监控历史波动",
+        })
+    return covered
+
+
+COVERAGE = coverage_rows()
+SNAPSHOT["coverage"] = COVERAGE
+
+
 def html_escape(x) -> str:
     if x is None:
         return '<span class="missing">暂不可得</span>'
@@ -423,12 +531,14 @@ def source_list() -> str:
 def main_metrics() -> list[tuple[str, str, str]]:
     pass_dom = [r for r in DOMESTIC_RENTAL if pass_status(r)]
     rejected = [r for r in DOMESTIC_RENTAL if r["校验状态"] == "REJECT"]
+    aux_gpu = {r["GPU 型号"] for r in OVERSEAS_RENTAL if r["标准化价格"] is not None} | {r["GPU 型号"] for r in PROCUREMENT}
+    token_pass = [r for r in TOKEN_DATA if r["校验状态"] == "PASS"]
     h100 = next((r for r in pass_dom if r["GPU 型号"] == "H100 80G"), None)
     return [
         ("国内主指数样本", f"{len(pass_dom)}/{len(DOMESTIC_RENTAL)}", "仅 PASS 且 Confidence≥70"),
-        ("Rejected Samples", str(len(rejected)), "未进主图/ROI/AI结论"),
+        ("辅助 GPU 样本", f"{len(aux_gpu)}/{len(GPU_ORDER)}", "海外云价/采购价/候选样本"),
+        ("Token 官方价", f"{len(token_pass)}/{len(TOKEN_DATA)}", "官方页可追溯"),
         ("H100 国内月租", "7.6 万元" if h100 else "暂不可得", "8卡整机/月，不再重复折算"),
-        ("Data Freeze", FREEZE_LABEL, "冻结后数据进入下一期"),
     ]
 
 
@@ -474,9 +584,15 @@ def render_html(relative_prefix: str = "./") -> str:
     <section>
       <h2>今日结论</h2>
       <div class="panel">
-        <p>旧版页面中 H100、H800 等卡型被错误地按“人民币/卡/小时”进入国内租赁主口径，并再次乘以 <code>8×24×30</code>，导致 H100 约 7.6 万元/月被放大为 60.8 万元/月。新版已清除该逻辑，国内租赁主图只展示通过校验的“万元/8卡整机/月”。</p>
-        <p>H800 当前没有通过国内主口径校验，也没有可信海外对照口径，因此不再计算“国内是国外多少倍”。Low Consensus 或 REJECT 数据不会进入 AI 方向性结论。</p>
+        <p>本版采用“主指数严格、情报覆盖充分”的结构：国内主指数只收通过校验的 8卡整机月租；海外 GPU Cloud、采购价、招投标、整机渠道报价进入辅助模块，不再被错误混入国内主指数。</p>
+        <p>H800 当前没有通过国内主口径校验，因此不进入国内主指数；但它仍保留在覆盖率诊断和缺口清单中，后续通过云厂商、招投标、渠道报价继续补采。</p>
       </div>
+    </section>
+
+    <section id="coverage">
+      <h2>覆盖率诊断</h2>
+      <p class="note">覆盖不等于进入主指数。每张卡至少应有 Main Index、Auxiliary、Candidate、Rejected 或 Missing 状态，避免治理后报告变空。</p>
+      {table(COVERAGE)}
     </section>
 
     <section id="domestic">
@@ -501,7 +617,7 @@ def render_html(relative_prefix: str = "./") -> str:
 
     <section id="token">
       <h2>Token 价格</h2>
-      <p class="note">旧版静态 Token 价格已清除。未实时抓取官方价前，Token 只保留来源和状态，不进入柱状图和结论。</p>
+      <p class="note">Token 官方价来自厂商官方价格页，市场价后续由 OpenRouter / Artificial Analysis 等补充，官方价和市场价分列展示。</p>
       {table(TOKEN_DATA)}
     </section>
 

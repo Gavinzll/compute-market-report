@@ -10,6 +10,34 @@ Collect → Classify → Normalize → Validate → Publish
 
 未通过 `Validate` 的数据不得进入主图、主指数、ROI、利润测算、AI 总结和历史数据库，只能进入 `Rejected Samples`、审计文件或异常样本说明。不得因为页面展示需要、字段完整或来源看似可信而绕过校验。
 
+数据治理的目标不是把报告变空，而是让“主指数严格、情报覆盖充分”。如果严格校验后 PASS 样本过少，任务不得直接输出低覆盖报告，必须进入扩源补采流程。
+
+报告必须同时维护四层数据：
+
+- `Main Index`：只纳入 `Validate == PASS` 且 `Confidence >= 70` 的标准口径数据，用于主图、主指数、ROI、历史库和 AI 总结。
+- `Auxiliary Quotes`：口径不同但来源明确的数据，例如海外 GPU Cloud 小时价、云厂商实例价、采购价、招投标价、整机报价，用于辅助分析，不进入主指数。
+- `Candidate Samples`：尚未完成交叉验证但有来源、有原文、有口径说明的数据，用于后续校验和人工复核。
+- `Rejected Samples`：分类错误、单位错误、历史波动异常、低可信度或来源不可追溯的数据，只用于审计。
+
+最低覆盖率要求：
+
+- GPU 固定名单覆盖率不得低于 80%。覆盖的定义不是全部进入主指数，而是每个 GPU 至少要有一条可解释的数据状态：`PASS`、`Auxiliary`、`Candidate`、`Rejected` 或 `Missing with searched sources`。
+- Token 厂商覆盖率不得低于 80%。官方价缺失时必须记录已检索的官方页、云平台页或失败原因。
+- 国内主指数 PASS 样本如果少于 3 个，必须触发扩源补采，不得只输出一张空主图。
+- 海外 GPU Cloud PASS/Auxiliary 样本如果少于 8 个，必须扩展 RunPod、Lambda、Vast.ai、CoreWeave、Nebius、Crusoe、Oracle OCI、Paperspace、Fluidstack、DataCrunch 等来源。
+
+扩源补采优先级：
+
+1. 官方/主口径源
+2. 云厂商公开价格页
+3. Marketplace 实时价格页
+4. 招投标/中标公告
+5. 整机厂商/渠道公开报价
+6. 行业媒体/研报
+7. 社区/论坛/传闻
+
+扩源后的数据仍然必须经过 Classify、Normalize、Validate；不能因为覆盖不足而降低主指数门槛。覆盖不足本身必须作为报告中的“数据缺口”输出。
+
 ## 1. Collect
 
 采集阶段只保存原始事实，不做计算和结论。每条候选数据必须尽量保留：

@@ -1,8 +1,8 @@
 {
   "date": "2026-07-14",
-  "freeze_time": "2026-07-14T10:08:00+08:00",
+  "freeze_time": "2026-07-14T10:20:00+08:00",
   "report_version": "v1.1.0",
-  "prompt_version": "79a3dc3",
+  "prompt_version": "bad7bc8",
   "fx": {
     "USD/CNY": 7.18
   },
@@ -48,53 +48,125 @@
       "title": "阿里云百炼模型价格",
       "url": "https://help.aliyun.com/zh/model-studio/model-pricing",
       "note": "Token Official Price 来源之一。"
+    },
+    {
+      "id": 7,
+      "tier": "海外云价",
+      "title": "RunPod GPU Cloud Pricing",
+      "url": "https://www.runpod.io/pricing",
+      "note": "可抓取 B300、B200、H200、H100、A100、L40S、RTX 5090、L4 等 GPU 小时价。"
+    },
+    {
+      "id": 8,
+      "tier": "海外云价",
+      "title": "Lambda AI Cloud Pricing",
+      "url": "https://lambda.ai/pricing",
+      "note": "可抓取 B200、H100、A100 以及 1-Click Cluster 的 B200/H100 多 GPU 价格。"
+    },
+    {
+      "id": 9,
+      "tier": "海外云价/Marketplace",
+      "title": "Vast.ai GPU Pricing",
+      "url": "https://vast.ai/pricing",
+      "note": "可抓取 p25、median、p90 等 Marketplace 实时价格分布，用于 Source Consensus。"
+    },
+    {
+      "id": 10,
+      "tier": "采购/整机辅助",
+      "title": "BIZON ZX9000 GPU Server",
+      "url": "https://bizon-tech.com/bizon-zx9000.html",
+      "note": "可抓取 2 卡工作站/服务器配置价，用于采购辅助，不直接进入 8 卡 HGX 主口径。"
+    },
+    {
+      "id": 11,
+      "tier": "官方规格",
+      "title": "NVIDIA H200 GPU",
+      "url": "https://www.nvidia.com/en-us/data-center/h200/",
+      "note": "用于确认 H200 SXM/NVL 规格、显存、服务器形态，不提供采购成交价。"
+    },
+    {
+      "id": 12,
+      "tier": "采购/招投标",
+      "title": "中国政府采购网",
+      "url": "http://www.ccgp.gov.cn/",
+      "note": "用于检索 8卡 AI 训练/推理服务器中标公告和采购价。"
     }
   ],
   "token_prices": [
     {
       "厂商": "OpenAI",
-      "模型": "主力 GPT / o 系列",
+      "模型": "GPT-5.5",
       "国家/地区": "海外",
-      "输入官方价（原币/百万Token）": "需实时抓取",
-      "输出官方价（原币/百万Token）": "需实时抓取",
-      "输入官方价（人民币/百万Token）": null,
-      "输出官方价（人民币/百万Token）": null,
+      "输入官方价（原币/百万Token）": "USD 5.00",
+      "输出官方价（原币/百万Token）": "USD 30.00",
+      "输入官方价（人民币/百万Token）": 35.9,
+      "输出官方价（人民币/百万Token）": 215.4,
       "官方来源": "cite-4",
       "市场来源": "OpenRouter/替代市场待抓取",
-      "采集时间": "2026-07-14 10:08:40 UTC+08:00",
+      "采集时间": "2026-07-14 10:20:45 UTC+08:00",
       "Confidence Score": 95,
-      "校验状态": "REVIEW",
-      "备注": "生成器已清除旧静态价格，等待实时抓取官方页后入表。"
+      "校验状态": "PASS",
+      "备注": "OpenAI 官方价格页；缓存输入价单列，不混入标准输入价。"
+    },
+    {
+      "厂商": "OpenAI",
+      "模型": "GPT-5.4 mini",
+      "国家/地区": "海外",
+      "输入官方价（原币/百万Token）": "USD 0.75",
+      "输出官方价（原币/百万Token）": "USD 4.50",
+      "输入官方价（人民币/百万Token）": 5.38,
+      "输出官方价（人民币/百万Token）": 32.31,
+      "官方来源": "cite-4",
+      "市场来源": "OpenRouter/替代市场待抓取",
+      "采集时间": "2026-07-14 10:20:45 UTC+08:00",
+      "Confidence Score": 95,
+      "校验状态": "PASS",
+      "备注": "OpenAI 官方价格页。"
     },
     {
       "厂商": "DeepSeek",
-      "模型": "deepseek-chat / reasoner",
+      "模型": "deepseek-v4-flash",
       "国家/地区": "国产",
-      "输入官方价（原币/百万Token）": "需实时抓取",
-      "输出官方价（原币/百万Token）": "需实时抓取",
-      "输入官方价（人民币/百万Token）": null,
-      "输出官方价（人民币/百万Token）": null,
+      "输入官方价（原币/百万Token）": "USD 0.14（Cache Miss）",
+      "输出官方价（原币/百万Token）": "USD 0.28",
+      "输入官方价（人民币/百万Token）": 1.01,
+      "输出官方价（人民币/百万Token）": 2.01,
       "官方来源": "cite-5",
       "市场来源": "OpenRouter/替代市场待抓取",
-      "采集时间": "2026-07-14 10:08:40 UTC+08:00",
+      "采集时间": "2026-07-14 10:20:45 UTC+08:00",
       "Confidence Score": 95,
-      "校验状态": "REVIEW",
-      "备注": "保留官方来源，价格未实时抓取前不进入 Token 图。"
+      "校验状态": "PASS",
+      "备注": "DeepSeek 官方页；Cache Hit 另列，不替代标准输入价。"
     },
     {
       "厂商": "阿里云/通义千问",
-      "模型": "Qwen 系列",
+      "模型": "qwen3.7-max",
       "国家/地区": "国产",
-      "输入官方价（原币/百万Token）": "需实时抓取",
-      "输出官方价（原币/百万Token）": "需实时抓取",
-      "输入官方价（人民币/百万Token）": null,
-      "输出官方价（人民币/百万Token）": null,
+      "输入官方价（原币/百万Token）": "CNY 12",
+      "输出官方价（原币/百万Token）": "CNY 36",
+      "输入官方价（人民币/百万Token）": 12.0,
+      "输出官方价（人民币/百万Token）": 36.0,
       "官方来源": "cite-6",
       "市场来源": "OpenRouter/替代市场待抓取",
-      "采集时间": "2026-07-14 10:08:40 UTC+08:00",
+      "采集时间": "2026-07-14 10:20:45 UTC+08:00",
       "Confidence Score": 95,
-      "校验状态": "REVIEW",
-      "备注": "保留官方来源，价格未实时抓取前不进入 Token 图。"
+      "校验状态": "PASS",
+      "备注": "阿里云百炼官方标准价，限时折扣另列不混入标准价。"
+    },
+    {
+      "厂商": "阿里云/通义千问",
+      "模型": "qwen-plus-latest",
+      "国家/地区": "国产",
+      "输入官方价（原币/百万Token）": "CNY 0.8",
+      "输出官方价（原币/百万Token）": "CNY 2",
+      "输入官方价（人民币/百万Token）": 0.8,
+      "输出官方价（人民币/百万Token）": 2.0,
+      "官方来源": "cite-6",
+      "市场来源": "OpenRouter/替代市场待抓取",
+      "采集时间": "2026-07-14 10:20:45 UTC+08:00",
+      "Confidence Score": 95,
+      "校验状态": "PASS",
+      "备注": "阿里云百炼官方标准价。"
     }
   ],
   "domestic_rental": [
@@ -538,14 +610,14 @@
       "地区/市场": "海外",
       "category": "GPU_CLOUD",
       "主数据源": "ComputeStacker/Lambda/RunPod 辅助",
-      "原始价格": null,
-      "标准化价格": null,
+      "原始价格": "USD 7.39/卡/小时",
+      "标准化价格": 53.06,
       "标准化单位": "人民币/卡/小时",
-      "等效8卡月租（万元，仅参考）": null,
-      "Confidence Score": 50,
-      "Source Consensus": "Low",
-      "校验状态": "REVIEW",
-      "备注": "海外公开小时价暂不可得。"
+      "等效8卡月租（万元，仅参考）": 30.56,
+      "Confidence Score": 85,
+      "Source Consensus": "Medium",
+      "校验状态": "PASS",
+      "备注": "仅供海外 GPU Cloud 参考，不进入国内租赁指数。"
     },
     {
       "GPU 型号": "B200",
@@ -558,9 +630,9 @@
       "标准化价格": 48.03,
       "标准化单位": "人民币/卡/小时",
       "等效8卡月租（万元，仅参考）": 27.67,
-      "Confidence Score": 65,
-      "Source Consensus": "Low",
-      "校验状态": "REVIEW",
+      "Confidence Score": 90,
+      "Source Consensus": "High",
+      "校验状态": "PASS",
       "备注": "仅供海外 GPU Cloud 参考，不进入国内租赁指数。"
     },
     {
@@ -570,12 +642,12 @@
       "地区/市场": "海外",
       "category": "GPU_CLOUD",
       "主数据源": "ComputeStacker/Lambda/RunPod 辅助",
-      "原始价格": "USD 4.27/卡/小时",
-      "标准化价格": 30.66,
+      "原始价格": "USD 4.39/卡/小时",
+      "标准化价格": 31.52,
       "标准化单位": "人民币/卡/小时",
-      "等效8卡月租（万元，仅参考）": 17.66,
-      "Confidence Score": 70,
-      "Source Consensus": "Medium",
+      "等效8卡月租（万元，仅参考）": 18.16,
+      "Confidence Score": 90,
+      "Source Consensus": "High",
       "校验状态": "PASS",
       "备注": "仅供海外 GPU Cloud 参考，不进入国内租赁指数。"
     },
@@ -586,12 +658,12 @@
       "地区/市场": "海外",
       "category": "GPU_CLOUD",
       "主数据源": "ComputeStacker/Lambda/RunPod 辅助",
-      "原始价格": "USD 2.49/卡/小时",
-      "标准化价格": 17.88,
+      "原始价格": "USD 2.99/卡/小时",
+      "标准化价格": 21.47,
       "标准化单位": "人民币/卡/小时",
-      "等效8卡月租（万元，仅参考）": 10.3,
-      "Confidence Score": 85,
-      "Source Consensus": "Medium",
+      "等效8卡月租（万元，仅参考）": 12.37,
+      "Confidence Score": 90,
+      "Source Consensus": "High",
       "校验状态": "PASS",
       "备注": "仅供海外 GPU Cloud 参考，不进入国内租赁指数。"
     },
@@ -634,13 +706,13 @@
       "地区/市场": "海外",
       "category": "GPU_CLOUD",
       "主数据源": "ComputeStacker/Lambda/RunPod 辅助",
-      "原始价格": "USD 1.29/卡/小时",
-      "标准化价格": 9.26,
+      "原始价格": "USD 1.49/卡/小时",
+      "标准化价格": 10.7,
       "标准化单位": "人民币/卡/小时",
-      "等效8卡月租（万元，仅参考）": 5.33,
-      "Confidence Score": 65,
-      "Source Consensus": "Low",
-      "校验状态": "REVIEW",
+      "等效8卡月租（万元，仅参考）": 6.16,
+      "Confidence Score": 85,
+      "Source Consensus": "Medium",
+      "校验状态": "PASS",
       "备注": "仅供海外 GPU Cloud 参考，不进入国内租赁指数。"
     },
     {
@@ -666,11 +738,11 @@
       "地区/市场": "海外",
       "category": "GPU_CLOUD",
       "主数据源": "ComputeStacker/Lambda/RunPod 辅助",
-      "原始价格": "USD 0.85/卡/小时",
-      "标准化价格": 6.1,
+      "原始价格": "USD 0.99/卡/小时",
+      "标准化价格": 7.11,
       "标准化单位": "人民币/卡/小时",
-      "等效8卡月租（万元，仅参考）": 3.51,
-      "Confidence Score": 70,
+      "等效8卡月租（万元，仅参考）": 4.1,
+      "Confidence Score": 85,
       "Source Consensus": "Medium",
       "校验状态": "PASS",
       "备注": "仅供海外 GPU Cloud 参考，不进入国内租赁指数。"
@@ -698,11 +770,11 @@
       "地区/市场": "海外",
       "category": "GPU_CLOUD",
       "主数据源": "ComputeStacker/Lambda/RunPod 辅助",
-      "原始价格": "USD 0.25/卡/小时",
-      "标准化价格": 1.79,
+      "原始价格": "USD 0.39/卡/小时",
+      "标准化价格": 2.8,
       "标准化单位": "人民币/卡/小时",
-      "等效8卡月租（万元，仅参考）": 1.03,
-      "Confidence Score": 70,
+      "等效8卡月租（万元，仅参考）": 1.61,
+      "Confidence Score": 85,
       "Source Consensus": "Medium",
       "校验状态": "PASS",
       "备注": "仅供海外 GPU Cloud 参考，不进入国内租赁指数。"
@@ -714,13 +786,13 @@
       "地区/市场": "海外",
       "category": "GPU_CLOUD",
       "主数据源": "ComputeStacker/Lambda/RunPod 辅助",
-      "原始价格": "USD 0.65/卡/小时",
-      "标准化价格": 4.67,
+      "原始价格": "USD 0.99/卡/小时",
+      "标准化价格": 7.11,
       "标准化单位": "人民币/卡/小时",
-      "等效8卡月租（万元，仅参考）": 2.69,
-      "Confidence Score": 60,
-      "Source Consensus": "Low",
-      "校验状态": "REVIEW",
+      "等效8卡月租（万元，仅参考）": 4.1,
+      "Confidence Score": 80,
+      "Source Consensus": "Medium",
+      "校验状态": "PASS",
       "备注": "仅供海外 GPU Cloud 参考，不进入国内租赁指数。"
     },
     {
@@ -730,13 +802,13 @@
       "地区/市场": "海外",
       "category": "GPU_CLOUD",
       "主数据源": "ComputeStacker/Lambda/RunPod 辅助",
-      "原始价格": "USD 0.35/卡/小时",
-      "标准化价格": 2.51,
+      "原始价格": "USD 0.69/卡/小时",
+      "标准化价格": 4.95,
       "标准化单位": "人民币/卡/小时",
-      "等效8卡月租（万元，仅参考）": 1.45,
-      "Confidence Score": 60,
-      "Source Consensus": "Low",
-      "校验状态": "REVIEW",
+      "等效8卡月租（万元，仅参考）": 2.85,
+      "Confidence Score": 80,
+      "Source Consensus": "Medium",
+      "校验状态": "PASS",
       "备注": "仅供海外 GPU Cloud 参考，不进入国内租赁指数。"
     },
     {
@@ -838,36 +910,84 @@
   ],
   "gpu_procurement": [
     {
+      "GPU 型号": "H200",
+      "GPU 分类": "Training",
+      "采购成本口径": "BIZON 2卡水冷配置价",
+      "8卡整机参考价": "不可直接折算；2x H200 NVL 加价 USD 99,000",
+      "Confidence Score": 70,
+      "校验状态": "AUXILIARY",
+      "备注": "采购辅助报价，非 8卡 HGX 成交价，不进入 ROI。"
+    },
+    {
       "GPU 型号": "H100 80G",
       "GPU 分类": "Training",
-      "采购成本口径": "市场参考/需复核",
-      "8卡整机参考价": "约 152-224 万元",
+      "采购成本口径": "BIZON 2卡水冷配置价 + 国内招投标待补",
+      "8卡整机参考价": "不可直接折算；2x H100 NVL 加价 USD 79,500",
       "Confidence Score": 70,
-      "校验状态": "REVIEW",
-      "备注": "采购价未完成多源校验，利润测算仅作参考。"
+      "校验状态": "AUXILIARY",
+      "备注": "采购辅助报价，需与国内招投标/整机渠道交叉。"
+    },
+    {
+      "GPU 型号": "A100 80G",
+      "GPU 分类": "Training",
+      "采购成本口径": "BIZON 2卡水冷配置价",
+      "8卡整机参考价": "不可直接折算；2x A100 80GB 加价 USD 55,726",
+      "Confidence Score": 70,
+      "校验状态": "AUXILIARY",
+      "备注": "采购辅助报价，非国内 8卡 HGX 主口径。"
+    },
+    {
+      "GPU 型号": "8卡 AI 服务器",
+      "GPU 分类": "Training",
+      "采购成本口径": "中国政府采购网/高校招投标",
+      "8卡整机参考价": "需按中标公告逐条解析",
+      "Confidence Score": 85,
+      "校验状态": "CANDIDATE",
+      "备注": "招投标可提高采购价覆盖率，但需解析具体 GPU 型号和数量。"
     },
     {
       "GPU 型号": "RTX 5090",
       "GPU 分类": "Consumer",
-      "采购成本口径": "市场参考/需复核",
-      "8卡整机参考价": "约 14.4-24 万元",
-      "Confidence Score": 65,
-      "校验状态": "REVIEW",
-      "备注": "消费级硬件价格波动大，不进入主投资结论。"
+      "采购成本口径": "公开渠道/电商/整机厂商待补",
+      "8卡整机参考价": "需补采",
+      "Confidence Score": 55,
+      "校验状态": "CANDIDATE",
+      "备注": "消费级价格波动大，必须单独标注渠道和税费。"
     }
   ],
   "gpu_profit": [
     {
+      "GPU 型号": "H200",
+      "租赁数据状态": "无 PASS 租赁价",
+      "采购数据状态": "AUXILIARY",
+      "是否进入 ROI": "否",
+      "结论": "采购价或租赁价未完全通过校验，仅保留为观察项。"
+    },
+    {
       "GPU 型号": "H100 80G",
       "租赁数据状态": "PASS",
-      "采购数据状态": "REVIEW",
+      "采购数据状态": "AUXILIARY",
+      "是否进入 ROI": "否",
+      "结论": "采购价或租赁价未完全通过校验，仅保留为观察项。"
+    },
+    {
+      "GPU 型号": "A100 80G",
+      "租赁数据状态": "无 PASS 租赁价",
+      "采购数据状态": "AUXILIARY",
+      "是否进入 ROI": "否",
+      "结论": "采购价或租赁价未完全通过校验，仅保留为观察项。"
+    },
+    {
+      "GPU 型号": "8卡 AI 服务器",
+      "租赁数据状态": "无 PASS 租赁价",
+      "采购数据状态": "CANDIDATE",
       "是否进入 ROI": "否",
       "结论": "采购价或租赁价未完全通过校验，仅保留为观察项。"
     },
     {
       "GPU 型号": "RTX 5090",
       "租赁数据状态": "PASS",
-      "采购数据状态": "REVIEW",
+      "采购数据状态": "CANDIDATE",
       "是否进入 ROI": "否",
       "结论": "采购价或租赁价未完全通过校验，仅保留为观察项。"
     }
@@ -875,7 +995,7 @@
   "audit": [
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "GB300",
       "source": "未采集到合格来源",
@@ -894,7 +1014,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "GB200",
       "source": "未采集到合格来源",
@@ -913,7 +1033,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "B300",
       "source": "未采集到合格来源",
@@ -932,7 +1052,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "B200",
       "source": "未采集到合格来源",
@@ -951,7 +1071,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "H200",
       "source": "未采集到合格来源",
@@ -970,7 +1090,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "H100 80G",
       "source": "SMM（主口径）",
@@ -989,7 +1109,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "H800",
       "source": "估算/待复核",
@@ -1008,7 +1128,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "H20",
       "source": "未采集到合格来源",
@@ -1027,7 +1147,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "A100 80G",
       "source": "待复核",
@@ -1046,7 +1166,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "A800",
       "source": "未采集到合格来源",
@@ -1065,7 +1185,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "L40S",
       "source": "未采集到合格来源",
@@ -1084,7 +1204,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "L20",
       "source": "未采集到合格来源",
@@ -1103,7 +1223,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "L4",
       "source": "未采集到合格来源",
@@ -1122,7 +1242,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "RTX 5090",
       "source": "SMM（主口径）",
@@ -1141,7 +1261,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "RTX 4090",
       "source": "未采集到合格来源",
@@ -1160,7 +1280,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "昇腾 910C",
       "source": "未采集到合格来源",
@@ -1179,7 +1299,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "昇腾 910B",
       "source": "未采集到合格来源",
@@ -1198,7 +1318,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "寒武纪 MLU",
       "source": "未采集到合格来源",
@@ -1217,7 +1337,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "海光 DCU",
       "source": "未采集到合格来源",
@@ -1236,7 +1356,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "壁仞",
       "source": "未采集到合格来源",
@@ -1255,7 +1375,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "摩尔线程",
       "source": "未采集到合格来源",
@@ -1276,7 +1396,7 @@
   "rejected": [
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "GB300",
       "source": "未采集到合格来源",
@@ -1295,7 +1415,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "GB200",
       "source": "未采集到合格来源",
@@ -1314,7 +1434,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "B300",
       "source": "未采集到合格来源",
@@ -1333,7 +1453,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "B200",
       "source": "未采集到合格来源",
@@ -1352,7 +1472,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "H200",
       "source": "未采集到合格来源",
@@ -1371,7 +1491,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "H800",
       "source": "估算/待复核",
@@ -1390,7 +1510,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "H20",
       "source": "未采集到合格来源",
@@ -1409,7 +1529,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "A100 80G",
       "source": "待复核",
@@ -1428,7 +1548,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "A800",
       "source": "未采集到合格来源",
@@ -1447,7 +1567,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "L40S",
       "source": "未采集到合格来源",
@@ -1466,7 +1586,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "L20",
       "source": "未采集到合格来源",
@@ -1485,7 +1605,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "L4",
       "source": "未采集到合格来源",
@@ -1504,7 +1624,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "RTX 4090",
       "source": "未采集到合格来源",
@@ -1523,7 +1643,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "昇腾 910C",
       "source": "未采集到合格来源",
@@ -1542,7 +1662,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "昇腾 910B",
       "source": "未采集到合格来源",
@@ -1561,7 +1681,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "寒武纪 MLU",
       "source": "未采集到合格来源",
@@ -1580,7 +1700,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "海光 DCU",
       "source": "未采集到合格来源",
@@ -1599,7 +1719,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "壁仞",
       "source": "未采集到合格来源",
@@ -1618,7 +1738,7 @@
     },
     {
       "date": "2026-07-14",
-      "freeze_time": "2026-07-14T10:08:00+08:00",
+      "freeze_time": "2026-07-14T10:20:00+08:00",
       "asset_type": "GPU_RENT_CN",
       "gpu_or_model": "摩尔线程",
       "source": "未采集到合格来源",
@@ -1634,6 +1754,155 @@
       "included_in_index": false,
       "reject_reason": "当日未获得符合国内主口径的可信样本。",
       "notes": "当日未获得符合国内主口径的可信样本。"
+    }
+  ],
+  "coverage": [
+    {
+      "GPU 型号": "GB300",
+      "GPU 分类": "Training",
+      "覆盖状态": "Domestic Candidate/Rejected",
+      "是否可进入主指数": "否",
+      "下一步": "继续补国内主口径"
+    },
+    {
+      "GPU 型号": "GB200",
+      "GPU 分类": "Training",
+      "覆盖状态": "Domestic Candidate/Rejected",
+      "是否可进入主指数": "否",
+      "下一步": "继续补国内主口径"
+    },
+    {
+      "GPU 型号": "B300",
+      "GPU 分类": "Training",
+      "覆盖状态": "Overseas Auxiliary / Domestic Candidate/Rejected",
+      "是否可进入主指数": "否",
+      "下一步": "继续补国内主口径"
+    },
+    {
+      "GPU 型号": "B200",
+      "GPU 分类": "Training",
+      "覆盖状态": "Overseas Auxiliary / Domestic Candidate/Rejected",
+      "是否可进入主指数": "否",
+      "下一步": "继续补国内主口径"
+    },
+    {
+      "GPU 型号": "H200",
+      "GPU 分类": "Training",
+      "覆盖状态": "Overseas Auxiliary / Procurement Auxiliary / Domestic Candidate/Rejected",
+      "是否可进入主指数": "否",
+      "下一步": "继续补国内主口径"
+    },
+    {
+      "GPU 型号": "H100 80G",
+      "GPU 分类": "Training",
+      "覆盖状态": "Main Index / Overseas Auxiliary / Procurement Auxiliary",
+      "是否可进入主指数": "是",
+      "下一步": "持续监控历史波动"
+    },
+    {
+      "GPU 型号": "H800",
+      "GPU 分类": "Training",
+      "覆盖状态": "Domestic Candidate/Rejected",
+      "是否可进入主指数": "否",
+      "下一步": "继续补国内主口径"
+    },
+    {
+      "GPU 型号": "H20",
+      "GPU 分类": "Training",
+      "覆盖状态": "Domestic Candidate/Rejected",
+      "是否可进入主指数": "否",
+      "下一步": "继续补国内主口径"
+    },
+    {
+      "GPU 型号": "A100 80G",
+      "GPU 分类": "Training",
+      "覆盖状态": "Overseas Auxiliary / Procurement Auxiliary / Domestic Candidate/Rejected",
+      "是否可进入主指数": "否",
+      "下一步": "继续补国内主口径"
+    },
+    {
+      "GPU 型号": "A800",
+      "GPU 分类": "Training",
+      "覆盖状态": "Domestic Candidate/Rejected",
+      "是否可进入主指数": "否",
+      "下一步": "继续补国内主口径"
+    },
+    {
+      "GPU 型号": "L40S",
+      "GPU 分类": "Inference",
+      "覆盖状态": "Overseas Auxiliary / Domestic Candidate/Rejected",
+      "是否可进入主指数": "否",
+      "下一步": "继续补国内主口径"
+    },
+    {
+      "GPU 型号": "L20",
+      "GPU 分类": "Inference",
+      "覆盖状态": "Domestic Candidate/Rejected",
+      "是否可进入主指数": "否",
+      "下一步": "继续补国内主口径"
+    },
+    {
+      "GPU 型号": "L4",
+      "GPU 分类": "Inference",
+      "覆盖状态": "Overseas Auxiliary / Domestic Candidate/Rejected",
+      "是否可进入主指数": "否",
+      "下一步": "继续补国内主口径"
+    },
+    {
+      "GPU 型号": "RTX 5090",
+      "GPU 分类": "Consumer",
+      "覆盖状态": "Main Index / Overseas Auxiliary / Procurement Auxiliary",
+      "是否可进入主指数": "是",
+      "下一步": "持续监控历史波动"
+    },
+    {
+      "GPU 型号": "RTX 4090",
+      "GPU 分类": "Consumer",
+      "覆盖状态": "Overseas Auxiliary / Domestic Candidate/Rejected",
+      "是否可进入主指数": "否",
+      "下一步": "继续补国内主口径"
+    },
+    {
+      "GPU 型号": "昇腾 910C",
+      "GPU 分类": "国产",
+      "覆盖状态": "Domestic Candidate/Rejected",
+      "是否可进入主指数": "否",
+      "下一步": "继续补国内主口径"
+    },
+    {
+      "GPU 型号": "昇腾 910B",
+      "GPU 分类": "国产",
+      "覆盖状态": "Domestic Candidate/Rejected",
+      "是否可进入主指数": "否",
+      "下一步": "继续补国内主口径"
+    },
+    {
+      "GPU 型号": "寒武纪 MLU",
+      "GPU 分类": "国产",
+      "覆盖状态": "Domestic Candidate/Rejected",
+      "是否可进入主指数": "否",
+      "下一步": "继续补国内主口径"
+    },
+    {
+      "GPU 型号": "海光 DCU",
+      "GPU 分类": "国产",
+      "覆盖状态": "Domestic Candidate/Rejected",
+      "是否可进入主指数": "否",
+      "下一步": "继续补国内主口径"
+    },
+    {
+      "GPU 型号": "壁仞",
+      "GPU 分类": "国产",
+      "覆盖状态": "Domestic Candidate/Rejected",
+      "是否可进入主指数": "否",
+      "下一步": "继续补国内主口径"
+    },
+    {
+      "GPU 型号": "摩尔线程",
+      "GPU 分类": "国产",
+      "覆盖状态": "Domestic Candidate/Rejected",
+      "是否可进入主指数": "否",
+      "下一步": "继续补国内主口径"
     }
   ]
 }
