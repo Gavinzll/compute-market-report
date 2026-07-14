@@ -27,6 +27,7 @@ DATE = NOW.date().isoformat()
 FREEZE_TIME = NOW.replace(second=0, microsecond=0).isoformat()
 FREEZE_LABEL = NOW.strftime("%Y-%m-%d %H:%M")
 STAMP = NOW.strftime("%Y-%m-%d %H:%M:%S UTC+08:00")
+ASSET_VERSION = NOW.strftime("%Y%m%d%H%M%S")
 FX_USD_CNY = 7.18
 REPORT_VERSION = "v1.2.0"
 
@@ -1271,7 +1272,7 @@ def render_html(relative_prefix: str = "./") -> str:
     </footer>
   </main>
   <script src="{relative_prefix}_shared/js/echarts.min.js"></script>
-  <script src="{relative_prefix}assets/charts.js?v={PROMPT_VERSION}-{REPORT_VERSION}"></script>
+  <script src="{relative_prefix}assets/charts.js?v={ASSET_VERSION}-{REPORT_VERSION}"></script>
 </body>
 </html>"""
 
@@ -1354,8 +1355,8 @@ def write_charts():
     if (p.value === null || p.value === undefined || p.value === '') return '';
     var rawRatio = ratios && ratios[p.dataIndex] ? ratios[p.dataIndex] : '';
     var base = rawRatio === '价格待补' ? '价格待补' : (p.value + '万/月');
-    var ratio = rawRatio === '海外缺口' ? ' · 海外缺口' : (rawRatio && String(rawRatio).indexOf('%') >= 0 ? ' · 海外' + rawRatio : (rawRatio ? ' · ' + rawRatio : ''));
-    return rawRatio === '价格待补' ? base : base + ratio;
+    var ratio = rawRatio === '海外缺口' ? '海外缺口' : (rawRatio && String(rawRatio).indexOf('%') >= 0 ? '海外' + rawRatio : (rawRatio ? rawRatio : ''));
+    return rawRatio === '价格待补' || !ratio ? base : base + '\\n' + ratio;
   }}
   function bar(id, labels, values, name, color, ratios, kinds) {{
     var seriesData = values.map(function(v, i) {{

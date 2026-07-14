@@ -30,8 +30,8 @@
     if (p.value === null || p.value === undefined || p.value === '') return '';
     var rawRatio = ratios && ratios[p.dataIndex] ? ratios[p.dataIndex] : '';
     var base = rawRatio === '价格待补' ? '价格待补' : (p.value + '万/月');
-    var ratio = rawRatio === '海外缺口' ? ' · 海外缺口' : (rawRatio && String(rawRatio).indexOf('%') >= 0 ? ' · 海外' + rawRatio : (rawRatio ? ' · ' + rawRatio : ''));
-    return rawRatio === '价格待补' ? base : base + ratio;
+    var ratio = rawRatio === '海外缺口' ? '海外缺口' : (rawRatio && String(rawRatio).indexOf('%') >= 0 ? '海外' + rawRatio : (rawRatio ? rawRatio : ''));
+    return rawRatio === '价格待补' || !ratio ? base : base + '\n' + ratio;
   }
   function bar(id, labels, values, name, color, ratios, kinds) {
     var seriesData = values.map(function(v, i) {
