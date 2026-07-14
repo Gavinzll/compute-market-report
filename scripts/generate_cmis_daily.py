@@ -1350,6 +1350,13 @@ def write_charts():
     var seen = {{}};
     return kinds.filter(function(k){{ if (seen[k]) return false; seen[k] = true; return true; }});
   }}
+  function formatBarLabel(p, ratios) {{
+    if (p.value === null || p.value === undefined || p.value === '') return '';
+    var rawRatio = ratios && ratios[p.dataIndex] ? ratios[p.dataIndex] : '';
+    var base = rawRatio === '价格待补' ? '价格待补' : (p.value + '万/月');
+    var ratio = rawRatio === '海外缺口' ? ' · 海外缺口' : (rawRatio && String(rawRatio).indexOf('%') >= 0 ? ' · 海外' + rawRatio : (rawRatio ? ' · ' + rawRatio : ''));
+    return rawRatio === '价格待补' ? base : base + ratio;
+  }}
   function bar(id, labels, values, name, color, ratios, kinds) {{
     var seriesData = values.map(function(v, i) {{
       var kind = kinds && kinds[i] ? kinds[i] : '';
@@ -1359,20 +1366,11 @@ def write_charts():
     var legend = legendForKinds(kinds);
     if (legend) {{
       series = legend.map(function(kind) {{
-        return {{name:kind,type:'bar',data:seriesData.map(function(d, i){{return kinds[i] === kind ? d : null;}}),barGap:'-100%',label:{{show:false}},itemStyle:{{borderRadius:[6,6,0,0]}}}};
+        return {{name:kind,type:'bar',data:seriesData.map(function(d, i){{return kinds[i] === kind ? d : null;}}),barGap:'-100%',label:{{show:true,position:'top',color:ink,formatter:function(p){{return formatBarLabel(p, ratios);}}}},itemStyle:{{borderRadius:[6,6,0,0]}}}};
       }});
-      series.push({{name:'标签',type:'bar',data:seriesData,barGap:'-100%',silent:true,itemStyle:{{opacity:0}},label:{{show:true,position:'top',color:ink,formatter:function(p){{
-        var rawRatio = ratios && ratios[p.dataIndex] ? ratios[p.dataIndex] : '';
-        var base = rawRatio === '价格待补' ? '价格待补' : (p.value + '万/月');
-        var ratio = rawRatio === '海外缺口' ? ' · 海外缺口' : (rawRatio && String(rawRatio).indexOf('%') >= 0 ? ' · 海外' + rawRatio : (rawRatio ? ' · ' + rawRatio : ''));
-        return rawRatio === '价格待补' ? base : base + ratio;
-      }}}}}});
     }} else {{
       series = [{{type:'bar',data:seriesData,label:{{show:true,position:'top',color:ink,formatter:function(p){{
-        var rawRatio = ratios && ratios[p.dataIndex] ? ratios[p.dataIndex] : '';
-        var base = rawRatio === '价格待补' ? '价格待补' : (p.value + '万/月');
-        var ratio = rawRatio === '海外缺口' ? ' · 海外缺口' : (rawRatio && String(rawRatio).indexOf('%') >= 0 ? ' · 海外' + rawRatio : (rawRatio ? ' · ' + rawRatio : ''));
-        return rawRatio === '价格待补' ? base : base + ratio;
+        return formatBarLabel(p, ratios);
       }}}},itemStyle:{{borderRadius:[6,6,0,0]}}}}];
     }}
     init(id, {{
@@ -1380,7 +1378,7 @@ def write_charts():
       color:legend ? legend.map(function(k){{return domesticPalette[k] || color;}}) : [color],
       tooltip:{{trigger:'axis', appendToBody:true}},
       legend:legend ? {{top:0,textStyle:{{color:muted}}}} : undefined,
-      grid:{{left:70,right:40,top:44,bottom:80,containLabel:true}},
+      grid:{{left:70,right:40,top:legend ? 72 : 44,bottom:80,containLabel:true}},
       xAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}}}},
       yAxis:{{type:'value',name:name,nameTextStyle:{{color:muted}},axisLabel:{{color:muted}},splitLine:{{lineStyle:{{color:rule}}}}}},
       series:series
