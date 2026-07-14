@@ -1496,8 +1496,8 @@ def render_mobile_html(relative_prefix: str = "./", desktop_href: str = "latest.
     html{{scroll-behavior:smooth}}
     body{{margin:0;background:linear-gradient(180deg,#07111f 0%,#0b1424 45%,#07111f 100%);color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.55;-webkit-text-size-adjust:100%}}
     a{{color:var(--accent);text-decoration:none}}
-    .mobile-page{{width:min(100%,520px);margin:0 auto;padding:env(safe-area-inset-top) 14px 76px}}
-    .hero{{position:sticky;top:0;z-index:10;margin:0 -14px 18px;padding:18px 14px 14px;background:linear-gradient(180deg,rgba(7,17,31,.98),rgba(7,17,31,.88));backdrop-filter:blur(12px);border-bottom:1px solid var(--rule)}}
+    .mobile-page{{width:min(100%,520px);margin:0 auto;padding:env(safe-area-inset-top) 8px 76px}}
+    .hero{{position:sticky;top:0;z-index:10;margin:0 -8px 18px;padding:18px 8px 14px;background:linear-gradient(180deg,rgba(7,17,31,.98),rgba(7,17,31,.88));backdrop-filter:blur(12px);border-bottom:1px solid var(--rule)}}
     .eyebrow{{font-size:11px;color:var(--accent2);letter-spacing:.08em;text-transform:uppercase}}
     h1{{font-size:28px;line-height:1.08;margin:8px 0 8px;letter-spacing:-.03em}}
     h2{{font-size:20px;margin:26px 0 10px;border-left:3px solid var(--accent);padding-left:10px}}
@@ -1515,7 +1515,7 @@ def render_mobile_html(relative_prefix: str = "./", desktop_href: str = "latest.
     .pill-row{{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}}
     .pill{{display:inline-flex;gap:5px;align-items:center;padding:5px 8px;border:1px solid var(--rule);border-radius:999px;background:rgba(255,255,255,.035);font-size:11px;color:var(--ink)}}
     .pill b{{color:var(--muted);font-weight:600}}
-    figure{{padding:12px 0;margin:12px 0 18px}} figcaption{{font-size:13px;color:var(--accent2);font-weight:650;margin-bottom:8px;padding:0 12px}}
+    figure{{padding:8px 0;margin:12px 0 18px}} figcaption{{font-size:13px;color:var(--accent2);font-weight:650;margin-bottom:8px;padding:0 8px}}
     .chart{{width:100%;min-height:420px}} #chart-token-input,#chart-token-output,#chart-token-third-diff,#chart-token-official-domestic-diff{{min-height:720px}}
     details{{padding:0;margin:10px 0}} summary{{cursor:pointer;padding:14px;font-weight:700;color:var(--accent2)}} details[open] summary{{border-bottom:1px solid var(--rule)}}
     .details-body{{padding:8px 12px 12px}}
@@ -1638,7 +1638,7 @@ def write_charts():
   function init(id, option) {{
     var el = document.getElementById(id);
     if (!el || !window.echarts) return;
-    var c = echarts.init(el, undefined, {{renderer:'svg', width:'auto', height:el.offsetHeight || 'auto'}});
+    var c = echarts.init(el, undefined, {{renderer:'svg'}});
     c.setOption(option);
     window.addEventListener('resize', function(){{c.resize();}});
   }}
@@ -1657,10 +1657,10 @@ def write_charts():
   function formatBarLabel(p, ratios) {{
     if (p.value === null || p.value === undefined || p.value === '') return '';
     var rawRatio = ratios && ratios[p.dataIndex] ? ratios[p.dataIndex] : '';
+    if (isMobile) return p.value + '万';
     var base = rawRatio === '价格待补' ? '价格待补' : (p.value + '万/月');
     var ratio = rawRatio === '海外缺口' ? '海外缺口' : (rawRatio && String(rawRatio).indexOf('%') >= 0 ? '海外' + rawRatio : (rawRatio ? rawRatio : ''));
-    if (rawRatio === '价格待补' || !ratio) return base;
-    return isMobile ? (base + ' ' + ratio) : (base + '\\n' + ratio);
+    return rawRatio === '价格待补' || !ratio ? base : base + '\\n' + ratio;
   }}
   var isMobile = window.innerWidth <= 768;
   function bar(id, labels, values, name, color, ratios, kinds) {{
@@ -1671,7 +1671,7 @@ def write_charts():
     }});
     var series = [];
     var legend = legendForKinds(kinds);
-    var labelPos = isMobile ? 'insideRight' : 'top';
+    var labelPos = isMobile ? 'right' : 'top';
     if (legend) {{
       series = legend.map(function(kind) {{
         return {{name:kind,type:'bar',data:seriesData.map(function(d, i){{return kinds[i] === kind ? d : null;}}),barGap:'-100%',label:{{show:true,position:labelPos,color:ink,fontSize:isMobile?11:12,formatter:function(p){{return formatBarLabel(p, ratios);}}}},itemStyle:{{borderRadius:isMobile?[0,6,6,0]:[6,6,0,0]}}}};
@@ -1687,8 +1687,8 @@ def write_charts():
         color:legend ? legend.map(function(k){{return domesticPalette[k] || color;}}) : [color],
         tooltip:{{trigger:'axis', appendToBody:true}},
         legend:legend ? {{top:0,textStyle:{{color:muted}}}} : undefined,
-        grid:{{left:68,right:10,top:legend?62:36,bottom:20,containLabel:false}},
-        yAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0,fontSize:10,width:96,overflow:'truncate'}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}},inverse:true,position:'left',offset:0}},
+        grid:{{left:2,right:5,top:legend?62:36,bottom:20,containLabel:true}},
+        yAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0,fontSize:10,width:70,overflow:'truncate',align:'right'}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}},inverse:true}},
         xAxis:{{type:'value',name:'',axisLabel:{{color:muted,fontSize:10}},splitLine:{{lineStyle:{{color:rule}}}}}},
         series:series
       }});
@@ -1713,8 +1713,8 @@ def write_charts():
         color:[accent, accent2, muted],
         tooltip:{{trigger:'axis', appendToBody:true}},
         legend:{{top:0,textStyle:{{color:muted}}}},
-        grid:{{left:68,right:10,top:50,bottom:28,containLabel:false}},
-        yAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0,fontSize:10,width:60,overflow:'truncate'}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}},inverse:true,position:'left',offset:0}},
+        grid:{{left:2,right:5,top:50,bottom:28,containLabel:true}},
+        yAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0,fontSize:10,width:70,overflow:'truncate',align:'right'}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}},inverse:true}},
         xAxis:{{type:'value',name:'',axisLabel:{{color:muted,fontSize:10}},splitLine:{{lineStyle:{{color:rule}}}}}},
         series:s
       }});
@@ -1736,10 +1736,10 @@ def write_charts():
       init(id, {{
         animation:false,
         tooltip:{{trigger:'axis', appendToBody:true}},
-        grid:{{left:68,right:10,top:40,bottom:28,containLabel:false}},
-        yAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0,fontSize:10,width:60,overflow:'truncate'}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}},inverse:true,position:'left',offset:0}},
+        grid:{{left:2,right:5,top:40,bottom:28,containLabel:true}},
+        yAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0,fontSize:10,width:70,overflow:'truncate',align:'right'}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}},inverse:true}},
         xAxis:{{type:'value',name:'',axisLabel:{{color:muted,fontSize:10}},splitLine:{{lineStyle:{{color:rule}}}}}},
-        series:[{{name:name,type:'bar',data:values,itemStyle:{{borderRadius:[0,4,4,0],color:function(p){{return p.value >= 0 ? accent : accent2;}}}},label:{{show:true,position:'right',color:ink,formatter:function(p){{return p.value === undefined ? '' : p.value;}}}}}}]
+        series:[{{name:name,type:'bar',data:values,itemStyle:{{borderRadius:[0,4,4,0],color:function(p){{return p.value >= 0 ? accent : accent2;}}}},label:{{show:true,position:'right',color:ink,fontSize:10,formatter:function(p){{return p.value === undefined ? '' : p.value;}}}}}}]
       }});
     }} else {{
       init(id, {{
