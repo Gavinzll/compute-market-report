@@ -1271,7 +1271,7 @@ def render_html(relative_prefix: str = "./") -> str:
     </footer>
   </main>
   <script src="{relative_prefix}_shared/js/echarts.min.js"></script>
-  <script src="{relative_prefix}assets/charts.js?v={DATE.replace('-', '')}"></script>
+  <script src="{relative_prefix}assets/charts.js?v={PROMPT_VERSION}-{REPORT_VERSION}"></script>
 </body>
 </html>"""
 
