@@ -27,6 +27,7 @@
 - 不创建 GitHub Actions 或 `.github/workflows`。
 - 不把 GitHub Token、飞书 Webhook 或其它敏感信息写入仓库文件、HTML、数据文件、日志或报告正文。
 - Git 上传凭据只能通过临时环境变量、`GIT_ASKPASS`、stdin 或等效方式使用。
+- `README.md` 是人工维护文件。本次 README 更新后，除非 Gavin YszY 明确下达人工命令，否则定时任务和常规日报更新不得修改 `README.md`。
 - 如果采集阶段触达单次会话上限，优先保证已完成的数据校验和页面生成，不得输出半成品；同时在飞书通知中说明未完成阶段和下一步修复建议。
 
 ## 3. 成功标准
@@ -39,4 +40,3 @@
 - Token 六个核心价格字段全部为数值。
 - 国内 GPU 主指数、海外 GPU Cloud、Rejected / Review、Token、采购价和利润测算模块均可正常渲染。
 - GitHub Pages 链接可通过 cache-busting 参数访问最新版本。
-
