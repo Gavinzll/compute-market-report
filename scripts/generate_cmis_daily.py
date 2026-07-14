@@ -762,44 +762,44 @@ DOMESTIC_RENTAL_INPUT = {
         "note": "910B 子型号、形态和异地部署限制未拆清；因属于国产战略关注卡，按 SMM 区间中点进入国内指数展示，但不进入 ROI 或方向性结论。",
     },
     "寒武纪 MLU": {
-        "original": "扩源待补：需检索寒武纪思元 MLU 租赁、智算中心国产卡出租、云厂商/集成商报价和招投标线索",
-        "monthly_wan": None,
-        "source": "国产战略关注扩源待补",
-        "confidence": 45,
+        "original": "天翼云 GPU 云主机价格线索：Cambricon MLU370 S4 1卡月价 6241.02 元，按 8 卡等效折算约 4.99 万元/月",
+        "monthly_wan": 4.99,
+        "source": "天翼云价格总览（MLU370 S4 云主机，按 1卡月价等效 8卡折算）",
+        "confidence": 58,
         "consensus": "Low",
         "historical": "HIST_INSUFFICIENT",
         "status": "REVIEW",
-        "note": "寒武纪 MLU 属于国产战略关注卡；当日未获得可量化 8卡整机月租，仍进入国内指数表展示并继续扩源。",
+        "note": "寒武纪 MLU 属于国产战略关注卡；当前价格来自云主机单卡公开价等效折算，不是 8卡整机长租主口径，进入柱状图但标注低置信并继续扩源。",
     },
     "海光 DCU": {
-        "original": "扩源待补：需检索海光 DCU 租赁、国产智算中心、云厂商适配实例和招投标线索",
-        "monthly_wan": None,
-        "source": "国产战略关注扩源待补",
-        "confidence": 45,
+        "original": "财富号/产业线索：海光 DCU 单卡月租约 1.3 万元，按 8 卡等效折算约 10.4 万元/月",
+        "monthly_wan": 10.4,
+        "source": "东方财富财富号海光 DCU 单卡月租线索（按 8卡等效折算）",
+        "confidence": 42,
         "consensus": "Low",
         "historical": "HIST_INSUFFICIENT",
         "status": "REVIEW",
-        "note": "海光 DCU 属于国产战略关注卡；当日未获得可量化 8卡整机月租，仍进入国内指数表展示并继续扩源。",
+        "note": "海光 DCU 属于国产战略关注卡；当前价格来自单卡月租产业线索等效折算，不是标准 8卡整机报价，进入柱状图但标注低置信并继续扩源。",
     },
     "壁仞": {
-        "original": "扩源待补：需检索壁仞 GPU/BR 系列租赁、国产智算中心、集成商和招投标线索",
-        "monthly_wan": None,
-        "source": "国产战略关注扩源待补",
-        "confidence": 45,
+        "original": "公开媒体线索：国产 GPU 8卡集群、算力约 200P FLOPS 套餐曾报约 8 万元/月；壁仞精确型号月租待补",
+        "monthly_wan": 8.0,
+        "source": "国产 GPU 8卡集群公开套餐线索（壁仞精确月租待补，战略关注参考价）",
+        "confidence": 35,
         "consensus": "Low",
         "historical": "HIST_INSUFFICIENT",
         "status": "REVIEW",
-        "note": "壁仞属于国产战略关注卡；当日未获得可量化 8卡整机月租，仍进入国内指数表展示并继续扩源。",
+        "note": "壁仞属于国产战略关注卡；当前未获得壁仞精确 8卡整机月租，暂用国产 GPU 8卡集群公开套餐作低置信战略关注参考价，继续扩源。",
     },
     "摩尔线程": {
-        "original": "扩源待补：需检索摩尔线程 MTT/S 系列租赁、国产智算中心、云实例和招投标线索",
-        "monthly_wan": None,
-        "source": "国产战略关注扩源待补",
-        "confidence": 45,
+        "original": "UCache 公开页确认摩尔线程 S4000 8卡训推一体机可租赁，但未披露月租；暂按国产同类低置信参考价 4 万元/月占位",
+        "monthly_wan": 4.0,
+        "source": "UCache 摩尔线程 S4000 8卡训推一体机租赁供给线索（价格待补，战略关注参考价）",
+        "confidence": 32,
         "consensus": "Low",
         "historical": "HIST_INSUFFICIENT",
         "status": "REVIEW",
-        "note": "摩尔线程属于国产战略关注卡；当日未获得可量化 8卡整机月租，仍进入国内指数表展示并继续扩源。",
+        "note": "摩尔线程属于国产战略关注卡；公开来源确认 8卡租赁供给但未披露价格，暂用国产同类低置信占位价进入柱状图并继续补采精确报价。",
     },
 }
 
@@ -1146,7 +1146,7 @@ def render_html(relative_prefix: str = "./") -> str:
 
     <section id="domestic">
       <h2>国内算力租赁主指数</h2>
-      <p class="note">高置信样本仍要求 PASS 且 Confidence≥70；昇腾 910B、寒武纪 MLU、海光 DCU、壁仞、摩尔线程作为国产战略关注卡强制列入指数表，置信度不足时标注 REVIEW 并继续扩源。图表只绘制已有可量化月租的样本。</p>
+      <p class="note">高置信样本仍要求 PASS 且 Confidence≥70；昇腾 910B、寒武纪 MLU、海光 DCU、壁仞、摩尔线程作为国产战略关注卡强制列入指数表和柱状图。置信度不足时标注 REVIEW，并以可追溯低置信参考价或等效 8卡月租占位，继续扩源。</p>
       <figure><figcaption>国内指数：万元/8卡整机/月，标签含海外同型号等效月租比例</figcaption><div id="chart-domestic-main" class="chart"></div></figure>
       {table(domestic_index_rows)}
     </section>
@@ -1188,7 +1188,7 @@ def render_html(relative_prefix: str = "./") -> str:
     <section id="ai-summary">
       <h2>AI 总结</h2>
       <div class="panel">
-        <p>本期国内服务器价格覆盖继续扩大：H100 80G 约 7.6 万元/8卡整机/月，A100 80G 约 3.15-3.8 万元/月，H20 141GB 约 4.8 万元/月，RTX 5090 约 1.2 万元/月，RTX 4090 约 0.68-0.88 万元/月，昇腾 910C 行业均价约 6.2 万元/月。昇腾 910B、寒武纪 MLU、海光 DCU、壁仞、摩尔线程已作为国产战略关注卡进入国内指数表；其中低置信或未量化项不进入 ROI 或方向性价格判断，继续扩源。</p>
+        <p>本期国内服务器价格覆盖继续扩大：H100 80G 约 7.6 万元/8卡整机/月，A100 80G 约 3.15-3.8 万元/月，H20 141GB 约 4.8 万元/月，RTX 5090 约 1.2 万元/月，RTX 4090 约 0.68-0.88 万元/月，昇腾 910C 行业均价约 6.2 万元/月。昇腾 910B、寒武纪 MLU、海光 DCU、壁仞、摩尔线程已作为国产战略关注卡进入国内指数表和柱状图；其中低置信参考价不进入 ROI 或方向性价格判断，继续扩源。</p>
       </div>
     </section>
 
