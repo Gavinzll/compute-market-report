@@ -1657,7 +1657,14 @@ def write_charts():
   function formatBarLabel(p, ratios) {{
     if (p.value === null || p.value === undefined || p.value === '') return '';
     var rawRatio = ratios && ratios[p.dataIndex] ? ratios[p.dataIndex] : '';
-    if (isMobile) return p.value + '万';
+    if (isMobile) {{
+      var short = '';
+      if (rawRatio === '价格待补') short = '待补';
+      else if (rawRatio === '海外缺口') short = '缺口';
+      else if (rawRatio && String(rawRatio).indexOf('%') >= 0) short = rawRatio.replace('海外', '');
+      else if (rawRatio) short = rawRatio.substring(0, 2);
+      return short ? (p.value + '万·' + short) : (p.value + '万');
+    }}
     var base = rawRatio === '价格待补' ? '价格待补' : (p.value + '万/月');
     var ratio = rawRatio === '海外缺口' ? '海外缺口' : (rawRatio && String(rawRatio).indexOf('%') >= 0 ? '海外' + rawRatio : (rawRatio ? rawRatio : ''));
     return rawRatio === '价格待补' || !ratio ? base : base + '\\n' + ratio;
@@ -1687,7 +1694,7 @@ def write_charts():
         color:legend ? legend.map(function(k){{return domesticPalette[k] || color;}}) : [color],
         tooltip:{{trigger:'axis', appendToBody:true}},
         legend:legend ? {{top:0,textStyle:{{color:muted}}}} : undefined,
-        grid:{{left:2,right:5,top:legend?62:36,bottom:20,containLabel:true}},
+        grid:{{left:2,right:65,top:legend?62:36,bottom:20,containLabel:true}},
         yAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0,fontSize:10,width:70,overflow:'truncate',align:'right'}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}},inverse:true}},
         xAxis:{{type:'value',name:'',axisLabel:{{color:muted,fontSize:10}},splitLine:{{lineStyle:{{color:rule}}}}}},
         series:series
@@ -1713,7 +1720,7 @@ def write_charts():
         color:[accent, accent2, muted],
         tooltip:{{trigger:'axis', appendToBody:true}},
         legend:{{top:0,textStyle:{{color:muted}}}},
-        grid:{{left:2,right:5,top:50,bottom:28,containLabel:true}},
+        grid:{{left:2,right:65,top:50,bottom:28,containLabel:true}},
         yAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0,fontSize:10,width:70,overflow:'truncate',align:'right'}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}},inverse:true}},
         xAxis:{{type:'value',name:'',axisLabel:{{color:muted,fontSize:10}},splitLine:{{lineStyle:{{color:rule}}}}}},
         series:s
@@ -1736,7 +1743,7 @@ def write_charts():
       init(id, {{
         animation:false,
         tooltip:{{trigger:'axis', appendToBody:true}},
-        grid:{{left:2,right:5,top:40,bottom:28,containLabel:true}},
+        grid:{{left:2,right:65,top:40,bottom:28,containLabel:true}},
         yAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0,fontSize:10,width:70,overflow:'truncate',align:'right'}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}},inverse:true}},
         xAxis:{{type:'value',name:'',axisLabel:{{color:muted,fontSize:10}},splitLine:{{lineStyle:{{color:rule}}}}}},
         series:[{{name:name,type:'bar',data:values,itemStyle:{{borderRadius:[0,4,4,0],color:function(p){{return p.value >= 0 ? accent : accent2;}}}},label:{{show:true,position:'right',color:ink,fontSize:10,formatter:function(p){{return p.value === undefined ? '' : p.value;}}}}}}]
