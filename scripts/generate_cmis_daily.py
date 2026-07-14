@@ -1539,7 +1539,7 @@ def render_mobile_html(relative_prefix: str = "./", desktop_href: str = "latest.
     <section id="domestic">
       <h2>国内租赁指数</h2>
       <figure><figcaption>国内指数：手机端横向条形图</figcaption><div id="chart-domestic-main" class="chart"></div></figure>
-      {mobile_gpu_cards(domestic_index_rows)}
+      <details open><summary>国内租赁卡片</summary><div class="details-body">{mobile_gpu_cards(domestic_index_rows)}</div></details>
     </section>
 
     <section id="overseas">
