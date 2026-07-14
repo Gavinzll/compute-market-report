@@ -451,6 +451,34 @@ def monthly_wan_to_hourly_cny(monthly_wan: float | None) -> float | None:
     return round(monthly_wan * 10000 / 8 / 24 / 30, 2)
 
 
+def infer_match_level(source: str) -> str:
+    text = source or ""
+    reference_tokens = ("参考", "待补", "未覆盖", "无精确", "缺精确", "非文本精确价")
+    if "同类型" in text:
+        return "同类型参考"
+    if "近似" in text or "非文本精确价" in text:
+        return "近似参考"
+    if "同系列" in text:
+        return "同系列参考"
+    if "同厂" in text:
+        return "同厂参考"
+    if "官方同步" in text or "官方路由价" in text or "路由价" in text:
+        return "官方同步/路由价"
+    if "精确/同名" in text or "同名参考" in text or "精确同名" in text or "精确样本" in text:
+        return "精确同名"
+    if any(token in text for token in reference_tokens):
+        return "近似参考"
+    return "精确同名"
+
+
+def append_match_level(display: str, match_level: str) -> str:
+    if match_level in display:
+        return display
+    if "）" in display:
+        return display.replace("）", f"；{match_level}）", 1)
+    return f"{display}（{match_level}）"
+
+
 def token_row(
     vendor: str,
     model: str,
@@ -497,6 +525,22 @@ def token_row(
         domestic_out_cny = official_out_cny
         if "近似参考" not in domestic_source:
             domestic_source = f"{domestic_source}；近似参考：官方价折算"
+    overseas_match = infer_match_level(overseas_source)
+    domestic_match = infer_match_level(domestic_source)
+    overseas_display = append_match_level(overseas_display, overseas_match)
+    overseas_out_display = append_match_level(overseas_out_display, overseas_match)
+    equal_notes = []
+    if official_in_cny is not None and official_out_cny is not None and overseas_in_cny == official_in_cny and overseas_out_cny == official_out_cny:
+        if overseas_match in {"同厂参考", "同系列参考", "同类型参考", "近似参考"}:
+            equal_notes.append(f"海外三方与官方同价：参考价巧合相等（{overseas_match}）")
+        else:
+            equal_notes.append(f"海外三方与官方同价：第三方同步官方价或路由价（{overseas_match}）")
+    if official_in_cny is not None and official_out_cny is not None and domestic_in_cny == official_in_cny and domestic_out_cny == official_out_cny:
+        if domestic_match in {"同厂参考", "同系列参考", "同类型参考", "近似参考"}:
+            equal_notes.append(f"境内三方与官方同价：参考价巧合相等（{domestic_match}）")
+        else:
+            equal_notes.append(f"境内三方与官方同价：同名模型当前价一致（{domestic_match}）")
+    equal_reason = "；".join(equal_notes) if equal_notes else "无完全同价"
     if official_in_cny is not None and overseas_in_cny is not None:
         diff_overseas = round(official_in_cny - overseas_in_cny, 2)
     else:
@@ -516,10 +560,12 @@ def token_row(
         "输出官方价（人民币/百万Token）": official_out_cny,
         "海外三方输入价": overseas_display,
         "海外三方输出价": overseas_out_display,
-        "境内三方输入价": f"CNY {domestic_in_cny}/百万Token",
-        "境内三方输出价": f"CNY {domestic_out_cny}/百万Token",
+        "境内三方输入价": f"CNY {domestic_in_cny}/百万Token（{domestic_match}）",
+        "境内三方输出价": f"CNY {domestic_out_cny}/百万Token（{domestic_match}）",
         "官方-海外三方价差": f"{diff_overseas} 元/百万Token（输入）",
         "官方-境内三方价差": f"{diff_domestic} 元/百万Token（输入）",
+        "三方价格匹配级别": f"海外：{overseas_match}；境内：{domestic_match}",
+        "同价原因": equal_reason,
         "较昨日变化": "待历史库累计",
         "官方来源": official_source,
         "海外三方来源": overseas_source,
@@ -558,7 +604,7 @@ TOKEN_DATA = [
     token_row("百度文心", "ERNIE-4.5-Turbo-VL-32K", "国产", "32K", 3.0, 9.0, "CNY", "cite-50", 0.42, 1.25, "OpenRouter ERNIE 4.5 VL 近似", None, None, "硅基流动未发现精确匹配", "已按确认信息写入官方价 3/9 元/百万 tokens。", 95),
     token_row("百度文心", "ERNIE 5.0 0-32K", "国产", "0-32K", 6.0, 24.0, "CNY", "cite-50", None, None, "海外三方同系列参考", None, None, "硅基流动同系列参考", "百度千帆 ERNIE 5.0 低上下文分档官方价；三方列按同系列参考补齐。", 95),
     token_row("百度文心", "ERNIE 5.0 32K-128K", "国产", "32K-128K", 10.0, 40.0, "CNY", "cite-50", None, None, "海外三方同系列参考", None, None, "硅基流动同系列参考", "百度千帆 ERNIE 5.0 长上下文分档官方价；三方列按同系列参考补齐。", 95),
-    token_row("MiniMax", "MiniMax-M3 标准层 ≤512K", "国产", "≤512K", 2.1, 8.4, "CNY", "cite-51", 0.3, 1.2, "OpenRouter Models API", 2.1, 8.4, "cite-52", "已按确认信息写入官方价；硅基流动 MiniMax-M2.5 2.1/8.4 仅同价参考，模型名不同需标注。", 95),
+    token_row("MiniMax", "MiniMax-M3 标准层 ≤512K", "国产", "≤512K", 2.1, 8.4, "CNY", "cite-51", 0.3, 1.2, "OpenRouter Models API", 2.1, 8.4, "硅基流动 MiniMax-M2.5（M3 待补，近似参考）", "已按确认信息写入官方价；硅基流动 MiniMax-M2.5 2.1/8.4 仅同价参考，模型名不同需标注。", 95),
     token_row("MiniMax", "MiniMax-M3 标准层 >512K", "国产", ">512K", 4.2, 16.8, "CNY", "cite-51", None, None, "海外三方同系列参考", None, None, "境内三方同系列参考", "已按确认信息写入官方价；三方列按同系列参考补齐。", 95),
     token_row("MiniMax", "MiniMax-M3 优先服务 ≤512K", "国产", "≤512K", 3.15, 12.6, "CNY", "cite-51", None, None, "海外三方同系列参考", None, None, "境内三方同系列参考", "按标准层 1.5 倍记录；三方列按同系列参考补齐。", 95),
     token_row("讯飞星火", "Spark Max", "国产", "官方页分档", 21.0, 21.0, "CNY", "https://xinghuo.xfyun.cn/sparkapi?ch=blapi_Jrox9", None, None, "海外三方同系列参考", None, None, "境内三方近似参考", "官方产品页动态价格区按 0.21 元/万 tokens 折算；海外与境内三方采用近似参考补齐。", "PASS", 82),
@@ -582,6 +628,8 @@ TOKEN_COLUMNS = [
     "境内三方输出价",
     "官方-海外三方价差",
     "官方-境内三方价差",
+    "三方价格匹配级别",
+    "同价原因",
     "较昨日变化",
     "官方来源",
     "海外三方来源",
