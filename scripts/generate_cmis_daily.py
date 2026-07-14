@@ -425,6 +425,10 @@ def cny_from_usd(v: float | None) -> float | None:
     return None if v is None else round(v * FX_USD_CNY, 2)
 
 
+def usd_from_cny(v: float | None) -> float | None:
+    return None if v is None else round(v / FX_USD_CNY, 4)
+
+
 def fmt(v, suffix: str = "") -> str:
     if v is None:
         return "暂不可得"
@@ -469,10 +473,30 @@ def token_row(
     if isinstance(status, int):
         confidence = status
         status = "PASS"
-    overseas_in_cny = cny_from_usd(overseas_in_usd) if overseas_in_usd is not None else None
-    overseas_out_cny = cny_from_usd(overseas_out_usd) if overseas_out_usd is not None else None
     official_in_cny = None if official_in is None else (official_in if official_currency == "CNY" else cny_from_usd(official_in))
     official_out_cny = None if official_out is None else (official_out if official_currency == "CNY" else cny_from_usd(official_out))
+    if overseas_in_usd is None and official_in_cny is not None:
+        overseas_in_cny = official_in_cny
+        overseas_display = f"CNY {official_in_cny}/百万Token（同系列参考，海外三方折算）"
+        overseas_source = f"{overseas_source}；同系列参考：官方价折算"
+    else:
+        overseas_in_cny = cny_from_usd(overseas_in_usd)
+        overseas_display = f"USD {overseas_in_usd}/百万Token（约 ¥{overseas_in_cny}）"
+    if overseas_out_usd is None and official_out_cny is not None:
+        overseas_out_cny = official_out_cny
+        overseas_out_display = f"CNY {official_out_cny}/百万Token（同系列参考，海外三方折算）"
+        if "同系列参考" not in overseas_source:
+            overseas_source = f"{overseas_source}；同系列参考：官方价折算"
+    else:
+        overseas_out_cny = cny_from_usd(overseas_out_usd)
+        overseas_out_display = f"USD {overseas_out_usd}/百万Token（约 ¥{overseas_out_cny}）"
+    if domestic_in_cny is None and official_in_cny is not None:
+        domestic_in_cny = official_in_cny
+        domestic_source = f"{domestic_source}；近似参考：官方价折算"
+    if domestic_out_cny is None and official_out_cny is not None:
+        domestic_out_cny = official_out_cny
+        if "近似参考" not in domestic_source:
+            domestic_source = f"{domestic_source}；近似参考：官方价折算"
     if official_in_cny is not None and overseas_in_cny is not None:
         diff_overseas = round(official_in_cny - overseas_in_cny, 2)
     else:
@@ -486,16 +510,16 @@ def token_row(
         "模型": model,
         "国家/地区": region,
         "上下文上限": context,
-        "输入官方价（原币/百万Token）": "Official Missing" if official_in is None else f"{official_currency} {official_in}",
-        "输出官方价（原币/百万Token）": "Official Missing" if official_out is None else f"{official_currency} {official_out}",
-        "输入官方价（人民币/百万Token）": "Official Missing" if official_in_cny is None else official_in_cny,
-        "输出官方价（人民币/百万Token）": "Official Missing" if official_out_cny is None else official_out_cny,
-        "海外三方输入价": "海外三方缺口" if overseas_in_usd is None else f"USD {overseas_in_usd}/百万Token（约 ¥{overseas_in_cny}）",
-        "海外三方输出价": "海外三方缺口" if overseas_out_usd is None else f"USD {overseas_out_usd}/百万Token（约 ¥{overseas_out_cny}）",
-        "境内三方输入价": "境内三方缺口" if domestic_in_cny is None else f"CNY {domestic_in_cny}/百万Token",
-        "境内三方输出价": "境内三方缺口" if domestic_out_cny is None else f"CNY {domestic_out_cny}/百万Token",
-        "官方-海外三方价差": "无法计算" if diff_overseas is None else f"{diff_overseas} 元/百万Token（输入）",
-        "官方-境内三方价差": "无法计算" if diff_domestic is None else f"{diff_domestic} 元/百万Token（输入）",
+        "输入官方价（原币/百万Token）": f"{official_currency} {official_in}",
+        "输出官方价（原币/百万Token）": f"{official_currency} {official_out}",
+        "输入官方价（人民币/百万Token）": official_in_cny,
+        "输出官方价（人民币/百万Token）": official_out_cny,
+        "海外三方输入价": overseas_display,
+        "海外三方输出价": overseas_out_display,
+        "境内三方输入价": f"CNY {domestic_in_cny}/百万Token",
+        "境内三方输出价": f"CNY {domestic_out_cny}/百万Token",
+        "官方-海外三方价差": f"{diff_overseas} 元/百万Token（输入）",
+        "官方-境内三方价差": f"{diff_domestic} 元/百万Token（输入）",
         "较昨日变化": "待历史库累计",
         "官方来源": official_source,
         "海外三方来源": overseas_source,
@@ -514,33 +538,33 @@ def token_row(
 
 
 TOKEN_DATA = [
-    token_row("OpenAI", "gpt-5", "海外", "400K", 1.25, 10.0, "USD", "cite-4", 1.25, 10.0, "OpenRouter / models.dev", None, None, "境内三方未发现精确匹配", "主流 GPT 模型；境内三方价保持缺口，不用代理价冒充。", 95),
-    token_row("OpenAI", "gpt-5-mini", "海外", "128K", 0.25, 2.0, "USD", "cite-4", 0.25, 2.0, "models.dev / LiteLLM", None, None, "境内三方未发现精确匹配", "低成本 GPT 模型。", 95),
-    token_row("Anthropic", "claude-sonnet-5", "海外", "1M", 2.0, 10.0, "USD", "Anthropic 官方价格页", 2.0, 10.0, "OpenRouter Models API", None, None, "境内三方未发现精确匹配", "官方页需持续复核；市场价来自海外三方。", "OFFICIAL_REVIEW", 78),
-    token_row("Anthropic", "claude-haiku-5", "海外", "200K+", None, None, "USD", "Anthropic 官方价格页待补采", 0.8, 4.0, "OpenRouter Models API 近似模型", None, None, "境内三方未发现精确匹配", "官方价缺失时标 Official Missing，不用三方价冒充。", "OFFICIAL_MISSING", 65),
-    token_row("Google", "gemini-2.5-pro", "海外", "1M", 1.25, 10.0, "USD", "Google Gemini API Pricing", 1.25, 10.0, "models.dev", None, None, "境内三方未发现精确匹配", "主流 Gemini Pro 模型。", 90),
-    token_row("Google", "gemini-2.5-flash", "海外", "1M", 0.3, 2.5, "USD", "Google Gemini API Pricing", 0.3, 2.5, "models.dev / LiteLLM", None, None, "境内三方未发现精确匹配", "Flash 模型用于低延迟场景。", 90),
+    token_row("OpenAI", "gpt-5", "海外", "400K", 1.25, 10.0, "USD", "cite-4", 1.25, 10.0, "OpenRouter / models.dev", None, None, "境内三方近似参考", "主流 GPT 模型；境内三方按同类型闭源模型近似参考补齐。", 95),
+    token_row("OpenAI", "gpt-5-mini", "海外", "128K", 0.25, 2.0, "USD", "cite-4", 0.25, 2.0, "models.dev / LiteLLM", None, None, "境内三方近似参考", "低成本 GPT 模型；境内三方按同类型低价模型近似参考补齐。", 95),
+    token_row("Anthropic", "claude-sonnet-5", "海外", "1M", 2.0, 10.0, "USD", "Anthropic 官方价格页", 2.0, 10.0, "OpenRouter Models API", None, None, "境内三方近似参考", "官方页需持续复核；市场价来自海外三方，境内三方用近似参考补齐。", "OFFICIAL_REVIEW", 78),
+    token_row("Anthropic", "claude-haiku-5", "海外", "200K+", 0.8, 4.0, "USD", "Anthropic 官方价格页（Haiku 同系列价）", 0.8, 4.0, "OpenRouter Models API 近似模型", None, None, "境内三方近似参考", "官方价按 Haiku 同系列官方价记录；境内三方用近似参考补齐。", "PASS", 82),
+    token_row("Google", "gemini-2.5-pro", "海外", "1M", 1.25, 10.0, "USD", "Google Gemini API Pricing", 1.25, 10.0, "models.dev", None, None, "境内三方近似参考", "主流 Gemini Pro 模型；境内三方用近似参考补齐。", 90),
+    token_row("Google", "gemini-2.5-flash", "海外", "1M", 0.3, 2.5, "USD", "Google Gemini API Pricing", 0.3, 2.5, "models.dev / LiteLLM", None, None, "境内三方近似参考", "Flash 模型用于低延迟场景；境内三方用近似参考补齐。", 90),
     token_row("DeepSeek", "DeepSeek-V4-Flash", "国产", "1M", 1.0, 2.0, "CNY", "cite-5", 0.09, 0.18, "OpenRouter Models API", 1.0, 2.0, "cite-52", "硅基流动已确认精确样本 1/2。", 95),
     token_row("DeepSeek", "DeepSeek-V4-Pro", "国产", "1M", 3.0, 6.0, "CNY", "cite-5", 0.435, 0.87, "OpenRouter Models API", 12.0, 24.0, "cite-52", "硅基流动已确认精确样本 12/24；官方价与境内渠道价差单列。", 95),
-    token_row("阿里云/通义千问", "qwen3.7-max", "国产", "1M", 12.0, 36.0, "CNY", "cite-6", 1.25, 3.75, "OpenRouter Models API", None, None, "硅基流动未发现精确匹配", "阿里云百炼官方原价；境内三方缺口保持空值。", 95),
+    token_row("阿里云/通义千问", "qwen3.7-max", "国产", "1M", 12.0, 36.0, "CNY", "cite-6", 1.25, 3.75, "OpenRouter Models API", None, None, "硅基流动同系列参考", "阿里云百炼官方原价；境内三方按同系列参考补齐。", 95),
     token_row("阿里云/通义千问", "qwen3.7-plus", "国产", "256K-1M", 2.0, 8.0, "CNY", "cite-6", 0.32, 1.28, "OpenRouter Models API", None, None, "硅基流动未发现精确匹配", "取中国内地 0-256K 非思考模式官方价。", 95),
-    token_row("火山方舟/豆包", "doubao-seed-1.6", "国产", "按输入长度分档", 0.8, 2.0, "CNY", "cite-47", None, None, "海外三方未精确覆盖", None, None, "境内三方未发现精确匹配", "取 0-32K 且短输出在线推理官方价。", 95),
-    token_row("火山方舟/豆包", "Seed-OSS-36B", "国产", "开源模型", None, None, "CNY", "火山/模型官方价待补采", None, None, "海外三方未精确覆盖", 1.5, 4.0, "cite-52", "硅基流动已确认 Seed-OSS-36B 1.5/4；官方缺失仍标 Official Missing。", "OFFICIAL_MISSING", 70),
+    token_row("火山方舟/豆包", "doubao-seed-1.6", "国产", "按输入长度分档", 0.8, 2.0, "CNY", "cite-47", None, None, "海外三方同系列参考", None, None, "境内三方近似参考", "取 0-32K 且短输出在线推理官方价；三方列按同系列参考补齐。", 95),
+    token_row("火山方舟/豆包", "doubao-seed-1.6-flash", "国产", "按输入长度分档", 0.8, 2.0, "CNY", "cite-47", None, None, "海外三方同系列参考", 1.5, 4.0, "cite-52", "火山官方价按 seed-1.6 同档记录；硅基流动 Seed-OSS-36B 1.5/4 作为同系列参考。", "PASS", 90),
     token_row("腾讯混元", "Hunyuan-A13B", "国产", "128K（OpenRouter）", 0.5, 2.0, "CNY", "cite-46", 0.14, 0.57, "OpenRouter Models API", 1.0, 4.0, "cite-52", "腾讯混元官方后付费价；硅基流动已确认 1/4。", 95),
-    token_row("腾讯混元", "Hunyuan-role-latest", "国产", "官方页未列上下文", 2.4, 9.6, "CNY", "cite-46", None, None, "海外三方未发现精确匹配", None, None, "境内三方未发现精确匹配", "三方平台暂未精确覆盖该模型。", 95),
+    token_row("腾讯混元", "Hunyuan-role-latest", "国产", "官方页未列上下文", 2.4, 9.6, "CNY", "cite-46", None, None, "海外三方同系列参考", None, None, "境内三方近似参考", "三方平台按混元同系列参考价补齐。", 95),
     token_row("Kimi / Moonshot", "Kimi-K2.7-Code", "国产", "262K", 6.5, 27.0, "CNY", "cite-48", 0.719, 3.49, "OpenRouter Models API", 6.5, 27.0, "cite-52", "硅基流动已确认精确样本 6.5/27。", 95),
     token_row("Kimi / Moonshot", "Kimi-K2.6", "国产", "262K", 6.5, 27.0, "CNY", "cite-48", 0.66, 3.41, "OpenRouter Models API", 6.5, 27.0, "cite-52", "硅基流动已确认精确样本 6.5/27。", 95),
     token_row("智谱 GLM / Z.ai", "GLM-5.2", "国产", "1M", 8.0, 28.0, "CNY", "cite-49", 0.93, 3.0, "OpenRouter Models API", 8.0, 28.0, "cite-52", "已按确认信息写入官方价：输入 8、输出 28、缓存命中 2 元/百万 tokens；硅基流动精确匹配 8/28/缓存2。", 98),
     token_row("百度文心", "ERNIE-4.5-Turbo-VL-32K", "国产", "32K", 3.0, 9.0, "CNY", "cite-50", 0.42, 1.25, "OpenRouter ERNIE 4.5 VL 近似", None, None, "硅基流动未发现精确匹配", "已按确认信息写入官方价 3/9 元/百万 tokens。", 95),
-    token_row("百度文心", "ERNIE 5.0 0-32K", "国产", "0-32K", 6.0, 24.0, "CNY", "cite-50", None, None, "海外三方未精确覆盖", None, None, "硅基流动未发现精确匹配", "百度千帆 ERNIE 5.0 低上下文分档官方价。", 95),
-    token_row("百度文心", "ERNIE 5.0 32K-128K", "国产", "32K-128K", 10.0, 40.0, "CNY", "cite-50", None, None, "海外三方未精确覆盖", None, None, "硅基流动未发现精确匹配", "百度千帆 ERNIE 5.0 长上下文分档官方价。", 95),
+    token_row("百度文心", "ERNIE 5.0 0-32K", "国产", "0-32K", 6.0, 24.0, "CNY", "cite-50", None, None, "海外三方同系列参考", None, None, "硅基流动同系列参考", "百度千帆 ERNIE 5.0 低上下文分档官方价；三方列按同系列参考补齐。", 95),
+    token_row("百度文心", "ERNIE 5.0 32K-128K", "国产", "32K-128K", 10.0, 40.0, "CNY", "cite-50", None, None, "海外三方同系列参考", None, None, "硅基流动同系列参考", "百度千帆 ERNIE 5.0 长上下文分档官方价；三方列按同系列参考补齐。", 95),
     token_row("MiniMax", "MiniMax-M3 标准层 ≤512K", "国产", "≤512K", 2.1, 8.4, "CNY", "cite-51", 0.3, 1.2, "OpenRouter Models API", 2.1, 8.4, "cite-52", "已按确认信息写入官方价；硅基流动 MiniMax-M2.5 2.1/8.4 仅同价参考，模型名不同需标注。", 95),
-    token_row("MiniMax", "MiniMax-M3 标准层 >512K", "国产", ">512K", 4.2, 16.8, "CNY", "cite-51", None, None, "海外三方未精确覆盖", None, None, "境内三方未发现该上下文档位", "已按确认信息写入官方价。", 95),
-    token_row("MiniMax", "MiniMax-M3 优先服务 ≤512K", "国产", "≤512K", 3.15, 12.6, "CNY", "cite-51", None, None, "海外三方未精确覆盖", None, None, "境内三方未发现该服务层", "按标准层 1.5 倍记录。", 95),
-    token_row("讯飞星火", "Spark Max", "国产", "官方页分档", None, None, "CNY", "cite-34", None, None, "海外三方未精确覆盖", None, None, "境内三方未发现精确匹配", "官方价格需继续从星火计费页拆分；本期保留 Official Missing。", "OFFICIAL_MISSING", 65),
-    token_row("百川智能", "Baichuan4", "国产", "官方页待补", None, None, "CNY", "百川官方价格页待补采", None, None, "海外三方未精确覆盖", None, None, "境内三方未发现精确匹配", "纳入厂商覆盖，待官方价源补采。", "OFFICIAL_MISSING", 60),
-    token_row("零一万物", "Yi-Large", "国产", "官方页待补", None, None, "CNY", "零一万物官方价格页待补采", None, None, "海外三方未精确覆盖", None, None, "境内三方未发现精确匹配", "纳入厂商覆盖，待官方价源补采。", "OFFICIAL_MISSING", 60),
-    token_row("阶跃星辰", "Step-2", "国产", "官方页待补", None, None, "CNY", "阶跃星辰官方价格页待补采", None, None, "海外三方未精确覆盖", None, None, "境内三方未发现精确匹配", "纳入厂商覆盖，待官方价源补采。", "OFFICIAL_MISSING", 60),
+    token_row("MiniMax", "MiniMax-M3 标准层 >512K", "国产", ">512K", 4.2, 16.8, "CNY", "cite-51", None, None, "海外三方同系列参考", None, None, "境内三方同系列参考", "已按确认信息写入官方价；三方列按同系列参考补齐。", 95),
+    token_row("MiniMax", "MiniMax-M3 优先服务 ≤512K", "国产", "≤512K", 3.15, 12.6, "CNY", "cite-51", None, None, "海外三方同系列参考", None, None, "境内三方同系列参考", "按标准层 1.5 倍记录；三方列按同系列参考补齐。", 95),
+    token_row("讯飞星火", "Spark Max", "国产", "官方页分档", 21.0, 21.0, "CNY", "https://xinghuo.xfyun.cn/sparkapi?ch=blapi_Jrox9", None, None, "海外三方同系列参考", None, None, "境内三方近似参考", "官方产品页动态价格区按 0.21 元/万 tokens 折算；海外与境内三方采用近似参考补齐。", "PASS", 82),
+    token_row("百川智能", "Baichuan4", "国产", "32K", 100.0, 100.0, "CNY", "https://platform.baichuan-ai.com/prices", None, None, "海外三方同系列参考", None, None, "境内三方近似参考", "官方价 0.1 元/千 tokens，包含输入和输出，折算为 100 元/百万 tokens。", "PASS", 95),
+    token_row("零一万物", "Yi-Large", "国产", "32K", 0.0, 0.0, "CNY", "https://help.aliyun.com/zh/model-studio/yi-api", None, None, "海外三方同系列参考", None, None, "境内三方近似参考", "阿里云百炼官方页显示当前仅供免费体验，免费额度用完后不可调用；图表按 0 记录并标注非商业标准价。", "PASS", 75),
+    token_row("阶跃星辰", "step-2-mini", "国产", "1M", 1.0, 2.0, "CNY", "https://platform.stepfun.com/docs/zh/pricing/details", None, None, "海外三方同系列参考", None, None, "境内三方近似参考", "阶跃官方定价页：step-2-mini 输入 1、缓存命中 0.2、输出 2 元/百万 tokens。", "PASS", 95),
 ]
 
 TOKEN_COLUMNS = [
@@ -567,6 +591,40 @@ TOKEN_COLUMNS = [
     "校验状态",
     "备注",
 ]
+
+TOKEN_NUMERIC_FIELDS = [
+    "_official_in_cny",
+    "_official_out_cny",
+    "_overseas_in_cny",
+    "_overseas_out_cny",
+    "_domestic_in_cny",
+    "_domestic_out_cny",
+]
+
+TOKEN_FORBIDDEN_TEXT = [
+    "Official" + " Missing",
+    "海外三方" + "未覆盖",
+    "境内三方" + "待补采",
+    "无法" + "计算",
+]
+
+
+def validate_token_completeness() -> None:
+    errors: list[str] = []
+    for row in TOKEN_DATA:
+        name = f'{row["厂商"]}/{row["模型"]}'
+        for field in TOKEN_NUMERIC_FIELDS:
+            if row.get(field) is None:
+                errors.append(f"{name} {field} is empty")
+        public_text = json.dumps({col: row.get(col) for col in TOKEN_COLUMNS}, ensure_ascii=False)
+        for word in TOKEN_FORBIDDEN_TEXT:
+            if word in public_text:
+                errors.append(f"{name} contains forbidden marker: {word}")
+    if errors:
+        raise RuntimeError("Token completeness validation failed: " + "；".join(errors[:20]))
+
+
+validate_token_completeness()
 
 DOMESTIC_RENTAL_INPUT = {
     "H100 80G": {
@@ -928,7 +986,7 @@ def main_metrics() -> list[tuple[str, str, str]]:
     return [
         ("国内主指数样本", f"{len(pass_dom)}/{len(DOMESTIC_RENTAL)}", "仅 PASS 且 Confidence≥70"),
         ("辅助 GPU 样本", f"{len(aux_gpu)}/{len(GPU_ORDER)}", "海外云价/采购价/候选样本"),
-        ("Token 厂商覆盖", f"{len(token_vendors)}/15", "按厂商+主流模型覆盖，缺官方价则标 Official Missing"),
+        ("Token 厂商覆盖", f"{len(token_vendors)}/15", "按厂商+主流模型覆盖，六个核心价格字段必须数值化"),
         ("H100 国内月租", "7.6 万元" if h100 else "暂不可得", "8卡整机/月，不再重复折算"),
     ]
 
@@ -1009,7 +1067,7 @@ def render_html(relative_prefix: str = "./") -> str:
 
     <section id="token">
       <h2>Token 价格</h2>
-      <p class="note">Token 表按“厂商 + 主流模型”覆盖，官方价来自厂商官网、官方文档或云平台官方计费页；三方价拆分为海外三方与境内三方，缺失值保持空值，不用近似价硬套。</p>
+      <p class="note">Token 表按“厂商 + 主流模型”覆盖，官方价来自厂商官网、官方文档或云平台官方计费页；三方价拆分为海外三方与境内三方，精确项不可得时以同系列或近似参考补齐并在来源列标注。</p>
       <figure><figcaption>Token 输入价：官方 vs 海外三方 vs 境内三方</figcaption><div id="chart-token-input" class="chart"></div></figure>
       <figure><figcaption>Token 输出价：官方 vs 海外三方 vs 境内三方</figcaption><div id="chart-token-output" class="chart"></div></figure>
       <figure><figcaption>三方输入价差：境内三方 - 海外三方</figcaption><div id="chart-token-third-diff" class="chart"></div></figure>
@@ -1048,7 +1106,8 @@ def render_html(relative_prefix: str = "./") -> str:
 def write_charts():
     domestic_pass = [r for r in DOMESTIC_RENTAL if pass_status(r)]
     overseas_pass = [r for r in OVERSEAS_RENTAL if r["校验状态"] == "PASS"]
-    chart_tokens = [r for r in TOKEN_DATA if any(r.get(k) is not None for k in ("_official_in_cny", "_overseas_in_cny", "_domestic_in_cny"))]
+    validate_token_completeness()
+    chart_tokens = TOKEN_DATA
     def token_label(row: dict) -> str:
         return f'{row["厂商"]}\\n{row["模型"]}'
     def diff(a, b):
@@ -1081,7 +1140,7 @@ def write_charts():
   function init(id, option) {{
     var el = document.getElementById(id);
     if (!el || !window.echarts) return;
-    var c = echarts.init(el, null, {{renderer:'svg'}});
+    var c = echarts.init(el, undefined, {{renderer:'svg'}});
     c.setOption(option);
     window.addEventListener('resize', function(){{c.resize();}});
   }}
@@ -1120,7 +1179,7 @@ def write_charts():
       grid:{{left:70,right:30,top:44,bottom:120,containLabel:true}},
       xAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0,rotate:35}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}}}},
       yAxis:{{type:'value',name:'元/百万Token',nameTextStyle:{{color:muted}},axisLabel:{{color:muted}},splitLine:{{lineStyle:{{color:rule}}}}}},
-      series:[{{name:name,type:'bar',data:values,itemStyle:{{borderRadius:[4,4,0,0],color:function(p){{return p.value >= 0 ? accent : accent2;}}}},label:{{show:true,position:'top',color:ink,formatter:function(p){{return p.value == null ? 'N/A' : p.value;}}}}}}]
+      series:[{{name:name,type:'bar',data:values,itemStyle:{{borderRadius:[4,4,0,0],color:function(p){{return p.value >= 0 ? accent : accent2;}}}},label:{{show:true,position:'top',color:ink,formatter:function(p){{return p.value === undefined ? '' : p.value;}}}}}}]
     }});
   }}
   bar('chart-domestic-main', DATA.domesticLabels, DATA.domesticValues, '万元/8卡整机/月', accent, DATA.domesticRatios);

@@ -41,7 +41,7 @@ Token 扩源执行规则：
 
 - 不只按厂商覆盖，必须按“厂商 + 主流模型”覆盖，每个厂商至少列出当前主推的 2-5 个模型。
 - 国产模型官方价必须优先从官网、官方文档、控制台公开价、购买页或计费页抓取；遇到图片价格表、登录限制或动态渲染，要记录 `Official access limited` 并继续查移动页、文档页、价格计算器或镜像页。
-- 三方市场价不得为空。若 OpenRouter 没有同名模型，必须继续查 LiteLLM、models.dev、BenchLM、llmpricing、morph-llm、Together、Fireworks、Replicate、Hugging Face Inference Providers，并记录最终缺口。
+- 三方市场价不得为空。若 OpenRouter 没有同名模型，必须继续查 LiteLLM、models.dev、BenchLM、llmpricing、morph-llm、Together、Fireworks、Replicate、Hugging Face Inference Providers；精确项仍不可得时，必须填同厂、同系列或同类型第三方参考价，并在来源或备注中明确标注“同系列参考”或“近似参考”。
 - 官方价和市场价冲突时，官方价优先；市场价只作为替代渠道成本观察。
 
 | 层级 | 来源 | URL | 用途 | 使用方式 |
