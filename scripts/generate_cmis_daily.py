@@ -532,15 +532,122 @@ SOURCES = [
     },
 ]
 
-GPU_GROUPS = [
-    ("Training", ["GB300", "GB200", "B300", "B200", "H200", "H100 80G", "H800", "H20", "A100 80G", "A800"]),
+def _load_discovered_gpu() -> list[tuple[str, list[str]]] | None:
+    """尝试加载动态发现的 GPU 列表；失败或不存在时返回 None，回退到硬编码。"""
+    path = ROOT / "data" / f"discovered_gpu_{DATE}.json"
+    try:
+        if not path.exists():
+            return None
+        data = json.loads(path.read_text(encoding="utf-8"))
+        baseline = data.get("baseline_groups")
+        if baseline and isinstance(baseline, list):
+            return [(group[0], group[1]) for group in baseline]
+    except Exception as e:
+        print(f"[warn] failed to load discovered GPU: {e}")
+    return None
+
+
+_GPU_GROUPS_FALLBACK = [
+    ("Training", ["GB300", "GB200", "B300", "B200", "H200", "H100 80G", "H800", "A100 80G", "A800"]),
     ("Inference", ["L40S", "L20", "L4"]),
     ("Consumer", ["RTX 5090", "RTX 4090"]),
-    ("国产", ["昇腾 910C", "昇腾 910B", "寒武纪 MLU370-X8", "海光 DCU K100", "壁仞 BR100", "摩尔线程 MTT S4000"]),
+    ("国产", ["昇腾 910C", "昇腾 910B", "昇腾 950PR", "寒武纪 MLU370-X8", "寒武纪 MLU590", "海光 DCU K100", "海光 DCU Z100", "壁仞 BR100", "摩尔线程 MTT S4000", "摩尔线程 MTT S5000"]),
 ]
+
+GPU_GROUPS = _load_discovered_gpu() or _GPU_GROUPS_FALLBACK
 GPU_ORDER = [gpu for _, items in GPU_GROUPS for gpu in items]
 GPU_CLASS = {gpu: group for group, items in GPU_GROUPS for gpu in items}
-STRATEGIC_DOMESTIC_GPUS = {"昇腾 910B", "寒武纪 MLU370-X8", "海光 DCU K100", "壁仞 BR100", "摩尔线程 MTT S4000"}
+STRATEGIC_DOMESTIC_GPUS = {"昇腾 910B", "昇腾 950PR", "寒武纪 MLU370-X8", "寒武纪 MLU590", "海光 DCU K100", "海光 DCU Z100", "壁仞 BR100", "摩尔线程 MTT S4000", "摩尔线程 MTT S5000"}
+
+
+def _load_discovered_gpu_prices() -> tuple[dict[str, dict], dict[str, dict]]:
+    """加载动态发现的 GPU 价格锚点；失败时返回空字典，回退到硬编码。"""
+    path = ROOT / "data" / f"discovered_gpu_{DATE}.json"
+    domestic: dict[str, dict] = {}
+    overseas: dict[str, tuple] = {}
+    try:
+        if not path.exists():
+            return domestic, overseas
+        data = json.loads(path.read_text(encoding="utf-8"))
+        d_anchors = data.get("domestic_price_anchors", {})
+        o_anchors = data.get("overseas_price_anchors", {})
+
+        # 海外名称映射：基线名称 -> 锚点名称
+        o_name_map = {
+            "H100 80G": "H100 SXM",
+            "A100 80G": "A100 80G SXM",
+        }
+
+        # 处理国内锚点 -> DOMESTIC_RENTAL_INPUT 格式
+        for gpu, info in d_anchors.items():
+            if info.get("status") == "DISCONTINUED":
+                continue
+            monthly = info.get("monthly_wan")
+            source = info.get("monthly_source") or info.get("note", "动态采集")[:40]
+            note = info.get("note", "")
+            # 优先使用动态数据自带的 _price_basis，否则按来源推断
+            dynamic_basis = info.get("_price_basis")
+            if dynamic_basis:
+                price_basis = dynamic_basis
+            elif info.get("status") == "NEW_RELEASE":
+                price_basis = None  # 新发布无公开价
+            elif "市场核价" in source or "市场核价" in note:
+                price_basis = "市场核价区间（估算）"
+            elif "折算" in source or "折算" in note or "小时价反推" in source:
+                price_basis = "云价折算"
+            elif "SMM区间中点" in source or "低置信" in note:
+                price_basis = "低置信观察"
+            else:
+                price_basis = "公开成交/主口径价"
+            # 若没给月租但有小时价，反推月租（单卡小时 -> 8卡整机月）
+            if monthly is None:
+                hourly = info.get("tencent_hourly") or info.get("aliyun_hourly") or info.get("volcano_hourly") or info.get("tianyi_hourly")
+                if hourly is not None:
+                    monthly = round(hourly * 8 * 24 * 30 / 10000, 2)
+                    source = f"{source} 小时价反推"
+                    price_basis = "云价折算"
+            if monthly is not None:
+                conf = 85 if "SMM" in note or "样本" in note else 75
+                domestic[gpu] = {
+                    "original": note or f"动态采集 {gpu}",
+                    "monthly_wan": monthly,
+                    "price_basis": price_basis,
+                    "source": source,
+                    "confidence": conf,
+                    "consensus": "Medium",
+                    "historical": "HIST_INSUFFICIENT",
+                    "status": "PASS",
+                    "note": note,
+                }
+
+        # 处理海外锚点 -> dict 格式 (usd, conf, consensus, note, source)
+        for gpu_base, anchor_name in o_name_map.items():
+            if anchor_name in o_anchors:
+                o_anchors[gpu_base] = o_anchors.pop(anchor_name)
+        for gpu, info in o_anchors.items():
+            prices = []
+            src_labels = []
+            for k in ("runpod", "lambda", "cloudgpus", "vast_median"):
+                v = info.get(k)
+                if v is not None:
+                    prices.append(v)
+                    src_labels.append(k)
+            if not prices:
+                continue
+            usd = round(sum(prices) / len(prices), 2)
+            src_cnt = len(prices)
+            conf = 90 if src_cnt >= 3 else (85 if src_cnt == 2 else 80)
+            consensus = "High" if src_cnt >= 3 else ("Medium" if src_cnt == 2 else "Low")
+            note = f"动态采集 {gpu}：{'/'.join(src_labels)} 均价"
+            source = f"海外动态采集：{'/'.join(src_labels)}"
+            overseas[gpu] = {"usd": usd, "conf": conf, "consensus": consensus, "note": note, "source": source}
+
+    except Exception as e:
+        print(f"[warn] failed to load discovered GPU prices: {e}")
+    return domestic, overseas
+
+
+_DYNAMIC_DOMESTIC, _DYNAMIC_OVERSEAS = _load_discovered_gpu_prices()
 
 
 def cny_from_usd(v: float | None) -> float | None:
@@ -709,35 +816,98 @@ def token_row(
     }
 
 
-TOKEN_DATA = [
-    token_row("OpenAI", "gpt-5", "海外", "400K", 1.25, 10.0, "USD", "cite-4", 1.25, 10.0, "OpenRouter / models.dev", None, None, "境内三方近似参考", "主流 GPT 模型；境内三方按同类型闭源模型近似参考补齐。", 95),
-    token_row("OpenAI", "gpt-5-mini", "海外", "128K", 0.25, 2.0, "USD", "cite-4", 0.25, 2.0, "models.dev / LiteLLM", None, None, "境内三方近似参考", "低成本 GPT 模型；境内三方按同类型低价模型近似参考补齐。", 95),
-    token_row("Anthropic", "claude-sonnet-5", "海外", "1M", 2.0, 10.0, "USD", "Anthropic 官方价格页", 2.0, 10.0, "OpenRouter Models API", None, None, "境内三方近似参考", "官方页需持续复核；市场价来自海外三方，境内三方用近似参考补齐。", "OFFICIAL_REVIEW", 78),
-    token_row("Anthropic", "claude-haiku-5", "海外", "200K+", 0.8, 4.0, "USD", "Anthropic 官方价格页（Haiku 同系列价）", 0.8, 4.0, "OpenRouter Models API 近似模型", None, None, "境内三方近似参考", "官方价按 Haiku 同系列官方价记录；境内三方用近似参考补齐。", "PASS", 82),
-    token_row("Google", "gemini-2.5-pro", "海外", "1M", 1.25, 10.0, "USD", "Google Gemini API Pricing", 1.25, 10.0, "models.dev", None, None, "境内三方近似参考", "主流 Gemini Pro 模型；境内三方用近似参考补齐。", 90),
-    token_row("Google", "gemini-2.5-flash", "海外", "1M", 0.3, 2.5, "USD", "Google Gemini API Pricing", 0.3, 2.5, "models.dev / LiteLLM", None, None, "境内三方近似参考", "Flash 模型用于低延迟场景；境内三方用近似参考补齐。", 90),
-    token_row("DeepSeek", "DeepSeek-V4-Flash", "国产", "1M", 1.0, 2.0, "CNY", "cite-5", 0.09, 0.18, "OpenRouter Models API", 1.0, 2.0, "cite-52", "硅基流动已确认精确样本 1/2。", 95),
-    token_row("DeepSeek", "DeepSeek-V4-Pro", "国产", "1M", 3.0, 6.0, "CNY", "cite-5", 0.435, 0.87, "OpenRouter Models API", 12.0, 24.0, "cite-52", "硅基流动已确认精确样本 12/24；官方价与境内渠道价差单列。", 95),
-    token_row("阿里云/通义千问", "qwen3.7-max", "国产", "1M", 12.0, 36.0, "CNY", "cite-6", 1.25, 3.75, "OpenRouter Models API", None, None, "硅基流动同系列参考", "阿里云百炼官方原价；境内三方按同系列参考补齐。", 95),
-    token_row("阿里云/通义千问", "qwen3.7-plus", "国产", "256K-1M", 2.0, 8.0, "CNY", "cite-6", 0.32, 1.28, "OpenRouter Models API", None, None, "硅基流动未发现精确匹配", "取中国内地 0-256K 非思考模式官方价。", 95),
-    token_row("火山方舟/豆包", "doubao-seed-1.6", "国产", "按输入长度分档", 0.8, 2.0, "CNY", "cite-47", None, None, "海外三方同系列参考", None, None, "境内三方近似参考", "取 0-32K 且短输出在线推理官方价；三方列按同系列参考补齐。", 95),
-    token_row("火山方舟/豆包", "doubao-seed-1.6-flash", "国产", "按输入长度分档", 0.8, 2.0, "CNY", "cite-47", None, None, "海外三方同系列参考", 1.5, 4.0, "cite-52", "火山官方价按 seed-1.6 同档记录；硅基流动 Seed-OSS-36B 1.5/4 作为同系列参考。", "PASS", 90),
-    token_row("腾讯混元", "Hunyuan-A13B", "国产", "128K（OpenRouter）", 0.5, 2.0, "CNY", "cite-46", 0.14, 0.57, "OpenRouter Models API", 1.0, 4.0, "cite-52", "腾讯混元官方后付费价；硅基流动已确认 1/4。", 95),
-    token_row("腾讯混元", "Hunyuan-role-latest", "国产", "官方页未列上下文", 2.4, 9.6, "CNY", "cite-46", None, None, "海外三方同系列参考", None, None, "境内三方近似参考", "三方平台按混元同系列参考价补齐。", 95),
-    token_row("Kimi / Moonshot", "Kimi-K2.7-Code", "国产", "262K", 6.5, 27.0, "CNY", "cite-48", 0.719, 3.49, "OpenRouter Models API", 6.5, 27.0, "cite-52", "硅基流动已确认精确样本 6.5/27。", 95),
-    token_row("Kimi / Moonshot", "Kimi-K2.6", "国产", "262K", 6.5, 27.0, "CNY", "cite-48", 0.66, 3.41, "OpenRouter Models API", 6.5, 27.0, "cite-52", "硅基流动已确认精确样本 6.5/27。", 95),
-    token_row("智谱 GLM / Z.ai", "GLM-5.2", "国产", "1M", 8.0, 28.0, "CNY", "cite-49", 0.93, 3.0, "OpenRouter Models API", 8.0, 28.0, "cite-52", "已按确认信息写入官方价：输入 8、输出 28、缓存命中 2 元/百万 tokens；硅基流动精确匹配 8/28/缓存2。", 98),
-    token_row("百度文心", "ERNIE-4.5-Turbo-VL-32K", "国产", "32K", 3.0, 9.0, "CNY", "cite-50", 0.42, 1.25, "OpenRouter ERNIE 4.5 VL 近似", None, None, "硅基流动未发现精确匹配", "已按确认信息写入官方价 3/9 元/百万 tokens。", 95),
-    token_row("百度文心", "ERNIE 5.0 0-32K", "国产", "0-32K", 6.0, 24.0, "CNY", "cite-50", None, None, "海外三方同系列参考", None, None, "硅基流动同系列参考", "百度千帆 ERNIE 5.0 低上下文分档官方价；三方列按同系列参考补齐。", 95),
-    token_row("百度文心", "ERNIE 5.0 32K-128K", "国产", "32K-128K", 10.0, 40.0, "CNY", "cite-50", None, None, "海外三方同系列参考", None, None, "硅基流动同系列参考", "百度千帆 ERNIE 5.0 长上下文分档官方价；三方列按同系列参考补齐。", 95),
-    token_row("MiniMax", "MiniMax-M3 标准层 ≤512K", "国产", "≤512K", 2.1, 8.4, "CNY", "cite-51", 0.3, 1.2, "OpenRouter Models API", 2.1, 8.4, "硅基流动 MiniMax-M2.5（M3 待补，近似参考）", "已按确认信息写入官方价；硅基流动 MiniMax-M2.5 2.1/8.4 仅同价参考，模型名不同需标注。", 95),
-    token_row("MiniMax", "MiniMax-M3 标准层 >512K", "国产", ">512K", 4.2, 16.8, "CNY", "cite-51", None, None, "海外三方同系列参考", None, None, "境内三方同系列参考", "已按确认信息写入官方价；三方列按同系列参考补齐。", 95),
-    token_row("MiniMax", "MiniMax-M3 优先服务 ≤512K", "国产", "≤512K", 3.15, 12.6, "CNY", "cite-51", None, None, "海外三方同系列参考", None, None, "境内三方同系列参考", "按标准层 1.5 倍记录；三方列按同系列参考补齐。", 95),
-    token_row("讯飞星火", "Spark Max", "国产", "官方页分档", 21.0, 21.0, "CNY", "https://xinghuo.xfyun.cn/sparkapi?ch=blapi_Jrox9", None, None, "海外三方同系列参考", None, None, "境内三方近似参考", "官方产品页动态价格区按 0.21 元/万 tokens 折算；海外与境内三方采用近似参考补齐。", "PASS", 82),
-    token_row("百川智能", "Baichuan4", "国产", "32K", 100.0, 100.0, "CNY", "https://platform.baichuan-ai.com/prices", None, None, "海外三方同系列参考", None, None, "境内三方近似参考", "官方价 0.1 元/千 tokens，包含输入和输出，折算为 100 元/百万 tokens。", "PASS", 95),
-    token_row("零一万物", "Yi-Large", "国产", "32K", 0.0, 0.0, "CNY", "https://help.aliyun.com/zh/model-studio/yi-api", None, None, "海外三方同系列参考", None, None, "境内三方近似参考", "阿里云百炼官方页显示当前仅供免费体验，免费额度用完后不可调用；图表按 0 记录并标注非商业标准价。", "PASS", 75),
-    token_row("阶跃星辰", "step-2-mini", "国产", "1M", 1.0, 2.0, "CNY", "https://platform.stepfun.com/docs/zh/pricing/details", None, None, "海外三方同系列参考", None, None, "境内三方近似参考", "阶跃官方定价页：step-2-mini 输入 1、缓存命中 0.2、输出 2 元/百万 tokens。", "PASS", 95),
+def _load_discovered_token() -> list[dict] | None:
+    """尝试加载动态发现的 Token 模型列表；失败时返回 None，回退到硬编码锚点。"""
+    path = ROOT / "data" / f"discovered_token_{DATE}.json"
+    try:
+        if not path.exists():
+            return None
+        data = json.loads(path.read_text(encoding="utf-8"))
+        rows = data.get("rows", [])
+        if not rows:
+            return None
+        result = []
+        for r in rows:
+            result.append(token_row(
+                vendor=r["vendor"],
+                model=r["model"],
+                region=r["region"],
+                context=r["context"],
+                official_in=r.get("official_in"),
+                official_out=r.get("official_out"),
+                official_currency=r.get("official_currency", "USD"),
+                official_source=r.get("official_source", ""),
+                overseas_in_usd=r.get("overseas_in_usd"),
+                overseas_out_usd=r.get("overseas_out_usd"),
+                overseas_source=r.get("overseas_source", ""),
+                domestic_in_cny=r.get("domestic_in_cny"),
+                domestic_out_cny=r.get("domestic_out_cny"),
+                domestic_source=r.get("domestic_source", ""),
+                note=r.get("note", ""),
+                status=r.get("status", "PASS"),
+                confidence=r.get("confidence", 90),
+            ))
+        return result
+    except Exception as e:
+        print(f"[warn] failed to load discovered token: {e}")
+    return None
+
+
+_TOKEN_DATA_FALLBACK = [
+    # —— 海外厂商 ——
+    token_row("OpenAI", "GPT-5.5", "海外", "1M（标准 272K）", 5.0, 30.0, "USD", "OpenAI API 官方定价页", 5.0, 30.0, "OpenRouter / models.dev", None, None, "境内三方近似参考", "OpenAI 当前旗舰模型，编码和专业工作优化；境内三方按同类型闭源模型近似参考补齐。", 95),
+    token_row("OpenAI", "GPT-5.4", "海外", "1M（标准 272K）", 2.5, 15.0, "USD", "OpenAI API 官方定价页", 2.5, 15.0, "OpenRouter / models.dev", None, None, "境内三方近似参考", "更实惠的编码/专业工作模型；境内三方用近似参考补齐。", 95),
+    token_row("OpenAI", "GPT-5.4 mini", "海外", "270K", 0.75, 4.5, "USD", "OpenAI API 官方定价页", 0.75, 4.5, "models.dev / LiteLLM", None, None, "境内三方近似参考", "最强 mini 模型，适用于编码、计算机使用和子代理。", 95),
+    token_row("OpenAI", "o4 Mini", "海外", "200K", 1.1, 4.4, "USD", "OpenAI API 官方定价页", 1.1, 4.4, "OpenRouter / LiteLLM", None, None, "境内三方近似参考", "o 系列深度推理轻量版；境内三方用近似参考补齐。", 90),
+    token_row("Anthropic", "Claude Opus 4.8", "海外", "1M", 5.0, 25.0, "USD", "Anthropic Claude Platform 官方定价", 5.0, 25.0, "OpenRouter Models API", None, None, "境内三方近似参考", "Anthropic 旗舰模型，Opus 4.7/4.6/4.5 同价；境内三方用近似参考补齐。", 95),
+    token_row("Anthropic", "Claude Sonnet 4.6", "海外", "1M", 3.0, 15.0, "USD", "Anthropic Claude Platform 官方定价", 3.0, 15.0, "OpenRouter Models API", None, None, "境内三方近似参考", "主力平衡型模型，Sonnet 4.5 同价；境内三方用近似参考补齐。", 95),
+    token_row("Anthropic", "Claude Haiku 4.5", "海外", "200K", 1.0, 5.0, "USD", "Anthropic Claude Platform 官方定价", 1.0, 5.0, "OpenRouter Models API", None, None, "境内三方近似参考", "快速轻量模型；境内三方用近似参考补齐。", 90),
+    token_row("Google", "Gemini 3.1 Pro", "海外", "1M", 2.0, 12.0, "USD", "Google Gemini API 官方定价", 2.0, 12.0, "models.dev", None, None, "境内三方近似参考", "Gemini 当前旗舰 Pro 模型，200K 内标准价；境内三方用近似参考补齐。", 95),
+    token_row("Google", "Gemini 3.5 Flash", "海外", "1M", 1.5, 9.0, "USD", "Google Gemini API 官方定价", 1.5, 9.0, "models.dev / LiteLLM", None, None, "境内三方近似参考", "2026年5月发布，性能接近 Pro，速度提升4倍；境内三方用近似参考补齐。", 90),
+    token_row("Google", "Gemini 3.1 Flash-Lite", "海外", "1M", 0.25, 1.5, "USD", "Google Gemini API 官方定价", 0.25, 1.5, "models.dev / LiteLLM", None, None, "境内三方近似参考", "轻量经济型模型；境内三方用近似参考补齐。", 88),
+    token_row("Mistral", "Mistral Medium 3.5", "海外", "256K", 2.0, 7.5, "USD", "Mistral La Plateforme 官方定价", 2.0, 7.5, "海外三方同系列参考", None, None, "境内三方近似参考", "Mistral 旗舰合并模型，密集 128B 参数；三方列按同系列参考补齐。", 85),
+    token_row("Mistral", "Mistral Large 3", "海外", "256K", 0.5, 1.5, "USD", "Mistral La Plateforme 官方定价", 0.5, 1.5, "海外三方同系列参考", None, None, "境内三方近似参考", "主力大模型，2025年12月发布，大幅降价 75%；三方列按同系列参考补齐。", 85),
+    token_row("Mistral", "Mistral Small 4", "海外", "256K", 0.1, 0.3, "USD", "Mistral La Plateforme 官方定价", 0.1, 0.3, "海外三方同系列参考", None, None, "境内三方近似参考", "统一前沿小模型，MoE 架构；三方列按同系列参考补齐。", 82),
+    token_row("Cohere", "Command A+", "海外", "128K", 2.5, 10.0, "USD", "Cohere 官方定价页", 2.5, 10.0, "海外三方同系列参考", None, None, "境内三方近似参考", "Cohere 最新旗舰 MoE 模型，218B 总/25B 活跃，多模态；三方列按同系列参考补齐。", 85),
+    token_row("Cohere", "Command R+", "海外", "128K", 2.5, 10.0, "USD", "Cohere 官方定价页", 2.5, 10.0, "海外三方同系列参考", None, None, "境内三方近似参考", "上一代旗舰，优化于 RAG 与多步工具调用；三方列按同系列参考补齐。", 82),
+    token_row("xAI Grok", "Grok 4.3", "海外", "1M", 1.25, 2.5, "USD", "xAI 官方文档", 1.25, 2.5, "OpenRouter / models.dev", None, None, "境内三方近似参考", "xAI 当前旗舰，2026年4月发布，价格大幅下调，196 token/s 高速输出。", 90),
+    token_row("xAI Grok", "Grok 4 Fast", "海外", "256K", 0.2, 0.5, "USD", "xAI 官方文档", 0.2, 0.5, "OpenRouter / models.dev", None, None, "境内三方近似参考", "快速经济型模型，日常对话/内容创作；境内三方用近似参考补齐。", 85),
+    token_row("Meta Llama", "Llama 4 Maverick", "海外", "1M", 0.3, 0.6, "USD", "主流托管平台代表性价格（Together/Fireworks）", 0.3, 0.6, "Together.ai / Fireworks.ai", None, None, "境内三方近似参考", "Meta 旗舰 MoE 模型（400B 总参数），开源模型，无官方 per-token 定价，取主流托管平台中位价。", 80),
+    token_row("Meta Llama", "Llama 4 Scout", "海外", "128K", 0.15, 0.35, "USD", "主流托管平台代表性价格（Together/Fireworks）", 0.15, 0.35, "Together.ai / Fireworks.ai", None, None, "境内三方近似参考", "小型高性能 MoE（109B 总/17B 活跃），开源模型，取主流托管平台代表性价格。", 78),
+    # —— 国产厂商 ——
+    token_row("DeepSeek", "DeepSeek-V4-Pro", "国产", "1M", 3.0, 6.0, "CNY", "DeepSeek API 官方定价", 0.435, 0.87, "OpenRouter / Together.ai", 12.0, 24.0, "硅基流动精确同名", "DeepSeek 当前旗舰；硅基流动精确匹配 12/24；官方价与境内渠道价差单列。", 95),
+    token_row("DeepSeek", "DeepSeek-V4-Flash", "国产", "1M", 1.0, 2.0, "CNY", "DeepSeek API 官方定价", 0.09, 0.18, "OpenRouter / Together.ai", 1.0, 2.0, "硅基流动精确同名", "DeepSeek 高性价比主力；硅基流动精确匹配 1/2。", 95),
+    token_row("阿里云/通义千问", "Qwen3.7-Max", "国产", "1M", 12.0, 36.0, "CNY", "阿里云百炼官方定价", 1.25, 3.75, "OpenRouter / Together.ai", None, None, "硅基流动同系列参考", "阿里旗舰模型；境内三方按同系列参考补齐。", 95),
+    token_row("阿里云/通义千问", "Qwen3.7-Plus", "国产", "1M", 2.0, 8.0, "CNY", "阿里云百炼官方定价", 0.32, 1.28, "OpenRouter / Together.ai", None, None, "硅基流动同系列参考", "阿里主力平衡模型，0-256K 非思考模式官方价；三方按同系列参考补齐。", 95),
+    token_row("火山方舟/豆包", "Doubao-Seed-1.6", "国产", "256K", 0.8, 2.0, "CNY", "火山方舟官方定价", None, None, "海外三方同系列参考", None, None, "境内三方同系列参考", "豆包当前主力模型，0-32K 短输出在线推理官方价；三方列按同系列参考补齐。", 95),
+    token_row("火山方舟/豆包", "Doubao-Seed-1.6-Flash", "国产", "256K", 0.15, 1.5, "CNY", "火山方舟官方定价", None, None, "海外三方同系列参考", 1.5, 4.0, "硅基流动 Seed-OSS-36B（同系列参考）", "火山 Flash 版官方价；硅基流动 Seed-OSS-36B 1.5/4 作为同系列参考。", "PASS", 90),
+    token_row("火山方舟/豆包", "Doubao-Seed-1.6-Thinking", "国产", "256K", 0.8, 8.0, "CNY", "火山方舟官方定价", None, None, "海外三方同系列参考", None, None, "境内三方同系列参考", "豆包思考版模型，0-32K 档思考模式；三方列按同系列参考补齐。", 90),
+    token_row("腾讯混元", "Hunyuan-Hy3", "国产", "256K", 1.0, 4.0, "CNY", "腾讯云混元官方定价（Hy3 2026.7.6 发布）", None, None, "海外三方同系列参考", None, None, "境内三方近似参考", "腾讯混元最新旗舰 Hy3，MoE 架构，295B 总参数，256K 上下文，开源 Apache 2.0；三方列按同系列参考补齐。", 95),
+    token_row("腾讯混元", "Hunyuan-role-latest", "国产", "官方未明确", 2.4, 9.6, "CNY", "腾讯云混元官方定价", None, None, "海外三方同系列参考", None, None, "境内三方近似参考", "腾讯混元角色模型官方价；三方平台按混元同系列参考价补齐。", 92),
+    token_row("腾讯混元", "Hunyuan-A13B", "国产", "128K", 0.5, 2.0, "CNY", "腾讯云混元官方定价", 0.14, 0.57, "OpenRouter Models API", 1.0, 4.0, "硅基流动同系列参考", "腾讯混元轻量主力；硅基流动 Hunyuan-A13B 1/4 作为同系列参考。", 92),
+    token_row("智谱 GLM / Z.ai", "GLM-5.2", "国产", "1M", 8.0, 28.0, "CNY", "智谱开放平台官方定价", 0.93, 3.0, "OpenRouter Models API", 8.0, 28.0, "硅基流动精确同名", "智谱当前旗舰，官方价输入 8、输出 28；硅基流动精确匹配 8/28。", 98),
+    token_row("智谱 GLM / Z.ai", "GLM-5.1 Pro", "国产", "200K", 6.0, 24.0, "CNY", "智谱开放平台官方定价", 1.4, 4.4, "Together.ai / Fireworks.ai", 6.0, 24.0, "硅基流动同系列参考", "智谱上一代旗舰，32K 内 6/24；三方列按同系列参考补齐。", 95),
+    token_row("百度文心", "ERNIE 5.1", "国产", "128K", 4.0, 18.0, "CNY", "百度千帆官方定价", None, None, "海外三方同系列参考", None, None, "硅基流动同系列参考", "百度千帆 ERNIE 5.1 最新旗舰，智能体、知识、推理、深度搜索全面升级；三方列按同系列参考补齐。", 92),
+    token_row("百度文心", "ERNIE-4.5-Turbo", "国产", "32K", 0.8, 3.2, "CNY", "百度千帆官方定价", 0.42, 1.25, "OpenRouter 近似模型", None, None, "硅基流动同系列参考", "ERNIE 4.5 Turbo 主力量产版本；三方列按同系列参考补齐。", 90),
+    token_row("Kimi / Moonshot", "Kimi K2.7 Code", "国产", "256K", 6.5, 27.0, "CNY", "Kimi 开放平台官方定价", 0.719, 3.49, "OpenRouter / Together.ai", 6.5, 27.0, "硅基流动精确同名", "Kimi 最强编程模型；硅基流动精确匹配 6.5/27。", 95),
+    token_row("Kimi / Moonshot", "Kimi K2.6", "国产", "256K", 6.5, 27.0, "CNY", "Kimi 开放平台官方定价", 0.66, 3.41, "OpenRouter / Together.ai", 6.5, 27.0, "硅基流动精确同名", "Kimi 最新最智能多模态模型；硅基流动精确匹配 6.5/27。", 95),
+    token_row("MiniMax", "MiniMax-M3 标准层 ≤512K", "国产", "≤512K", 2.1, 8.4, "CNY", "MiniMax 开放平台官方定价", 0.3, 1.2, "OpenRouter / Together.ai", 2.1, 8.4, "硅基流动 MiniMax-M2.5（同系列参考）", "MiniMax 当前主力，永久五折后价；硅基流动 M2.5 2.1/8.4 作为同系列参考。", 95),
+    token_row("MiniMax", "MiniMax-M3 标准层 >512K", "国产", ">512K", 4.2, 16.8, "CNY", "MiniMax 开放平台官方定价", None, None, "海外三方同系列参考", None, None, "境内三方同系列参考", "MiniMax M3 长上下文档，永久五折后价；三方列按同系列参考补齐。", 92),
+    token_row("讯飞星火", "Spark X2", "国产", "官方未明确", 1.0, 2.0, "CNY", "讯飞星火官方定价页", None, None, "海外三方同系列参考", None, None, "境内三方近似参考", "讯飞星火当前旗舰 X2-Flash 参考价；海外与境内三方采用近似参考补齐。", "PASS", 78),
+    token_row("讯飞星火", "Spark Max", "国产", "32K", 21.0, 21.0, "CNY", "讯飞星火官方定价页", None, None, "海外三方同系列参考", None, None, "境内三方近似参考", "讯飞星火 Max 版，按 0.21 元/万 tokens 折算；三方采用近似参考补齐。", "PASS", 78),
+    token_row("百川智能", "Baichuan-M3-Plus", "国产", "32K", 5.0, 9.0, "CNY", "百川智能官方定价页", None, None, "海外三方同系列参考", None, None, "境内三方近似参考", "百川当前主力 M3-Plus，官方价 5/9 元/百万 tokens；三方采用近似参考补齐。", 90),
+    token_row("百川智能", "Baichuan-M3", "国产", "32K", 10.0, 30.0, "CNY", "百川智能官方定价页", None, None, "海外三方同系列参考", None, None, "境内三方近似参考", "百川旗舰 M3，官方价 10/30 元/百万 tokens；三方采用近似参考补齐。", 90),
+    token_row("零一万物", "Yi-Lightning", "国产", "官方未明确", 0.99, 0.99, "CNY", "零一万物官方公开定价", None, None, "海外三方同系列参考", None, None, "境内三方近似参考", "零一万物旗舰 MoE 模型，主打极致性价比，0.99 元/百万 tokens 输入输出同价。", 82),
+    token_row("零一万物", "Yi-Large", "国产", "32K", 20.0, 20.0, "CNY", "零一万物官方公开定价", None, None, "海外三方同系列参考", None, None, "境内三方近似参考", "零一万物 Yi-Large，输入输出同价；三方采用近似参考补齐。", 80),
+    token_row("阶跃星辰", "Step 3.5 Flash", "国产", "官方未明确", 0.7, 2.1, "CNY", "阶跃星辰官方定价", None, None, "海外三方同系列参考", 0.7, 2.1, "硅基流动 Step-3.5-Flash（精确同名）", "阶跃当前主力；硅基流动精确匹配 Step-3.5-Flash 0.7/2.1。", 92),
+    token_row("阶跃星辰", "Step-R1-V-Mini", "国产", "官方未明确", 2.5, 8.0, "CNY", "阶跃星辰官方定价", None, None, "海外三方同系列参考", None, None, "境内三方同系列参考", "阶跃推理模型；三方列按同系列参考补齐。", 88),
+    token_row("商汤日日新", "SenseNova-V6.5-Pro", "国产", "官方未明确", 3.0, 9.0, "CNY", "商汤日日新官方定价", None, None, "海外三方同系列参考", None, None, "境内三方近似参考", "商汤旗舰融合模态大模型，官方价 3/9 元/百万 tokens；三方采用近似参考补齐。", 85),
+    token_row("商汤日日新", "SenseNova-V6.5-Turbo", "国产", "官方未明确", 1.5, 4.5, "CNY", "商汤日日新官方定价", None, None, "海外三方同系列参考", None, None, "境内三方近似参考", "商汤 Turbo 版模型，官方价 1.5/4.5 元/百万 tokens；三方采用近似参考补齐。", 82),
+    token_row("昆仑万维天工", "SkyClaw-v1.0", "国产", "1M", 0.5, 4.0, "CNY", "昆仑万维天工官方发布", None, None, "海外三方同系列参考", None, None, "境内三方近似参考", "天工旗舰 Agent 模型，主打工具调用和多轮任务执行，1M 上下文；三方采用近似参考补齐。", 80),
+    token_row("昆仑万维天工", "SkyClaw-v1.0-lite", "国产", "官方未明确", 0.3, 1.5, "CNY", "昆仑万维天工官方发布", None, None, "海外三方同系列参考", None, None, "境内三方近似参考", "天工轻量版 Agent 模型；三方采用近似参考补齐。", 78),
 ]
+
+TOKEN_DATA = _load_discovered_token() or _TOKEN_DATA_FALLBACK
 
 TOKEN_COLUMNS = [
     "厂商",
@@ -962,7 +1132,8 @@ def overseas_monthly_wan(gpu: str) -> float | None:
 def domestic_rows() -> list[dict]:
     rows = []
     for idx, gpu in enumerate(GPU_ORDER, 1):
-        item = DOMESTIC_RENTAL_INPUT.get(gpu)
+        # 优先使用动态发现的价格，回退到硬编码
+        item = _DYNAMIC_DOMESTIC.get(gpu) or DOMESTIC_RENTAL_INPUT.get(gpu)
         if item:
             monthly = item["monthly_wan"]
             hourly = monthly_wan_to_hourly_cny(monthly)
@@ -1020,9 +1191,20 @@ def domestic_rows() -> list[dict]:
 def overseas_rows() -> list[dict]:
     rows = []
     for idx, gpu in enumerate(GPU_ORDER, 1):
-        item = OVERSEAS_HOURLY_USD.get(gpu)
-        if item:
-            usd, conf, consensus, note = item
+        dynamic = _DYNAMIC_OVERSEAS.get(gpu)
+        fallback = OVERSEAS_HOURLY_USD.get(gpu)
+        if dynamic:
+            usd = dynamic["usd"]
+            conf = dynamic["conf"]
+            consensus = dynamic["consensus"]
+            note = dynamic["note"]
+            source = dynamic.get("source", "海外动态采集")
+            cny = cny_from_usd(usd)
+            monthly_ref = round(cny * 8 * 24 * 30 / 10000, 2)
+            status = "PASS" if conf >= 70 else "REVIEW"
+        elif fallback:
+            usd, conf, consensus, note = fallback
+            source = "硬编码锚点（待动态更新）"
             cny = cny_from_usd(usd)
             monthly_ref = round(cny * 8 * 24 * 30 / 10000, 2)
             status = "PASS" if conf >= 70 else "REVIEW"
@@ -1031,6 +1213,7 @@ def overseas_rows() -> list[dict]:
             conf = 50
             consensus = "Low"
             note = "海外公开小时价暂不可得。"
+            source = "暂无公开来源"
             status = "REVIEW"
         rows.append({
             "GPU 型号": gpu,
@@ -1038,7 +1221,7 @@ def overseas_rows() -> list[dict]:
             "热度排序": idx,
             "地区/市场": "海外",
             "category": "GPU_CLOUD",
-            "主数据源": "ComputeStacker/Lambda/RunPod 辅助",
+            "主数据源": source,
             "原始价格": None if usd is None else f"USD {usd}/卡/小时",
             "标准化价格": monthly_ref,
             "标准化单位": "万元/8卡整机/月",
@@ -1186,6 +1369,32 @@ SNAPSHOT = {
     "rejected": REJECTED,
 }
 
+
+def _load_dynamic_sources() -> list[dict]:
+    """从 discover_latest.py 生成的 JSON 中读取当天实际采集的来源。"""
+    sources: list[dict] = []
+    for path in (ROOT / "data" / f"discovered_token_{DATE}.json", ROOT / "data" / f"discovered_gpu_{DATE}.json"):
+        try:
+            if path.exists():
+                data = json.loads(path.read_text(encoding="utf-8"))
+                for s in data.get("dynamic_sources", []):
+                    if not any(existing.get("url") == s.get("url") for existing in sources):
+                        sources.append(s)
+        except Exception as e:
+            print(f"[warn] failed to load dynamic sources from {path}: {e}")
+    return sources
+
+
+# 合并动态来源到 SNAPSHOT（动态优先，静态补充）
+_dynamic_sources = _load_dynamic_sources()
+if _dynamic_sources:
+    seen_urls = {s["url"] for s in _dynamic_sources}
+    for s in SOURCES:
+        if s.get("url") not in seen_urls:
+            _dynamic_sources.append(s)
+    SNAPSHOT["sources"] = _dynamic_sources
+
+
 def coverage_rows() -> list[dict]:
     covered = []
     domestic_index = {r["GPU 型号"] for r in DOMESTIC_RENTAL if domestic_index_status(r)}
@@ -1270,9 +1479,10 @@ def mobile_gpu_cards(rows: list[dict]) -> str:
 def mobile_overseas_cards(rows: list[dict]) -> str:
     cards = []
     for row in rows:
+        status = row.get("校验状态", "")
         cards.append(f"""
         <article class="m-card compact">
-          <div class="m-card-head"><h3>{html_escape(row.get("GPU 型号"))}</h3><span>{html_escape(row.get("校验状态"))}</span></div>
+          <div class="m-card-head"><h3>{html_escape(row.get("GPU 型号"))}</h3><span class="status {'ok' if status == 'PASS' else 'warn'}">{html_escape(status)}</span></div>
           <div class="pill-row">
             {pill("等效月租", f'{fmt(row.get("等效8卡月租（万元）"))} 万')}
             {pill("单卡小时", f'{fmt(row.get("单卡小时价（人民币）"))} 元')}
@@ -1494,9 +1704,12 @@ def render_html(relative_prefix: str = "./") -> str:
     .metric,.panel,figure{{background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015));border:1px solid var(--rule);border-radius:18px;padding:18px;box-shadow:0 20px 50px rgba(0,0,0,.22)}}
     .metric span,.metric small{{display:block;color:var(--muted)}} .metric strong{{display:block;font-size:30px;color:var(--accent);margin:8px 0}}
     .status-pass{{color:var(--good)}} .status-reject{{color:var(--bad)}} .missing{{color:var(--bad);font-weight:700}}
-    .table-wrap{{overflow:auto;max-height:640px;border:1px solid var(--rule);border-radius:16px;background:rgba(255,255,255,.025);margin:16px 0 26px}}
+    .table-wrap{{overflow:auto;max-height:640px;border:1px solid var(--rule);border-radius:16px;background:rgba(255,255,255,.025);margin:16px 0 26px;box-shadow:0 12px 40px rgba(0,0,0,.18)}}
     table{{width:100%;min-width:1180px;border-collapse:collapse;font-size:13px}} th,td{{padding:10px 12px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top}}
-    th{{position:sticky;top:0;background:#12213a;color:var(--accent2);z-index:1}} .chart{{width:100%;min-height:420px}} footer{{margin-top:60px;padding-top:28px;border-top:1px solid var(--rule)}}
+    th{{position:sticky;top:0;background:#12213a;color:var(--accent2);z-index:1;font-weight:600;letter-spacing:.02em}}
+    tr:nth-child(even){{background:rgba(255,255,255,.02)}}
+    tbody tr:hover{{background:rgba(104,225,253,.06);transition:background .15s}}
+    .chart{{width:100%;min-height:420px}} footer{{margin-top:60px;padding-top:28px;border-top:1px solid var(--rule)}}
     @media(max-width:768px){{h1{{font-size:28px}} h2{{margin-top:32px;font-size:20px}} .page{{padding:16px 0 40px}} header{{padding:28px 0 18px}} .metric strong{{font-size:24px}} .chart{{min-height:320px}} table{{min-width:800px;font-size:12px}} th,td{{padding:8px 10px}} figcaption{{font-size:12px}}}}
     @media(max-width:900px){{.metrics{{grid-template-columns:1fr}} .page{{width:min(98vw,760px)}}}}
   </style>
@@ -1617,16 +1830,16 @@ def render_mobile_html(relative_prefix: str = "./", desktop_href: str = "latest.
     .metrics{{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}}
     .metric,.m-card,figure,details{{background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.025));border:1px solid var(--rule);border-radius:18px;box-shadow:0 12px 36px rgba(0,0,0,.22)}}
     .metric{{padding:12px}} .metric span,.metric small{{display:block;color:var(--muted);font-size:11px}} .metric strong{{display:block;color:var(--accent);font-size:22px;margin:4px 0}}
-    .m-card{{padding:14px;margin:10px 0}} .m-card.compact{{padding:12px}}
+    .m-card{{padding:14px;margin:10px 0;border:1px solid rgba(255,255,255,.08);box-shadow:0 8px 24px rgba(0,0,0,.28)}} .m-card.compact{{padding:12px}}
     .m-card-head{{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}}
-    .m-card-head span,.status{{white-space:nowrap;border:1px solid var(--rule);border-radius:999px;padding:3px 8px;font-size:11px;color:var(--muted)}}
-    .status.ok{{color:var(--good);border-color:rgba(116,224,163,.45)}} .status.warn{{color:var(--accent2);border-color:rgba(247,199,107,.45)}}
+    .m-card-head span,.status{{white-space:nowrap;border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:4px 10px;font-size:11px;color:var(--muted);background:rgba(255,255,255,.04)}}
+    .status.ok{{color:var(--good);border-color:rgba(116,224,163,.45);background:rgba(116,224,163,.08)}} .status.warn{{color:var(--accent2);border-color:rgba(247,199,107,.45);background:rgba(247,199,107,.08)}}
     .m-price{{font-size:30px;color:var(--accent);font-weight:800;letter-spacing:-.03em}} .m-price em{{display:block;font-size:11px;font-style:normal;color:var(--muted);font-weight:500;letter-spacing:0}}
     .pill-row{{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}}
-    .pill{{display:inline-flex;gap:5px;align-items:center;padding:5px 8px;border:1px solid var(--rule);border-radius:999px;background:rgba(255,255,255,.035);font-size:11px;color:var(--ink)}}
+    .pill{{display:inline-flex;gap:5px;align-items:center;padding:5px 10px;border:1px solid rgba(255,255,255,.08);border-radius:999px;background:rgba(255,255,255,.045);font-size:11px;color:var(--ink)}}
     .pill b{{color:var(--muted);font-weight:600}}
     figure{{padding:8px 0;margin:12px 0 18px}} figcaption{{font-size:13px;color:var(--accent2);font-weight:650;margin-bottom:8px;padding:0 8px}}
-    .chart{{width:100%;min-height:420px}} #chart-token-input,#chart-token-output,#chart-token-third-diff,#chart-token-official-domestic-diff{{min-height:720px}}
+    .chart{{width:100%;min-height:320px}} #chart-domestic-main,#chart-overseas{{min-height:380px}} #chart-token-input,#chart-token-output,#chart-token-third-diff,#chart-token-official-domestic-diff{{min-height:600px}}
     details{{padding:0;margin:10px 0}} summary{{cursor:pointer;padding:14px;font-weight:700;color:var(--accent2)}} details[open] summary{{border-bottom:1px solid var(--rule)}}
     .details-body{{padding:8px 12px 12px}}
     .quick-nav{{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;gap:6px;overflow:auto;padding:8px 12px calc(8px + env(safe-area-inset-bottom));background:rgba(7,17,31,.95);border-top:1px solid var(--rule);backdrop-filter:blur(12px)}}
@@ -1715,11 +1928,12 @@ def write_charts():
     def domestic_chart_kind(row: dict) -> str:
         if row["标准化价格"] is None:
             return "价格待补"
-        if row.get("价格口径") == "市场核价区间（估算）":
+        kind = row.get("价格口径", "")
+        if "市场核价" in kind:
             return "市场核价"
-        if row.get("价格口径") == "云价折算":
+        if "云价折算" in kind:
             return "云价折算"
-        if row.get("价格口径") == "低置信观察" or (row["GPU 型号"] in STRATEGIC_DOMESTIC_GPUS and not pass_status(row)):
+        if "低置信" in kind or (row["GPU 型号"] in STRATEGIC_DOMESTIC_GPUS and not pass_status(row)):
             return "低置信观察"
         return "公开成交/主口径价"
     data = {
@@ -1818,8 +2032,8 @@ def write_charts():
         color:legend ? legend.map(function(k){{return domesticPalette[k] || color;}}) : [color],
         tooltip:{{trigger:'axis', appendToBody:true}},
         legend:legend ? {{top:0,textStyle:{{color:muted}}}} : undefined,
-        grid:{{left:70,right:40,top:legend ? 72 : 44,bottom:80,containLabel:true}},
-        xAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}}}},
+        grid:{{left:70,right:40,top:legend ? 72 : 44,bottom:100,containLabel:true}},
+        xAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0,rotate:35,fontSize:11}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}}}},
         yAxis:{{type:'value',name:name,nameTextStyle:{{color:muted}},axisLabel:{{color:muted}},splitLine:{{lineStyle:{{color:rule}}}}}},
         series:series
       }});
