@@ -1315,12 +1315,121 @@ def mobile_token_cards(rows: list[dict]) -> str:
 
 
 def source_list() -> str:
+    # 从当天内存中的 SOURCES 常量和行级数据直接构建引用表，
+    # 不依赖 snapshot 中重复的 sources 数组（避免字符串匹配失效）
+    srcs = _build_sources_with_refs()
     return "\n".join(
         f'<li id="cite-{s["id"]}"><b>[{s["tier"]}] {html_escape(s["title"])}</b><br>'
         f'<a href="{s["url"]}" target="_blank" rel="noopener">{s["url"]}</a><br>'
         f'<span>{html_escape(s["note"])}</span></li>'
-        for s in SOURCES
+        for s in srcs
     )
+
+
+def _build_sources_with_refs() -> list[dict]:
+    """
+    基于当天的行级数据，为 SOURCES 常量中的每个来源附加本期引用信息。
+    引用来源：国内租赁主数据源、Token 官方价格来源、Token 海外/境内三方来源、采购数据源。
+    """
+    # 建立 source key -> 引用描述 的映射
+    # 国内租赁
+    gpu_refs: dict[str, list[str]] = {}
+    for row in DOMESTIC_RENTAL:
+        src = row.get("主数据源", "").strip()
+        if src and src not in ("未采集到合格来源",):
+            gpu_refs.setdefault(src, []).append(f"国内/{row.get('GPU 型号', '?')}")
+    # 海外租赁（海外 GPU Cloud 参考）
+    for row in OVERSEAS_RENTAL:
+        src = row.get("主数据源", "").strip()
+        if src and src not in ("未采集到合格来源",):
+            gpu_refs.setdefault(src, []).append(f"海外/{row.get('GPU 型号', '?')}")
+    # Token 官方 + 三方
+    for row in TOKEN_DATA:
+        off = row.get("官方价格来源", "").strip()
+        if off:
+            gpu_refs.setdefault(off, []).append(f"Token/{row.get('模型', '?')}(官方)")
+        ov = row.get("海外三方来源", "").strip()
+        if ov:
+            gpu_refs.setdefault(ov, []).append(f"Token/{row.get('模型', '?')}(海外三方)")
+        dom = row.get("境内三方来源", "").strip()
+        if dom:
+            gpu_refs.setdefault(dom, []).append(f"Token/{row.get('模型', '?')}(境内三方)")
+    # 采购
+    for row in PROCUREMENT:
+        src = row.get("采购数据源", "").strip()
+        if src:
+            gpu_refs.setdefault(src, []).append(f"采购/{row.get('GPU 型号', '?')}")
+
+    def find_refs(key: str) -> list[str]:
+        """精确优先；再用 source title 中的机构/品牌关键词匹配行级数据源"""
+        refs: list[str] = []
+        if key in gpu_refs:
+            refs.extend(gpu_refs[key])
+            return list(dict.fromkeys(refs))
+        # 提取 source title 中的品牌/机构名（首词，长度>=2）
+        brand = key.split()[0] if key else ""
+        brands = [brand] if brand and len(brand) >= 2 else []
+        # 补充常见别名映射
+        alias_map = {
+            "SMM": ["SMM"],
+            "ComputeStacker": ["ComputeStacker"],
+            "Lambda": ["Lambda"],
+            "OpenAI": ["OpenAI"],
+            "DeepSeek": ["DeepSeek"],
+            "阿里云": ["阿里云", "阿里百炼"],
+            "阿里百炼": ["阿里云", "阿里百炼"],
+            "RunPod": ["RunPod"],
+            "Vast.ai": ["Vast"],
+            "BIZON": ["BIZON"],
+            "NVIDIA": ["NVIDIA"],
+            "中国政府采购": ["中国政府采购", "ccgp"],
+            "Cloud-GPUs": ["Cloud-GPUs"],
+            "GPUCloudPricing": ["GPUCloudPricing"],
+            "llmpricing": ["llmpricing"],
+            "morph-llm": ["morph-llm"],
+            "OpenRouter": ["OpenRouter"],
+            "models.dev": ["models.dev"],
+            "BenchLM": ["BenchLM"],
+            "LiteLLM": ["LiteLLM"],
+            "硅基流动": ["硅基流动"],
+            "Artificial": ["Artificial Analysis"],
+            "Anthropic": ["Anthropic"],
+            "百度": ["百度", "千帆"],
+            "火山": ["火山", "方舟"],
+            "MiniMax": ["MiniMax"],
+            "腾讯": ["腾讯", "混元"],
+            "智谱": ["智谱", "bigmodel"],
+            "Kimi": ["Kimi", "Moonshot"],
+            "讯飞": ["讯飞", "星火"],
+            "Gitee": ["Gitee"],
+            "PPIO": ["PPIO", "派欧云"],
+            "AIHubMix": ["AIHubMix"],
+            "海鲸": ["海鲸"],
+            "GeekAI": ["GeekAI"],
+            "Together": ["Together"],
+            "Fireworks": ["Fireworks"],
+            "Replicate": ["Replicate"],
+            "Hugging": ["Hugging Face"],
+            "Puter": ["Puter"],
+        }
+        for b in brands:
+            if b in alias_map:
+                brands = alias_map[b]
+                break
+        for row_key, row_refs in gpu_refs.items():
+            for b in brands:
+                if b in row_key:
+                    refs.extend(row_refs)
+                    break
+        return list(dict.fromkeys(refs))  # 去重
+
+    enriched = []
+    for s in SOURCES:
+        key = s.get("title", "")
+        refs = find_refs(key)
+        ref_note = f"（本期引用：{', '.join(refs)}）" if refs else ""
+        enriched.append({**s, "note": s.get("note", "") + (" " + ref_note if ref_note else "（本期暂无行级引用）")})
+    return enriched
 
 
 def main_metrics() -> list[tuple[str, str, str]]:
