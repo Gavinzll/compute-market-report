@@ -1886,9 +1886,9 @@ def write_charts():
       else if (rawRatio) short = rawRatio.substring(0, 2);
       return short ? (p.value + '万·' + short) : (p.value + '万');
     }}
-    var base = rawRatio === '价格待补' ? '价格待补' : (p.value + '万/月');
-    var ratio = rawRatio === '海外缺口' ? '海外缺口' : (rawRatio && String(rawRatio).indexOf('%') >= 0 ? '海外' + rawRatio : (rawRatio ? rawRatio : ''));
-    return rawRatio === '价格待补' || !ratio ? base : base + '\\n' + ratio;
+    var tagMap = {{'海外缺口':'缺口','云价折算':'云折','市场核价':'市核','价格待补':'待补'}};
+    var tag = tagMap[rawRatio] || (rawRatio && String(rawRatio).indexOf('%') >= 0 ? rawRatio : '');
+    return tag ? (p.value + '\\n' + tag) : String(p.value);
   }}
   var isMobile = window.innerWidth <= 768;
   function bar(id, labels, values, name, color, ratios, kinds) {{
