@@ -31,6 +31,23 @@ DATE = NOW.date().isoformat()
 DISCOVERED_TOKEN_PATH = ROOT / "data" / f"discovered_token_{DATE}.json"
 DISCOVERED_GPU_PATH = ROOT / "data" / f"discovered_gpu_{DATE}.json"
 
+# 动态采集过程中记录的真实来源 URL（用于替代硬编码 SOURCES）
+DYNAMIC_SOURCES: list[dict[str, Any]] = []
+
+
+def record_source(tier: str, title: str, url: str, note: str = "") -> None:
+    """记录一个真实数据来源，供飞书通知和报告引用。"""
+    for existing in DYNAMIC_SOURCES:
+        if existing.get("url") == url:
+            return
+    DYNAMIC_SOURCES.append({
+        "id": len(DYNAMIC_SOURCES) + 1,
+        "tier": tier,
+        "title": title,
+        "url": url,
+        "note": note,
+    })
+
 def fetch_json(url: str, timeout: int = 30) -> dict | list | None:
     """从 URL 获取 JSON 数据。"""
     try:
@@ -593,6 +610,8 @@ def discover_from_litellm() -> dict[str, list[dict]]:
             "output_cost_per_token": output_cost,
             "source": "LiteLLM JSON",
         })
+    if result:
+        record_source("官方/校验", "LiteLLM 模型价格与上下文窗口 JSON", "https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json", f"验证 {sum(len(v) for v in result.values())} 个模型")
     return result
 
 
@@ -627,6 +646,8 @@ def discover_from_openrouter() -> dict[str, list[dict]]:
             "output_cost_per_token": completion_price,
             "source": "OpenRouter API",
         })
+    if result:
+        record_source("海外三方", "OpenRouter API 模型定价", "https://openrouter.ai/api/v1/models", f"验证 {sum(len(v) for v in result.values())} 个模型")
     return result
 
 
@@ -658,6 +679,8 @@ def discover_from_modelsdev() -> dict[str, list[dict]]:
             "output_cost_per_token": completion_price,
             "source": "models.dev API",
         })
+    if result:
+        record_source("海外三方", "models.dev API 模型定价", "https://models.dev/api.json", f"验证 {sum(len(v) for v in result.values())} 个模型")
     return result
 
 
@@ -932,6 +955,8 @@ def discover_gpu_prices_from_cloudgpus() -> dict[str, float]:
         price = float(m.group(2))
         if gpu and price > 0:
             prices[gpu] = price
+    if prices:
+        record_source("海外云价", "cloud-gpus.com GPU pricing", "https://cloud-gpus.com/", f"采集到 {len(prices)} 款 GPU 海外时租价")
     return prices
 
 
@@ -987,6 +1012,8 @@ def scrape_tianyi_gpu_prices() -> dict[str, tuple[float, float]]:
                         break
                 except (ValueError, IndexError):
                     pass
+    if prices:
+        record_source("云价折算", "天翼云 GPU 云主机价格总览", "https://www.ctyun.cn/document/10029787/10047957", f"采集到 {len(prices)} 款 GPU 单卡包月价")
     print(f"[discover] tianyi: {len(prices)} prices found: {list(prices.keys())}")
     return prices
 
@@ -1054,6 +1081,8 @@ def scrape_smm_gpu_prices() -> dict[str, dict[str, Any]]:
                     break
                 except (ValueError, IndexError):
                     pass
+    if results:
+        record_source("裸金属/行业", "SMM 算力快讯直播页", "https://news.smm.cn/live/metal/143", f"采集到 {len(results)} 款 GPU 裸金属月租价")
     print(f"[discover] smm: {len(results)} prices found: {list(results.keys())}")
     return results
 
@@ -1098,6 +1127,8 @@ def scrape_omniyq_gpu_prices() -> dict[str, float]:
                     prices[gpu] = monthly_wan
             except ValueError:
                 pass
+    if prices:
+        record_source("裸金属/行业", "云擎天下 8卡整机裸金属月租", "https://www.omniyq.com/h-col-104.html", f"采集到 {len(prices)} 款 GPU 裸金属月租价")
     print(f"[discover] omniyq: {len(prices)} prices found: {list(prices.keys())}")
     return prices
 
@@ -1127,6 +1158,8 @@ def scrape_shengsuanyun_gpu_prices() -> dict[str, float]:
                     prices[gpu] = val
             except ValueError:
                 pass
+    if prices:
+        record_source("云价折算", "生数云 GPU 算力租赁", "https://www.shengsuanyun.com/hashrate", f"采集到 {len(prices)} 款 GPU 单卡时租价")
     print(f"[discover] shengsuanyun: {len(prices)} prices found")
     return prices
 
@@ -1369,6 +1402,7 @@ def main() -> None:
         "vendors": sorted({r["vendor"] for r in token_rows}),
         "rows": token_rows,
         "discovery_log": token_log,
+        "dynamic_sources": DYNAMIC_SOURCES,
     }
     DISCOVERED_TOKEN_PATH.parent.mkdir(parents=True, exist_ok=True)
     DISCOVERED_TOKEN_PATH.write_text(json.dumps(token_result, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -1380,6 +1414,7 @@ def main() -> None:
     gpu_result = build_discovered_gpu_list()
     gpu_result["date"] = DATE
     gpu_result["discovered_at"] = NOW.isoformat()
+    gpu_result["dynamic_sources"] = DYNAMIC_SOURCES
     DISCOVERED_GPU_PATH.parent.mkdir(parents=True, exist_ok=True)
     DISCOVERED_GPU_PATH.write_text(json.dumps(gpu_result, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"[discover] GPU new candidates: {len(gpu_result['new_candidates'])}")

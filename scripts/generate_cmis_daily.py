@@ -560,7 +560,7 @@ GPU_CLASS = {gpu: group for group, items in GPU_GROUPS for gpu in items}
 STRATEGIC_DOMESTIC_GPUS = {"昇腾 910B", "昇腾 950PR", "寒武纪 MLU370-X8", "寒武纪 MLU590", "海光 DCU K100", "海光 DCU Z100", "壁仞 BR100", "摩尔线程 MTT S4000", "摩尔线程 MTT S5000"}
 
 
-def _load_discovered_gpu_prices() -> tuple[dict[str, dict], dict[str, tuple]]:
+def _load_discovered_gpu_prices() -> tuple[dict[str, dict], dict[str, dict]]:
     """加载动态发现的 GPU 价格锚点；失败时返回空字典，回退到硬编码。"""
     path = ROOT / "data" / f"discovered_gpu_{DATE}.json"
     domestic: dict[str, dict] = {}
@@ -620,24 +620,27 @@ def _load_discovered_gpu_prices() -> tuple[dict[str, dict], dict[str, tuple]]:
                     "note": note,
                 }
 
-        # 处理海外锚点 -> OVERSEAS_HOURLY_USD 格式 (usd, conf, consensus, note)
+        # 处理海外锚点 -> dict 格式 (usd, conf, consensus, note, source)
         for gpu_base, anchor_name in o_name_map.items():
             if anchor_name in o_anchors:
                 o_anchors[gpu_base] = o_anchors.pop(anchor_name)
         for gpu, info in o_anchors.items():
             prices = []
+            src_labels = []
             for k in ("runpod", "lambda", "cloudgpus", "vast_median"):
                 v = info.get(k)
                 if v is not None:
                     prices.append(v)
+                    src_labels.append(k)
             if not prices:
                 continue
             usd = round(sum(prices) / len(prices), 2)
             src_cnt = len(prices)
             conf = 90 if src_cnt >= 3 else (85 if src_cnt == 2 else 80)
             consensus = "High" if src_cnt >= 3 else ("Medium" if src_cnt == 2 else "Low")
-            note = f"动态采集 {gpu}：{info.get('source', '')}"
-            overseas[gpu] = (usd, conf, consensus, note)
+            note = f"动态采集 {gpu}：{'/'.join(src_labels)} 均价"
+            source = f"海外动态采集：{'/'.join(src_labels)}"
+            overseas[gpu] = {"usd": usd, "conf": conf, "consensus": consensus, "note": note, "source": source}
 
     except Exception as e:
         print(f"[warn] failed to load discovered GPU prices: {e}")
@@ -1188,10 +1191,20 @@ def domestic_rows() -> list[dict]:
 def overseas_rows() -> list[dict]:
     rows = []
     for idx, gpu in enumerate(GPU_ORDER, 1):
-        # 优先使用动态发现的价格，回退到硬编码
-        item = _DYNAMIC_OVERSEAS.get(gpu) or OVERSEAS_HOURLY_USD.get(gpu)
-        if item:
-            usd, conf, consensus, note = item
+        dynamic = _DYNAMIC_OVERSEAS.get(gpu)
+        fallback = OVERSEAS_HOURLY_USD.get(gpu)
+        if dynamic:
+            usd = dynamic["usd"]
+            conf = dynamic["conf"]
+            consensus = dynamic["consensus"]
+            note = dynamic["note"]
+            source = dynamic.get("source", "海外动态采集")
+            cny = cny_from_usd(usd)
+            monthly_ref = round(cny * 8 * 24 * 30 / 10000, 2)
+            status = "PASS" if conf >= 70 else "REVIEW"
+        elif fallback:
+            usd, conf, consensus, note = fallback
+            source = "硬编码锚点（待动态更新）"
             cny = cny_from_usd(usd)
             monthly_ref = round(cny * 8 * 24 * 30 / 10000, 2)
             status = "PASS" if conf >= 70 else "REVIEW"
@@ -1200,6 +1213,7 @@ def overseas_rows() -> list[dict]:
             conf = 50
             consensus = "Low"
             note = "海外公开小时价暂不可得。"
+            source = "暂无公开来源"
             status = "REVIEW"
         rows.append({
             "GPU 型号": gpu,
@@ -1207,7 +1221,7 @@ def overseas_rows() -> list[dict]:
             "热度排序": idx,
             "地区/市场": "海外",
             "category": "GPU_CLOUD",
-            "主数据源": "ComputeStacker/Lambda/RunPod 辅助",
+            "主数据源": source,
             "原始价格": None if usd is None else f"USD {usd}/卡/小时",
             "标准化价格": monthly_ref,
             "标准化单位": "万元/8卡整机/月",
@@ -1354,6 +1368,32 @@ SNAPSHOT = {
     "audit": AUDIT,
     "rejected": REJECTED,
 }
+
+
+def _load_dynamic_sources() -> list[dict]:
+    """从 discover_latest.py 生成的 JSON 中读取当天实际采集的来源。"""
+    sources: list[dict] = []
+    for path in (ROOT / "data" / f"discovered_token_{DATE}.json", ROOT / "data" / f"discovered_gpu_{DATE}.json"):
+        try:
+            if path.exists():
+                data = json.loads(path.read_text(encoding="utf-8"))
+                for s in data.get("dynamic_sources", []):
+                    if not any(existing.get("url") == s.get("url") for existing in sources):
+                        sources.append(s)
+        except Exception as e:
+            print(f"[warn] failed to load dynamic sources from {path}: {e}")
+    return sources
+
+
+# 合并动态来源到 SNAPSHOT（动态优先，静态补充）
+_dynamic_sources = _load_dynamic_sources()
+if _dynamic_sources:
+    seen_urls = {s["url"] for s in _dynamic_sources}
+    for s in SOURCES:
+        if s.get("url") not in seen_urls:
+            _dynamic_sources.append(s)
+    SNAPSHOT["sources"] = _dynamic_sources
+
 
 def coverage_rows() -> list[dict]:
     covered = []
@@ -1554,9 +1594,12 @@ def render_html(relative_prefix: str = "./") -> str:
     .metric,.panel,figure{{background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015));border:1px solid var(--rule);border-radius:18px;padding:18px;box-shadow:0 20px 50px rgba(0,0,0,.22)}}
     .metric span,.metric small{{display:block;color:var(--muted)}} .metric strong{{display:block;font-size:30px;color:var(--accent);margin:8px 0}}
     .status-pass{{color:var(--good)}} .status-reject{{color:var(--bad)}} .missing{{color:var(--bad);font-weight:700}}
-    .table-wrap{{overflow:auto;max-height:640px;border:1px solid var(--rule);border-radius:16px;background:rgba(255,255,255,.025);margin:16px 0 26px}}
+    .table-wrap{{overflow:auto;max-height:640px;border:1px solid var(--rule);border-radius:16px;background:rgba(255,255,255,.025);margin:16px 0 26px;box-shadow:0 12px 40px rgba(0,0,0,.18)}}
     table{{width:100%;min-width:1180px;border-collapse:collapse;font-size:13px}} th,td{{padding:10px 12px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top}}
-    th{{position:sticky;top:0;background:#12213a;color:var(--accent2);z-index:1}} .chart{{width:100%;min-height:420px}} footer{{margin-top:60px;padding-top:28px;border-top:1px solid var(--rule)}}
+    th{{position:sticky;top:0;background:#12213a;color:var(--accent2);z-index:1;font-weight:600;letter-spacing:.02em}}
+    tr:nth-child(even){{background:rgba(255,255,255,.02)}}
+    tbody tr:hover{{background:rgba(104,225,253,.06);transition:background .15s}}
+    .chart{{width:100%;min-height:420px}} footer{{margin-top:60px;padding-top:28px;border-top:1px solid var(--rule)}}
     @media(max-width:768px){{h1{{font-size:28px}} h2{{margin-top:32px;font-size:20px}} .page{{padding:16px 0 40px}} header{{padding:28px 0 18px}} .metric strong{{font-size:24px}} .chart{{min-height:320px}} table{{min-width:800px;font-size:12px}} th,td{{padding:8px 10px}} figcaption{{font-size:12px}}}}
     @media(max-width:900px){{.metrics{{grid-template-columns:1fr}} .page{{width:min(98vw,760px)}}}}
   </style>
@@ -1677,16 +1720,16 @@ def render_mobile_html(relative_prefix: str = "./", desktop_href: str = "latest.
     .metrics{{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}}
     .metric,.m-card,figure,details{{background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.025));border:1px solid var(--rule);border-radius:18px;box-shadow:0 12px 36px rgba(0,0,0,.22)}}
     .metric{{padding:12px}} .metric span,.metric small{{display:block;color:var(--muted);font-size:11px}} .metric strong{{display:block;color:var(--accent);font-size:22px;margin:4px 0}}
-    .m-card{{padding:14px;margin:10px 0}} .m-card.compact{{padding:12px}}
+    .m-card{{padding:14px;margin:10px 0;border:1px solid rgba(255,255,255,.08);box-shadow:0 8px 24px rgba(0,0,0,.28)}} .m-card.compact{{padding:12px}}
     .m-card-head{{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}}
-    .m-card-head span,.status{{white-space:nowrap;border:1px solid var(--rule);border-radius:999px;padding:3px 8px;font-size:11px;color:var(--muted)}}
-    .status.ok{{color:var(--good);border-color:rgba(116,224,163,.45)}} .status.warn{{color:var(--accent2);border-color:rgba(247,199,107,.45)}}
+    .m-card-head span,.status{{white-space:nowrap;border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:4px 10px;font-size:11px;color:var(--muted);background:rgba(255,255,255,.04)}}
+    .status.ok{{color:var(--good);border-color:rgba(116,224,163,.45);background:rgba(116,224,163,.08)}} .status.warn{{color:var(--accent2);border-color:rgba(247,199,107,.45);background:rgba(247,199,107,.08)}}
     .m-price{{font-size:30px;color:var(--accent);font-weight:800;letter-spacing:-.03em}} .m-price em{{display:block;font-size:11px;font-style:normal;color:var(--muted);font-weight:500;letter-spacing:0}}
     .pill-row{{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}}
-    .pill{{display:inline-flex;gap:5px;align-items:center;padding:5px 8px;border:1px solid var(--rule);border-radius:999px;background:rgba(255,255,255,.035);font-size:11px;color:var(--ink)}}
+    .pill{{display:inline-flex;gap:5px;align-items:center;padding:5px 10px;border:1px solid rgba(255,255,255,.08);border-radius:999px;background:rgba(255,255,255,.045);font-size:11px;color:var(--ink)}}
     .pill b{{color:var(--muted);font-weight:600}}
     figure{{padding:8px 0;margin:12px 0 18px}} figcaption{{font-size:13px;color:var(--accent2);font-weight:650;margin-bottom:8px;padding:0 8px}}
-    .chart{{width:100%;min-height:420px}} #chart-token-input,#chart-token-output,#chart-token-third-diff,#chart-token-official-domestic-diff{{min-height:720px}}
+    .chart{{width:100%;min-height:320px}} #chart-domestic-main,#chart-overseas{{min-height:380px}} #chart-token-input,#chart-token-output,#chart-token-third-diff,#chart-token-official-domestic-diff{{min-height:600px}}
     details{{padding:0;margin:10px 0}} summary{{cursor:pointer;padding:14px;font-weight:700;color:var(--accent2)}} details[open] summary{{border-bottom:1px solid var(--rule)}}
     .details-body{{padding:8px 12px 12px}}
     .quick-nav{{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;gap:6px;overflow:auto;padding:8px 12px calc(8px + env(safe-area-inset-bottom));background:rgba(7,17,31,.95);border-top:1px solid var(--rule);backdrop-filter:blur(12px)}}
