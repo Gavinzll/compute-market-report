@@ -1558,7 +1558,7 @@ def html_escape(x) -> str:
     return str(x).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
-def table(rows: list[dict], cols: list[str] | None = None, headers: list[str] | None = None) -> str:
+def table(rows: list[dict], cols: list[str] | None = None, headers: list[str] | None = None, widths: list[str] | None = None) -> str:
     if not rows:
         return "<p>暂无数据。</p>"
     cols = cols or list(rows[0].keys())
@@ -1570,8 +1570,11 @@ def table(rows: list[dict], cols: list[str] | None = None, headers: list[str] | 
             value = row.get(col)
             cells.append(f"<td>{html_escape(fmt(value) if isinstance(value, (int, float)) else value)}</td>")
         trs.append("<tr>" + "".join(cells) + "</tr>")
+    colgroup = ""
+    if widths:
+        colgroup = "<colgroup>" + "".join(f'<col style="{w}">' for w in widths) + "</colgroup>"
     return (
-        '<div class="table-wrap"><table><thead><tr>'
+        '<div class="table-wrap"><table>' + colgroup + '<thead><tr>'
         + "".join(f"<th>{html_escape(c)}</th>" for c in display)
         + "</tr></thead><tbody>"
         + "\n".join(trs)
@@ -1725,7 +1728,7 @@ def render_html(relative_prefix: str = "./") -> str:
     .metric span,.metric small{{display:block;color:var(--muted)}} .metric strong{{display:block;font-size:30px;color:var(--accent);margin:8px 0}}
     .status-pass{{color:var(--good)}} .status-reject{{color:var(--bad)}} .missing{{color:var(--bad);font-weight:700}}
     .table-wrap{{overflow:auto;max-height:640px;border:1px solid var(--rule);border-radius:16px;background:rgba(255,255,255,.025);margin:16px 0 26px;box-shadow:0 12px 40px rgba(0,0,0,.18)}}
-    table{{width:100%;min-width:1180px;border-collapse:collapse;font-size:13px}} th,td{{padding:10px 12px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top}}
+    table{{width:100%;min-width:1100px;border-collapse:collapse;font-size:13px}} th,td{{padding:10px 12px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top}}
     th{{position:sticky;top:0;background:#12213a;color:var(--accent2);z-index:1;font-weight:600;letter-spacing:.02em}}
     tr:nth-child(even){{background:rgba(255,255,255,.02)}}
     tbody tr:hover{{background:rgba(104,225,253,.06);transition:background .15s}}
@@ -1760,7 +1763,7 @@ def render_html(relative_prefix: str = "./") -> str:
       <h2>国内算力租赁主指数</h2>
       <p class="note">高置信样本仍要求 PASS 且 Confidence≥70；昇腾 910B、寒武纪 MLU370-X8、海光 DCU K100、壁仞 BR100、摩尔线程 MTT S4000 作为国产战略关注卡强制列入指数表和柱状图。柱状图按价格口径分色：主口径、低置信观察、云价折算和价格待补分别展示。</p>
       <figure><figcaption>国内指数：万元/8卡整机/月；颜色区分主口径、低置信观察、云价折算与价格待补</figcaption><div id="chart-domestic-main" class="chart"></div></figure>
-      {table(domestic_index_rows, ["GPU 型号", "GPU 分类", "价格口径", "标准化价格", "国内月租/海外月租", "Confidence Score", "校验状态", "口径说明"], headers=["GPU 型号", "GPU 分类", "价格口径", "标准化价格（万/月）", "国内月租/海外月租", "Confidence", "校验状态", "口径说明"] if domestic_index_rows else None)}
+      {table(domestic_index_rows, ["GPU 型号", "GPU 分类", "价格口径", "标准化价格", "国内月租/海外月租", "Confidence Score", "校验状态", "口径说明"], headers=["GPU 型号", "GPU 分类", "价格口径", "标准化价格（万/月）", "国内月租/海外月租", "Confidence", "校验状态", "口径说明"] if domestic_index_rows else None, widths=["width:130px;white-space:nowrap", "width:70px;white-space:nowrap", "width:110px;white-space:nowrap", "width:95px;white-space:nowrap;text-align:right", "width:100px;white-space:nowrap", "width:70px;white-space:nowrap;text-align:right", "width:75px;white-space:nowrap", None])}
     </section>
 
     <section id="domestic-price-basis">
