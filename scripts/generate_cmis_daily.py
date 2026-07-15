@@ -1479,9 +1479,10 @@ def mobile_gpu_cards(rows: list[dict]) -> str:
 def mobile_overseas_cards(rows: list[dict]) -> str:
     cards = []
     for row in rows:
+        status = row.get("校验状态", "")
         cards.append(f"""
         <article class="m-card compact">
-          <div class="m-card-head"><h3>{html_escape(row.get("GPU 型号"))}</h3><span>{html_escape(row.get("校验状态"))}</span></div>
+          <div class="m-card-head"><h3>{html_escape(row.get("GPU 型号"))}</h3><span class="status {'ok' if status == 'PASS' else 'warn'}">{html_escape(status)}</span></div>
           <div class="pill-row">
             {pill("等效月租", f'{fmt(row.get("等效8卡月租（万元）"))} 万')}
             {pill("单卡小时", f'{fmt(row.get("单卡小时价（人民币）"))} 元')}
