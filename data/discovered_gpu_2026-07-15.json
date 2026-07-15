@@ -877,35 +877,9 @@
     }
   },
   "domestic_price_anchors": {
-    "L40S": {
-      "tianyi_hourly": 31.28,
-      "tianyi_monthly": 15012.0,
-      "monthly_wan": 12.01,
-      "monthly_source": "天翼云包月15012.0元/卡/月×8卡",
-      "note": "天翼云单卡包月15012.0元/月，按需31.28元/时；反推8卡整机约12.01万/月",
-      "_price_basis": "云价折算",
-      "runpod_hourly": 0.99
-    },
-    "昇腾 910B": {
-      "tianyi_hourly": 38.45,
-      "tianyi_monthly": 18454.0,
-      "monthly_wan": 14.76,
-      "monthly_source": "天翼云包月18454.0元/卡/月×8卡",
-      "note": "天翼云单卡包月18454.0元/月，按需38.45元/时；反推8卡整机约14.76万/月",
-      "_price_basis": "云价折算",
-      "huawei_hourly": 7.9
-    },
-    "寒武纪 MLU370-X8": {
-      "tianyi_hourly": 13.0,
-      "tianyi_monthly": 6241.02,
-      "monthly_wan": 4.99,
-      "monthly_source": "天翼云包月6241.02元/卡/月×8卡",
-      "note": "天翼云单卡包月6241.02元/月，按需13.0元/时；反推8卡整机约4.99万/月",
-      "_price_basis": "云价折算"
-    },
     "H100 80G": {
       "monthly_wan": 7.75,
-      "monthly_source": "SMM直播页 8卡整机",
+      "monthly_source": "SMM直播页 8卡整机裸金属",
       "note": "SMM直播：7.5-8.0万/月，中位7.75万",
       "_price_basis": "公开成交/主口径价",
       "tencent_hourly": 30.48,
@@ -915,7 +889,7 @@
     },
     "RTX 5090": {
       "monthly_wan": 1.2,
-      "monthly_source": "SMM直播页 8卡整机",
+      "monthly_source": "SMM直播页 8卡整机裸金属",
       "note": "SMM直播：1.2万/月",
       "_price_basis": "公开成交/主口径价",
       "runpod_hourly": 0.99,
@@ -923,50 +897,87 @@
     },
     "RTX 4090": {
       "monthly_wan": 0.78,
-      "monthly_source": "SMM直播页 8卡整机",
+      "monthly_source": "SMM直播页 8卡整机裸金属",
       "note": "SMM直播：6800.0-8800.0元/台/月，中位0.78万",
       "_price_basis": "公开成交/主口径价",
       "volcano_hourly": null
     },
+    "昇腾 910B": {
+      "monthly_wan": 1.5,
+      "monthly_source": "云擎天下 8卡整机裸金属月租",
+      "note": "云擎天下裸金属报价：1.5万/月",
+      "_price_basis": "公开成交/主口径价",
+      "cloud_monthly_wan": 14.76,
+      "cloud_source": "天翼云包月18454.0元/卡/月×8卡",
+      "cloud_note": "天翼云单卡包月18454.0元/月，按需38.45元/时；云价折算8卡整机约14.76万/月（含云平台溢价）",
+      "tianyi_hourly": 38.45,
+      "huawei_hourly": 7.9
+    },
     "H800": {
       "monthly_wan": 6.9,
-      "monthly_source": "云擎天下 8卡整机月租",
-      "note": "云擎天下报价：6.9万/月",
+      "monthly_source": "云擎天下 8卡整机裸金属月租",
+      "note": "云擎天下裸金属报价：6.9万/月",
       "_price_basis": "公开成交/主口径价"
     },
     "H200": {
       "monthly_wan": 9.4,
-      "monthly_source": "云擎天下 8卡整机月租",
-      "note": "云擎天下报价：9.4万/月",
+      "monthly_source": "云擎天下 8卡整机裸金属月租",
+      "note": "云擎天下裸金属报价：9.4万/月",
       "_price_basis": "公开成交/主口径价"
     },
     "A100 80G": {
       "monthly_wan": 2.5,
-      "monthly_source": "云擎天下 8卡整机月租",
-      "note": "云擎天下报价：2.5万/月",
+      "monthly_source": "云擎天下 8卡整机裸金属月租",
+      "note": "云擎天下裸金属报价：2.5万/月",
       "_price_basis": "公开成交/主口径价",
       "tianyi_hourly": 31.27,
       "aliyun_hourly": 9.8,
       "volcano_hourly": 50.4,
       "tencent_hourly": null
     },
+    "L40S": {
+      "monthly_wan": 1.2,
+      "monthly_source": "云擎天下 8卡整机裸金属月租",
+      "note": "云擎天下裸金属报价：1.2万/月",
+      "_price_basis": "公开成交/主口径价",
+      "cloud_monthly_wan": 12.01,
+      "cloud_source": "天翼云包月15012.0元/卡/月×8卡",
+      "cloud_note": "天翼云单卡包月15012.0元/月，按需31.28元/时；云价折算8卡整机约12.01万/月（含云平台溢价）",
+      "tianyi_hourly": 31.28,
+      "runpod_hourly": 0.99
+    },
     "L40": {
       "monthly_wan": 1.2,
-      "monthly_source": "云擎天下 8卡整机月租",
-      "note": "云擎天下报价：1.2万/月",
+      "monthly_source": "云擎天下 8卡整机裸金属月租",
+      "note": "云擎天下裸金属报价：1.2万/月",
       "_price_basis": "公开成交/主口径价"
     },
     "B200": {
       "monthly_wan": 13.0,
-      "monthly_source": "云擎天下 8卡整机月租",
-      "note": "云擎天下报价：13.0万/月",
+      "monthly_source": "云擎天下 8卡整机裸金属月租",
+      "note": "云擎天下裸金属报价：13.0万/月",
       "_price_basis": "公开成交/主口径价"
     },
     "B300": {
       "monthly_wan": 28.0,
-      "monthly_source": "云擎天下 8卡整机月租",
-      "note": "云擎天下报价：28.0万/月",
+      "monthly_source": "云擎天下 8卡整机裸金属月租",
+      "note": "云擎天下裸金属报价：28.0万/月",
       "_price_basis": "公开成交/主口径价"
+    },
+    "L20": {
+      "monthly_wan": 6.04,
+      "monthly_source": "天翼云包月7545.0元/卡/月×8卡",
+      "note": "天翼云单卡包月7545.0元/月，按需15.72元/时；云价折算8卡整机约6.04万/月（含云平台溢价）",
+      "_price_basis": "云价折算（含平台溢价，非裸金属价）",
+      "tianyi_hourly": 15.72,
+      "volcano_hourly": 17.5
+    },
+    "寒武纪 MLU370-X8": {
+      "monthly_wan": 4.99,
+      "monthly_source": "天翼云包月6241.02元/卡/月×8卡",
+      "note": "天翼云单卡包月6241.02元/月，按需13.0元/时；云价折算8卡整机约4.99万/月（含云平台溢价）",
+      "_price_basis": "云价折算（含平台溢价，非裸金属价）",
+      "tianyi_hourly": 13.0
     },
     "H20": {
       "tencent_hourly": 14.58,
@@ -977,11 +988,6 @@
       "tianyi_hourly": 21.3,
       "tencent_hourly": 28.64,
       "note": "天翼云21.30/时；腾讯云28.64/时"
-    },
-    "L20": {
-      "tianyi_hourly": 15.72,
-      "volcano_hourly": 17.5,
-      "note": "天翼云15.72/时；火山17.50/时"
     },
     "L4": {
       "volcano_hourly": 8.06,
@@ -1027,5 +1033,5 @@
   },
   "recommendation": "基线名单已更新至2026-07-15；H20停产保留审计；新增国产候选型号；价格锚点含多源真实数据（天翼云/SMM/云擎天下/生数云动态采集+静态锚点补充）。",
   "date": "2026-07-15",
-  "discovered_at": "2026-07-15T13:22:43.980168+08:00"
+  "discovered_at": "2026-07-15T13:44:04.801532+08:00"
 }

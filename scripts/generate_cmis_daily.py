@@ -1775,11 +1775,12 @@ def write_charts():
     def domestic_chart_kind(row: dict) -> str:
         if row["标准化价格"] is None:
             return "价格待补"
-        if row.get("价格口径") == "市场核价区间（估算）":
+        kind = row.get("价格口径", "")
+        if "市场核价" in kind:
             return "市场核价"
-        if row.get("价格口径") == "云价折算":
+        if "云价折算" in kind:
             return "云价折算"
-        if row.get("价格口径") == "低置信观察" or (row["GPU 型号"] in STRATEGIC_DOMESTIC_GPUS and not pass_status(row)):
+        if "低置信" in kind or (row["GPU 型号"] in STRATEGIC_DOMESTIC_GPUS and not pass_status(row)):
             return "低置信观察"
         return "公开成交/主口径价"
     data = {

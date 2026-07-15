@@ -1134,74 +1134,91 @@ def scrape_shengsuanyun_gpu_prices() -> dict[str, float]:
 def build_dynamic_domestic_anchors() -> dict[str, dict[str, Any]]:
     """汇总所有动态采集源的国内 GPU 价格，合并到锚点字典。
 
-    采集顺序：
-    1. 天翼云 -> 单卡时租（云价折算口径）
-    2. SMM直播页 -> 8卡整机月租（公开成交口径）
-    3. 云擎天下 -> 8卡整机月租（公开成交口径）
-    4. 生数云 -> 单卡时租（云价折算口径）
+    价格口径说明：
+    - 主图表口径：裸金属8卡整机月租（SMM/云擎天下/静态锚点）
+    - 云价折算：仅作为参考口径，不替代裸金属价格
+
+    优先级（裸金属 > 云价）：
+    1. SMM直播页 -> 裸金属8卡整机月租（最高置信，公开成交）
+    2. 云擎天下 -> 裸金属8卡整机月租（次高置信，公开报价）
+    3. 天翼云 -> 单卡包月价×8（云价折算，仅在没有裸金属数据时使用）
+    4. 生数云 -> 单卡时租反推（云价折算，仅在没有裸金属数据时使用）
     5. 合并到 DOMESTIC_GPU_PRICE_ANCHORS 静态锚点
     """
     anchors: dict[str, dict[str, Any]] = {}
+    cloud_only: dict[str, dict[str, Any]] = {}  # 云价折算单独存放
+
+    # --- 第一轮：收集所有数据源 ---
 
     # 1. 天翼云单卡包月价 -> 云价折算（8卡整机 = 单卡包月 × 8）
     tianyi = scrape_tianyi_gpu_prices()
     for gpu, (hourly, monthly) in tianyi.items():
         eight_card_monthly = round(monthly * 8 / 10000, 2)
-        anchors[gpu] = {
+        cloud_only[gpu] = {
             "tianyi_hourly": hourly,
             "tianyi_monthly": monthly,
-            "monthly_wan": eight_card_monthly,
-            "monthly_source": f"天翼云包月{monthly}元/卡/月×8卡",
-            "note": f"天翼云单卡包月{monthly}元/月，按需{hourly}元/时；反推8卡整机约{eight_card_monthly}万/月",
-            "_price_basis": "云价折算",
+            "cloud_monthly_wan": eight_card_monthly,
+            "cloud_source": f"天翼云包月{monthly}元/卡/月×8卡",
+            "cloud_note": f"天翼云单卡包月{monthly}元/月，按需{hourly}元/时；云价折算8卡整机约{eight_card_monthly}万/月（含云平台溢价）",
         }
 
-    # 2. SMM 8卡整机月租 -> 公开成交
+    # 2. SMM 8卡整机月租 -> 裸金属（公开成交）
     smm = scrape_smm_gpu_prices()
     for gpu, info in smm.items():
-        if gpu in anchors:
-            anchors[gpu]["monthly_wan"] = info["monthly_wan"]
-            anchors[gpu]["monthly_source"] = "SMM直播页 8卡整机"
-            anchors[gpu]["note"] = info["note"]
-            anchors[gpu]["_price_basis"] = "公开成交/主口径价"
-        else:
-            anchors[gpu] = {
-                "monthly_wan": info["monthly_wan"],
-                "monthly_source": "SMM直播页 8卡整机",
-                "note": info["note"],
-                "_price_basis": "公开成交/主口径价",
-            }
+        anchors[gpu] = {
+            "monthly_wan": info["monthly_wan"],
+            "monthly_source": "SMM直播页 8卡整机裸金属",
+            "note": info["note"],
+            "_price_basis": "公开成交/主口径价",
+        }
 
-    # 3. 云擎天下 8卡整机月租 -> 公开成交
+    # 3. 云擎天下 8卡整机月租 -> 裸金属（公开报价）
     omniyq = scrape_omniyq_gpu_prices()
     for gpu, monthly_wan in omniyq.items():
         if gpu not in anchors:
             anchors[gpu] = {
                 "monthly_wan": monthly_wan,
-                "monthly_source": "云擎天下 8卡整机月租",
-                "note": f"云擎天下报价：{monthly_wan}万/月",
+                "monthly_source": "云擎天下 8卡整机裸金属月租",
+                "note": f"云擎天下裸金属报价：{monthly_wan}万/月",
                 "_price_basis": "公开成交/主口径价",
             }
 
-    # 4. 生数云单卡时租 -> 云价折算
+    # 4. 生数云单卡时租 -> 云价折算（补充到 cloud_only）
     ssy = scrape_shengsuanyun_gpu_prices()
     for gpu, hourly in ssy.items():
         monthly_wan = round(hourly * 8 * 24 * 30 / 10000, 2)
-        if gpu not in anchors:
-            anchors[gpu] = {
-                "monthly_wan": monthly_wan,
-                "monthly_source": f"生数云{hourly}元/时反推8卡整机",
-                "note": f"生数云单卡{hourly}元/时；反推8卡整机约{monthly_wan}万/月",
-                "_price_basis": "云价折算",
+        if gpu not in cloud_only:
+            cloud_only[gpu] = {
+                "cloud_monthly_wan": monthly_wan,
+                "cloud_source": f"生数云{hourly}元/时反推8卡整机",
+                "cloud_note": f"生数云单卡{hourly}元/时；云价折算8卡整机约{monthly_wan}万/月（含云平台溢价）",
             }
 
-    # 5. 合并静态锚点（动态数据优先，静态补充缺失型号）
+    # --- 第二轮：合并 ---
+
+    # 对已有裸金属价格的型号，附上云价参考
+    for gpu, cloud_info in cloud_only.items():
+        if gpu in anchors:
+            # 已有裸金属价，云价仅作参考
+            anchors[gpu]["cloud_monthly_wan"] = cloud_info.get("cloud_monthly_wan")
+            anchors[gpu]["cloud_source"] = cloud_info.get("cloud_source", "")
+            anchors[gpu]["cloud_note"] = cloud_info.get("cloud_note", "")
+        else:
+            # 无裸金属价，云价折算作为兜底（price_basis 标记为"云价折算"而非主口径）
+            anchors[gpu] = {
+                "monthly_wan": cloud_info.get("cloud_monthly_wan"),
+                "monthly_source": cloud_info.get("cloud_source", ""),
+                "note": cloud_info.get("cloud_note", ""),
+                "_price_basis": "云价折算（含平台溢价，非裸金属价）",
+            }
+
+    # 5. 合并静态锚点（裸金属数据优先，静态补充缺失型号）
     for gpu, info in DOMESTIC_GPU_PRICE_ANCHORS.items():
         if gpu not in anchors:
             # 深拷贝静态锚点
             anchors[gpu] = dict(info)
         else:
-            # 用静态锚点补充动态数据缺失的字段
+            # 用静态锚点补充动态数据缺失的字段（但不覆盖已有价格）
             for k, v in info.items():
                 if k not in anchors[gpu]:
                     anchors[gpu][k] = v

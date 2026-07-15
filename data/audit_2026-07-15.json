@@ -1,7 +1,7 @@
 [
   {
     "date": "2026-07-15",
-    "freeze_time": "2026-07-15T13:26:00+08:00",
+    "freeze_time": "2026-07-15T13:47:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "GB300",
     "source": "未采集到合格来源",
@@ -20,7 +20,7 @@
   },
   {
     "date": "2026-07-15",
-    "freeze_time": "2026-07-15T13:26:00+08:00",
+    "freeze_time": "2026-07-15T13:47:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "GB200",
     "source": "未采集到合格来源",
@@ -39,11 +39,11 @@
   },
   {
     "date": "2026-07-15",
-    "freeze_time": "2026-07-15T13:26:00+08:00",
+    "freeze_time": "2026-07-15T13:47:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "B300",
-    "source": "云擎天下 8卡整机月租",
-    "original_price": "云擎天下报价：28.0万/月",
+    "source": "云擎天下 8卡整机裸金属月租",
+    "original_price": "云擎天下裸金属报价：28.0万/月",
     "category": "GPU_RENT_CN",
     "normalized_price": 28.0,
     "normalized_unit": "万元/8卡整机/月",
@@ -54,15 +54,15 @@
     "validate_status": "PASS",
     "included_in_index": true,
     "reject_reason": "",
-    "notes": "云擎天下报价：28.0万/月"
+    "notes": "云擎天下裸金属报价：28.0万/月"
   },
   {
     "date": "2026-07-15",
-    "freeze_time": "2026-07-15T13:26:00+08:00",
+    "freeze_time": "2026-07-15T13:47:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "B200",
-    "source": "云擎天下 8卡整机月租",
-    "original_price": "云擎天下报价：13.0万/月",
+    "source": "云擎天下 8卡整机裸金属月租",
+    "original_price": "云擎天下裸金属报价：13.0万/月",
     "category": "GPU_RENT_CN",
     "normalized_price": 13.0,
     "normalized_unit": "万元/8卡整机/月",
@@ -73,15 +73,15 @@
     "validate_status": "PASS",
     "included_in_index": true,
     "reject_reason": "",
-    "notes": "云擎天下报价：13.0万/月"
+    "notes": "云擎天下裸金属报价：13.0万/月"
   },
   {
     "date": "2026-07-15",
-    "freeze_time": "2026-07-15T13:26:00+08:00",
+    "freeze_time": "2026-07-15T13:47:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "H200",
-    "source": "云擎天下 8卡整机月租",
-    "original_price": "云擎天下报价：9.4万/月",
+    "source": "云擎天下 8卡整机裸金属月租",
+    "original_price": "云擎天下裸金属报价：9.4万/月",
     "category": "GPU_RENT_CN",
     "normalized_price": 9.4,
     "normalized_unit": "万元/8卡整机/月",
@@ -92,14 +92,14 @@
     "validate_status": "PASS",
     "included_in_index": true,
     "reject_reason": "",
-    "notes": "云擎天下报价：9.4万/月"
+    "notes": "云擎天下裸金属报价：9.4万/月"
   },
   {
     "date": "2026-07-15",
-    "freeze_time": "2026-07-15T13:26:00+08:00",
+    "freeze_time": "2026-07-15T13:47:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "H100 80G",
-    "source": "SMM直播页 8卡整机",
+    "source": "SMM直播页 8卡整机裸金属",
     "original_price": "SMM直播：7.5-8.0万/月，中位7.75万",
     "category": "GPU_RENT_CN",
     "normalized_price": 7.75,
@@ -115,11 +115,11 @@
   },
   {
     "date": "2026-07-15",
-    "freeze_time": "2026-07-15T13:26:00+08:00",
+    "freeze_time": "2026-07-15T13:47:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "H800",
-    "source": "云擎天下 8卡整机月租",
-    "original_price": "云擎天下报价：6.9万/月",
+    "source": "云擎天下 8卡整机裸金属月租",
+    "original_price": "云擎天下裸金属报价：6.9万/月",
     "category": "GPU_RENT_CN",
     "normalized_price": 6.9,
     "normalized_unit": "万元/8卡整机/月",
@@ -130,15 +130,15 @@
     "validate_status": "PASS",
     "included_in_index": true,
     "reject_reason": "",
-    "notes": "云擎天下报价：6.9万/月"
+    "notes": "云擎天下裸金属报价：6.9万/月"
   },
   {
     "date": "2026-07-15",
-    "freeze_time": "2026-07-15T13:26:00+08:00",
+    "freeze_time": "2026-07-15T13:47:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "A100 80G",
-    "source": "云擎天下 8卡整机月租",
-    "original_price": "云擎天下报价：2.5万/月",
+    "source": "云擎天下 8卡整机裸金属月租",
+    "original_price": "云擎天下裸金属报价：2.5万/月",
     "category": "GPU_RENT_CN",
     "normalized_price": 2.5,
     "normalized_unit": "万元/8卡整机/月",
@@ -149,11 +149,11 @@
     "validate_status": "PASS",
     "included_in_index": true,
     "reject_reason": "",
-    "notes": "云擎天下报价：2.5万/月"
+    "notes": "云擎天下裸金属报价：2.5万/月"
   },
   {
     "date": "2026-07-15",
-    "freeze_time": "2026-07-15T13:26:00+08:00",
+    "freeze_time": "2026-07-15T13:47:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "A800",
     "source": "未采集到合格来源",
@@ -172,13 +172,13 @@
   },
   {
     "date": "2026-07-15",
-    "freeze_time": "2026-07-15T13:26:00+08:00",
+    "freeze_time": "2026-07-15T13:47:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "L40S",
-    "source": "天翼云包月15012.0元/卡/月×8卡",
-    "original_price": "天翼云单卡包月15012.0元/月，按需31.28元/时；反推8卡整机约12.01万/月",
+    "source": "云擎天下 8卡整机裸金属月租",
+    "original_price": "云擎天下裸金属报价：1.2万/月",
     "category": "GPU_RENT_CN",
-    "normalized_price": 12.01,
+    "normalized_price": 1.2,
     "normalized_unit": "万元/8卡整机/月",
     "formula": "国内主口径直接采用万元/8卡整机/月；等效单卡小时价=月租×10000÷8÷24÷30",
     "confidence": 75,
@@ -187,17 +187,17 @@
     "validate_status": "PASS",
     "included_in_index": true,
     "reject_reason": "",
-    "notes": "天翼云单卡包月15012.0元/月，按需31.28元/时；反推8卡整机约12.01万/月"
+    "notes": "云擎天下裸金属报价：1.2万/月"
   },
   {
     "date": "2026-07-15",
-    "freeze_time": "2026-07-15T13:26:00+08:00",
+    "freeze_time": "2026-07-15T13:47:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "L20",
-    "source": "天翼云15.72/时；火山17.50/时 小时价反推",
-    "original_price": "天翼云15.72/时；火山17.50/时",
+    "source": "天翼云包月7545.0元/卡/月×8卡",
+    "original_price": "天翼云单卡包月7545.0元/月，按需15.72元/时；云价折算8卡整机约6.04万/月（含云平台溢价）",
     "category": "GPU_RENT_CN",
-    "normalized_price": 10.08,
+    "normalized_price": 6.04,
     "normalized_unit": "万元/8卡整机/月",
     "formula": "国内主口径直接采用万元/8卡整机/月；等效单卡小时价=月租×10000÷8÷24÷30",
     "confidence": 75,
@@ -206,11 +206,11 @@
     "validate_status": "PASS",
     "included_in_index": true,
     "reject_reason": "",
-    "notes": "天翼云15.72/时；火山17.50/时"
+    "notes": "天翼云单卡包月7545.0元/月，按需15.72元/时；云价折算8卡整机约6.04万/月（含云平台溢价）"
   },
   {
     "date": "2026-07-15",
-    "freeze_time": "2026-07-15T13:26:00+08:00",
+    "freeze_time": "2026-07-15T13:47:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "L4",
     "source": "火山8.06/时；RunPod $0.39/时 小时价反推",
@@ -229,10 +229,10 @@
   },
   {
     "date": "2026-07-15",
-    "freeze_time": "2026-07-15T13:26:00+08:00",
+    "freeze_time": "2026-07-15T13:47:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "RTX 5090",
-    "source": "SMM直播页 8卡整机",
+    "source": "SMM直播页 8卡整机裸金属",
     "original_price": "SMM直播：1.2万/月",
     "category": "GPU_RENT_CN",
     "normalized_price": 1.2,
@@ -248,10 +248,10 @@
   },
   {
     "date": "2026-07-15",
-    "freeze_time": "2026-07-15T13:26:00+08:00",
+    "freeze_time": "2026-07-15T13:47:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "RTX 4090",
-    "source": "SMM直播页 8卡整机",
+    "source": "SMM直播页 8卡整机裸金属",
     "original_price": "SMM直播：6800.0-8800.0元/台/月，中位0.78万",
     "category": "GPU_RENT_CN",
     "normalized_price": 0.78,
@@ -267,7 +267,7 @@
   },
   {
     "date": "2026-07-15",
-    "freeze_time": "2026-07-15T13:26:00+08:00",
+    "freeze_time": "2026-07-15T13:47:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "昇腾 910C",
     "source": "SMM样本 8卡整机",
@@ -286,13 +286,13 @@
   },
   {
     "date": "2026-07-15",
-    "freeze_time": "2026-07-15T13:26:00+08:00",
+    "freeze_time": "2026-07-15T13:47:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "昇腾 910B",
-    "source": "天翼云包月18454.0元/卡/月×8卡",
-    "original_price": "天翼云单卡包月18454.0元/月，按需38.45元/时；反推8卡整机约14.76万/月",
+    "source": "云擎天下 8卡整机裸金属月租",
+    "original_price": "云擎天下裸金属报价：1.5万/月",
     "category": "GPU_RENT_CN",
-    "normalized_price": 14.76,
+    "normalized_price": 1.5,
     "normalized_unit": "万元/8卡整机/月",
     "formula": "国内主口径直接采用万元/8卡整机/月；等效单卡小时价=月租×10000÷8÷24÷30",
     "confidence": 75,
@@ -301,11 +301,11 @@
     "validate_status": "PASS",
     "included_in_index": true,
     "reject_reason": "",
-    "notes": "天翼云单卡包月18454.0元/月，按需38.45元/时；反推8卡整机约14.76万/月"
+    "notes": "云擎天下裸金属报价：1.5万/月"
   },
   {
     "date": "2026-07-15",
-    "freeze_time": "2026-07-15T13:26:00+08:00",
+    "freeze_time": "2026-07-15T13:47:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "昇腾 950PR",
     "source": "未采集到合格来源",
@@ -324,11 +324,11 @@
   },
   {
     "date": "2026-07-15",
-    "freeze_time": "2026-07-15T13:26:00+08:00",
+    "freeze_time": "2026-07-15T13:47:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "寒武纪 MLU370-X8",
     "source": "天翼云包月6241.02元/卡/月×8卡",
-    "original_price": "天翼云单卡包月6241.02元/月，按需13.0元/时；反推8卡整机约4.99万/月",
+    "original_price": "天翼云单卡包月6241.02元/月，按需13.0元/时；云价折算8卡整机约4.99万/月（含云平台溢价）",
     "category": "GPU_RENT_CN",
     "normalized_price": 4.99,
     "normalized_unit": "万元/8卡整机/月",
@@ -339,11 +339,11 @@
     "validate_status": "PASS",
     "included_in_index": true,
     "reject_reason": "",
-    "notes": "天翼云单卡包月6241.02元/月，按需13.0元/时；反推8卡整机约4.99万/月"
+    "notes": "天翼云单卡包月6241.02元/月，按需13.0元/时；云价折算8卡整机约4.99万/月（含云平台溢价）"
   },
   {
     "date": "2026-07-15",
-    "freeze_time": "2026-07-15T13:26:00+08:00",
+    "freeze_time": "2026-07-15T13:47:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "寒武纪 MLU590",
     "source": "未采集到合格来源",
@@ -362,7 +362,7 @@
   },
   {
     "date": "2026-07-15",
-    "freeze_time": "2026-07-15T13:26:00+08:00",
+    "freeze_time": "2026-07-15T13:47:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "海光 DCU K100",
     "source": "市场核价估算 8卡整机",
@@ -381,7 +381,7 @@
   },
   {
     "date": "2026-07-15",
-    "freeze_time": "2026-07-15T13:26:00+08:00",
+    "freeze_time": "2026-07-15T13:47:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "海光 DCU Z100",
     "source": "未采集到合格来源",
@@ -400,7 +400,7 @@
   },
   {
     "date": "2026-07-15",
-    "freeze_time": "2026-07-15T13:26:00+08:00",
+    "freeze_time": "2026-07-15T13:47:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "壁仞 BR100",
     "source": "市场核价估算 8卡整机",
@@ -419,7 +419,7 @@
   },
   {
     "date": "2026-07-15",
-    "freeze_time": "2026-07-15T13:26:00+08:00",
+    "freeze_time": "2026-07-15T13:47:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "摩尔线程 MTT S4000",
     "source": "市场核价估算 8卡整机",
@@ -438,7 +438,7 @@
   },
   {
     "date": "2026-07-15",
-    "freeze_time": "2026-07-15T13:26:00+08:00",
+    "freeze_time": "2026-07-15T13:47:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "摩尔线程 MTT S5000",
     "source": "未采集到合格来源",
