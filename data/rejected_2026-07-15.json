@@ -1,7 +1,7 @@
 [
   {
     "date": "2026-07-15",
-    "freeze_time": "2026-07-15T17:29:00+08:00",
+    "freeze_time": "2026-07-15T17:46:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "GB300",
     "source": "未采集到合格来源",
@@ -20,7 +20,7 @@
   },
   {
     "date": "2026-07-15",
-    "freeze_time": "2026-07-15T17:29:00+08:00",
+    "freeze_time": "2026-07-15T17:46:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "GB200",
     "source": "未采集到合格来源",
@@ -39,7 +39,7 @@
   },
   {
     "date": "2026-07-15",
-    "freeze_time": "2026-07-15T17:29:00+08:00",
+    "freeze_time": "2026-07-15T17:46:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "A800",
     "source": "未采集到合格来源",
@@ -58,7 +58,7 @@
   },
   {
     "date": "2026-07-15",
-    "freeze_time": "2026-07-15T17:29:00+08:00",
+    "freeze_time": "2026-07-15T17:46:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "昇腾 950PR",
     "source": "未采集到合格来源",
@@ -77,7 +77,7 @@
   },
   {
     "date": "2026-07-15",
-    "freeze_time": "2026-07-15T17:29:00+08:00",
+    "freeze_time": "2026-07-15T17:46:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "寒武纪 MLU590",
     "source": "未采集到合格来源",
@@ -96,7 +96,7 @@
   },
   {
     "date": "2026-07-15",
-    "freeze_time": "2026-07-15T17:29:00+08:00",
+    "freeze_time": "2026-07-15T17:46:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "海光 DCU Z100",
     "source": "未采集到合格来源",
@@ -115,7 +115,7 @@
   },
   {
     "date": "2026-07-15",
-    "freeze_time": "2026-07-15T17:29:00+08:00",
+    "freeze_time": "2026-07-15T17:46:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "摩尔线程 MTT S5000",
     "source": "未采集到合格来源",
