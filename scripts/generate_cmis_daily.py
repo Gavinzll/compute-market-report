@@ -532,12 +532,29 @@ SOURCES = [
     },
 ]
 
-GPU_GROUPS = [
+def _load_discovered_gpu() -> list[tuple[str, list[str]]] | None:
+    """尝试加载动态发现的 GPU 列表；失败或不存在时返回 None，回退到硬编码。"""
+    path = ROOT / "data" / f"discovered_gpu_{DATE}.json"
+    try:
+        if not path.exists():
+            return None
+        data = json.loads(path.read_text(encoding="utf-8"))
+        baseline = data.get("baseline_groups")
+        if baseline and isinstance(baseline, list):
+            return [(group[0], group[1]) for group in baseline]
+    except Exception as e:
+        print(f"[warn] failed to load discovered GPU: {e}")
+    return None
+
+
+_GPU_GROUPS_FALLBACK = [
     ("Training", ["GB300", "GB200", "B300", "B200", "H200", "H100 80G", "H800", "H20", "A100 80G", "A800"]),
     ("Inference", ["L40S", "L20", "L4"]),
     ("Consumer", ["RTX 5090", "RTX 4090"]),
     ("国产", ["昇腾 910C", "昇腾 910B", "寒武纪 MLU370-X8", "海光 DCU K100", "壁仞 BR100", "摩尔线程 MTT S4000"]),
 ]
+
+GPU_GROUPS = _load_discovered_gpu() or _GPU_GROUPS_FALLBACK
 GPU_ORDER = [gpu for _, items in GPU_GROUPS for gpu in items]
 GPU_CLASS = {gpu: group for group, items in GPU_GROUPS for gpu in items}
 STRATEGIC_DOMESTIC_GPUS = {"昇腾 910B", "寒武纪 MLU370-X8", "海光 DCU K100", "壁仞 BR100", "摩尔线程 MTT S4000"}
@@ -709,7 +726,44 @@ def token_row(
     }
 
 
-TOKEN_DATA = [
+def _load_discovered_token() -> list[dict] | None:
+    """尝试加载动态发现的 Token 模型列表；失败时返回 None，回退到硬编码锚点。"""
+    path = ROOT / "data" / f"discovered_token_{DATE}.json"
+    try:
+        if not path.exists():
+            return None
+        data = json.loads(path.read_text(encoding="utf-8"))
+        rows = data.get("rows", [])
+        if not rows:
+            return None
+        result = []
+        for r in rows:
+            result.append(token_row(
+                vendor=r["vendor"],
+                model=r["model"],
+                region=r["region"],
+                context=r["context"],
+                official_in=r.get("official_in"),
+                official_out=r.get("official_out"),
+                official_currency=r.get("official_currency", "USD"),
+                official_source=r.get("official_source", ""),
+                overseas_in_usd=r.get("overseas_in_usd"),
+                overseas_out_usd=r.get("overseas_out_usd"),
+                overseas_source=r.get("overseas_source", ""),
+                domestic_in_cny=r.get("domestic_in_cny"),
+                domestic_out_cny=r.get("domestic_out_cny"),
+                domestic_source=r.get("domestic_source", ""),
+                note=r.get("note", ""),
+                status=r.get("status", "PASS"),
+                confidence=r.get("confidence", 90),
+            ))
+        return result
+    except Exception as e:
+        print(f"[warn] failed to load discovered token: {e}")
+    return None
+
+
+_TOKEN_DATA_FALLBACK = [
     # —— 海外厂商 ——
     token_row("OpenAI", "GPT-5.5", "海外", "1M（标准 272K）", 5.0, 30.0, "USD", "OpenAI API 官方定价页", 5.0, 30.0, "OpenRouter / models.dev", None, None, "境内三方近似参考", "OpenAI 当前旗舰模型，编码和专业工作优化；境内三方按同类型闭源模型近似参考补齐。", 95),
     token_row("OpenAI", "GPT-5.4", "海外", "1M（标准 272K）", 2.5, 15.0, "USD", "OpenAI API 官方定价页", 2.5, 15.0, "OpenRouter / models.dev", None, None, "境内三方近似参考", "更实惠的编码/专业工作模型；境内三方用近似参考补齐。", 95),
@@ -738,12 +792,12 @@ TOKEN_DATA = [
     token_row("火山方舟/豆包", "Doubao-Seed-1.6", "国产", "256K", 0.8, 2.0, "CNY", "火山方舟官方定价", None, None, "海外三方同系列参考", None, None, "境内三方同系列参考", "豆包当前主力模型，0-32K 短输出在线推理官方价；三方列按同系列参考补齐。", 95),
     token_row("火山方舟/豆包", "Doubao-Seed-1.6-Flash", "国产", "256K", 0.15, 1.5, "CNY", "火山方舟官方定价", None, None, "海外三方同系列参考", 1.5, 4.0, "硅基流动 Seed-OSS-36B（同系列参考）", "火山 Flash 版官方价；硅基流动 Seed-OSS-36B 1.5/4 作为同系列参考。", "PASS", 90),
     token_row("火山方舟/豆包", "Doubao-Seed-1.6-Thinking", "国产", "256K", 0.8, 8.0, "CNY", "火山方舟官方定价", None, None, "海外三方同系列参考", None, None, "境内三方同系列参考", "豆包思考版模型，0-32K 档思考模式；三方列按同系列参考补齐。", 90),
+    token_row("腾讯混元", "Hunyuan-Hy3", "国产", "256K", 1.0, 4.0, "CNY", "腾讯云混元官方定价（Hy3 2026.7.6 发布）", None, None, "海外三方同系列参考", None, None, "境内三方近似参考", "腾讯混元最新旗舰 Hy3，MoE 架构，295B 总参数，256K 上下文，开源 Apache 2.0；三方列按同系列参考补齐。", 95),
     token_row("腾讯混元", "Hunyuan-role-latest", "国产", "官方未明确", 2.4, 9.6, "CNY", "腾讯云混元官方定价", None, None, "海外三方同系列参考", None, None, "境内三方近似参考", "腾讯混元角色模型官方价；三方平台按混元同系列参考价补齐。", 92),
     token_row("腾讯混元", "Hunyuan-A13B", "国产", "128K", 0.5, 2.0, "CNY", "腾讯云混元官方定价", 0.14, 0.57, "OpenRouter Models API", 1.0, 4.0, "硅基流动同系列参考", "腾讯混元轻量主力；硅基流动 Hunyuan-A13B 1/4 作为同系列参考。", 92),
     token_row("智谱 GLM / Z.ai", "GLM-5.2", "国产", "1M", 8.0, 28.0, "CNY", "智谱开放平台官方定价", 0.93, 3.0, "OpenRouter Models API", 8.0, 28.0, "硅基流动精确同名", "智谱当前旗舰，官方价输入 8、输出 28；硅基流动精确匹配 8/28。", 98),
     token_row("智谱 GLM / Z.ai", "GLM-5.1 Pro", "国产", "200K", 6.0, 24.0, "CNY", "智谱开放平台官方定价", 1.4, 4.4, "Together.ai / Fireworks.ai", 6.0, 24.0, "硅基流动同系列参考", "智谱上一代旗舰，32K 内 6/24；三方列按同系列参考补齐。", 95),
-    token_row("百度文心", "ERNIE 5.0（0-32K）", "国产", "32K", 6.0, 24.0, "CNY", "百度千帆官方定价", None, None, "海外三方同系列参考", None, None, "硅基流动同系列参考", "百度千帆 ERNIE 5.0 旗舰低上下文分档官方价；三方列按同系列参考补齐。", 92),
-    token_row("百度文心", "ERNIE 5.0（32K-128K）", "国产", "32K-128K", 10.0, 40.0, "CNY", "百度千帆官方定价", None, None, "海外三方同系列参考", None, None, "硅基流动同系列参考", "百度千帆 ERNIE 5.0 长上下文分档官方价；三方列按同系列参考补齐。", 92),
+    token_row("百度文心", "ERNIE 5.1", "国产", "128K", 4.0, 18.0, "CNY", "百度千帆官方定价", None, None, "海外三方同系列参考", None, None, "硅基流动同系列参考", "百度千帆 ERNIE 5.1 最新旗舰，智能体、知识、推理、深度搜索全面升级；三方列按同系列参考补齐。", 92),
     token_row("百度文心", "ERNIE-4.5-Turbo", "国产", "32K", 0.8, 3.2, "CNY", "百度千帆官方定价", 0.42, 1.25, "OpenRouter 近似模型", None, None, "硅基流动同系列参考", "ERNIE 4.5 Turbo 主力量产版本；三方列按同系列参考补齐。", 90),
     token_row("Kimi / Moonshot", "Kimi K2.7 Code", "国产", "256K", 6.5, 27.0, "CNY", "Kimi 开放平台官方定价", 0.719, 3.49, "OpenRouter / Together.ai", 6.5, 27.0, "硅基流动精确同名", "Kimi 最强编程模型；硅基流动精确匹配 6.5/27。", 95),
     token_row("Kimi / Moonshot", "Kimi K2.6", "国产", "256K", 6.5, 27.0, "CNY", "Kimi 开放平台官方定价", 0.66, 3.41, "OpenRouter / Together.ai", 6.5, 27.0, "硅基流动精确同名", "Kimi 最新最智能多模态模型；硅基流动精确匹配 6.5/27。", 95),
@@ -762,6 +816,8 @@ TOKEN_DATA = [
     token_row("昆仑万维天工", "SkyClaw-v1.0", "国产", "1M", 0.5, 4.0, "CNY", "昆仑万维天工官方发布", None, None, "海外三方同系列参考", None, None, "境内三方近似参考", "天工旗舰 Agent 模型，主打工具调用和多轮任务执行，1M 上下文；三方采用近似参考补齐。", 80),
     token_row("昆仑万维天工", "SkyClaw-v1.0-lite", "国产", "官方未明确", 0.3, 1.5, "CNY", "昆仑万维天工官方发布", None, None, "海外三方同系列参考", None, None, "境内三方近似参考", "天工轻量版 Agent 模型；三方采用近似参考补齐。", 78),
 ]
+
+TOKEN_DATA = _load_discovered_token() or _TOKEN_DATA_FALLBACK
 
 TOKEN_COLUMNS = [
     "厂商",
