@@ -879,33 +879,28 @@
   "domestic_price_anchors": {
     "L40S": {
       "tianyi_hourly": 31.28,
-      "monthly_wan": 18.02,
-      "monthly_source": "天翼云31.28元/时反推8卡整机",
-      "note": "天翼云单卡31.28元/时；反推8卡整机约18.02万/月",
+      "tianyi_monthly": 15012.0,
+      "monthly_wan": 12.01,
+      "monthly_source": "天翼云包月15012.0元/卡/月×8卡",
+      "note": "天翼云单卡包月15012.0元/月，按需31.28元/时；反推8卡整机约12.01万/月",
       "_price_basis": "云价折算",
       "runpod_hourly": 0.99
     },
-    "L20": {
-      "tianyi_hourly": 15.72,
-      "monthly_wan": 9.05,
-      "monthly_source": "天翼云15.72元/时反推8卡整机",
-      "note": "天翼云单卡15.72元/时；反推8卡整机约9.05万/月",
-      "_price_basis": "云价折算",
-      "volcano_hourly": 17.5
-    },
     "昇腾 910B": {
       "tianyi_hourly": 38.45,
-      "monthly_wan": 22.15,
-      "monthly_source": "天翼云38.45元/时反推8卡整机",
-      "note": "天翼云单卡38.45元/时；反推8卡整机约22.15万/月",
+      "tianyi_monthly": 18454.0,
+      "monthly_wan": 14.76,
+      "monthly_source": "天翼云包月18454.0元/卡/月×8卡",
+      "note": "天翼云单卡包月18454.0元/月，按需38.45元/时；反推8卡整机约14.76万/月",
       "_price_basis": "云价折算",
       "huawei_hourly": 7.9
     },
     "寒武纪 MLU370-X8": {
       "tianyi_hourly": 13.0,
-      "monthly_wan": 7.49,
-      "monthly_source": "天翼云13.0元/时反推8卡整机",
-      "note": "天翼云单卡13.0元/时；反推8卡整机约7.49万/月",
+      "tianyi_monthly": 6241.02,
+      "monthly_wan": 4.99,
+      "monthly_source": "天翼云包月6241.02元/卡/月×8卡",
+      "note": "天翼云单卡包月6241.02元/月，按需13.0元/时；反推8卡整机约4.99万/月",
       "_price_basis": "云价折算"
     },
     "H100 80G": {
@@ -983,6 +978,11 @@
       "tencent_hourly": 28.64,
       "note": "天翼云21.30/时；腾讯云28.64/时"
     },
+    "L20": {
+      "tianyi_hourly": 15.72,
+      "volcano_hourly": 17.5,
+      "note": "天翼云15.72/时；火山17.50/时"
+    },
     "L4": {
       "volcano_hourly": 8.06,
       "runpod_hourly": 0.39,
@@ -1027,5 +1027,5 @@
   },
   "recommendation": "基线名单已更新至2026-07-15；H20停产保留审计；新增国产候选型号；价格锚点含多源真实数据（天翼云/SMM/云擎天下/生数云动态采集+静态锚点补充）。",
   "date": "2026-07-15",
-  "discovered_at": "2026-07-15T13:07:23.888087+08:00"
+  "discovered_at": "2026-07-15T13:22:43.980168+08:00"
 }

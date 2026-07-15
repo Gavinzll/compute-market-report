@@ -935,43 +935,57 @@ def discover_gpu_prices_from_cloudgpus() -> dict[str, float]:
     return prices
 
 
-def scrape_tianyi_gpu_prices() -> dict[str, float]:
-    """从天翼云文档页抓取 GPU 单卡按量小时价。
+def scrape_tianyi_gpu_prices() -> dict[str, tuple[float, float]]:
+    """从天翼云文档页抓取 GPU 单卡按需时租价 + 包月价。
 
     页面为静态 HTML 表格，URL: https://www.ctyun.cn/document/10029787/10047957
-    返回 {GPU型号: 单卡元/小时}
+    返回 {GPU型号: (单卡按需元/小时, 单卡包月元/月)}
     """
     html = fetch_text("https://www.ctyun.cn/document/10029787/10047957")
     if not html:
         print("[discover] tianyi: fetch failed", file=sys.stderr)
         return {}
-    prices: dict[str, float] = {}
-    # 天翼云表格格式：<td>...L40S...</td><td>...</td>...<td>31.28</td>
-    # 每个型号区域有一个标题 + 表格，表格中第一行1卡实例的"按需（元/小时）"即为单卡价
-    # 策略：找到型号关键词，往后搜索第一个 <td>数字.数字</td> 模式
+    prices: dict[str, tuple[float, float]] = {}
+    # 天翼云表格列序：规格名称, vCPU, 内存, 显存, 显卡数, 显卡类型, 按需价格（元/小时）, 价格（元/月）
+    # 策略：找到型号关键词，提取其所在行（1卡实例）的按需价和包月价
     search_map = {
         "L40S": ["L40S", "L40 S"],
-        "L20": ["L20计算", "L20 "],
+        "L20": ["L20"],
         "昇腾 910B": ["910B", "Ascend 910B"],
         "寒武纪 MLU370-X8": ["MLU370", "Cambricon MLU370"],
         "海光 DCU K100": ["DCU", "K100", "海光"],
     }
     for gpu_name, keywords in search_map.items():
         for kw in keywords:
-            idx = html.find(kw)
-            if idx < 0:
+            # 搜索包含关键词的 <td> 单元格，而不是整个页面中关键词的位置
+            # 这样可以精确匹配型号在显卡类型列中的行
+            pattern = rf'<td[^>]*>[^<]*{re.escape(kw)}[^<]*</td>'
+            m = re.search(pattern, html, re.IGNORECASE)
+            if not m:
+                # 也尝试搜索 <p> 或其他标签内的型号
+                pattern2 = rf'>\s*{re.escape(kw)}\s*<'
+                m = re.search(pattern2, html, re.IGNORECASE)
+            if not m:
                 continue
-            # 从关键词位置往后搜索 2000 字符，找第一个 <td>price</td>
-            snippet = html[idx:idx+2000]
-            # 匹配 <td class="...">31.28</td> 或 <td>31.28</td>
-            m = re.search(r'<td[^>]*>\s*(\d+\.\d+)\s*</td>', snippet)
-            if m:
+            # 从匹配位置往前找 <tr>，提取整行
+            tr_start = html.rfind('<tr', 0, m.start())
+            tr_end = html.find('</tr>', m.start())
+            if tr_start < 0 or tr_end < 0:
+                continue
+            row_html = html[tr_start:tr_end]
+            # 找该行中的所有数值 TD
+            tds = re.findall(r'<td[^>]*>\s*([\d,.]+)\s*</td>', row_html)
+            # 表格结构：vCPU, 内存, 显存, 显卡数, 显卡类型(文本), 按需价, 包月价
+            # 显卡类型列是文本 TD 不被上面的正则匹配到
+            # 所以 tds = [vCPU, 内存, 显存, 显卡数, 按需价, 包月价]
+            if len(tds) >= 6:
                 try:
-                    val = float(m.group(1))
-                    if 0.1 < val < 500:  # 合理的小时价范围
-                        prices[gpu_name] = val
+                    hourly = float(tds[4])
+                    monthly = float(tds[5])
+                    if 0.1 < hourly < 500 and 100 < monthly < 500000:
+                        prices[gpu_name] = (hourly, monthly)
                         break
-                except ValueError:
+                except (ValueError, IndexError):
                     pass
     print(f"[discover] tianyi: {len(prices)} prices found: {list(prices.keys())}")
     return prices
@@ -1129,15 +1143,16 @@ def build_dynamic_domestic_anchors() -> dict[str, dict[str, Any]]:
     """
     anchors: dict[str, dict[str, Any]] = {}
 
-    # 1. 天翼云单卡时租 -> 云价折算
+    # 1. 天翼云单卡包月价 -> 云价折算（8卡整机 = 单卡包月 × 8）
     tianyi = scrape_tianyi_gpu_prices()
-    for gpu, hourly in tianyi.items():
-        monthly_wan = round(hourly * 8 * 24 * 30 / 10000, 2)
+    for gpu, (hourly, monthly) in tianyi.items():
+        eight_card_monthly = round(monthly * 8 / 10000, 2)
         anchors[gpu] = {
             "tianyi_hourly": hourly,
-            "monthly_wan": monthly_wan,
-            "monthly_source": f"天翼云{hourly}元/时反推8卡整机",
-            "note": f"天翼云单卡{hourly}元/时；反推8卡整机约{monthly_wan}万/月",
+            "tianyi_monthly": monthly,
+            "monthly_wan": eight_card_monthly,
+            "monthly_source": f"天翼云包月{monthly}元/卡/月×8卡",
+            "note": f"天翼云单卡包月{monthly}元/月，按需{hourly}元/时；反推8卡整机约{eight_card_monthly}万/月",
             "_price_basis": "云价折算",
         }
 
