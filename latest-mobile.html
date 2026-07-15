@@ -30,6 +30,8 @@
     .pill-row{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
     .pill{display:inline-flex;gap:5px;align-items:center;padding:5px 10px;border:1px solid rgba(255,255,255,.08);border-radius:999px;background:rgba(255,255,255,.045);font-size:11px;color:var(--ink)}
     .pill b{color:var(--muted);font-weight:600}
+    .pill.payback-ok{border-color:rgba(116,224,163,.45);background:rgba(116,224,163,.1);color:var(--good)}
+    .pill.payback-na{border-color:rgba(247,115,115,.45);background:rgba(247,115,115,.1);color:#f87171}
     figure{padding:8px 0;margin:12px 0 18px} figcaption{font-size:13px;color:var(--accent2);font-weight:650;margin-bottom:8px;padding:0 8px}
     .chart{width:100%;min-height:320px} #chart-domestic-main,#chart-overseas{min-height:380px} #chart-token-input,#chart-token-output,#chart-token-third-diff,#chart-token-official-domestic-diff{min-height:600px}
     details{padding:0;margin:10px 0} summary{cursor:pointer;padding:14px;font-weight:700;color:var(--accent2)} details[open] summary{border-bottom:1px solid var(--rule)}
@@ -44,7 +46,7 @@
     <header class="hero">
       <div class="eyebrow">CMIS Daily · Mobile</div>
       <h1>全球算力市场情报日报</h1>
-      <p class="note">日期：2026-07-15｜Freeze：2026-07-15 18:13｜版本：v1.2.0</p>
+      <p class="note">日期：2026-07-15｜Freeze：2026-07-15 18:22｜版本：v1.2.0</p>
       <a class="desktop-link" href="latest.html?desktop=1">切换电脑版</a>
     </header>
 
@@ -892,7 +894,7 @@
           <div class="pill-row">
             <span class="pill"><b>月租</b>28 万</span>
             <span class="pill"><b>采购中位</b>暂不可得 万</span>
-            <span class="pill"><b>毛回本</b>暂不可得 月</span>
+            <span class="pill payback-na"><b>毛回本</b>暂不可得 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article>
@@ -902,7 +904,7 @@
           <div class="pill-row">
             <span class="pill"><b>月租</b>13 万</span>
             <span class="pill"><b>采购中位</b>暂不可得 万</span>
-            <span class="pill"><b>毛回本</b>暂不可得 月</span>
+            <span class="pill payback-na"><b>毛回本</b>暂不可得 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article>
@@ -912,7 +914,7 @@
           <div class="pill-row">
             <span class="pill"><b>月租</b>9.4 万</span>
             <span class="pill"><b>采购中位</b>暂不可得 万</span>
-            <span class="pill"><b>毛回本</b>暂不可得 月</span>
+            <span class="pill payback-na"><b>毛回本</b>暂不可得 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article>
@@ -922,7 +924,7 @@
           <div class="pill-row">
             <span class="pill"><b>月租</b>7.75 万</span>
             <span class="pill"><b>采购中位</b>275 万</span>
-            <span class="pill"><b>毛回本</b>35.5 月</span>
+            <span class="pill payback-ok"><b>毛回本</b>35.5 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article>
@@ -932,7 +934,7 @@
           <div class="pill-row">
             <span class="pill"><b>月租</b>6.9 万</span>
             <span class="pill"><b>采购中位</b>暂不可得 万</span>
-            <span class="pill"><b>毛回本</b>暂不可得 月</span>
+            <span class="pill payback-na"><b>毛回本</b>暂不可得 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article>
@@ -942,7 +944,7 @@
           <div class="pill-row">
             <span class="pill"><b>月租</b>2.5 万</span>
             <span class="pill"><b>采购中位</b>115 万</span>
-            <span class="pill"><b>毛回本</b>46 月</span>
+            <span class="pill payback-ok"><b>毛回本</b>46 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article>
@@ -952,7 +954,7 @@
           <div class="pill-row">
             <span class="pill"><b>月租</b>1.2 万</span>
             <span class="pill"><b>采购中位</b>暂不可得 万</span>
-            <span class="pill"><b>毛回本</b>暂不可得 月</span>
+            <span class="pill payback-na"><b>毛回本</b>暂不可得 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article>
@@ -962,7 +964,7 @@
           <div class="pill-row">
             <span class="pill"><b>月租</b>6.04 万</span>
             <span class="pill"><b>采购中位</b>暂不可得 万</span>
-            <span class="pill"><b>毛回本</b>暂不可得 月</span>
+            <span class="pill payback-na"><b>毛回本</b>暂不可得 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article>
@@ -972,7 +974,7 @@
           <div class="pill-row">
             <span class="pill"><b>月租</b>4.64 万</span>
             <span class="pill"><b>采购中位</b>暂不可得 万</span>
-            <span class="pill"><b>毛回本</b>暂不可得 月</span>
+            <span class="pill payback-na"><b>毛回本</b>暂不可得 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article>
@@ -982,7 +984,7 @@
           <div class="pill-row">
             <span class="pill"><b>月租</b>1.2 万</span>
             <span class="pill"><b>采购中位</b>34 万</span>
-            <span class="pill"><b>毛回本</b>28.3 月</span>
+            <span class="pill payback-ok"><b>毛回本</b>28.3 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article>
@@ -992,7 +994,7 @@
           <div class="pill-row">
             <span class="pill"><b>月租</b>0.78 万</span>
             <span class="pill"><b>采购中位</b>23 万</span>
-            <span class="pill"><b>毛回本</b>29.5 月</span>
+            <span class="pill payback-ok"><b>毛回本</b>29.5 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article>
@@ -1002,7 +1004,7 @@
           <div class="pill-row">
             <span class="pill"><b>月租</b>6.2 万</span>
             <span class="pill"><b>采购中位</b>220 万</span>
-            <span class="pill"><b>毛回本</b>35.5 月</span>
+            <span class="pill payback-ok"><b>毛回本</b>35.5 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article>
@@ -1012,7 +1014,7 @@
           <div class="pill-row">
             <span class="pill"><b>月租</b>1.5 万</span>
             <span class="pill"><b>采购中位</b>190 万</span>
-            <span class="pill"><b>毛回本</b>126.7 月</span>
+            <span class="pill payback-ok"><b>毛回本</b>126.7 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article>
@@ -1022,7 +1024,7 @@
           <div class="pill-row">
             <span class="pill"><b>月租</b>暂不可得 万</span>
             <span class="pill"><b>采购中位</b>暂不可得 万</span>
-            <span class="pill"><b>毛回本</b>暂不可得 月</span>
+            <span class="pill payback-na"><b>毛回本</b>暂不可得 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article>
@@ -1032,7 +1034,7 @@
           <div class="pill-row">
             <span class="pill"><b>月租</b>4.99 万</span>
             <span class="pill"><b>采购中位</b>30 万</span>
-            <span class="pill"><b>毛回本</b>6 月</span>
+            <span class="pill payback-ok"><b>毛回本</b>6 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article>
@@ -1042,7 +1044,7 @@
           <div class="pill-row">
             <span class="pill"><b>月租</b>暂不可得 万</span>
             <span class="pill"><b>采购中位</b>暂不可得 万</span>
-            <span class="pill"><b>毛回本</b>暂不可得 月</span>
+            <span class="pill payback-na"><b>毛回本</b>暂不可得 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article>
@@ -1052,7 +1054,7 @@
           <div class="pill-row">
             <span class="pill"><b>月租</b>4 万</span>
             <span class="pill"><b>采购中位</b>78 万</span>
-            <span class="pill"><b>毛回本</b>19.5 月</span>
+            <span class="pill payback-ok"><b>毛回本</b>19.5 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article>
@@ -1062,7 +1064,7 @@
           <div class="pill-row">
             <span class="pill"><b>月租</b>暂不可得 万</span>
             <span class="pill"><b>采购中位</b>暂不可得 万</span>
-            <span class="pill"><b>毛回本</b>暂不可得 月</span>
+            <span class="pill payback-na"><b>毛回本</b>暂不可得 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article>
@@ -1072,7 +1074,7 @@
           <div class="pill-row">
             <span class="pill"><b>月租</b>4.3 万</span>
             <span class="pill"><b>采购中位</b>80 万</span>
-            <span class="pill"><b>毛回本</b>18.6 月</span>
+            <span class="pill payback-ok"><b>毛回本</b>18.6 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article>
@@ -1082,7 +1084,7 @@
           <div class="pill-row">
             <span class="pill"><b>月租</b>3.5 万</span>
             <span class="pill"><b>采购中位</b>80 万</span>
-            <span class="pill"><b>毛回本</b>22.9 月</span>
+            <span class="pill payback-ok"><b>毛回本</b>22.9 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article>
@@ -1092,7 +1094,7 @@
           <div class="pill-row">
             <span class="pill"><b>月租</b>暂不可得 万</span>
             <span class="pill"><b>采购中位</b>暂不可得 万</span>
-            <span class="pill"><b>毛回本</b>暂不可得 月</span>
+            <span class="pill payback-na"><b>毛回本</b>暂不可得 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article></div></details>
@@ -1136,6 +1138,6 @@
     <a href="#summary">结论</a><a href="#domestic">国内</a><a href="#overseas">海外</a><a href="#token">Token</a><a href="#profit">利润</a><a href="#audit">审计</a>
   </nav>
   <script src="./_shared/js/echarts.min.js"></script>
-  <script src="./assets/charts.js?v=20260715181348-v1.2.0"></script>
+  <script src="./assets/charts.js?v=20260715182214-v1.2.0"></script>
 </body>
 </html>

@@ -1467,8 +1467,8 @@ def table(rows: list[dict], cols: list[str] | None = None, headers: list[str] | 
     )
 
 
-def pill(label: str, value) -> str:
-    return f'<span class="pill"><b>{html_escape(label)}</b>{html_escape(fmt(value) if isinstance(value, (int, float)) else value)}</span>'
+def pill(label: str, value, cls: str = "") -> str:
+    return f'<span class="pill{cls}"><b>{html_escape(label)}</b>{html_escape(fmt(value) if isinstance(value, (int, float)) else value)}</span>'
 
 
 def mobile_gpu_cards(rows: list[dict]) -> str:
@@ -1507,13 +1507,15 @@ def mobile_overseas_cards(rows: list[dict]) -> str:
 def mobile_profit_cards(rows: list[dict]) -> str:
     cards = []
     for row in rows:
+        _pb = row.get("毛回本（月）")
+        _pb_cls = " payback-ok" if _pb is not None else " payback-na"
         cards.append(f"""
         <article class="m-card compact">
           <div class="m-card-head"><h3>{html_escape(row.get("GPU 型号"))}</h3><span>{html_escape(row.get("ROI 状态"))}</span></div>
           <div class="pill-row">
             {pill("月租", f'{fmt(row.get("租赁价格（万元/月）"))} 万')}
             {pill("采购中位", f'{fmt(row.get("采购价中位数（万元）"))} 万')}
-            {pill("毛回本", f'{fmt(row.get("毛回本（月）"))} 月')}
+            {pill("毛回本", f'{fmt(_pb)} 月', _pb_cls)}
           </div>
           <p>{html_escape(row.get("测算说明"))}</p>
         </article>""")
@@ -1744,6 +1746,8 @@ def render_mobile_html(relative_prefix: str = "./", desktop_href: str = "latest.
     .pill-row{{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}}
     .pill{{display:inline-flex;gap:5px;align-items:center;padding:5px 10px;border:1px solid rgba(255,255,255,.08);border-radius:999px;background:rgba(255,255,255,.045);font-size:11px;color:var(--ink)}}
     .pill b{{color:var(--muted);font-weight:600}}
+    .pill.payback-ok{{border-color:rgba(116,224,163,.45);background:rgba(116,224,163,.1);color:var(--good)}}
+    .pill.payback-na{{border-color:rgba(247,115,115,.45);background:rgba(247,115,115,.1);color:#f87171}}
     figure{{padding:8px 0;margin:12px 0 18px}} figcaption{{font-size:13px;color:var(--accent2);font-weight:650;margin-bottom:8px;padding:0 8px}}
     .chart{{width:100%;min-height:320px}} #chart-domestic-main,#chart-overseas{{min-height:380px}} #chart-token-input,#chart-token-output,#chart-token-third-diff,#chart-token-official-domestic-diff{{min-height:600px}}
     details{{padding:0;margin:10px 0}} summary{{cursor:pointer;padding:14px;font-weight:700;color:var(--accent2)}} details[open] summary{{border-bottom:1px solid var(--rule)}}
