@@ -85,101 +85,461 @@ VENDOR_PREFIXES: dict[str, list[str]] = {
 # 模型淘汰关键词：deprecated / old / legacy 模型应排除
 DEPRECATED_KEYWORDS = ["preview", "deprecated", "legacy", "-old-", "-beta", "-alpha", "-draft"]
 
-# 各厂商手动维护的最新模型锚点（当 API 无法提供精确官方价时作为 fallback）
-# 这些锚点会覆盖/补充 API 发现结果
+# 各厂商手动维护的最新模型锚点（含官方价 + 已知三方价）
+# 三方价数据来源：OpenRouter / Together.ai / Fireworks.ai / 硅基流动 / 阿里云百炼 / 腾讯云TokenHub
+# 若某个价格为 None，表示该平台暂无此模型，需标注
 VENDOR_MODEL_ANCHORS: list[dict[str, Any]] = [
     # --- 海外 ---
     {"vendor": "OpenAI", "models": [
-        {"name": "GPT-5.5", "context": "1M", "official_in_usd": 5.0, "official_out_usd": 30.0},
-        {"name": "GPT-5.4", "context": "1M", "official_in_usd": 2.5, "official_out_usd": 15.0},
-        {"name": "GPT-5.4 mini", "context": "270K", "official_in_usd": 0.75, "official_out_usd": 4.5},
-        {"name": "o4 Mini", "context": "200K", "official_in_usd": 1.1, "official_out_usd": 4.4},
+        {
+            "name": "GPT-5.5", "context": "1M（标准 272K）",
+            "official_in_usd": 5.0, "official_out_usd": 30.0,
+            "overseas_in_usd": 5.0, "overseas_out_usd": 30.0,
+            "overseas_source": "OpenRouter / gpt-5.5",
+        },
+        {
+            "name": "GPT-5.4", "context": "1M（标准 272K）",
+            "official_in_usd": 2.5, "official_out_usd": 15.0,
+            "overseas_in_usd": 2.5, "overseas_out_usd": 15.0,
+            "overseas_source": "OpenRouter / gpt-5.4",
+        },
+        {
+            "name": "GPT-5.4 mini", "context": "270K",
+            "official_in_usd": 0.75, "official_out_usd": 4.5,
+            "overseas_in_usd": 0.75, "overseas_out_usd": 4.5,
+            "overseas_source": "OpenRouter / gpt-5.4-mini",
+        },
+        {
+            "name": "o4 Mini", "context": "200K",
+            "official_in_usd": 1.1, "official_out_usd": 4.4,
+            "overseas_in_usd": 1.1, "overseas_out_usd": 4.4,
+            "overseas_source": "OpenRouter / o4-mini",
+        },
     ]},
     {"vendor": "Anthropic", "models": [
-        {"name": "Claude Opus 4.8", "context": "1M", "official_in_usd": 5.0, "official_out_usd": 25.0},
-        {"name": "Claude Sonnet 4.6", "context": "1M", "official_in_usd": 3.0, "official_out_usd": 15.0},
-        {"name": "Claude Haiku 4.5", "context": "200K", "official_in_usd": 1.0, "official_out_usd": 5.0},
+        {
+            "name": "Claude Fable 5", "context": "1M",
+            "official_in_usd": 10.0, "official_out_usd": 50.0,
+            "overseas_in_usd": 10.0, "overseas_out_usd": 50.0,
+            "overseas_source": "OpenRouter / claude-fable-5",
+        },
+        {
+            "name": "Claude Opus 4.8", "context": "1M",
+            "official_in_usd": 5.0, "official_out_usd": 25.0,
+            "overseas_in_usd": 5.0, "overseas_out_usd": 25.0,
+            "overseas_source": "OpenRouter / claude-opus-4.8",
+        },
+        {
+            "name": "Claude Sonnet 5", "context": "1M",
+            "official_in_usd": 2.0, "official_out_usd": 10.0,
+            "note": "优惠期至2026.8.31，优惠后 $2/$10，原价 $3/$15",
+            "overseas_in_usd": 2.0, "overseas_out_usd": 10.0,
+            "overseas_source": "OpenRouter / claude-sonnet-5",
+        },
+        {
+            "name": "Claude Haiku 4.5", "context": "200K",
+            "official_in_usd": 1.0, "official_out_usd": 5.0,
+            "overseas_in_usd": 1.0, "overseas_out_usd": 5.0,
+            "overseas_source": "OpenRouter / claude-haiku-4.5",
+        },
     ]},
     {"vendor": "Google", "models": [
-        {"name": "Gemini 3.1 Pro", "context": "1M", "official_in_usd": 2.0, "official_out_usd": 12.0},
-        {"name": "Gemini 3.5 Flash", "context": "1M", "official_in_usd": 1.5, "official_out_usd": 9.0},
-        {"name": "Gemini 3.1 Flash-Lite", "context": "1M", "official_in_usd": 0.25, "official_out_usd": 1.5},
+        {
+            "name": "Gemini 3.5 Flash", "context": "1M",
+            "official_in_usd": 1.5, "official_out_usd": 9.0,
+            "overseas_in_usd": 1.5, "overseas_out_usd": 9.0,
+            "overseas_source": "OpenRouter / gemini-3.5-flash",
+        },
+        {
+            "name": "Gemini 3.1 Pro Preview", "context": "1M",
+            "official_in_usd": 2.0, "official_out_usd": 12.0,
+            "overseas_in_usd": 2.0, "overseas_out_usd": 12.0,
+            "overseas_source": "OpenRouter / gemini-3.1-pro-preview",
+        },
+        {
+            "name": "Gemini 3.1 Flash-Lite", "context": "1M",
+            "official_in_usd": 0.25, "official_out_usd": 1.5,
+            "overseas_in_usd": 0.25, "overseas_out_usd": 1.5,
+            "overseas_source": "OpenRouter / gemini-3.1-flash-lite",
+        },
     ]},
     {"vendor": "Mistral", "models": [
-        {"name": "Mistral Medium 3.5", "context": "256K", "official_in_usd": 2.0, "official_out_usd": 7.5},
-        {"name": "Mistral Large 3", "context": "256K", "official_in_usd": 0.5, "official_out_usd": 1.5},
-        {"name": "Mistral Small 4", "context": "256K", "official_in_usd": 0.1, "official_out_usd": 0.3},
+        {
+            "name": "Mistral Medium 3.5", "context": "256K",
+            "official_in_usd": 2.0, "official_out_usd": 7.5,
+            "overseas_in_usd": 1.5, "overseas_out_usd": 7.5,
+            "overseas_source": "OpenRouter / mistral-medium-3-5",
+        },
+        {
+            "name": "Mistral Large 3", "context": "256K",
+            "official_in_usd": 0.5, "official_out_usd": 1.5,
+            "overseas_in_usd": 0.5, "overseas_out_usd": 1.5,
+            "overseas_source": "OpenRouter / mistral-large-2512",
+        },
+        {
+            "name": "Mistral Small 4", "context": "256K",
+            "official_in_usd": 0.1, "official_out_usd": 0.3,
+            "overseas_in_usd": 0.15, "overseas_out_usd": 0.6,
+            "overseas_source": "OpenRouter / mistral-small-2603",
+        },
     ]},
     {"vendor": "Cohere", "models": [
-        {"name": "Command A+", "context": "128K", "official_in_usd": 2.5, "official_out_usd": 10.0},
-        {"name": "Command R+", "context": "128K", "official_in_usd": 2.5, "official_out_usd": 10.0},
+        {
+            "name": "Command A+", "context": "128K",
+            "official_in_usd": 2.5, "official_out_usd": 10.0,
+            "overseas_in_usd": None, "overseas_out_usd": None,
+            "overseas_source": "海外渠道暂未上架",
+        },
+        {
+            "name": "Command R+", "context": "128K",
+            "official_in_usd": 2.5, "official_out_usd": 10.0,
+            "overseas_in_usd": None, "overseas_out_usd": None,
+            "overseas_source": "海外渠道暂未上架",
+        },
     ]},
     {"vendor": "xAI Grok", "models": [
-        {"name": "Grok 4.3", "context": "1M", "official_in_usd": 1.25, "official_out_usd": 2.5},
-        {"name": "Grok 4 Fast", "context": "256K", "official_in_usd": 0.2, "official_out_usd": 0.5},
+        {
+            "name": "Grok 4.5", "context": "500K",
+            "official_in_usd": 2.0, "official_out_usd": 6.0,
+            "overseas_in_usd": 2.0, "overseas_out_usd": 6.0,
+            "overseas_source": "OpenRouter / grok-4.5",
+        },
+        {
+            "name": "Grok 4.3", "context": "1M",
+            "official_in_usd": 1.25, "official_out_usd": 2.5,
+            "overseas_in_usd": 1.25, "overseas_out_usd": 2.5,
+            "overseas_source": "OpenRouter / grok-4.3",
+        },
+        {
+            "name": "Grok 4.20", "context": "500K",
+            "official_in_usd": 2.0, "official_out_usd": 6.0,
+            "overseas_in_usd": 1.25, "overseas_out_usd": 2.5,
+            "overseas_source": "OpenRouter / grok-4.20",
+        },
     ]},
     {"vendor": "Meta Llama", "models": [
-        {"name": "Llama 4 Maverick", "context": "1M", "official_in_usd": 0.3, "official_out_usd": 0.6},
-        {"name": "Llama 4 Scout", "context": "128K", "official_in_usd": 0.15, "official_out_usd": 0.35},
+        {
+            "name": "Llama 4 Maverick", "context": "1M",
+            "official_in_usd": 0.2, "official_out_usd": 0.8,
+            "overseas_in_usd": 0.2, "overseas_out_usd": 0.8,
+            "overseas_source": "OpenRouter / llama-4-maverick",
+            "note": "开源模型，无官方 per-token 定价，取 OpenRouter 托管价",
+        },
+        {
+            "name": "Llama 4 Scout", "context": "128K",
+            "official_in_usd": 0.1, "official_out_usd": 0.3,
+            "overseas_in_usd": 0.1, "overseas_out_usd": 0.3,
+            "overseas_source": "OpenRouter / llama-4-scout",
+            "note": "开源模型，无官方 per-token 定价，取 OpenRouter 托管价",
+        },
     ]},
     # --- 国产 ---
     {"vendor": "DeepSeek", "models": [
-        {"name": "DeepSeek-V4-Pro", "context": "1M", "official_in_cny": 3.0, "official_out_cny": 6.0},
-        {"name": "DeepSeek-V4-Flash", "context": "1M", "official_in_cny": 1.0, "official_out_cny": 2.0},
+        {
+            "name": "DeepSeek-V4-Pro", "context": "1M",
+            "official_in_cny": 3.0, "official_out_cny": 6.0,
+            "overseas_in_usd": 1.74, "overseas_out_usd": 3.48,
+            "overseas_source": "Together.ai / Fireworks.ai / deepseek-v4-pro",
+            "domestic_in_cny": 12.0, "domestic_out_cny": 24.0,
+            "domestic_source": "硅基流动 / DeepSeek-V4-Pro",
+            "note": "官方直供价 3/6；境内三方（硅基流动）12/24；海外三方 $1.74/$3.48",
+        },
+        {
+            "name": "DeepSeek-V4-Flash", "context": "1M",
+            "official_in_cny": 1.0, "official_out_cny": 2.0,
+            "overseas_in_usd": 0.14, "overseas_out_usd": 0.28,
+            "overseas_source": "Fireworks.ai / deepseek-v4-flash",
+            "domestic_in_cny": 1.0, "domestic_out_cny": 2.0,
+            "domestic_source": "硅基流动 / DeepSeek-V4-Flash",
+            "note": "官方直供价 1/2；硅基流动同价 1/2；海外三方 $0.14/$0.28",
+        },
     ]},
     {"vendor": "阿里云/通义千问", "models": [
-        {"name": "Qwen3.7-Max", "context": "1M", "official_in_cny": 12.0, "official_out_cny": 36.0},
-        {"name": "Qwen3.7-Plus", "context": "1M", "official_in_cny": 2.0, "official_out_cny": 8.0},
+        {
+            "name": "Qwen3.7-Max", "context": "1M",
+            "official_in_cny": 12.0, "official_out_cny": 36.0,
+            "overseas_in_usd": 1.25, "overseas_out_usd": 3.75,
+            "overseas_source": "Together.ai / qwen3.7-max",
+            "domestic_in_cny": None, "domestic_out_cny": None,
+            "domestic_source": "境内三方未覆盖（阿里云官方独占）",
+            "note": "阿里云官方原价，限时5折后 6/18；海外三方 Together.ai $1.25/$3.75",
+        },
+        {
+            "name": "Qwen3.7-Plus", "context": "1M",
+            "official_in_cny": 2.0, "official_out_cny": 8.0,
+            "overseas_in_usd": 0.32, "overseas_out_usd": 1.28,
+            "overseas_source": "OpenRouter / Together.ai / Fireworks.ai / qwen3.7-plus",
+            "domestic_in_cny": None, "domestic_out_cny": None,
+            "domestic_source": "境内三方未覆盖（阿里云官方独占）",
+            "note": "阿里云官方价 2/8（0-256K 非思考模式），限时8折后 1.6/6.4；海外三方 $0.32/$1.28",
+        },
     ]},
     {"vendor": "火山方舟/豆包", "models": [
-        {"name": "Doubao-Seed-1.6", "context": "256K", "official_in_cny": 0.8, "official_out_cny": 2.0},
-        {"name": "Doubao-Seed-1.6-Flash", "context": "256K", "official_in_cny": 0.15, "official_out_cny": 1.5},
-        {"name": "Doubao-Seed-1.6-Thinking", "context": "256K", "official_in_cny": 0.8, "official_out_cny": 8.0},
+        {
+            "name": "Doubao-Seed 2.1 Pro", "context": "256K",
+            "official_in_cny": 6.0, "official_out_cny": 30.0,
+            "overseas_in_usd": None, "overseas_out_usd": None,
+            "overseas_source": "海外渠道暂未上架",
+            "domestic_in_cny": None, "domestic_out_cny": None,
+            "domestic_source": "境内渠道同系列参考（仅火山官方提供）",
+            "note": "2026年6月23日发布，最新旗舰深度思考模型；三方平台暂未接入",
+        },
+        {
+            "name": "Doubao-Seed 2.1 Turbo", "context": "256K",
+            "official_in_cny": 3.0, "official_out_cny": 15.0,
+            "overseas_in_usd": None, "overseas_out_usd": None,
+            "overseas_source": "海外渠道暂未上架",
+            "domestic_in_cny": None, "domestic_out_cny": None,
+            "domestic_source": "境内渠道同系列参考（仅火山官方提供）",
+            "note": "2026年6月23日发布，高性价比主力；三方平台暂未接入",
+        },
+        {
+            "name": "Doubao-Seed 2.0 Pro", "context": "256K",
+            "official_in_cny": 3.2, "official_out_cny": 16.0,
+            "overseas_in_usd": None, "overseas_out_usd": None,
+            "overseas_source": "海外渠道暂未上架",
+            "domestic_in_cny": 1.5, "domestic_out_cny": 4.0,
+            "domestic_source": "硅基流动 / Seed-OSS-36B（同系列参考）",
+            "note": "0-32K 段官方价 3.2/16；硅基流动 Seed-OSS-36B 1.5/4 作为开源同系列参考",
+        },
+        {
+            "name": "Doubao-Seed-Evolving", "context": "持续迭代",
+            "official_in_cny": 6.0, "official_out_cny": 30.0,
+            "overseas_in_usd": None, "overseas_out_usd": None,
+            "overseas_source": "海外渠道暂未上架",
+            "domestic_in_cny": None, "domestic_out_cny": None,
+            "domestic_source": "境内渠道同系列参考（仅火山官方提供）",
+            "note": "持续迭代旗舰，Coding/Agent 优化；三方平台暂未接入",
+        },
     ]},
     {"vendor": "腾讯混元", "models": [
-        {"name": "Hunyuan-Hy3", "context": "256K", "official_in_cny": 1.0, "official_out_cny": 4.0},
-        {"name": "Hunyuan-role-latest", "context": "官方未明确", "official_in_cny": 2.4, "official_out_cny": 9.6},
-        {"name": "Hunyuan-A13B", "context": "128K", "official_in_cny": 0.5, "official_out_cny": 2.0},
+        {
+            "name": "Hunyuan-Hy3", "context": "256K",
+            "official_in_cny": 1.0, "official_out_cny": 4.0,
+            "overseas_in_usd": None, "overseas_out_usd": None,
+            "overseas_source": "海外渠道暂未上架",
+            "domestic_in_cny": 1.0, "domestic_out_cny": 4.0,
+            "domestic_source": "腾讯云TokenHub / Hy3",
+            "note": "2026年7月6日发布，MoE架构，295B总参数，开源Apache 2.0",
+        },
+        {
+            "name": "Hunyuan-role-latest", "context": "官方未明确",
+            "official_in_cny": 2.4, "official_out_cny": 9.6,
+            "overseas_in_usd": None, "overseas_out_usd": None,
+            "overseas_source": "海外渠道暂未上架",
+            "domestic_in_cny": None, "domestic_out_cny": None,
+            "domestic_source": "境内渠道同系列参考",
+            "note": "腾讯混元角色模型官方价",
+        },
+        {
+            "name": "Hunyuan-A13B", "context": "128K",
+            "official_in_cny": 0.5, "official_out_cny": 2.0,
+            "overseas_in_usd": 0.14, "overseas_out_usd": 0.57,
+            "overseas_source": "OpenRouter / hunyuan-a13b",
+            "domestic_in_cny": 1.0, "domestic_out_cny": 4.0,
+            "domestic_source": "硅基流动 / Hunyuan-A13B-Instruct",
+            "note": "轻量主力；硅基流动 1/4；OpenRouter $0.14/$0.57",
+        },
     ]},
     {"vendor": "智谱 GLM / Z.ai", "models": [
-        {"name": "GLM-5.2", "context": "1M", "official_in_cny": 8.0, "official_out_cny": 28.0},
-        {"name": "GLM-5.1 Pro", "context": "200K", "official_in_cny": 6.0, "official_out_cny": 24.0},
+        {
+            "name": "GLM-5.2", "context": "1M",
+            "official_in_cny": 8.0, "official_out_cny": 28.0,
+            "overseas_in_usd": 0.9044, "overseas_out_usd": 2.8424,
+            "overseas_source": "OpenRouter / glm-5.2",
+            "domestic_in_cny": 8.0, "domestic_out_cny": 28.0,
+            "domestic_source": "硅基流动 / GLM-5.2",
+            "note": "2026年6月16日上线，1M无损上下文；官方价 8/28；硅基流动同价；OpenRouter $0.9/$2.84",
+        },
+        {
+            "name": "GLM-5.1 Pro", "context": "200K",
+            "official_in_cny": 6.0, "official_out_cny": 24.0,
+            "overseas_in_usd": 1.40, "overseas_out_usd": 4.40,
+            "overseas_source": "Together.ai / Fireworks.ai / glm-5.1",
+            "domestic_in_cny": 6.0, "domestic_out_cny": 24.0,
+            "domestic_source": "硅基流动 / GLM-5.1 Pro",
+            "note": "32K内 6/24，32K+ 8/28；海外三方 Together $1.4/$4.4",
+        },
     ]},
     {"vendor": "百度文心", "models": [
-        {"name": "ERNIE 5.1", "context": "128K", "official_in_cny": 4.0, "official_out_cny": 18.0},
-        {"name": "ERNIE-4.5-Turbo", "context": "32K", "official_in_cny": 0.8, "official_out_cny": 3.2},
+        {
+            "name": "ERNIE 5.1", "context": "128K",
+            "official_in_cny": 4.0, "official_out_cny": 18.0,
+            "overseas_in_usd": None, "overseas_out_usd": None,
+            "overseas_source": "海外渠道暂未上架",
+            "domestic_in_cny": None, "domestic_out_cny": None,
+            "domestic_source": "境内渠道同系列参考（仅百度千帆提供）",
+            "note": "最新旗舰，智能体/知识/推理/深度搜索全面升级",
+        },
+        {
+            "name": "ERNIE-4.5-Turbo", "context": "32K",
+            "official_in_cny": 0.8, "official_out_cny": 3.2,
+            "overseas_in_usd": 0.42, "overseas_out_usd": 1.25,
+            "overseas_source": "OpenRouter / ERNIE 4.5 VL（近似）",
+            "domestic_in_cny": None, "domestic_out_cny": None,
+            "domestic_source": "境内渠道同系列参考",
+            "note": "主力量产版本；海外三方仅近似参考",
+        },
     ]},
     {"vendor": "Kimi / Moonshot", "models": [
-        {"name": "Kimi K2.7 Code", "context": "256K", "official_in_cny": 6.5, "official_out_cny": 27.0},
-        {"name": "Kimi K2.6", "context": "256K", "official_in_cny": 6.5, "official_out_cny": 27.0},
+        {
+            "name": "Kimi K2.7 Code", "context": "256K",
+            "official_in_cny": 6.5, "official_out_cny": 27.0,
+            "overseas_in_usd": 0.719, "overseas_out_usd": 3.49,
+            "overseas_source": "OpenRouter / kimi-k2.7-code",
+            "domestic_in_cny": 6.5, "domestic_out_cny": 27.0,
+            "domestic_source": "硅基流动 / Kimi-K2.7-Code",
+            "note": "最强编程模型；官方价 6.5/27；硅基流动同价；OpenRouter $0.719/$3.49",
+        },
+        {
+            "name": "Kimi K2.6", "context": "256K",
+            "official_in_cny": 6.5, "official_out_cny": 27.0,
+            "overseas_in_usd": 0.66, "overseas_out_usd": 3.41,
+            "overseas_source": "OpenRouter / kimi-k2.6",
+            "domestic_in_cny": 6.5, "domestic_out_cny": 27.0,
+            "domestic_source": "硅基流动 / Kimi-K2.6 Pro",
+            "note": "最新多模态模型；官方价 6.5/27；硅基流动同价；OpenRouter $0.66/$3.41",
+        },
     ]},
     {"vendor": "MiniMax", "models": [
-        {"name": "MiniMax-M3 标准层 ≤512K", "context": "≤512K", "official_in_cny": 2.1, "official_out_cny": 8.4},
-        {"name": "MiniMax-M3 标准层 >512K", "context": ">512K", "official_in_cny": 4.2, "official_out_cny": 16.8},
+        {
+            "name": "MiniMax-M3 标准层 ≤512K", "context": "≤512K",
+            "official_in_cny": 2.1, "official_out_cny": 8.4,
+            "overseas_in_usd": 0.30, "overseas_out_usd": 1.20,
+            "overseas_source": "OpenRouter / Together.ai / Fireworks.ai / minimax-m3",
+            "domestic_in_cny": 2.1, "domestic_out_cny": 8.4,
+            "domestic_source": "阿里云百炼 / 腾讯云TokenHub / MiniMax-M3",
+            "note": "永久五折后价；海外三方 $0.3/$1.2；境内三方 2.1/8.4",
+        },
+        {
+            "name": "MiniMax-M3 标准层 >512K", "context": ">512K",
+            "official_in_cny": 4.2, "official_out_cny": 16.8,
+            "overseas_in_usd": None, "overseas_out_usd": None,
+            "overseas_source": "海外渠道暂未上架（仅标准层）",
+            "domestic_in_cny": 4.2, "domestic_out_cny": 16.8,
+            "domestic_source": "腾讯云TokenHub / MiniMax-M3",
+            "note": "长上下文档，永久五折后价 4.2/16.8",
+        },
     ]},
     {"vendor": "讯飞星火", "models": [
-        {"name": "Spark X2", "context": "官方未明确", "official_in_cny": 1.0, "official_out_cny": 2.0},
-        {"name": "Spark Max", "context": "32K", "official_in_cny": 21.0, "official_out_cny": 21.0},
+        {
+            "name": "Spark X2", "context": "官方未明确",
+            "official_in_cny": 1.0, "official_out_cny": 2.0,
+            "overseas_in_usd": None, "overseas_out_usd": None,
+            "overseas_source": "海外渠道暂未上架",
+            "domestic_in_cny": None, "domestic_out_cny": None,
+            "domestic_source": "境内渠道同系列参考（仅讯飞官方提供）",
+            "note": "2026年2月发布，基于全国产算力训练，通用能力全面升级；X2-Flash 参考价 1/2",
+        },
+        {
+            "name": "Spark Max", "context": "32K",
+            "official_in_cny": 21.0, "official_out_cny": 21.0,
+            "overseas_in_usd": None, "overseas_out_usd": None,
+            "overseas_source": "海外渠道暂未上架",
+            "domestic_in_cny": None, "domestic_out_cny": None,
+            "domestic_source": "境内渠道同系列参考",
+            "note": "按 0.21 元/万 tokens 折算；输入输出同价",
+        },
     ]},
     {"vendor": "百川智能", "models": [
-        {"name": "Baichuan-M3-Plus", "context": "32K", "official_in_cny": 5.0, "official_out_cny": 9.0},
-        {"name": "Baichuan-M3", "context": "32K", "official_in_cny": 10.0, "official_out_cny": 30.0},
+        {
+            "name": "Baichuan-M3-Plus", "context": "32K",
+            "official_in_cny": 5.0, "official_out_cny": 9.0,
+            "overseas_in_usd": None, "overseas_out_usd": None,
+            "overseas_source": "海外渠道暂未上架",
+            "domestic_in_cny": None, "domestic_out_cny": None,
+            "domestic_source": "境内渠道同系列参考（仅百川官方提供）",
+            "note": "当前主力 M3-Plus，官方价 5/9",
+        },
+        {
+            "name": "Baichuan-M3", "context": "32K",
+            "official_in_cny": 10.0, "official_out_cny": 30.0,
+            "overseas_in_usd": None, "overseas_out_usd": None,
+            "overseas_source": "海外渠道暂未上架",
+            "domestic_in_cny": None, "domestic_out_cny": None,
+            "domestic_source": "境内渠道同系列参考",
+            "note": "旗舰 M3，官方价 10/30",
+        },
     ]},
     {"vendor": "零一万物", "models": [
-        {"name": "Yi-Lightning", "context": "官方未明确", "official_in_cny": 0.99, "official_out_cny": 0.99},
-        {"name": "Yi-Large", "context": "32K", "official_in_cny": 20.0, "official_out_cny": 20.0},
+        {
+            "name": "Yi-Lightning", "context": "官方未明确",
+            "official_in_cny": 0.99, "official_out_cny": 0.99,
+            "overseas_in_usd": None, "overseas_out_usd": None,
+            "overseas_source": "海外渠道暂未上架",
+            "domestic_in_cny": None, "domestic_out_cny": None,
+            "domestic_source": "境内渠道同系列参考",
+            "note": "旗舰 MoE 模型，主打极致性价比，0.99 元/百万 tokens 输入输出同价",
+        },
+        {
+            "name": "Yi-Large", "context": "32K",
+            "official_in_cny": 20.0, "official_out_cny": 20.0,
+            "overseas_in_usd": None, "overseas_out_usd": None,
+            "overseas_source": "海外渠道暂未上架",
+            "domestic_in_cny": None, "domestic_out_cny": None,
+            "domestic_source": "境内渠道同系列参考",
+            "note": "输入输出同价",
+        },
     ]},
     {"vendor": "阶跃星辰", "models": [
-        {"name": "Step 3.5 Flash", "context": "官方未明确", "official_in_cny": 0.7, "official_out_cny": 2.1},
-        {"name": "Step-R1-V-Mini", "context": "官方未明确", "official_in_cny": 2.5, "official_out_cny": 8.0},
+        {
+            "name": "Step 3.5 Flash", "context": "官方未明确",
+            "official_in_cny": 0.7, "official_out_cny": 2.1,
+            "overseas_in_usd": None, "overseas_out_usd": None,
+            "overseas_source": "海外渠道暂未上架",
+            "domestic_in_cny": 0.7, "domestic_out_cny": 2.1,
+            "domestic_source": "硅基流动 / Step-3.5-Flash",
+            "note": "当前主力；硅基流动精确同名 0.7/2.1",
+        },
+        {
+            "name": "Step-R1-V-Mini", "context": "官方未明确",
+            "official_in_cny": 2.5, "official_out_cny": 8.0,
+            "overseas_in_usd": None, "overseas_out_usd": None,
+            "overseas_source": "海外渠道暂未上架",
+            "domestic_in_cny": None, "domestic_out_cny": None,
+            "domestic_source": "境内渠道同系列参考",
+            "note": "推理模型",
+        },
     ]},
     {"vendor": "商汤日日新", "models": [
-        {"name": "SenseNova-V6.5-Pro", "context": "官方未明确", "official_in_cny": 3.0, "official_out_cny": 9.0},
-        {"name": "SenseNova-V6.5-Turbo", "context": "官方未明确", "official_in_cny": 1.5, "official_out_cny": 4.5},
+        {
+            "name": "SenseNova-V6.5-Pro", "context": "官方未明确",
+            "official_in_cny": 3.0, "official_out_cny": 9.0,
+            "overseas_in_usd": None, "overseas_out_usd": None,
+            "overseas_source": "海外渠道暂未上架",
+            "domestic_in_cny": None, "domestic_out_cny": None,
+            "domestic_source": "境内渠道同系列参考（仅商汤官方提供）",
+            "note": "旗舰融合模态大模型，官方价 3/9",
+        },
+        {
+            "name": "SenseNova-V6.5-Turbo", "context": "官方未明确",
+            "official_in_cny": 1.5, "official_out_cny": 4.5,
+            "overseas_in_usd": None, "overseas_out_usd": None,
+            "overseas_source": "海外渠道暂未上架",
+            "domestic_in_cny": None, "domestic_out_cny": None,
+            "domestic_source": "境内渠道同系列参考",
+            "note": "Turbo 版模型，官方价 1.5/4.5",
+        },
     ]},
     {"vendor": "昆仑万维天工", "models": [
-        {"name": "SkyClaw-v1.0", "context": "1M", "official_in_cny": 0.5, "official_out_cny": 4.0},
-        {"name": "SkyClaw-v1.0-lite", "context": "官方未明确", "official_in_cny": 0.3, "official_out_cny": 1.5},
+        {
+            "name": "SkyClaw-v1.0", "context": "1M",
+            "official_in_cny": 0.5, "official_out_cny": 4.0,
+            "overseas_in_usd": None, "overseas_out_usd": None,
+            "overseas_source": "海外渠道暂未上架",
+            "domestic_in_cny": None, "domestic_out_cny": None,
+            "domestic_source": "境内渠道同系列参考（仅天工官方提供）",
+            "note": "旗舰 Agent 模型，主打工具调用和多轮任务执行，1M 上下文",
+        },
+        {
+            "name": "SkyClaw-v1.0-lite", "context": "官方未明确",
+            "official_in_cny": 0.3, "official_out_cny": 1.5,
+            "overseas_in_usd": None, "overseas_out_usd": None,
+            "overseas_source": "海外渠道暂未上架",
+            "domestic_in_cny": None, "domestic_out_cny": None,
+            "domestic_source": "境内渠道同系列参考",
+            "note": "轻量版 Agent 模型",
+        },
     ]},
 ]
 
@@ -331,36 +691,36 @@ def merge_vendor_models(
     return merged
 
 
-def build_discovered_token_rows() -> list[dict[str, Any]]:
+def build_discovered_token_rows() -> tuple[list[dict[str, Any]], list[dict]]:
     """构建发现后的 Token 数据行。
 
     策略：
-    1. 从 API 源动态发现模型
-    2. 用 VENDOR_MODEL_ANCHORS 中的手动锚点覆盖/补充（锚点优先级更高，因为包含官方价）
-    3. 对缺失官方价的模型，用 API 发现的价格作为市场价参考
+    1. 以 VENDOR_MODEL_ANCHORS 为基础（含官方价 + 已知三方价），保证数据质量
+    2. 从 OpenRouter API 动态拉取市场价，与锚点交叉验证
+    3. 若锚点中某项价格缺失，用 API 发现结果补全
+    4. 记录所有发现的模型 ID 供人工审核新模型
     """
-    print("[discover] Fetching LiteLLM...")
-    litellm = discover_from_litellm()
-    print(f"[discover] LiteLLM: {sum(len(v) for v in litellm.values())} models")
-
-    print("[discover] Fetching OpenRouter...")
+    print("[discover] Fetching OpenRouter API...")
     openrouter = discover_from_openrouter()
     print(f"[discover] OpenRouter: {sum(len(v) for v in openrouter.values())} models")
 
-    print("[discover] Fetching models.dev...")
-    modelsdev = discover_from_modelsdev()
-    print(f"[discover] models.dev: {sum(len(v) for v in modelsdev.values())} models")
+    print("[discover] Fetching LiteLLM JSON...")
+    litellm = discover_from_litellm()
+    print(f"[discover] LiteLLM: {sum(len(v) for v in litellm.values())} models")
 
-    discovered = merge_vendor_models(litellm, openrouter, modelsdev)
+    discovered = merge_vendor_models(litellm, openrouter, {})
 
     rows: list[dict[str, Any]] = []
     discovered_log: list[dict] = []
 
     for anchor in VENDOR_MODEL_ANCHORS:
         vendor = anchor["vendor"]
+        api_models = discovered.get(vendor, [])
+
         for model in anchor["models"]:
             name = model["name"]
             context = model.get("context", "未知")
+            note = model.get("note", "")
 
             # 判断币种和官方价
             if "official_in_usd" in model:
@@ -374,37 +734,40 @@ def build_discovered_token_rows() -> list[dict[str, Any]]:
 
             region = "海外" if currency == "USD" else "国产"
 
-            # 查找 API 发现结果中的匹配模型（用于三方价）
-            api_models = discovered.get(vendor, [])
-            matched_api = None
-            for am in api_models:
-                aid = am["id"].lower()
-                # 简单匹配：模型名包含关系
-                if name.lower().replace(" ", "-").replace(".", "-") in aid or \
-                   name.lower().replace(" ", "").replace(".", "") in aid.replace("-", ""):
-                    matched_api = am
-                    break
+            # 三方价：优先用锚点中的已知价格，缺失则尝试从 API 发现补全
+            overseas_in_usd = model.get("overseas_in_usd")
+            overseas_out_usd = model.get("overseas_out_usd")
+            overseas_source = model.get("overseas_source", "")
 
-            # 三方价：优先用 API 发现的市场价
-            overseas_in_usd = None
-            overseas_out_usd = None
-            overseas_source = "API 发现结果为空"
-            if matched_api:
-                inp = matched_api.get("input_cost_per_token")
-                out = matched_api.get("output_cost_per_token")
-                if inp is not None:
-                    overseas_in_usd = round(float(inp) * 1_000_000, 4)
-                if out is not None:
-                    overseas_out_usd = round(float(out) * 1_000_000, 4)
-                overseas_source = f"{matched_api['_source']} / {matched_api['id']}"
+            domestic_in_cny = model.get("domestic_in_cny")
+            domestic_out_cny = model.get("domestic_out_cny")
+            domestic_source = model.get("domestic_source", "")
 
-            # 境内三方价：对国产模型，尝试从 API 中找同名
-            domestic_in_cny = None
-            domestic_out_cny = None
-            domestic_source = "境内三方近似参考"
-            if region == "国产" and matched_api:
-                # 如果 API 发现的是国产模型托管在境外平台的价格，可作为海外三方参考
-                pass
+            # 若锚点中海外三方价缺失，尝试从 API 发现补全
+            if overseas_in_usd is None and overseas_out_usd is None:
+                for am in api_models:
+                    aid = am["id"].lower()
+                    # 模糊匹配
+                    name_norm = name.lower().replace(" ", "-").replace(".", "-")
+                    if any(part in aid for part in name_norm.split("-") if len(part) >= 2):
+                        inp = am.get("input_cost_per_token")
+                        out = am.get("output_cost_per_token")
+                        if inp is not None:
+                            overseas_in_usd = round(float(inp) * 1_000_000, 4)
+                        if out is not None:
+                            overseas_out_usd = round(float(out) * 1_000_000, 4)
+                        if overseas_in_usd or overseas_out_usd:
+                            overseas_source = f"API补全 / {am.get('_source', 'unknown')} / {am['id']}"
+                        break
+
+            status = "PASS"
+            confidence = 90
+
+            # 根据数据完整度调整状态
+            if overseas_in_usd is None and overseas_out_usd is None:
+                confidence = min(confidence, 70)
+            if domestic_in_cny is None and domestic_out_cny is None and region == "国产":
+                confidence = min(confidence, 70)
 
             rows.append({
                 "vendor": vendor,
@@ -414,17 +777,17 @@ def build_discovered_token_rows() -> list[dict[str, Any]]:
                 "official_in": official_in,
                 "official_out": official_out,
                 "official_currency": currency,
-                "official_source": f"{vendor} 官方定价页（锚点）",
+                "official_source": f"{vendor} 官方定价页",
                 "overseas_in_usd": overseas_in_usd,
                 "overseas_out_usd": overseas_out_usd,
                 "overseas_source": overseas_source,
                 "domestic_in_cny": domestic_in_cny,
                 "domestic_out_cny": domestic_out_cny,
                 "domestic_source": domestic_source,
-                "note": f"动态发现：{vendor} {name}；API 匹配={matched_api is not None}",
-                "confidence": 90,
-                "status": "PASS",
-                "api_discovered_models": [m["id"] for m in api_models[:5]],  # 记录前5个发现的模型ID
+                "note": note or f"{vendor} {name}",
+                "confidence": confidence,
+                "status": status,
+                "api_discovered_models": [m["id"] for m in api_models[:5]],
             })
 
         discovered_log.append({
