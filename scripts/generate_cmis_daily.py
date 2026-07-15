@@ -1734,7 +1734,7 @@ def render_html(relative_prefix: str = "./") -> str:
         <p><strong>公开成交/主口径价</strong> — 来源为 SMM 算力快讯等行业基准渠道，样本明确标注 8卡/台、起租量（≥16/32台）、租期（1-3年长协）、含电含托管等关键信息，经合理性校验后进入主指数。Confidence ≥ 85。</p>
         <p style="margin-top:10px"><strong>低置信观察</strong> — 来自 SMM 买方出价/行业均价、或多个公开渠道交叉验证的区间中位数。价格已公开但样本口径（如子型号、异地部署限制）未完全拆清。Confidence 70-80。不进入 ROI 计算。</p>
         <p style="margin-top:10px"><strong>云价折算</strong> — 分两种：<br>① 同类配置扩倍：来源为明确配置的云主机（如天翼云 4×MLU370-S4），按配置倍数扩到 8 卡并保留长协折扣政策（如 1-3 年 85 折）折算。<br>② 单卡云价 ×8 折算：仅有单卡云实例小时价（如胜算云、模力方舟），无 8 卡整机月租时，公式：<br><code style="background:rgba(255,255,255,.06);padding:4px 8px;border-radius:4px;font-size:12px">参考价 = 单卡时价(元) × 8 × 24 × 30 × 0.7 ÷ 10000</code><br>其中 0.7 为长协折扣系数（云实例含虚拟化加价，批量裸金属长协价通常比云零售价低 30-40%）。该折算价仅作量级参考，非 8 卡整机成交价，不进入 ROI。</p>
-        <p style="margin-top:10px"><strong>市场核价区间（估算）</strong> — 已确认 8 卡服务器形态（如 OAM/PCIe 板卡架构），但无任何公开成交价时，基于可比卡租赁研报锚点和国产供给线索给出区间和中位数。若有单卡云实例价可折算，柱状图展示折算参考值（浅紫色），表格同时显示核价区间中位数和折算参考。置信度较低，不进入 ROI。</p>
+        <p style="margin-top:10px"><strong>市场核价区间（估算）</strong> — 已确认 8 卡服务器形态（如 OAM/PCIe 板卡架构），但无任何公开成交价时，基于可比卡租赁研报锚点和国产供给线索给出区间和中位数，保留在表格中作为价格带参考。柱状图中若有单卡云实例折算价则以折算值展示，无折算价则显示为"价格待补"。不进入 ROI。</p>
         <p style="margin-top:10px"><strong>价格待补</strong> — 截至当日未找到任何公开 8 卡整机月租价、云价折算基础或可参考的采购价线索。图表中以缺失值展示，每日持续扩源。</p>
       </div>
     </section>
@@ -1915,11 +1915,17 @@ def write_charts():
         return None if a is None or b is None else round(a - b, 2)
     def domestic_chart_tag(row: dict) -> str:
         if row["GPU 型号"] in STRATEGIC_DOMESTIC_GPUS and row["标准化价格"] is None:
+            _aux = row.get("折算参考")
+            if _aux is not None and _aux != "" and _aux != 0:
+                return "云折"
             return "价格待补"
         if row.get("价格口径") == "市场核价区间（估算）":
+            _aux = row.get("折算参考")
+            if _aux is not None and _aux != "" and _aux != 0:
+                return "云折"
             return "市场核价"
         if row["GPU 型号"] == "寒武纪 MLU370-X8":
-            return "云价折算"
+            return "云折"
         if row["GPU 型号"] in STRATEGIC_DOMESTIC_GPUS and not pass_status(row):
             return "低置信观察"
         return row.get("国内月租/海外月租")
@@ -1930,13 +1936,15 @@ def write_charts():
                 return "单卡云价折算"
             return "价格待补"
         kind = row.get("价格口径", "")
+        # 市场核价：有折算参考则用折算值展示，否则也用折算或待补
         if "市场核价" in kind:
             _aux = row.get("折算参考")
             if _aux is not None and _aux != "" and _aux != 0:
                 return "单卡云价折算"
-            return "市场核价"
+            # 无折算参考的市场核价，柱状图中不再展示估算中位数
+            return "价格待补"
         if "云价折算" in kind:
-            return "云价折算"
+            return "单卡云价折算"
         if "低置信" in kind or (row["GPU 型号"] in STRATEGIC_DOMESTIC_GPUS and not pass_status(row)):
             return "低置信观察"
         return "公开成交/主口径价"
@@ -2013,7 +2021,7 @@ def write_charts():
       else if (rawRatio) short = rawRatio.substring(0, 2);
       return short ? (p.value + '万·' + short) : (p.value + '万');
     }}
-    var tagMap = {{'海外缺口':'缺口','云价折算':'云折','市场核价':'市核','价格待补':'待补'}};
+    var tagMap = {{'海外缺口':'缺口','云折':'云折','低置信观察':'低置信','价格待补':'待补'}};
     var tag = tagMap[rawRatio] || (rawRatio && String(rawRatio).indexOf('%') >= 0 ? rawRatio : '');
     return tag ? (p.value + '\\n' + tag) : String(p.value);
   }}
