@@ -637,6 +637,8 @@ def _load_discovered_gpu_prices() -> tuple[dict[str, dict], dict[str, dict]]:
                 price_basis = "云价折算"
             elif "SMM区间中点" in source or "低置信" in note:
                 price_basis = "低置信观察"
+            elif "市场核价" in source or "市场核价" in note or "估算" in source:
+                continue  # 已废弃的市场核价数据，跳过不加载，回退到硬编码
             else:
                 price_basis = "公开成交/主口径价"
             # 若没给月租但有小时价，反推月租（单卡小时 -> 8卡整机月）
