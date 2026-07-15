@@ -44,19 +44,19 @@
     <header class="hero">
       <div class="eyebrow">CMIS Daily · Mobile</div>
       <h1>全球算力市场情报日报</h1>
-      <p class="note">日期：2026-07-15｜Freeze：2026-07-15 08:47｜版本：v1.2.0</p>
+      <p class="note">日期：2026-07-15｜Freeze：2026-07-15 09:24｜版本：v1.2.0</p>
       <a class="desktop-link" href="2026-07-15.html?desktop=1">切换电脑版</a>
     </header>
 
     <section class="metrics"><article class="metric"><span>国内指数样本</span><strong>11/21</strong><small>含国产战略关注 5 个</small></article>
 <article class="metric"><span>辅助 GPU 样本</span><strong>16/21</strong><small>海外云价/采购价/候选样本</small></article>
-<article class="metric"><span>Token 厂商覆盖</span><strong>15/15</strong><small>按厂商+主流模型覆盖，六个核心价格字段必须数值化</small></article>
+<article class="metric"><span>Token 厂商覆盖</span><strong>21/15</strong><small>按厂商+主流模型覆盖，六个核心价格字段必须数值化</small></article>
 <article class="metric"><span>待复核样本</span><strong>15 条</strong><small>REVIEW/REJECT 只进审计，不进方向性结论</small></article></section>
 
     <section id="summary">
       <h2>今日结论</h2>
       <article class="m-card">
-        <p>本期国内算力租赁指数共展示 11 个型号，其中 6 个为 PASS 主口径样本，H100 80G 国内 8卡整机月租为 7.6 万元；国产战略关注卡继续保留在指数和图表中，但低置信、云价折算和市场核价样本均标注为观察口径。</p><p>海外 GPU Cloud 继续作为辅助参考，不与国内长租指数混用；采购覆盖和毛回本测算只跟随国内指数型号展开。Token 价格覆盖 15 家厂商，展示官方价、海外三方价和境内三方价，用于观察模型 API 市场价差。</p><p>当前需要重点复核的是 5 个国产战略关注样本：若后续采集到明确 8卡整机/裸机/月租或采购价，应优先用新公开价格替换市场核价区间；未取得新价前，不进入 ROI 或方向性市场结论。</p>
+        <p>本期国内算力租赁指数共展示 11 个型号，其中 6 个为 PASS 主口径样本，H100 80G 国内 8卡整机月租为 7.6 万元；国产战略关注卡继续保留在指数和图表中，但低置信、云价折算和市场核价样本均标注为观察口径。</p><p>海外 GPU Cloud 继续作为辅助参考，不与国内长租指数混用；采购覆盖和毛回本测算只跟随国内指数型号展开。Token 价格覆盖 21 家厂商，展示官方价、海外三方价和境内三方价，用于观察模型 API 市场价差。</p><p>当前需要重点复核的是 5 个国产战略关注样本：若后续采集到明确 8卡整机/裸机/月租或采购价，应优先用新公开价格替换市场核价区间；未取得新价前，不进入 ROI 或方向性市场结论。</p>
       </article>
     </section>
 
@@ -256,72 +256,192 @@
       <figure><figcaption>Token 输出价：官方 vs 海外三方 vs 境内三方</figcaption><div id="chart-token-output" class="chart"></div></figure>
       <details><summary>模型价格卡片</summary><div class="details-body">
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>OpenAI</h3><small>gpt-5</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>OpenAI</h3><small>GPT-5.5</small></div><span>PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>官方输入</b>8.97</span>
-            <span class="pill"><b>官方输出</b>71.8</span>
-            <span class="pill"><b>海外三方</b>USD 1.25/百万Token（约 ¥8.97；精确同名）</span>
-            <span class="pill"><b>境内三方</b>CNY 8.97/百万Token（近似参考）</span>
+            <span class="pill"><b>官方输入</b>35.9</span>
+            <span class="pill"><b>官方输出</b>215.4</span>
+            <span class="pill"><b>海外三方</b>USD 5.0/百万Token（约 ¥35.9；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 35.9/百万Token（近似参考）</span>
           </div>
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>OpenAI</h3><small>gpt-5-mini</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>OpenAI</h3><small>GPT-5.4</small></div><span>PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>官方输入</b>1.79</span>
-            <span class="pill"><b>官方输出</b>14.36</span>
-            <span class="pill"><b>海外三方</b>USD 0.25/百万Token（约 ¥1.79；精确同名）</span>
-            <span class="pill"><b>境内三方</b>CNY 1.79/百万Token（近似参考）</span>
+            <span class="pill"><b>官方输入</b>17.95</span>
+            <span class="pill"><b>官方输出</b>107.7</span>
+            <span class="pill"><b>海外三方</b>USD 2.5/百万Token（约 ¥17.95；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 17.95/百万Token（近似参考）</span>
           </div>
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>Anthropic</h3><small>claude-sonnet-5</small></div><span>OFFICIAL_REVIEW</span></div>
+          <div class="m-card-head"><div><h3>OpenAI</h3><small>GPT-5.4 mini</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>5.38</span>
+            <span class="pill"><b>官方输出</b>32.31</span>
+            <span class="pill"><b>海外三方</b>USD 0.75/百万Token（约 ¥5.38；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 5.38/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>OpenAI</h3><small>o4 Mini</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>7.9</span>
+            <span class="pill"><b>官方输出</b>31.59</span>
+            <span class="pill"><b>海外三方</b>USD 1.1/百万Token（约 ¥7.9；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 7.9/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>Anthropic</h3><small>Claude Opus 4.8</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>35.9</span>
+            <span class="pill"><b>官方输出</b>179.5</span>
+            <span class="pill"><b>海外三方</b>USD 5.0/百万Token（约 ¥35.9；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 35.9/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>Anthropic</h3><small>Claude Sonnet 4.6</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>21.54</span>
+            <span class="pill"><b>官方输出</b>107.7</span>
+            <span class="pill"><b>海外三方</b>USD 3.0/百万Token（约 ¥21.54；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 21.54/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>Anthropic</h3><small>Claude Haiku 4.5</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>7.18</span>
+            <span class="pill"><b>官方输出</b>35.9</span>
+            <span class="pill"><b>海外三方</b>USD 1.0/百万Token（约 ¥7.18；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 7.18/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>Google</h3><small>Gemini 3.1 Pro</small></div><span>PASS</span></div>
           <div class="pill-row">
             <span class="pill"><b>官方输入</b>14.36</span>
-            <span class="pill"><b>官方输出</b>71.8</span>
+            <span class="pill"><b>官方输出</b>86.16</span>
             <span class="pill"><b>海外三方</b>USD 2.0/百万Token（约 ¥14.36；精确同名）</span>
             <span class="pill"><b>境内三方</b>CNY 14.36/百万Token（近似参考）</span>
           </div>
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>Anthropic</h3><small>claude-haiku-5</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>Google</h3><small>Gemini 3.5 Flash</small></div><span>PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>官方输入</b>5.74</span>
-            <span class="pill"><b>官方输出</b>28.72</span>
-            <span class="pill"><b>海外三方</b>USD 0.8/百万Token（约 ¥5.74；近似参考）</span>
-            <span class="pill"><b>境内三方</b>CNY 5.74/百万Token（近似参考）</span>
+            <span class="pill"><b>官方输入</b>10.77</span>
+            <span class="pill"><b>官方输出</b>64.62</span>
+            <span class="pill"><b>海外三方</b>USD 1.5/百万Token（约 ¥10.77；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 10.77/百万Token（近似参考）</span>
           </div>
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>Google</h3><small>gemini-2.5-pro</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>Google</h3><small>Gemini 3.1 Flash-Lite</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>1.79</span>
+            <span class="pill"><b>官方输出</b>10.77</span>
+            <span class="pill"><b>海外三方</b>USD 0.25/百万Token（约 ¥1.79；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 1.79/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>Mistral</h3><small>Mistral Medium 3.5</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>14.36</span>
+            <span class="pill"><b>官方输出</b>53.85</span>
+            <span class="pill"><b>海外三方</b>USD 2.0/百万Token（约 ¥14.36；同系列参考）</span>
+            <span class="pill"><b>境内三方</b>CNY 14.36/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>Mistral</h3><small>Mistral Large 3</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>3.59</span>
+            <span class="pill"><b>官方输出</b>10.77</span>
+            <span class="pill"><b>海外三方</b>USD 0.5/百万Token（约 ¥3.59；同系列参考）</span>
+            <span class="pill"><b>境内三方</b>CNY 3.59/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>Mistral</h3><small>Mistral Small 4</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>0.72</span>
+            <span class="pill"><b>官方输出</b>2.15</span>
+            <span class="pill"><b>海外三方</b>USD 0.1/百万Token（约 ¥0.72；同系列参考）</span>
+            <span class="pill"><b>境内三方</b>CNY 0.72/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>Cohere</h3><small>Command A+</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>17.95</span>
+            <span class="pill"><b>官方输出</b>71.8</span>
+            <span class="pill"><b>海外三方</b>USD 2.5/百万Token（约 ¥17.95；同系列参考）</span>
+            <span class="pill"><b>境内三方</b>CNY 17.95/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>Cohere</h3><small>Command R+</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>17.95</span>
+            <span class="pill"><b>官方输出</b>71.8</span>
+            <span class="pill"><b>海外三方</b>USD 2.5/百万Token（约 ¥17.95；同系列参考）</span>
+            <span class="pill"><b>境内三方</b>CNY 17.95/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>xAI Grok</h3><small>Grok 4.3</small></div><span>PASS</span></div>
           <div class="pill-row">
             <span class="pill"><b>官方输入</b>8.97</span>
-            <span class="pill"><b>官方输出</b>71.8</span>
+            <span class="pill"><b>官方输出</b>17.95</span>
             <span class="pill"><b>海外三方</b>USD 1.25/百万Token（约 ¥8.97；精确同名）</span>
             <span class="pill"><b>境内三方</b>CNY 8.97/百万Token（近似参考）</span>
           </div>
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>Google</h3><small>gemini-2.5-flash</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>xAI Grok</h3><small>Grok 4 Fast</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>1.44</span>
+            <span class="pill"><b>官方输出</b>3.59</span>
+            <span class="pill"><b>海外三方</b>USD 0.2/百万Token（约 ¥1.44；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 1.44/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>Meta Llama</h3><small>Llama 4 Maverick</small></div><span>PASS</span></div>
           <div class="pill-row">
             <span class="pill"><b>官方输入</b>2.15</span>
-            <span class="pill"><b>官方输出</b>17.95</span>
+            <span class="pill"><b>官方输出</b>4.31</span>
             <span class="pill"><b>海外三方</b>USD 0.3/百万Token（约 ¥2.15；精确同名）</span>
             <span class="pill"><b>境内三方</b>CNY 2.15/百万Token（近似参考）</span>
           </div>
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>DeepSeek</h3><small>DeepSeek-V4-Flash</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>Meta Llama</h3><small>Llama 4 Scout</small></div><span>PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>官方输入</b>1</span>
-            <span class="pill"><b>官方输出</b>2</span>
-            <span class="pill"><b>海外三方</b>USD 0.09/百万Token（约 ¥0.65；精确同名）</span>
-            <span class="pill"><b>境内三方</b>CNY 1.0/百万Token（精确同名）</span>
+            <span class="pill"><b>官方输入</b>1.08</span>
+            <span class="pill"><b>官方输出</b>2.51</span>
+            <span class="pill"><b>海外三方</b>USD 0.15/百万Token（约 ¥1.08；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 1.08/百万Token（近似参考）</span>
           </div>
         </article>
 
@@ -336,7 +456,17 @@
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>阿里云/通义千问</h3><small>qwen3.7-max</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>DeepSeek</h3><small>DeepSeek-V4-Flash</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>1</span>
+            <span class="pill"><b>官方输出</b>2</span>
+            <span class="pill"><b>海外三方</b>USD 0.09/百万Token（约 ¥0.65；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 1.0/百万Token（精确同名）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>阿里云/通义千问</h3><small>Qwen3.7-Max</small></div><span>PASS</span></div>
           <div class="pill-row">
             <span class="pill"><b>官方输入</b>12</span>
             <span class="pill"><b>官方输出</b>36</span>
@@ -346,7 +476,7 @@
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>阿里云/通义千问</h3><small>qwen3.7-plus</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>阿里云/通义千问</h3><small>Qwen3.7-Plus</small></div><span>PASS</span></div>
           <div class="pill-row">
             <span class="pill"><b>官方输入</b>2</span>
             <span class="pill"><b>官方输出</b>8</span>
@@ -356,7 +486,7 @@
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>火山方舟/豆包</h3><small>doubao-seed-1.6</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>火山方舟/豆包</h3><small>Doubao-Seed-1.6</small></div><span>PASS</span></div>
           <div class="pill-row">
             <span class="pill"><b>官方输入</b>0.8</span>
             <span class="pill"><b>官方输出</b>2</span>
@@ -366,22 +496,22 @@
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>火山方舟/豆包</h3><small>doubao-seed-1.6-flash</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>火山方舟/豆包</h3><small>Doubao-Seed-1.6-Flash</small></div><span>PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>官方输入</b>0.8</span>
-            <span class="pill"><b>官方输出</b>2</span>
-            <span class="pill"><b>海外三方</b>CNY 0.8/百万Token（同系列参考，海外三方折算）</span>
-            <span class="pill"><b>境内三方</b>CNY 1.5/百万Token（精确同名）</span>
+            <span class="pill"><b>官方输入</b>0.15</span>
+            <span class="pill"><b>官方输出</b>1.5</span>
+            <span class="pill"><b>海外三方</b>CNY 0.15/百万Token（同系列参考，海外三方折算）</span>
+            <span class="pill"><b>境内三方</b>CNY 1.5/百万Token（同系列参考）</span>
           </div>
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>腾讯混元</h3><small>Hunyuan-A13B</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>火山方舟/豆包</h3><small>Doubao-Seed-1.6-Thinking</small></div><span>PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>官方输入</b>0.5</span>
-            <span class="pill"><b>官方输出</b>2</span>
-            <span class="pill"><b>海外三方</b>USD 0.14/百万Token（约 ¥1.01；精确同名）</span>
-            <span class="pill"><b>境内三方</b>CNY 1.0/百万Token（精确同名）</span>
+            <span class="pill"><b>官方输入</b>0.8</span>
+            <span class="pill"><b>官方输出</b>8</span>
+            <span class="pill"><b>海外三方</b>CNY 0.8/百万Token（同系列参考，海外三方折算）</span>
+            <span class="pill"><b>境内三方</b>CNY 0.8/百万Token（近似参考）</span>
           </div>
         </article>
 
@@ -396,22 +526,12 @@
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>Kimi / Moonshot</h3><small>Kimi-K2.7-Code</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>腾讯混元</h3><small>Hunyuan-A13B</small></div><span>PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>官方输入</b>6.5</span>
-            <span class="pill"><b>官方输出</b>27</span>
-            <span class="pill"><b>海外三方</b>USD 0.719/百万Token（约 ¥5.16；精确同名）</span>
-            <span class="pill"><b>境内三方</b>CNY 6.5/百万Token（精确同名）</span>
-          </div>
-        </article>
-
-        <article class="m-card compact">
-          <div class="m-card-head"><div><h3>Kimi / Moonshot</h3><small>Kimi-K2.6</small></div><span>PASS</span></div>
-          <div class="pill-row">
-            <span class="pill"><b>官方输入</b>6.5</span>
-            <span class="pill"><b>官方输出</b>27</span>
-            <span class="pill"><b>海外三方</b>USD 0.66/百万Token（约 ¥4.74；精确同名）</span>
-            <span class="pill"><b>境内三方</b>CNY 6.5/百万Token（精确同名）</span>
+            <span class="pill"><b>官方输入</b>0.5</span>
+            <span class="pill"><b>官方输出</b>2</span>
+            <span class="pill"><b>海外三方</b>USD 0.14/百万Token（约 ¥1.01；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 1.0/百万Token（同系列参考）</span>
           </div>
         </article>
 
@@ -426,17 +546,17 @@
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>百度文心</h3><small>ERNIE-4.5-Turbo-VL-32K</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>智谱 GLM / Z.ai</h3><small>GLM-5.1 Pro</small></div><span>PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>官方输入</b>3</span>
-            <span class="pill"><b>官方输出</b>9</span>
-            <span class="pill"><b>海外三方</b>USD 0.42/百万Token（约 ¥3.02；近似参考）</span>
-            <span class="pill"><b>境内三方</b>CNY 3.0/百万Token（近似参考）</span>
+            <span class="pill"><b>官方输入</b>6</span>
+            <span class="pill"><b>官方输出</b>24</span>
+            <span class="pill"><b>海外三方</b>USD 1.4/百万Token（约 ¥10.05；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 6.0/百万Token（同系列参考）</span>
           </div>
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>百度文心</h3><small>ERNIE 5.0 0-32K</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>百度文心</h3><small>ERNIE 5.0（0-32K）</small></div><span>PASS</span></div>
           <div class="pill-row">
             <span class="pill"><b>官方输入</b>6</span>
             <span class="pill"><b>官方输出</b>24</span>
@@ -446,7 +566,7 @@
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>百度文心</h3><small>ERNIE 5.0 32K-128K</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>百度文心</h3><small>ERNIE 5.0（32K-128K）</small></div><span>PASS</span></div>
           <div class="pill-row">
             <span class="pill"><b>官方输入</b>10</span>
             <span class="pill"><b>官方输出</b>40</span>
@@ -456,12 +576,42 @@
         </article>
 
         <article class="m-card compact">
+          <div class="m-card-head"><div><h3>百度文心</h3><small>ERNIE-4.5-Turbo</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>0.8</span>
+            <span class="pill"><b>官方输出</b>3.2</span>
+            <span class="pill"><b>海外三方</b>USD 0.42/百万Token（约 ¥3.02；近似参考）</span>
+            <span class="pill"><b>境内三方</b>CNY 0.8/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>Kimi / Moonshot</h3><small>Kimi K2.7 Code</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>6.5</span>
+            <span class="pill"><b>官方输出</b>27</span>
+            <span class="pill"><b>海外三方</b>USD 0.719/百万Token（约 ¥5.16；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 6.5/百万Token（精确同名）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>Kimi / Moonshot</h3><small>Kimi K2.6</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>6.5</span>
+            <span class="pill"><b>官方输出</b>27</span>
+            <span class="pill"><b>海外三方</b>USD 0.66/百万Token（约 ¥4.74；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 6.5/百万Token（精确同名）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
           <div class="m-card-head"><div><h3>MiniMax</h3><small>MiniMax-M3 标准层 ≤512K</small></div><span>PASS</span></div>
           <div class="pill-row">
             <span class="pill"><b>官方输入</b>2.1</span>
             <span class="pill"><b>官方输出</b>8.4</span>
             <span class="pill"><b>海外三方</b>USD 0.3/百万Token（约 ¥2.15；精确同名）</span>
-            <span class="pill"><b>境内三方</b>CNY 2.1/百万Token（近似参考）</span>
+            <span class="pill"><b>境内三方</b>CNY 2.1/百万Token（同系列参考）</span>
           </div>
         </article>
 
@@ -476,12 +626,12 @@
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>MiniMax</h3><small>MiniMax-M3 优先服务 ≤512K</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>讯飞星火</h3><small>Spark X2</small></div><span>PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>官方输入</b>3.15</span>
-            <span class="pill"><b>官方输出</b>12.6</span>
-            <span class="pill"><b>海外三方</b>CNY 3.15/百万Token（同系列参考，海外三方折算）</span>
-            <span class="pill"><b>境内三方</b>CNY 3.15/百万Token（近似参考）</span>
+            <span class="pill"><b>官方输入</b>1</span>
+            <span class="pill"><b>官方输出</b>2</span>
+            <span class="pill"><b>海外三方</b>CNY 1.0/百万Token（同系列参考，海外三方折算）</span>
+            <span class="pill"><b>境内三方</b>CNY 1.0/百万Token（近似参考）</span>
           </div>
         </article>
 
@@ -496,32 +646,102 @@
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>百川智能</h3><small>Baichuan4</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>百川智能</h3><small>Baichuan-M3-Plus</small></div><span>PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>官方输入</b>100</span>
-            <span class="pill"><b>官方输出</b>100</span>
-            <span class="pill"><b>海外三方</b>CNY 100.0/百万Token（同系列参考，海外三方折算）</span>
-            <span class="pill"><b>境内三方</b>CNY 100.0/百万Token（近似参考）</span>
+            <span class="pill"><b>官方输入</b>5</span>
+            <span class="pill"><b>官方输出</b>9</span>
+            <span class="pill"><b>海外三方</b>CNY 5.0/百万Token（同系列参考，海外三方折算）</span>
+            <span class="pill"><b>境内三方</b>CNY 5.0/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>百川智能</h3><small>Baichuan-M3</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>10</span>
+            <span class="pill"><b>官方输出</b>30</span>
+            <span class="pill"><b>海外三方</b>CNY 10.0/百万Token（同系列参考，海外三方折算）</span>
+            <span class="pill"><b>境内三方</b>CNY 10.0/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>零一万物</h3><small>Yi-Lightning</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>0.99</span>
+            <span class="pill"><b>官方输出</b>0.99</span>
+            <span class="pill"><b>海外三方</b>CNY 0.99/百万Token（同系列参考，海外三方折算）</span>
+            <span class="pill"><b>境内三方</b>CNY 0.99/百万Token（近似参考）</span>
           </div>
         </article>
 
         <article class="m-card compact">
           <div class="m-card-head"><div><h3>零一万物</h3><small>Yi-Large</small></div><span>PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>官方输入</b>0</span>
-            <span class="pill"><b>官方输出</b>0</span>
-            <span class="pill"><b>海外三方</b>CNY 0.0/百万Token（同系列参考，海外三方折算）</span>
-            <span class="pill"><b>境内三方</b>CNY 0.0/百万Token（近似参考）</span>
+            <span class="pill"><b>官方输入</b>20</span>
+            <span class="pill"><b>官方输出</b>20</span>
+            <span class="pill"><b>海外三方</b>CNY 20.0/百万Token（同系列参考，海外三方折算）</span>
+            <span class="pill"><b>境内三方</b>CNY 20.0/百万Token（近似参考）</span>
           </div>
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>阶跃星辰</h3><small>step-2-mini</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>阶跃星辰</h3><small>Step 3.5 Flash</small></div><span>PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>官方输入</b>1</span>
-            <span class="pill"><b>官方输出</b>2</span>
-            <span class="pill"><b>海外三方</b>CNY 1.0/百万Token（同系列参考，海外三方折算）</span>
-            <span class="pill"><b>境内三方</b>CNY 1.0/百万Token（近似参考）</span>
+            <span class="pill"><b>官方输入</b>0.7</span>
+            <span class="pill"><b>官方输出</b>2.1</span>
+            <span class="pill"><b>海外三方</b>CNY 0.7/百万Token（同系列参考，海外三方折算）</span>
+            <span class="pill"><b>境内三方</b>CNY 0.7/百万Token（精确同名）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>阶跃星辰</h3><small>Step-R1-V-Mini</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>2.5</span>
+            <span class="pill"><b>官方输出</b>8</span>
+            <span class="pill"><b>海外三方</b>CNY 2.5/百万Token（同系列参考，海外三方折算）</span>
+            <span class="pill"><b>境内三方</b>CNY 2.5/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>商汤日日新</h3><small>SenseNova-V6.5-Pro</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>3</span>
+            <span class="pill"><b>官方输出</b>9</span>
+            <span class="pill"><b>海外三方</b>CNY 3.0/百万Token（同系列参考，海外三方折算）</span>
+            <span class="pill"><b>境内三方</b>CNY 3.0/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>商汤日日新</h3><small>SenseNova-V6.5-Turbo</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>1.5</span>
+            <span class="pill"><b>官方输出</b>4.5</span>
+            <span class="pill"><b>海外三方</b>CNY 1.5/百万Token（同系列参考，海外三方折算）</span>
+            <span class="pill"><b>境内三方</b>CNY 1.5/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>昆仑万维天工</h3><small>SkyClaw-v1.0</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>0.5</span>
+            <span class="pill"><b>官方输出</b>4</span>
+            <span class="pill"><b>海外三方</b>CNY 0.5/百万Token（同系列参考，海外三方折算）</span>
+            <span class="pill"><b>境内三方</b>CNY 0.5/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>昆仑万维天工</h3><small>SkyClaw-v1.0-lite</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>0.3</span>
+            <span class="pill"><b>官方输出</b>1.5</span>
+            <span class="pill"><b>海外三方</b>CNY 0.3/百万Token（同系列参考，海外三方折算）</span>
+            <span class="pill"><b>境内三方</b>CNY 0.3/百万Token（近似参考）</span>
           </div>
         </article></div></details>
     </section>
@@ -741,6 +961,6 @@
     <a href="#summary">结论</a><a href="#domestic">国内</a><a href="#overseas">海外</a><a href="#token">Token</a><a href="#profit">利润</a><a href="#audit">审计</a>
   </nav>
   <script src="../_shared/js/echarts.min.js"></script>
-  <script src="../assets/charts.js?v=20260715084720-v1.2.0"></script>
+  <script src="../assets/charts.js?v=20260715092455-v1.2.0"></script>
 </body>
 </html>
