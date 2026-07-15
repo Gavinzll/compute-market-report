@@ -1446,10 +1446,11 @@ def html_escape(x) -> str:
     return str(x).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
-def table(rows: list[dict], cols: list[str] | None = None) -> str:
+def table(rows: list[dict], cols: list[str] | None = None, headers: list[str] | None = None) -> str:
     if not rows:
         return "<p>暂无数据。</p>"
     cols = cols or list(rows[0].keys())
+    display = headers or cols
     trs = []
     for row in rows:
         cells = []
@@ -1459,7 +1460,7 @@ def table(rows: list[dict], cols: list[str] | None = None) -> str:
         trs.append("<tr>" + "".join(cells) + "</tr>")
     return (
         '<div class="table-wrap"><table><thead><tr>'
-        + "".join(f"<th>{html_escape(c)}</th>" for c in cols)
+        + "".join(f"<th>{html_escape(c)}</th>" for c in display)
         + "</tr></thead><tbody>"
         + "\n".join(trs)
         + "</tbody></table></div>"
@@ -1645,14 +1646,14 @@ def render_html(relative_prefix: str = "./") -> str:
       <h2>国内算力租赁主指数</h2>
       <p class="note">高置信样本仍要求 PASS 且 Confidence≥70；昇腾 910B、寒武纪 MLU370-X8、海光 DCU K100、壁仞 BR100、摩尔线程 MTT S4000 作为国产战略关注卡强制列入指数表和柱状图。寒武纪为天翼云 4卡实例折算的 8卡云价；海光/壁仞/摩尔线程采用市场核价区间中位数入图，并在表格中显示区间和依据。柱状图按价格口径分色：主口径、低置信观察、云价折算、市场核价和价格待补分别展示。</p>
       <figure><figcaption>国内指数：万元/8卡整机/月；颜色区分主口径、低置信观察、云价折算与市场核价</figcaption><div id="chart-domestic-main" class="chart"></div></figure>
-      {table(domestic_index_rows, ["GPU 型号", "GPU 分类", "价格口径", "标准化价格（万/月）", "国内月租/海外月租", "Confidence Score", "校验状态", "口径说明"] if domestic_index_rows else None)}
+      {table(domestic_index_rows, ["GPU 型号", "GPU 分类", "价格口径", "标准化价格", "国内月租/海外月租", "Confidence Score", "校验状态", "口径说明"], headers=["GPU 型号", "GPU 分类", "价格口径", "标准化价格（万/月）", "国内月租/海外月租", "Confidence", "校验状态", "口径说明"] if domestic_index_rows else None)}
     </section>
 
     <section id="overseas">
       <h2>海外 GPU Cloud 参考</h2>
       <p class="note">海外 GPU Cloud 原始来源多为美元/卡/小时，已统一折算为人民币口径"万元/8卡整机/月"绘图和展示，单卡小时价保留在表格中作为辅助字段；海外月租仍只进入海外参考，不进入国内租赁指数。</p>
       <figure><figcaption>海外 GPU Cloud：统一折算为万元/8卡整机/月，仅供参考</figcaption><div id="chart-overseas" class="chart"></div></figure>
-      {table(overseas_pass, ["GPU 型号", "主数据源", "原始价格", "标准化价格（万/月）", "单卡小时价（人民币）", "Confidence Score", "校验状态"] if overseas_pass else None)}
+      {table(overseas_pass, ["GPU 型号", "主数据源", "原始价格", "标准化价格", "单卡小时价（人民币）", "Confidence Score", "校验状态"], headers=["GPU 型号", "主数据源", "原始价格", "标准化价格（万/月）", "单卡小时价（人民币）", "Confidence", "校验状态"] if overseas_pass else None)}
     </section>
 
     <section id="audit">
