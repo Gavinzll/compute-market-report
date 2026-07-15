@@ -1265,6 +1265,7 @@ def domestic_rows() -> list[dict]:
             "是否进入主指数": included,
             "Reject/Review 原因": reason,
             "口径说明": _note,
+            "折算参考": item.get("price_band_aux", ""),
             "数据来源与口径": brief_note,
         })
     return rows
@@ -1719,33 +1720,17 @@ def render_html(relative_prefix: str = "./") -> str:
       <h2>国内算力租赁主指数</h2>
       <p class="note">高置信样本仍要求 PASS 且 Confidence≥70；昇腾 910B、寒武纪 MLU370-X8、海光 DCU K100、壁仞 BR100、摩尔线程 MTT S4000 作为国产战略关注卡强制列入指数表和柱状图。寒武纪为天翼云 4卡实例折算的 8卡云价；海光/壁仞/摩尔线程采用市场核价区间中位数入图，并在表格中显示区间和依据。柱状图按价格口径分色：主口径、低置信观察、云价折算、市场核价和价格待补分别展示。</p>
       <figure><figcaption>国内指数：万元/8卡整机/月；颜色区分主口径、低置信观察、云价折算与市场核价</figcaption><div id="chart-domestic-main" class="chart"></div></figure>
-      {table(domestic_index_rows, ["GPU 型号", "GPU 分类", "价格口径", "标准化价格", "国内月租/海外月租", "Confidence Score", "校验状态", "口径说明"], headers=["GPU 型号", "GPU 分类", "价格口径", "标准化价格（万/月）", "国内月租/海外月租", "Confidence", "校验状态", "口径说明"] if domestic_index_rows else None)}
+      {table(domestic_index_rows, ["GPU 型号", "GPU 分类", "价格口径", "标准化价格", "折算参考", "国内月租/海外月租", "Confidence Score", "校验状态", "口径说明"], headers=["GPU 型号", "GPU 分类", "价格口径", "标准化价格（万/月）", "折算参考", "国内月租/海外月租", "Confidence", "校验状态", "口径说明"] if domestic_index_rows else None)}
     </section>
 
-    <section id="domestic-price-basis" class="note-section">
+    <section id="domestic-price-basis">
       <h2>国内价格口径说明</h2>
-      <div class="basis-card">
-        <h3>公开成交/主口径价</h3>
-        <p>来源为 SMM 算力快讯等行业基准渠道，样本明确标注<strong>8卡/台、起租量（≥16/32台）、租期（1-3年长协）、含电含托管</strong>等关键信息，经合理性校验后进入主指数。Confidence ≥ 85。</p>
-      </div>
-      <div class="basis-card">
-        <h3>低置信观察</h3>
-        <p>来自 SMM 买方出价/行业均价、或多个公开渠道交叉验证的区间中位数。价格已公开但样本口径（如子型号、异地部署限制）未完全拆清。Confidence 70-80。不进入 ROI 计算。</p>
-      </div>
-      <div class="basis-card">
-        <h3>云价折算</h3>
-        <p><strong>同类配置扩倍：</strong>仅当来源为明确配置的云主机（如天翼云 4×MLU370-S4），且有官方包月价时，按配置倍数扩到 8 卡并保留长协折扣政策（如 1-3 年 85 折）折算。公式：云主机包月价 × 扩倍系数 × 折扣系数。</p>
-        <p><strong>单卡云价 ×8 折算：</strong>当仅有单卡云实例小时价（如胜算云、模力方舟），无 8 卡整机裸金属月租时，按以下公式给出量级参考：</p>
-        <p class="formula">参考价 = 单卡时价(元) × 8卡 × 24时 × 30天 × 0.7(长协折扣系数) ÷ 10000</p>
-        <p>其中 0.7 折扣系数反映：云实例含虚拟化加价和平台运营成本，实际批量裸金属长协价通常比云零售价低 30-40%。该折算价 <strong>仅作量级参考</strong>，非 8 卡整机成交价，不进入 ROI 计算。</p>
-      </div>
-      <div class="basis-card">
-        <h3>市场核价区间（估算）</h3>
-        <p>当已确认 8 卡服务器形态（如 OAM 板卡架构、PCIe 形态、单机 8 卡能力），但无任何公开成交价时，基于 H100/A100 等可比卡的租赁研报锚点和国产供给线索，给出市场核价区间和中位数。置信度较低，不进入 ROI 计算。</p>
-      </div>
-      <div class="basis-card">
-        <h3>价格待补</h3>
-        <p>该 GPU 型号截至当日未找到任何公开的 8 卡整机月租价、云价折算基础或可参考的采购价线索。图表中以缺失值展示，每日持续扩源检索。</p>
+      <div class="panel">
+        <p><strong>公开成交/主口径价</strong> — 来源为 SMM 算力快讯等行业基准渠道，样本明确标注 8卡/台、起租量（≥16/32台）、租期（1-3年长协）、含电含托管等关键信息，经合理性校验后进入主指数。Confidence ≥ 85。</p>
+        <p style="margin-top:10px"><strong>低置信观察</strong> — 来自 SMM 买方出价/行业均价、或多个公开渠道交叉验证的区间中位数。价格已公开但样本口径（如子型号、异地部署限制）未完全拆清。Confidence 70-80。不进入 ROI 计算。</p>
+        <p style="margin-top:10px"><strong>云价折算</strong> — 分两种：<br>① 同类配置扩倍：来源为明确配置的云主机（如天翼云 4×MLU370-S4），按配置倍数扩到 8 卡并保留长协折扣政策（如 1-3 年 85 折）折算。<br>② 单卡云价 ×8 折算：仅有单卡云实例小时价（如胜算云、模力方舟），无 8 卡整机月租时，公式：<br><code style="background:rgba(255,255,255,.06);padding:4px 8px;border-radius:4px;font-size:12px">参考价 = 单卡时价(元) × 8 × 24 × 30 × 0.7 ÷ 10000</code><br>其中 0.7 为长协折扣系数（云实例含虚拟化加价，批量裸金属长协价通常比云零售价低 30-40%）。该折算价仅作量级参考，非 8 卡整机成交价，不进入 ROI。</p>
+        <p style="margin-top:10px"><strong>市场核价区间（估算）</strong> — 已确认 8 卡服务器形态（如 OAM/PCIe 板卡架构），但无任何公开成交价时，基于可比卡租赁研报锚点和国产供给线索给出区间和中位数。置信度较低，不进入 ROI。</p>
+        <p style="margin-top:10px"><strong>价格待补</strong> — 截至当日未找到任何公开 8 卡整机月租价、云价折算基础或可参考的采购价线索。图表中以缺失值展示，每日持续扩源。</p>
       </div>
     </section>
 
@@ -1853,13 +1838,6 @@ def render_mobile_html(relative_prefix: str = "./", desktop_href: str = "latest.
     .quick-nav{{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;gap:6px;overflow:auto;padding:8px 12px calc(8px + env(safe-area-inset-bottom));background:rgba(7,17,31,.95);border-top:1px solid var(--rule);backdrop-filter:blur(12px)}}
     .quick-nav a{{flex:0 0 auto;padding:7px 10px;border:1px solid var(--rule);border-radius:999px;background:var(--bg2);font-size:12px;color:var(--ink)}}
     .missing{{color:var(--bad);font-weight:700}}
-    .note-section{{padding:16px 12px;margin:16px 0;border:1px solid var(--rule);border-radius:12px;background:rgba(255,255,255,.02)}}
-    .note-section h2{{font-size:16px;margin:0 0 12px;color:var(--accent2);border-bottom:1px solid var(--rule);padding-bottom:8px}}
-    .basis-card{{padding:10px 0;margin:0 0 10px;border-bottom:1px dashed rgba(255,255,255,.06)}}
-    .basis-card:last-child{{border-bottom:none;margin-bottom:0}}
-    .basis-card h3{{font-size:13px;margin:0 0 6px;color:var(--good)}}
-    .basis-card p{{font-size:12px;line-height:1.7;margin:0 0 4px;color:var(--ink)}}
-    .basis-card .formula{{font-family:var(--mono);background:rgba(255,255,255,.06);padding:8px 12px;border-radius:6px;margin:6px 0;font-size:12px;color:var(--accent2)}}
   </style>
 </head>
 <body>
