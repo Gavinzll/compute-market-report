@@ -1113,7 +1113,7 @@ DOMESTIC_RENTAL_INPUT = {
         "monthly_wan": 4.0,
         "price_basis": "市场核价区间（估算）",
         "price_band": "3.5-4.5",
-        "price_band_aux": "单卡云价×8折算 1.21（BW1000，模力方舟）",
+        "price_band_aux": 1.21,
         "price_refresh_rule": "每日优先检索海光 DCU 8卡整机、裸机、智算中心或集成商明确月租（SMM、曙光智算 scnet.cn、天翼云、模力方舟 ai.gitee.com/compute、运营商、IDC、淘宝/闲鱼）；若找到公开市场价，按来源置信度更新价格口径和标准化价格；若未找到，沿用 3.5-4.5 万元/月市场核价区间，中位数入图。关键词：海光 DCU Z100 租赁、DCU K100 月租、海光 BW1000。",
         "source": "金品 KG4208-H73 海光双路8卡服务器配置确认；行业租赁模型与国产裸机可比区间核价（非公开成交价）",
         "confidence": 48,
@@ -1127,7 +1127,7 @@ DOMESTIC_RENTAL_INPUT = {
         "monthly_wan": 4.3,
         "price_basis": "市场核价区间（估算）",
         "price_band": "3.8-4.8",
-        "price_band_aux": "单卡云价×8折算 0.60（天垓100，胜算云）",
+        "price_band_aux": 0.60,
         "price_refresh_rule": "每日优先检索壁仞 BR100/BR104/BR106 8卡 OAM 整机、裸机或智算中心明确月租（SMM、曙光智算 scnet.cn、胜算云 shengsuanyun.com、模力方舟 ai.gitee.com/compute、运营商、IDC、淘宝/闲鱼）；若找到公开市场价，替换估算区间中位数；若未找到，沿用 3.8-4.8 万元/月市场核价区间，中位数入图。关键词：壁仞 BR100 月租、BR106M 租赁、天垓100 天垓150。",
         "source": "壁仞 BR100/BR104 8卡 OAM 服务器形态确认；行业租赁模型与国产高端训练卡可比区间核价（非公开成交价）",
         "confidence": 48,
@@ -1141,7 +1141,7 @@ DOMESTIC_RENTAL_INPUT = {
         "monthly_wan": 3.5,
         "price_basis": "市场核价区间（估算）",
         "price_band": "3.0-4.0",
-        "price_band_aux": "单卡云价×8折算 0.68（S4000，胜算云）",
+        "price_band_aux": 0.68,
         "price_refresh_rule": "每日优先检索摩尔线程 S4000/S5000 8卡训推一体机、裸机或智算中心明确月租（SMM、AutoDL、胜算云 shengsuanyun.com、模力方舟 ai.gitee.com/compute、运营商、IDC、淘宝/闲鱼）；若找到公开市场价，替换估算区间中位数；若未找到，沿用 3.0-4.0 万元/月市场核价区间，中位数入图。关键词：摩尔线程 S4000 租赁、MTT S5000 月租。",
         "source": "UCache S4000 8卡训推一体机租赁供给、摩尔线程 S4000 官方单机8卡能力、Gitee AI S5000 8卡互联规格；市场核价区间（非公开成交价）",
         "confidence": 50,
@@ -1724,7 +1724,7 @@ def render_html(relative_prefix: str = "./") -> str:
     <section id="domestic">
       <h2>国内算力租赁主指数</h2>
       <p class="note">高置信样本仍要求 PASS 且 Confidence≥70；昇腾 910B、寒武纪 MLU370-X8、海光 DCU K100、壁仞 BR100、摩尔线程 MTT S4000 作为国产战略关注卡强制列入指数表和柱状图。寒武纪为天翼云 4卡实例折算的 8卡云价；海光/壁仞/摩尔线程采用市场核价区间中位数入图，并在表格中显示区间和依据。柱状图按价格口径分色：主口径、低置信观察、云价折算、市场核价和价格待补分别展示。</p>
-      <figure><figcaption>国内指数：万元/8卡整机/月；颜色区分主口径、低置信观察、云价折算与市场核价</figcaption><div id="chart-domestic-main" class="chart"></div></figure>
+      <figure><figcaption>国内指数：万元/8卡整机/月；颜色区分主口径、低置信观察、云价折算、单卡云价折算与市场核价</figcaption><div id="chart-domestic-main" class="chart"></div></figure>
       {table(domestic_index_rows, ["GPU 型号", "GPU 分类", "价格口径", "标准化价格", "折算参考", "国内月租/海外月租", "Confidence Score", "校验状态", "口径说明"], headers=["GPU 型号", "GPU 分类", "价格口径", "标准化价格（万/月）", "折算参考", "国内月租/海外月租", "Confidence", "校验状态", "口径说明"] if domestic_index_rows else None)}
     </section>
 
@@ -1734,7 +1734,7 @@ def render_html(relative_prefix: str = "./") -> str:
         <p><strong>公开成交/主口径价</strong> — 来源为 SMM 算力快讯等行业基准渠道，样本明确标注 8卡/台、起租量（≥16/32台）、租期（1-3年长协）、含电含托管等关键信息，经合理性校验后进入主指数。Confidence ≥ 85。</p>
         <p style="margin-top:10px"><strong>低置信观察</strong> — 来自 SMM 买方出价/行业均价、或多个公开渠道交叉验证的区间中位数。价格已公开但样本口径（如子型号、异地部署限制）未完全拆清。Confidence 70-80。不进入 ROI 计算。</p>
         <p style="margin-top:10px"><strong>云价折算</strong> — 分两种：<br>① 同类配置扩倍：来源为明确配置的云主机（如天翼云 4×MLU370-S4），按配置倍数扩到 8 卡并保留长协折扣政策（如 1-3 年 85 折）折算。<br>② 单卡云价 ×8 折算：仅有单卡云实例小时价（如胜算云、模力方舟），无 8 卡整机月租时，公式：<br><code style="background:rgba(255,255,255,.06);padding:4px 8px;border-radius:4px;font-size:12px">参考价 = 单卡时价(元) × 8 × 24 × 30 × 0.7 ÷ 10000</code><br>其中 0.7 为长协折扣系数（云实例含虚拟化加价，批量裸金属长协价通常比云零售价低 30-40%）。该折算价仅作量级参考，非 8 卡整机成交价，不进入 ROI。</p>
-        <p style="margin-top:10px"><strong>市场核价区间（估算）</strong> — 已确认 8 卡服务器形态（如 OAM/PCIe 板卡架构），但无任何公开成交价时，基于可比卡租赁研报锚点和国产供给线索给出区间和中位数。置信度较低，不进入 ROI。</p>
+        <p style="margin-top:10px"><strong>市场核价区间（估算）</strong> — 已确认 8 卡服务器形态（如 OAM/PCIe 板卡架构），但无任何公开成交价时，基于可比卡租赁研报锚点和国产供给线索给出区间和中位数。若有单卡云实例价可折算，柱状图展示折算参考值（浅紫色），表格同时显示核价区间中位数和折算参考。置信度较低，不进入 ROI。</p>
         <p style="margin-top:10px"><strong>价格待补</strong> — 截至当日未找到任何公开 8 卡整机月租价、云价折算基础或可参考的采购价线索。图表中以缺失值展示，每日持续扩源。</p>
       </div>
     </section>
@@ -1925,18 +1925,40 @@ def write_charts():
         return row.get("国内月租/海外月租")
     def domestic_chart_kind(row: dict) -> str:
         if row["标准化价格"] is None:
+            _aux = row.get("折算参考")
+            if _aux is not None and _aux != "" and _aux != 0:
+                return "单卡云价折算"
             return "价格待补"
         kind = row.get("价格口径", "")
         if "市场核价" in kind:
+            _aux = row.get("折算参考")
+            if _aux is not None and _aux != "" and _aux != 0:
+                return "单卡云价折算"
             return "市场核价"
         if "云价折算" in kind:
             return "云价折算"
         if "低置信" in kind or (row["GPU 型号"] in STRATEGIC_DOMESTIC_GPUS and not pass_status(row)):
             return "低置信观察"
         return "公开成交/主口径价"
+
+    def _domestic_chart_value(row: dict) -> float:
+        """柱状图数值：优先用标准化价格；若为市场核价/价格待补且有折算参考，用折算值"""
+        primary = row["标准化价格"]
+        if primary is not None and primary > 0:
+            # 市场核价 + 有折算参考 → 优先展示折算参考（更具体）
+            kind = row.get("价格口径", "")
+            _aux = row.get("折算参考")
+            if ("市场核价" in kind or primary is None) and _aux is not None and _aux != "" and _aux != 0:
+                return float(_aux)
+            return primary
+        _aux = row.get("折算参考")
+        if _aux is not None and _aux != "" and _aux != 0:
+            return float(_aux)
+        return 0
+
     data = {
         "domesticLabels": [r["GPU 型号"] for r in domestic_chart_rows],
-        "domesticValues": [r["标准化价格"] if r["标准化价格"] is not None else 0 for r in domestic_chart_rows],
+        "domesticValues": [_domestic_chart_value(r) for r in domestic_chart_rows],
         "domesticRatios": [domestic_chart_tag(r) for r in domestic_chart_rows],
         "domesticKinds": [domestic_chart_kind(r) for r in domestic_chart_rows],
         "overseasLabels": [r["GPU 型号"] for r in overseas_pass],
@@ -1971,6 +1993,7 @@ def write_charts():
     '公开成交/主口径价': '#22c55e',
     '低置信观察': '#f97316',
     '云价折算': '#8b5cf6',
+    '单卡云价折算': '#a78bfa',
     '市场核价': '#38bdf8',
     '价格待补': '#64748b'
   }};
