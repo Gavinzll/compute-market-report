@@ -585,17 +585,30 @@ def _load_discovered_gpu_prices() -> tuple[dict[str, dict], dict[str, tuple]]:
             monthly = info.get("monthly_wan")
             source = info.get("monthly_source") or info.get("note", "动态采集")[:40]
             note = info.get("note", "")
+            # 推断 price_basis（价格口径），用于柱状图颜色区分
+            if info.get("status") == "NEW_RELEASE":
+                price_basis = None  # 新发布无公开价
+            elif "市场核价" in source or "市场核价" in note:
+                price_basis = "市场核价区间（估算）"
+            elif "折算" in source or "折算" in note or "小时价反推" in source:
+                price_basis = "云价折算"
+            elif "SMM区间中点" in source or "低置信" in note:
+                price_basis = "低置信观察"
+            else:
+                price_basis = "公开成交/主口径价"
             # 若没给月租但有小时价，反推月租（单卡小时 -> 8卡整机月）
             if monthly is None:
                 hourly = info.get("tencent_hourly") or info.get("aliyun_hourly") or info.get("volcano_hourly") or info.get("tianyi_hourly")
                 if hourly is not None:
                     monthly = round(hourly * 8 * 24 * 30 / 10000, 2)
                     source = f"{source} 小时价反推"
+                    price_basis = "云价折算"
             if monthly is not None:
                 conf = 85 if "SMM" in note or "样本" in note else 75
                 domestic[gpu] = {
                     "original": note or f"动态采集 {gpu}",
                     "monthly_wan": monthly,
+                    "price_basis": price_basis,
                     "source": source,
                     "confidence": conf,
                     "consensus": "Medium",
