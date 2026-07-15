@@ -77,7 +77,7 @@
         color:legend ? legend.map(function(k){return domesticPalette[k] || color;}) : [color],
         tooltip:{trigger:'axis', appendToBody:true},
         legend:legend ? {top:0,textStyle:{color:muted}} : undefined,
-        grid:{left:70,right:40,top:legend ? 72 : 44,bottom:100,containLabel:true},
+        grid:{left:70,right:40,top:legend ? 80 : 52,bottom:100,containLabel:true},
         xAxis:{type:'category',data:labels,axisLabel:{color:muted,interval:0,rotate:35,fontSize:11},axisLine:{lineStyle:{color:rule}},axisTick:{show:false}},
         yAxis:{type:'value',name:name,nameTextStyle:{color:muted},axisLabel:{color:muted},splitLine:{lineStyle:{color:rule}}},
         series:series
