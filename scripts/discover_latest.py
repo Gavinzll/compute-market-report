@@ -1216,16 +1216,16 @@ def build_dynamic_domestic_anchors() -> dict[str, dict[str, Any]]:
 
     # --- 第一轮：收集所有数据源 ---
 
-    # 1. 天翼云单卡包月价 -> 云价折算（8卡整机 = 单卡包月 × 8）
+    # 1. 天翼云单卡包月价 -> 云价折算（8卡整机 = 单卡包月 × 8 × 0.7长协折扣）
     tianyi = scrape_tianyi_gpu_prices()
     for gpu, (hourly, monthly) in tianyi.items():
-        eight_card_monthly = round(monthly * 8 / 10000, 2)
+        eight_card_monthly = round(monthly * 8 * 0.7 / 10000, 2)
         cloud_only[gpu] = {
             "tianyi_hourly": hourly,
             "tianyi_monthly": monthly,
             "cloud_monthly_wan": eight_card_monthly,
-            "cloud_source": f"天翼云包月{monthly}元/卡/月×8卡",
-            "cloud_note": f"天翼云单卡包月{monthly}元/月，按需{hourly}元/时；云价折算8卡整机约{eight_card_monthly}万/月（含云平台溢价）",
+            "cloud_source": f"天翼云包月{monthly}元/卡/月×8×0.7折算",
+            "cloud_note": f"天翼云单卡包月{monthly}元/月，按需{hourly}元/时；云价折算8卡整机={monthly}×8×0.7÷10000≈{eight_card_monthly}万/月（含0.7长协折扣系数）",
         }
 
     # 2. SMM 8卡整机月租 -> 裸金属（公开成交）
@@ -1297,7 +1297,7 @@ def build_dynamic_domestic_anchors() -> dict[str, dict[str, Any]]:
                 "monthly_wan": cloud_info.get("cloud_monthly_wan"),
                 "monthly_source": cloud_info.get("cloud_source", ""),
                 "note": cloud_info.get("cloud_note", ""),
-                "_price_basis": "云价折算（含0.7长协折扣系数，非裸金属价）",
+                "_price_basis": "云价折算",
                 "price_band_aux": cloud_info.get("price_band_aux"),
             }
 

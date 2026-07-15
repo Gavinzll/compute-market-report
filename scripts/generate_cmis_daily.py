@@ -641,12 +641,12 @@ def _load_discovered_gpu_prices() -> tuple[dict[str, dict], dict[str, dict]]:
                 continue  # 已废弃的市场核价数据，跳过不加载，回退到硬编码
             else:
                 price_basis = "公开成交/主口径价"
-            # 若没给月租但有小时价，反推月租（单卡小时 -> 8卡整机月）
+            # 若没给月租但有小时价，反推月租（单卡小时 -> 8卡整机月 × 0.7长协折扣）
             if monthly is None:
                 hourly = info.get("tencent_hourly") or info.get("aliyun_hourly") or info.get("volcano_hourly") or info.get("tianyi_hourly")
                 if hourly is not None:
-                    monthly = round(hourly * 8 * 24 * 30 / 10000, 2)
-                    source = f"{source} 小时价反推"
+                    monthly = round(hourly * 8 * 24 * 30 * 0.7 / 10000, 2)
+                    source = f"{source} 小时价×0.7折算"
                     price_basis = "云价折算"
             if monthly is not None:
                 conf = 85 if "SMM" in note or "样本" in note else 75
@@ -1115,7 +1115,7 @@ DOMESTIC_RENTAL_INPUT = {
     "海光 DCU K100": {
         "original": "模力方舟有海光 BW1000 单卡云实例 3.00 元/时。按单卡云价×8折算：3.00×8×24×30×0.7/10000≈1.21 万元/月。极智算、云擎天下公开页面未找到海光 DCU 租赁价；天翼云仅有 DCU-K100。",
         "monthly_wan": 1.21,
-        "price_basis": "单卡云价折算",
+        "price_basis": "云价折算",
         "price_refresh_rule": "每日通过胜算云 shengsuanyun.com、模力方舟 ai.gitee.com/compute 抓取海光 BW1000 单卡时价并自动折算；另检索 SMM、曙光智算 scnet.cn、天翼云、运营商、IDC 是否有 8卡整机月租。关键词：海光 DCU Z100 租赁、DCU K100 月租、海光 BW1000。",
         "source": "模力方舟 BW1000 单卡 3.00 元/时 ×8×24×30×0.7 折算（非8卡整机成交价）",
         "confidence": 48,
@@ -1127,7 +1127,7 @@ DOMESTIC_RENTAL_INPUT = {
     "壁仞 BR100": {
         "original": "胜算云有壁仞天垓100单卡云实例 1.49 元/时；模力方舟有天垓150单卡 3.00 元/时、壁砺106M单卡 2.00 元/时。按天垓100单卡云价×8折算：1.49×8×24×30×0.7/10000≈0.60 万元/月。极智算、云擎天下公开页面未找到壁仞 BR100 租赁价。",
         "monthly_wan": 0.60,
-        "price_basis": "单卡云价折算",
+        "price_basis": "云价折算",
         "price_refresh_rule": "每日通过胜算云 shengsuanyun.com、模力方舟 ai.gitee.com/compute 抓取壁仞天垓100/150单卡时价并自动折算；另检索 SMM、曙光智算 scnet.cn、运营商、IDC 是否有 8卡整机月租。关键词：壁仞 BR100 月租、BR106M 租赁、天垓100 天垓150。",
         "source": "胜算云天垓100 单卡 1.49 元/时 ×8×24×30×0.7 折算（非8卡整机成交价）",
         "confidence": 48,
@@ -1139,7 +1139,7 @@ DOMESTIC_RENTAL_INPUT = {
     "摩尔线程 MTT S4000": {
         "original": "胜算云有 S4000 单卡云实例 1.69 元/时；模力方舟有 S5000 单卡 8.00 元/时。按 S4000 单卡云价×8折算：1.69×8×24×30×0.7/10000≈0.68 万元/月。UCache 公开页确认 S4000 8卡训推一体机可租赁但无标准月租价。",
         "monthly_wan": 0.68,
-        "price_basis": "单卡云价折算",
+        "price_basis": "云价折算",
         "price_refresh_rule": "每日通过胜算云 shengsuanyun.com、模力方舟 ai.gitee.com/compute 抓取摩尔线程 S4000/S5000 单卡时价并自动折算；另检索 SMM、AutoDL、运营商、IDC 是否有 8卡整机月租。关键词：摩尔线程 S4000 租赁、MTT S5000 月租。",
         "source": "胜算云 S4000 单卡 1.69 元/时 ×8×24×30×0.7 折算（非8卡整机成交价）",
         "confidence": 50,
@@ -1729,7 +1729,7 @@ def render_html(relative_prefix: str = "./") -> str:
       <div class="panel">
         <p><strong>公开成交/主口径价</strong> — 来源为 SMM 算力快讯等行业基准渠道，样本明确标注 8卡/台、起租量（≥16/32台）、租期（1-3年长协）、含电含托管等关键信息，经合理性校验后进入主指数。Confidence ≥ 85。</p>
         <p style="margin-top:10px"><strong>低置信观察</strong> — 来自 SMM 买方出价/行业均价、或多个公开渠道交叉验证的区间中位数。价格已公开但样本口径（如子型号、异地部署限制）未完全拆清。Confidence 70-80。不进入 ROI 计算。</p>
-        <p style="margin-top:10px"><strong>云价折算</strong> — 分两种：<br>① 同类配置扩倍：来源为明确配置的云主机（如天翼云 4×MLU370-S4），按配置倍数扩到 8 卡并保留长协折扣政策（如 1-3 年 85 折）折算。<br>② 单卡云价 ×8 折算：仅有单卡云实例小时价（如胜算云、模力方舟），无 8 卡整机月租时，公式：<br><code style="background:rgba(255,255,255,.06);padding:4px 8px;border-radius:4px;font-size:12px">参考价 = 单卡时价(元) × 8 × 24 × 30 × 0.7 ÷ 10000</code><br>其中 0.7 为长协折扣系数（云实例含虚拟化加价，批量裸金属长协价通常比云零售价低 30-40%）。该折算价仅作量级参考，非 8 卡整机成交价，不进入 ROI。</p>
+        <p style="margin-top:10px"><strong>云价折算</strong> — 当无 8 卡整机裸金属成交月租时，从云平台价格折算。所有折算均含 0.7 长协折扣系数（云实例含虚拟化加价，批量裸金属长协价通常比云零售价低 30-40%）。三种折算路径：<br>① <strong>云主机包月价 × 卡数 × 0.7</strong>：天翼云等有明确单卡包月价的云主机（如 L20、寒武纪 MLU370）。<br><code style="background:rgba(255,255,255,.06);padding:4px 8px;border-radius:4px;font-size:12px">8卡月租(万) = 单卡包月价(元) × 8 × 0.7 ÷ 10000</code><br>② <strong>单卡时价 × 卡数 × 时长 × 0.7</strong>：胜算云、模力方舟等仅有单卡小时价的云实例（如海光 BW1000、壁仞天垓100、摩尔线程 S4000）。<br><code style="background:rgba(255,255,255,.06);padding:4px 8px;border-radius:4px;font-size:12px">8卡月租(万) = 单卡时价(元) × 8 × 24 × 30 × 0.7 ÷ 10000</code><br>③ <strong>多卡云主机包月价扩倍 × 长协折扣</strong>：天翼云 4×MLU370-S4 等明确多卡配置的云主机（如寒武纪 MLU370-X8 硬编码版）。<br><code style="background:rgba(255,255,255,.06);padding:4px 8px;border-radius:4px;font-size:12px">8卡月租(万) = 多卡云主机包月价(元) ÷ 原卡数 × 8 × 长协折扣(如0.85) ÷ 10000</code><br>以上折算价仅作量级参考，非 8 卡整机成交价，不进入 ROI。</p>
         <p style="margin-top:10px"><strong>价格待补</strong> — 截至当日未找到任何公开 8 卡整机月租价、云价折算基础或可参考的采购价线索。图表中以缺失值展示，每日持续扩源。</p>
       </div>
     </section>
@@ -1921,8 +1921,8 @@ def write_charts():
         if row["标准化价格"] is None:
             return "价格待补"
         kind = row.get("价格口径", "")
-        if "云价折算" in kind or "单卡云价" in kind:
-            return "单卡云价折算"
+        if "云价折算" in kind:
+            return "云价折算"
         if "低置信" in kind or (row["GPU 型号"] in STRATEGIC_DOMESTIC_GPUS and not pass_status(row)):
             return "低置信观察"
         return "公开成交/主口径价"
@@ -1970,7 +1970,7 @@ def write_charts():
   var domesticPalette = {{
     '公开成交/主口径价': '#22c55e',
     '低置信观察': '#f97316',
-    '单卡云价折算': '#a78bfa',
+    '云价折算': '#a78bfa',
     '价格待补': '#64748b'
   }};
   function legendForKinds(kinds) {{
