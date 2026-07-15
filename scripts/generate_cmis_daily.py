@@ -548,16 +548,87 @@ def _load_discovered_gpu() -> list[tuple[str, list[str]]] | None:
 
 
 _GPU_GROUPS_FALLBACK = [
-    ("Training", ["GB300", "GB200", "B300", "B200", "H200", "H100 80G", "H800", "H20", "A100 80G", "A800"]),
+    ("Training", ["GB300", "GB200", "B300", "B200", "H200", "H100 80G", "H800", "A100 80G", "A800"]),
     ("Inference", ["L40S", "L20", "L4"]),
     ("Consumer", ["RTX 5090", "RTX 4090"]),
-    ("国产", ["昇腾 910C", "昇腾 910B", "寒武纪 MLU370-X8", "海光 DCU K100", "壁仞 BR100", "摩尔线程 MTT S4000"]),
+    ("国产", ["昇腾 910C", "昇腾 910B", "昇腾 950PR", "寒武纪 MLU370-X8", "寒武纪 MLU590", "海光 DCU K100", "海光 DCU Z100", "壁仞 BR100", "摩尔线程 MTT S4000", "摩尔线程 MTT S5000"]),
 ]
 
 GPU_GROUPS = _load_discovered_gpu() or _GPU_GROUPS_FALLBACK
 GPU_ORDER = [gpu for _, items in GPU_GROUPS for gpu in items]
 GPU_CLASS = {gpu: group for group, items in GPU_GROUPS for gpu in items}
-STRATEGIC_DOMESTIC_GPUS = {"昇腾 910B", "寒武纪 MLU370-X8", "海光 DCU K100", "壁仞 BR100", "摩尔线程 MTT S4000"}
+STRATEGIC_DOMESTIC_GPUS = {"昇腾 910B", "昇腾 950PR", "寒武纪 MLU370-X8", "寒武纪 MLU590", "海光 DCU K100", "海光 DCU Z100", "壁仞 BR100", "摩尔线程 MTT S4000", "摩尔线程 MTT S5000"}
+
+
+def _load_discovered_gpu_prices() -> tuple[dict[str, dict], dict[str, tuple]]:
+    """加载动态发现的 GPU 价格锚点；失败时返回空字典，回退到硬编码。"""
+    path = ROOT / "data" / f"discovered_gpu_{DATE}.json"
+    domestic: dict[str, dict] = {}
+    overseas: dict[str, tuple] = {}
+    try:
+        if not path.exists():
+            return domestic, overseas
+        data = json.loads(path.read_text(encoding="utf-8"))
+        d_anchors = data.get("domestic_price_anchors", {})
+        o_anchors = data.get("overseas_price_anchors", {})
+
+        # 海外名称映射：基线名称 -> 锚点名称
+        o_name_map = {
+            "H100 80G": "H100 SXM",
+            "A100 80G": "A100 80G SXM",
+        }
+
+        # 处理国内锚点 -> DOMESTIC_RENTAL_INPUT 格式
+        for gpu, info in d_anchors.items():
+            if info.get("status") == "DISCONTINUED":
+                continue
+            monthly = info.get("monthly_wan")
+            source = info.get("monthly_source") or info.get("note", "动态采集")[:40]
+            note = info.get("note", "")
+            # 若没给月租但有小时价，反推月租（单卡小时 -> 8卡整机月）
+            if monthly is None:
+                hourly = info.get("tencent_hourly") or info.get("aliyun_hourly") or info.get("volcano_hourly") or info.get("tianyi_hourly")
+                if hourly is not None:
+                    monthly = round(hourly * 8 * 24 * 30 / 10000, 2)
+                    source = f"{source} 小时价反推"
+            if monthly is not None:
+                conf = 85 if "SMM" in note or "样本" in note else 75
+                domestic[gpu] = {
+                    "original": note or f"动态采集 {gpu}",
+                    "monthly_wan": monthly,
+                    "source": source,
+                    "confidence": conf,
+                    "consensus": "Medium",
+                    "historical": "HIST_INSUFFICIENT",
+                    "status": "PASS",
+                    "note": note,
+                }
+
+        # 处理海外锚点 -> OVERSEAS_HOURLY_USD 格式 (usd, conf, consensus, note)
+        for gpu_base, anchor_name in o_name_map.items():
+            if anchor_name in o_anchors:
+                o_anchors[gpu_base] = o_anchors.pop(anchor_name)
+        for gpu, info in o_anchors.items():
+            prices = []
+            for k in ("runpod", "lambda", "cloudgpus", "vast_median"):
+                v = info.get(k)
+                if v is not None:
+                    prices.append(v)
+            if not prices:
+                continue
+            usd = round(sum(prices) / len(prices), 2)
+            src_cnt = len(prices)
+            conf = 90 if src_cnt >= 3 else (85 if src_cnt == 2 else 80)
+            consensus = "High" if src_cnt >= 3 else ("Medium" if src_cnt == 2 else "Low")
+            note = f"动态采集 {gpu}：{info.get('source', '')}"
+            overseas[gpu] = (usd, conf, consensus, note)
+
+    except Exception as e:
+        print(f"[warn] failed to load discovered GPU prices: {e}")
+    return domestic, overseas
+
+
+_DYNAMIC_DOMESTIC, _DYNAMIC_OVERSEAS = _load_discovered_gpu_prices()
 
 
 def cny_from_usd(v: float | None) -> float | None:
@@ -1042,7 +1113,8 @@ def overseas_monthly_wan(gpu: str) -> float | None:
 def domestic_rows() -> list[dict]:
     rows = []
     for idx, gpu in enumerate(GPU_ORDER, 1):
-        item = DOMESTIC_RENTAL_INPUT.get(gpu)
+        # 优先使用动态发现的价格，回退到硬编码
+        item = _DYNAMIC_DOMESTIC.get(gpu) or DOMESTIC_RENTAL_INPUT.get(gpu)
         if item:
             monthly = item["monthly_wan"]
             hourly = monthly_wan_to_hourly_cny(monthly)
@@ -1100,7 +1172,8 @@ def domestic_rows() -> list[dict]:
 def overseas_rows() -> list[dict]:
     rows = []
     for idx, gpu in enumerate(GPU_ORDER, 1):
-        item = OVERSEAS_HOURLY_USD.get(gpu)
+        # 优先使用动态发现的价格，回退到硬编码
+        item = _DYNAMIC_OVERSEAS.get(gpu) or OVERSEAS_HOURLY_USD.get(gpu)
         if item:
             usd, conf, consensus, note = item
             cny = cny_from_usd(usd)

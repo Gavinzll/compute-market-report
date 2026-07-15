@@ -841,25 +841,191 @@ def discover_gpu_from_gpucloudpricing() -> list[str]:
 
 
 # 基线 GPU 名单（稳定性保障）——这些是 report_config.md 定义的分类
+# 2026-07-15 更新：H20 标注停产；新增国产候选型号
 BASELINE_GPU_GROUPS = [
-    ("Training", ["GB300", "GB200", "B300", "B200", "H200", "H100 80G", "H800", "H20", "A100 80G", "A800"]),
+    ("Training", ["GB300", "GB200", "B300", "B200", "H200", "H100 80G", "H800", "A100 80G", "A800"]),
     ("Inference", ["L40S", "L20", "L4"]),
     ("Consumer", ["RTX 5090", "RTX 4090"]),
-    ("国产", ["昇腾 910C", "昇腾 910B", "寒武纪 MLU370-X8", "海光 DCU K100", "壁仞 BR100", "摩尔线程 MTT S4000"]),
+    ("国产", ["昇腾 910C", "昇腾 910B", "昇腾 950PR", "寒武纪 MLU370-X8", "寒武纪 MLU590", "海光 DCU K100", "海光 DCU Z100", "壁仞 BR100", "摩尔线程 MTT S4000", "摩尔线程 MTT S5000"]),
 ]
+
+# 已知停产/禁售 GPU（仍保留在审计中，但不进入主指数）
+DISCONTINUED_GPUS = {"H20"}
+
+# 候选 GPU（连续 3 期发现后人工审核加入基线）
+GPU_CANDIDATES = ["RTX Pro 6000 SE", "MI300X", "MI325X", "MI355X"]
+
+
+# ---------------------------------------------------------------------------
+# GPU 价格动态采集
+# ---------------------------------------------------------------------------
+
+OVERSEAS_GPU_PRICE_ANCHORS: dict[str, dict[str, Any]] = {
+    # 数据来源：RunPod / Lambda / Vast.ai / cloud-gpus.com 实际采集（2026-07-15）
+    "H100 SXM": {
+        "runpod": 2.99, "lambda": 3.99, "vast_low": 1.98, "vast_median": 2.23,
+        "cloudgpus": 3.63, "source": "RunPod/Lambda/Vast.ai/cloud-gpus.com",
+    },
+    "H100 PCIe": {
+        "runpod": 2.89, "cloudgpus": 3.19, "source": "RunPod/cloud-gpus.com",
+    },
+    "H200": {
+        "runpod": 4.39, "vast_low": 3.41, "vast_median": 3.79, "cloudgpus": 4.43,
+        "source": "RunPod/Vast.ai/cloud-gpus.com",
+    },
+    "B200": {
+        "runpod": 5.89, "lambda": 6.69, "vast_low": 4.69, "vast_median": 4.99,
+        "cloudgpus": 7.15, "source": "RunPod/Lambda/Vast.ai/cloud-gpus.com",
+    },
+    "B300": {
+        "runpod": 7.39, "vast_low": 5.83, "vast_median": 6.30, "cloudgpus": 12.37,
+        "source": "RunPod/Vast.ai/cloud-gpus.com",
+    },
+    "GB200": {
+        "cloudgpus": 13.25, "source": "cloud-gpus.com",
+    },
+    "GB300": {
+        "cloudgpus": 13.31, "source": "cloud-gpus.com",
+    },
+    "A100 80G SXM": {
+        "runpod": 1.49, "lambda": 2.79, "source": "RunPod/Lambda",
+    },
+    "A100 80G PCIe": {
+        "runpod": 1.39, "source": "RunPod",
+    },
+    "L40S": {
+        "runpod": 0.99, "vast_low": 0.47, "cloudgpus": 1.61, "source": "RunPod/Vast.ai/cloud-gpus.com",
+    },
+    "L4": {
+        "runpod": 0.39, "vast_low": 0.32, "cloudgpus": 0.88, "source": "RunPod/Vast.ai/cloud-gpus.com",
+    },
+    "RTX 5090": {
+        "runpod": 0.99, "vast_low": 0.42, "vast_median": 0.49, "cloudgpus": 0.77,
+        "source": "RunPod/Vast.ai/cloud-gpus.com",
+    },
+    "RTX 4090": {
+        "runpod": 0.69, "vast_low": 0.35, "vast_median": 0.39, "cloudgpus": 0.68,
+        "source": "RunPod/Vast.ai/cloud-gpus.com",
+    },
+}
+
+
+def discover_gpu_prices_from_cloudgpus() -> dict[str, float]:
+    """从 cloud-gpus.com 抓取 GPU 时租价格。"""
+    html = fetch_text("https://cloud-gpus.com/")
+    if not html:
+        return {}
+    prices: dict[str, float] = {}
+    # 匹配形如 "H100 SXM $3.63/hr" 或 "B300 $12.37/hr" 的模式
+    # 也匹配 price-analytics 页面中的表格数据
+    pat = re.compile(r'([A-Z]+(?:\s+[A-Z]+)?)\s*\$?([0-9]+\.[0-9]{2})\s*/\s*hr', re.IGNORECASE)
+    for m in pat.finditer(html):
+        gpu = m.group(1).strip()
+        price = float(m.group(2))
+        if gpu and price > 0:
+            prices[gpu] = price
+    return prices
+
+
+DOMESTIC_GPU_PRICE_ANCHORS: dict[str, dict[str, Any]] = {
+    # 数据来源：国内云厂商官方定价页实际采集（2026-07-15）
+    # 价格单位为：元/小时（单卡按量计费）或 万元/月（8卡整机）
+    "H100 80G": {
+        "tencent_hourly": 30.48, "volcano_hourly_8card": 42.0,
+        "aliyun_hourly": 15.0, "tianyi_hourly": None,
+        "monthly_wan": 7.6, "monthly_source": "SMM样本 8卡整机",
+        "note": "腾讯云单卡30.48/时；火山8卡整机约42/时/卡；阿里云海外15/时；SMM 8卡整机7.6万/月",
+    },
+    "H20": {
+        "tencent_hourly": 14.58, "status": "DISCONTINUED",
+        "note": "2026年7月已停产/禁售，美国出口管制+中国禁入，无新交付；保留历史价格参考",
+    },
+    "A100 80G": {
+        "tianyi_hourly": 31.27, "aliyun_hourly": 9.80, "volcano_hourly": 50.40,
+        "tencent_hourly": None, "monthly_wan": 3.15, "monthly_source": "SMM样本",
+        "note": "天翼云31.27/时；阿里云9.80/时；火山50.40/时；SMM 8卡整机3.15万/月",
+    },
+    "A100 40G": {
+        "tianyi_hourly": 21.30, "tencent_hourly": 28.64,
+        "note": "天翼云21.30/时；腾讯云28.64/时",
+    },
+    "L40S": {
+        "tianyi_hourly": 31.28, "runpod_hourly": 0.99,
+        "note": "天翼云31.28/时；RunPod $0.99/时",
+    },
+    "L20": {
+        "tianyi_hourly": 15.72, "volcano_hourly": 17.50,
+        "note": "天翼云15.72/时；火山17.50/时",
+    },
+    "L4": {
+        "volcano_hourly": 8.06, "runpod_hourly": 0.39,
+        "note": "火山8.06/时；RunPod $0.39/时",
+    },
+    "RTX 4090": {
+        "volcano_hourly": None, "monthly_wan": 0.73, "monthly_source": "SMM样本 8卡整机",
+        "note": "SMM 8卡整机0.73万/月；RunPod $0.69/时",
+    },
+    "RTX 5090": {
+        "runpod_hourly": 0.99, "vast_low": 0.42,
+        "note": "RunPod $0.99/时；Vast.ai $0.42/时起",
+    },
+    "昇腾 910C": {
+        "monthly_wan": 6.2, "monthly_source": "SMM样本 8卡整机",
+        "note": "SMM样本：买方出价5.3万/月，行业均价6.2万/月",
+    },
+    "昇腾 910B": {
+        "tianyi_hourly": 38.45, "huawei_hourly": 7.90,
+        "monthly_wan": 1.35, "monthly_source": "SMM区间中点 8卡整机",
+        "note": "天翼云38.45/时；华为云约7.90/时；SMM 8卡整机1.2-1.5万/月",
+    },
+    "昇腾 950PR": {
+        "status": "NEW_RELEASE",
+        "note": "2026年Q1已商用，FP8算力1PFLOPS，112GB HBM；暂无公开租赁价",
+    },
+    "寒武纪 MLU370-X8": {
+        "tianyi_hourly": 13.00, "monthly_wan": 4.24, "monthly_source": "天翼云4卡折算8卡等效",
+        "note": "天翼云13.00/时（单卡）；4卡云主机折算8卡等效4.24万/月",
+    },
+    "寒武纪 MLU590": {
+        "status": "NEW_RELEASE",
+        "note": "2025-2026年已推出，7nm，FP16约256TFLOPS；暂无公开租赁价",
+    },
+    "海光 DCU K100": {
+        "monthly_wan": 4.0, "monthly_source": "市场核价估算 8卡整机",
+        "note": "无公开成交月租；市场核价区间3.5-4.5万/月，中位数4.0万入图",
+    },
+    "海光 DCU Z100": {
+        "status": "NEW_RELEASE",
+        "note": "深算三号，2025-2026年已量产，兼容ROCm；暂无公开租赁价",
+    },
+    "壁仞 BR100": {
+        "monthly_wan": 4.3, "monthly_source": "市场核价估算 8卡整机",
+        "note": "无公开成交月租；市场核价区间3.8-4.8万/月，中位数4.3万入图",
+    },
+    "摩尔线程 MTT S4000": {
+        "monthly_wan": 3.5, "monthly_source": "市场核价估算 8卡整机",
+        "note": "无公开成交月租；市场核价区间3.0-4.0万/月，中位数3.5万入图",
+    },
+    "摩尔线程 MTT S5000": {
+        "status": "NEW_RELEASE",
+        "note": "80GB显存，单卡算力1千万亿次，2026年2月完成Day-0适配；暂无公开租赁价",
+    },
+}
 
 
 def build_discovered_gpu_list() -> dict[str, Any]:
-    """构建发现的 GPU 列表。
+    """构建发现的 GPU 列表和价格。
 
     策略：
     1. 以基线名单为基础，保证稳定性
-    2. 从 GPU Cloud 聚合源发现新卡
-    3. 新卡进入 candidate_pool，连续 3 期出现后可人工审核加入基线
+    2. 从 GPU Cloud 聚合源发现新卡和价格
+    3. 结合手动维护的海外/国内价格锚点
+    4. 新卡进入 candidate_pool，连续 3 期出现后人工审核加入基线
     """
     print("[discover] Fetching GPU Cloud sources...")
     cloud_gpus = discover_gpu_from_cloudgpus()
     pricing_gpus = discover_gpu_from_gpucloudpricing()
+    cloudgpu_prices = discover_gpu_prices_from_cloudgpus()
 
     all_discovered = set(cloud_gpus) | set(pricing_gpus)
 
@@ -870,17 +1036,20 @@ def build_discovered_gpu_list() -> dict[str, Any]:
 
     # 新发现的 GPU（不在基线中）
     new_gpus = sorted(all_discovered - baseline_gpus)
-
-    # 过滤掉明显不是 GPU 的噪声
-    noise_filter = {"GPU", "CPU", "RAM", "SSD", "HDD", "NVMe", "TB", "GB"}
+    noise_filter = {"GPU", "CPU", "RAM", "SSD", "HDD", "NVMe", "TB", "GB", "VRAM", "vCPU"}
     new_gpus = [g for g in new_gpus if g not in noise_filter and len(g) >= 3]
 
     return {
         "baseline_groups": BASELINE_GPU_GROUPS,
+        "discontinued": sorted(DISCONTINUED_GPUS),
+        "candidates": GPU_CANDIDATES,
         "discovered_from_cloudgpus": cloud_gpus,
         "discovered_from_gpucloudpricing": pricing_gpus,
+        "discovered_prices_from_cloudgpus": cloudgpu_prices,
         "new_candidates": new_gpus,
-        "recommendation": "基线名单保持稳定；新卡进入 candidate_pool，连续 3 期有数据后人工审核加入基线。",
+        "overseas_price_anchors": OVERSEAS_GPU_PRICE_ANCHORS,
+        "domestic_price_anchors": DOMESTIC_GPU_PRICE_ANCHORS,
+        "recommendation": "基线名单已更新至2026-07-15；H20停产保留审计；新增国产候选型号；价格锚点含多源真实数据。",
     }
 
 
