@@ -1161,6 +1161,15 @@ def domestic_rows() -> list[dict]:
         if monthly is not None:
             overseas_ratio_label = f"{overseas_ratio}%" if overseas_ratio is not None else "海外缺口"
         included = "是" if status == "PASS" and conf >= 70 else ("是（战略关注）" if gpu in STRATEGIC_DOMESTIC_GPUS else "否")
+        _src = item["source"]
+        _orig = item["original"]
+        _note = item["note"]
+        _brief = _orig if len(_orig) <= 60 else (_orig[:57] + "...")
+        source_note = f"{_brief}（{_src}）"
+        if _note and len(_note) <= 40:
+            source_note += f"；{_note}"
+        elif _note:
+            source_note += f"；{_note[:37]}..."
         rows.append({
             "GPU 型号": gpu,
             "GPU 分类": GPU_CLASS[gpu],
@@ -1184,6 +1193,7 @@ def domestic_rows() -> list[dict]:
             "是否进入主指数": included,
             "Reject/Review 原因": reason,
             "口径说明": item["note"],
+            "数据来源与口径": source_note,
         })
     return rows
 
@@ -1634,7 +1644,7 @@ def render_html(relative_prefix: str = "./") -> str:
       <h2>国内算力租赁主指数</h2>
       <p class="note">高置信样本仍要求 PASS 且 Confidence≥70；昇腾 910B、寒武纪 MLU370-X8、海光 DCU K100、壁仞 BR100、摩尔线程 MTT S4000 作为国产战略关注卡强制列入指数表和柱状图。寒武纪为天翼云 4卡实例折算的 8卡云价；海光/壁仞/摩尔线程采用市场核价区间中位数入图，并在表格中显示区间和依据。柱状图按价格口径分色：主口径、低置信观察、云价折算、市场核价和价格待补分别展示。</p>
       <figure><figcaption>国内指数：万元/8卡整机/月；颜色区分主口径、低置信观察、云价折算与市场核价</figcaption><div id="chart-domestic-main" class="chart"></div></figure>
-      {table(domestic_index_rows, ["GPU 型号", "GPU 分类", "主数据源", "价格口径", "原始价格", "核价区间（万元/月）", "标准化价格", "等效单卡小时价（人民币）", "国内月租/海外月租", "Confidence Score", "校验状态", "口径说明"] if domestic_index_rows else None)}
+      {table(domestic_index_rows, ["GPU 型号", "GPU 分类", "价格口径", "标准化价格", "等效单卡小时价（人民币）", "国内月租/海外月租", "Confidence Score", "校验状态", "数据来源与口径"] if domestic_index_rows else None)}
     </section>
 
     <section id="overseas">
