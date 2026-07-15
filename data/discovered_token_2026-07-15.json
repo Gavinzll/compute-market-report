@@ -1,6 +1,6 @@
 {
   "date": "2026-07-15",
-  "discovered_at": "2026-07-15T13:44:04.801532+08:00",
+  "discovered_at": "2026-07-15T15:18:17.916961+08:00",
   "model_count": 52,
   "vendors": [
     "Anthropic",
@@ -1195,6 +1195,15 @@
       "vendor": "昆仑万维天工",
       "api_discovered_count": 0,
       "api_model_ids": []
+    }
+  ],
+  "dynamic_sources": [
+    {
+      "id": 1,
+      "tier": "海外三方",
+      "title": "OpenRouter API 模型定价",
+      "url": "https://openrouter.ai/api/v1/models",
+      "note": "验证 48 个模型"
     }
   ]
 }
