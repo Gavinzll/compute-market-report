@@ -1109,43 +1109,46 @@ DOMESTIC_RENTAL_INPUT = {
         "note": "寒武纪 MLU 属于国产战略关注卡；当前入图价格基于天翼云明确 4卡云主机配置与包月价折算到 8卡云实例等效价，不是8卡整机长租成交价。裸机市场核价区间 2.8-3.8 万元/月仅用于价格带判断。截至2026-07-15，寒武纪MLU590无任何公开8卡整机月租；什么值得买仅发现思元590单卡区域数据（7,000-8,000元/月）。需继续扩源至曙光智算、SMM 算力快讯。不进入 ROI。",
     },
     "海光 DCU K100": {
-        "original": "已确认金品 KG4208-H73 为海光 7300 双路 4U 8卡国产化 GPU 服务器，支持 8×全高全长双宽 GPU 卡。模力方舟有海光 BW1000 单卡云实例 3.00 元/时（非8卡整机价）。未取得公开成交月租价；按已确认 8卡服务器形态、国产智算供给线索、H100 8卡租赁研报锚点和可比国产裸机租赁带，市场核价区间估为 3.5-4.5 万元/月，中位数 4.0 万元入图。极智算、云擎天下公开页面未找到海光 DCU 租赁价。",
+        "original": "已确认金品 KG4208-H73 为海光 7300 双路 4U 8卡国产化 GPU 服务器，支持 8×全高全长双宽 GPU 卡。模力方舟有海光 BW1000 单卡云实例 3.00 元/时（非8卡整机价）。未取得公开成交月租价；按已确认 8卡服务器形态、国产智算供给线索、H100 8卡租赁研报锚点和可比国产裸机租赁带，市场核价区间估为 3.5-4.5 万元/月，中位数 4.0 万元入图。极智算、云擎天下公开页面未找到海光 DCU 租赁价。另按 BW1000 单卡云价折算：3.00×8×24×30×0.7/10000≈1.21万元/月，仅作量级参考。",
         "monthly_wan": 4.0,
         "price_basis": "市场核价区间（估算）",
         "price_band": "3.5-4.5",
+        "price_band_aux": "单卡云价×8折算 1.21（BW1000，模力方舟）",
         "price_refresh_rule": "每日优先检索海光 DCU 8卡整机、裸机、智算中心或集成商明确月租（SMM、曙光智算 scnet.cn、天翼云、模力方舟 ai.gitee.com/compute、运营商、IDC、淘宝/闲鱼）；若找到公开市场价，按来源置信度更新价格口径和标准化价格；若未找到，沿用 3.5-4.5 万元/月市场核价区间，中位数入图。关键词：海光 DCU Z100 租赁、DCU K100 月租、海光 BW1000。",
         "source": "金品 KG4208-H73 海光双路8卡服务器配置确认；行业租赁模型与国产裸机可比区间核价（非公开成交价）",
         "confidence": 48,
         "consensus": "Low",
         "historical": "HIST_INSUFFICIENT",
         "status": "REVIEW",
-        "note": "海光 DCU 属于国产战略关注卡；已确认 8卡服务器架构，但未取得公开成交月租。截至2026-07-15，模力方舟有海光 BW1000 单卡云实例价（3.00元/时），但无DCU Z100或BW1000的8卡整机月租；天翼云仅有DCU-K100。极智算、云擎天下公开页面未找到海光 DCU 租赁价。本期按 8卡形态、行业按台/月计租模型和可比国产供给做市场核价区间；需继续寻找 SMM、曙光智算、运营商或集成商公开报价复核。不进入 ROI。",
+        "note": "海光 DCU 属于国产战略关注卡；已确认 8卡服务器架构，但未取得公开成交月租。截至2026-07-15，模力方舟有海光 BW1000 单卡云实例价（3.00元/时），但无DCU Z100或BW1000的8卡整机月租；天翼云仅有DCU-K100。BW1000 云价×8折算约1.21万元/月仅作量级参考。不进入 ROI。",
     },
     "壁仞 BR100": {
-        "original": "已确认壁仞 BR100/BR104 具备 OAM/PCIe 板卡形态，8个 OAM 模组可置于 UBB 形成单节点8卡全互联；海玄 OAM 服务器为 8PFLOPS / 512GB HBM2e / 最大功耗 7kW。胜算云有壁仞天垓100单卡云实例 1.49 元/时；模力方舟有天垓150单卡 3.00 元/时、壁砺106M单卡 2.00 元/时（均非8卡整机价）。未取得公开成交月租价；按 8卡 OAM 整机形态、H100 8卡租赁研报锚点和国产高端训练卡折价，市场核价区间估为 3.8-4.8 万元/月，中位数 4.3 万元入图。极智算、云擎天下公开页面未找到壁仞 BR100 租赁价。",
+        "original": "已确认壁仞 BR100/BR104 具备 OAM/PCIe 板卡形态，8个 OAM 模组可置于 UBB 形成单节点8卡全互联；海玄 OAM 服务器为 8PFLOPS / 512GB HBM2e / 最大功耗 7kW。胜算云有壁仞天垓100单卡云实例 1.49 元/时；模力方舟有天垓150单卡 3.00 元/时、壁砺106M单卡 2.00 元/时（均非8卡整机价）。未取得公开成交月租价；按 8卡 OAM 整机形态、H100 8卡租赁研报锚点和国产高端训练卡折价，市场核价区间估为 3.8-4.8 万元/月，中位数 4.3 万元入图。另按天垓100单卡云价折算：1.49×8×24×30×0.7/10000≈0.60万元/月，仅作量级参考。",
         "monthly_wan": 4.3,
         "price_basis": "市场核价区间（估算）",
         "price_band": "3.8-4.8",
+        "price_band_aux": "单卡云价×8折算 0.60（天垓100，胜算云）",
         "price_refresh_rule": "每日优先检索壁仞 BR100/BR104/BR106 8卡 OAM 整机、裸机或智算中心明确月租（SMM、曙光智算 scnet.cn、胜算云 shengsuanyun.com、模力方舟 ai.gitee.com/compute、运营商、IDC、淘宝/闲鱼）；若找到公开市场价，替换估算区间中位数；若未找到，沿用 3.8-4.8 万元/月市场核价区间，中位数入图。关键词：壁仞 BR100 月租、BR106M 租赁、天垓100 天垓150。",
         "source": "壁仞 BR100/BR104 8卡 OAM 服务器形态确认；行业租赁模型与国产高端训练卡可比区间核价（非公开成交价）",
         "confidence": 48,
         "consensus": "Low",
         "historical": "HIST_INSUFFICIENT",
         "status": "REVIEW",
-        "note": "壁仞 BR100 属于国产战略关注卡；已补充 BR100/BR104 8卡 OAM 服务器形态依据，但未取得公开成交月租。截至2026-07-15，胜算云有天垓100单卡云实例（1.49元/时），模力方舟有天垓150（3.00元/时）和壁砺106M（2.00元/时）单卡价，但均无BR100 OAM服务器8卡整机月租。极智算、云擎天下公开页面未找到壁仞 BR100 租赁价。本期按市场核价区间展示，不使用未确认卡数/型号的套餐价，不进入 ROI。",
+        "note": "壁仞 BR100 属于国产战略关注卡；已补充 BR100/BR104 8卡 OAM 服务器形态依据，但未取得公开成交月租。截至2026-07-15，胜算云有天垓100单卡云实例（1.49元/时），模力方舟有天垓150（3.00元/时）和壁砺106M（2.00元/时）单卡价，但均无BR100 OAM服务器8卡整机月租。天垓100云价×8折算约0.60万元/月仅作量级参考。不进入 ROI。",
     },
     "摩尔线程 MTT S4000": {
-        "original": "UCache 公开页确认摩尔线程 S4000 8卡训推一体机可租赁；摩尔线程官方 S4000 支持单机8卡和多机多卡，Gitee AI 文档显示 MTT S5000 面向大模型训练推理，80GB 显存、Dense 1000 TFlops、MTLink 8卡全连接拓扑。胜算云有 S4000 单卡云实例 1.69 元/时；模力方舟有 S5000 单卡 8.00 元/时（均非8卡整机价）。未取得公开成交月租价；按已确认 8卡供给、S5000 规格提升和国产租赁可比带，市场核价区间估为 3.0-4.0 万元/月，中位数 3.5 万元入图。极智算、云擎天下公开页面未找到摩尔线程 S4000 租赁价。",
+        "original": "UCache 公开页确认摩尔线程 S4000 8卡训推一体机可租赁；摩尔线程官方 S4000 支持单机8卡和多机多卡，Gitee AI 文档显示 MTT S5000 面向大模型训练推理，80GB 显存、Dense 1000 TFlops、MTLink 8卡全连接拓扑。胜算云有 S4000 单卡云实例 1.69 元/时；模力方舟有 S5000 单卡 8.00 元/时（均非8卡整机价）。未取得公开成交月租价；按已确认 8卡供给、S5000 规格提升和国产租赁可比带，市场核价区间估为 3.0-4.0 万元/月，中位数 3.5 万元入图。另按 S4000 单卡云价折算：1.69×8×24×30×0.7/10000≈0.68万元/月，仅作量级参考。",
         "monthly_wan": 3.5,
         "price_basis": "市场核价区间（估算）",
         "price_band": "3.0-4.0",
+        "price_band_aux": "单卡云价×8折算 0.68（S4000，胜算云）",
         "price_refresh_rule": "每日优先检索摩尔线程 S4000/S5000 8卡训推一体机、裸机或智算中心明确月租（SMM、AutoDL、胜算云 shengsuanyun.com、模力方舟 ai.gitee.com/compute、运营商、IDC、淘宝/闲鱼）；若找到公开市场价，替换估算区间中位数；若未找到，沿用 3.0-4.0 万元/月市场核价区间，中位数入图。关键词：摩尔线程 S4000 租赁、MTT S5000 月租。",
         "source": "UCache S4000 8卡训推一体机租赁供给、摩尔线程 S4000 官方单机8卡能力、Gitee AI S5000 8卡互联规格；市场核价区间（非公开成交价）",
         "confidence": 50,
         "consensus": "Low",
         "historical": "HIST_INSUFFICIENT",
         "status": "REVIEW",
-        "note": "摩尔线程 MTT S4000 属于国产战略关注卡；已确认 8卡 S4000 租赁供给、官方单机8卡能力，并补充 S5000 8卡互联规格。截至2026-07-15，胜算云有 S4000 单卡云实例（1.69元/时），模力方舟有 S5000 单卡（8.00元/时），但均无8卡整机月租。极智算、云擎天下公开页面未找到摩尔线程 S4000 租赁价。本期按市场核价区间展示，不把小模型项目费用或单卡价折成整机月租，不进入 ROI。",
+        "note": "摩尔线程 MTT S4000 属于国产战略关注卡；已确认 8卡 S4000 租赁供给、官方单机8卡能力，并补充 S5000 8卡互联规格。截至2026-07-15，胜算云有 S4000 单卡云实例（1.69元/时），模力方舟有 S5000 单卡（8.00元/时），但均无8卡整机月租。S4000 云价×8折算约0.68万元/月仅作量级参考。不进入 ROI。",
     },
     "寒武纪 MLU590": {
         "original": "截至2026-07-15，未找到寒武纪 MLU590 任何公开 8卡整机月租价。什么值得买区域调研仅发现厦门地区思元590单卡 7,000-8,000 元/月（非8卡整机价）。SMM 算力快讯主要跟踪 H100/A100/4090/5090/910B 等，MLU590 尚未进入监测体系。",
@@ -1719,6 +1722,33 @@ def render_html(relative_prefix: str = "./") -> str:
       {table(domestic_index_rows, ["GPU 型号", "GPU 分类", "价格口径", "标准化价格", "国内月租/海外月租", "Confidence Score", "校验状态", "口径说明"], headers=["GPU 型号", "GPU 分类", "价格口径", "标准化价格（万/月）", "国内月租/海外月租", "Confidence", "校验状态", "口径说明"] if domestic_index_rows else None)}
     </section>
 
+    <section id="domestic-price-basis" class="note-section">
+      <h2>国内价格口径说明</h2>
+      <div class="basis-card">
+        <h3>公开成交/主口径价</h3>
+        <p>来源为 SMM 算力快讯等行业基准渠道，样本明确标注<strong>8卡/台、起租量（≥16/32台）、租期（1-3年长协）、含电含托管</strong>等关键信息，经合理性校验后进入主指数。Confidence ≥ 85。</p>
+      </div>
+      <div class="basis-card">
+        <h3>低置信观察</h3>
+        <p>来自 SMM 买方出价/行业均价、或多个公开渠道交叉验证的区间中位数。价格已公开但样本口径（如子型号、异地部署限制）未完全拆清。Confidence 70-80。不进入 ROI 计算。</p>
+      </div>
+      <div class="basis-card">
+        <h3>云价折算</h3>
+        <p><strong>同类配置扩倍：</strong>仅当来源为明确配置的云主机（如天翼云 4×MLU370-S4），且有官方包月价时，按配置倍数扩到 8 卡并保留长协折扣政策（如 1-3 年 85 折）折算。公式：云主机包月价 × 扩倍系数 × 折扣系数。</p>
+        <p><strong>单卡云价 ×8 折算：</strong>当仅有单卡云实例小时价（如胜算云、模力方舟），无 8 卡整机裸金属月租时，按以下公式给出量级参考：</p>
+        <p class="formula">参考价 = 单卡时价(元) × 8卡 × 24时 × 30天 × 0.7(长协折扣系数) ÷ 10000</p>
+        <p>其中 0.7 折扣系数反映：云实例含虚拟化加价和平台运营成本，实际批量裸金属长协价通常比云零售价低 30-40%。该折算价 <strong>仅作量级参考</strong>，非 8 卡整机成交价，不进入 ROI 计算。</p>
+      </div>
+      <div class="basis-card">
+        <h3>市场核价区间（估算）</h3>
+        <p>当已确认 8 卡服务器形态（如 OAM 板卡架构、PCIe 形态、单机 8 卡能力），但无任何公开成交价时，基于 H100/A100 等可比卡的租赁研报锚点和国产供给线索，给出市场核价区间和中位数。置信度较低，不进入 ROI 计算。</p>
+      </div>
+      <div class="basis-card">
+        <h3>价格待补</h3>
+        <p>该 GPU 型号截至当日未找到任何公开的 8 卡整机月租价、云价折算基础或可参考的采购价线索。图表中以缺失值展示，每日持续扩源检索。</p>
+      </div>
+    </section>
+
     <section id="overseas">
       <h2>海外 GPU Cloud 参考</h2>
       <p class="note">海外 GPU Cloud 原始来源多为美元/卡/小时，已统一折算为人民币口径"万元/8卡整机/月"绘图和展示，单卡小时价保留在表格中作为辅助字段；海外月租仍只进入海外参考，不进入国内租赁指数。</p>
@@ -1823,6 +1853,13 @@ def render_mobile_html(relative_prefix: str = "./", desktop_href: str = "latest.
     .quick-nav{{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;gap:6px;overflow:auto;padding:8px 12px calc(8px + env(safe-area-inset-bottom));background:rgba(7,17,31,.95);border-top:1px solid var(--rule);backdrop-filter:blur(12px)}}
     .quick-nav a{{flex:0 0 auto;padding:7px 10px;border:1px solid var(--rule);border-radius:999px;background:var(--bg2);font-size:12px;color:var(--ink)}}
     .missing{{color:var(--bad);font-weight:700}}
+    .note-section{{padding:16px 12px;margin:16px 0;border:1px solid var(--rule);border-radius:12px;background:rgba(255,255,255,.02)}}
+    .note-section h2{{font-size:16px;margin:0 0 12px;color:var(--accent2);border-bottom:1px solid var(--rule);padding-bottom:8px}}
+    .basis-card{{padding:10px 0;margin:0 0 10px;border-bottom:1px dashed rgba(255,255,255,.06)}}
+    .basis-card:last-child{{border-bottom:none;margin-bottom:0}}
+    .basis-card h3{{font-size:13px;margin:0 0 6px;color:var(--good)}}
+    .basis-card p{{font-size:12px;line-height:1.7;margin:0 0 4px;color:var(--ink)}}
+    .basis-card .formula{{font-family:var(--mono);background:rgba(255,255,255,.06);padding:8px 12px;border-radius:6px;margin:6px 0;font-size:12px;color:var(--accent2)}}
   </style>
 </head>
 <body>
