@@ -72,46 +72,9 @@ def build_summary(data):
     }
 
 
-def build_notable_links(data, max_items=5):
-    sources = data.get("sources", [])
-    keyword_score = {
-        "主口径": 100,
-        "官方": 90,
-        "海外云价": 80,
-        "Token": 75,
-        "采购": 65,
-        "聚合源": 55,
-        "Marketplace": 50,
-    }
-    items = []
-    seen = set()
-    for source in sources:
-        url_value = source.get("url")
-        title = source.get("title")
-        if not url_value or not title or url_value in seen:
-            continue
-        seen.add(url_value)
-        tier = source.get("tier", "")
-        note = source.get("note", "")
-        text = f"{tier} {title} {note}"
-        score = max((score for key, score in keyword_score.items() if key in text), default=10)
-        items.append((score, source.get("id", 9999), tier, title, url_value))
-
-    items.sort(key=lambda x: (-x[0], x[1]))
-    selected = items[:max_items]
-    if not selected:
-        return "暂无可展示链接。"
-    lines = []
-    for _, _, tier, title, url_value in selected:
-        prefix = f"{tier}｜" if tier else ""
-        lines.append(f"- {prefix}{title}\n  {url_value}")
-    return "\n".join(lines)
-
-
 data = load_snapshot()
 if data:
     summary = build_summary(data)
-    notable_links = build_notable_links(data)
     text = f"""📌 全球算力市场情报日报
 📅 日期：{date}
 🧊 Freeze：{summary["freeze_time"]}
@@ -125,9 +88,6 @@ if data:
 
 ⚡ 待复核：
 {summary["risk_line"]}
-
-📰 今日值得看：
-{notable_links}
 
 📊 完整报告：https://gavinzll.github.io/compute-market-report/latest.html?v={stamp}"""
 else:
