@@ -40,3 +40,41 @@
 - Token 六个核心价格字段全部为数值。
 - 国内 GPU 主指数、海外 GPU Cloud、Rejected / Review、Token、采购价和利润测算模块均可正常渲染。
 - GitHub Pages 链接可通过 cache-busting 参数访问最新版本。
+
+## 4. SPA 数据源每日抓取（国产卡单卡云价）
+
+以下网站为 JS 动态渲染（SPA），`urllib` 无法抓取。每日运行时需通过 MCP 浏览器工具抓取后写入 JSON 缓存文件，供 `discover_latest.py` 读取。
+
+### 4.1 胜算云
+
+- **URL**: `https://www.shengsuanyun.com/hashrate`
+- **浏览器抓取步骤**:
+  1. 用 MCP 浏览器导航到 URL
+  2. 获取页面 snapshot 或 evaluate JS 提取文本
+  3. 提取所有 GPU 型号和对应时价（格式：`型号 ¥X.XX / 小时`）
+  4. 重点关注：天垓100、摩尔线程 MTT S4000、华为 Ascend 910
+- **写入文件**: `data/shengsuanyun_{DATE}.json`
+- **格式**: `{"scraped_at": "2026-07-15", "prices": {"壁仞 天垓100": {"hourly_cny": 1.49, "source": "胜算云"}, ...}}`
+- **回退**: 若抓取失败，使用 `discover_latest.py` 中的硬编码 fallback（最后验证日期 2026-07-15）
+
+### 4.2 模力方舟（Gitee AI）
+
+- **URL**: `https://ai.gitee.com/compute`
+- **浏览器抓取步骤**:
+  1. 用 MCP 浏览器导航到 URL
+  2. 翻页检查第 1-4 页（每页约 6-8 款 GPU）
+  3. 提取所有国产 GPU 型号和对应时价
+  4. 重点关注：海光 BW1000、摩尔线程 MTT S5000、壁仞 天垓150、壁仞 壁砺106M、天数智芯 智铠100、燧原 S60、昇腾 910B
+- **写入文件**: `data/gitee_ai_{DATE}.json`
+- **格式**: `{"scraped_at": "2026-07-15", "prices": {"海光 BW1000": {"hourly_cny": 3.00, "source": "模力方舟"}, ...}}`
+- **回退**: 若抓取失败，使用 `discover_latest.py` 中的硬编码 fallback（最后验证日期 2026-07-15）
+
+### 4.3 折算公式
+
+单卡时价抓取后，`discover_latest.py` 自动按以下公式折算为 8 卡整机参考月租：
+
+```
+参考价(万/月) = 单卡时价(元) × 8卡 × 24时 × 30天 × 0.7(长协折扣系数) ÷ 10000
+```
+
+其中 0.7 为长协折扣系数，反映云实例含虚拟化加价，批量裸金属长协价通常比云零售价低 30-40%。

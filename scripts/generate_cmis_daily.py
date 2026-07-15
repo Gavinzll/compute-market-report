@@ -650,7 +650,7 @@ def _load_discovered_gpu_prices() -> tuple[dict[str, dict], dict[str, dict]]:
                     price_basis = "云价折算"
             if monthly is not None:
                 conf = 85 if "SMM" in note or "样本" in note else 75
-                domestic[gpu] = {
+                entry: dict[str, Any] = {
                     "original": note or f"动态采集 {gpu}",
                     "monthly_wan": monthly,
                     "price_basis": price_basis,
@@ -661,6 +661,10 @@ def _load_discovered_gpu_prices() -> tuple[dict[str, dict], dict[str, dict]]:
                     "status": "PASS",
                     "note": note,
                 }
+                # 保留动态采集中的折算参考值
+                if "price_band_aux" in info:
+                    entry["price_band_aux"] = info["price_band_aux"]
+                domestic[gpu] = entry
 
         # 处理海外锚点 -> dict 格式 (usd, conf, consensus, note, source)
         for gpu_base, anchor_name in o_name_map.items():

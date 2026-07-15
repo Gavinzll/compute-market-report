@@ -1133,35 +1133,68 @@ def scrape_omniyq_gpu_prices() -> dict[str, float]:
     return prices
 
 
-def scrape_shengsuanyun_gpu_prices() -> dict[str, float]:
-    """从生数云抓取 GPU 单卡时租价。
+def scrape_shengsuanyun_gpu_prices() -> dict[str, dict[str, Any]]:
+    """从胜算云抓取国产 GPU 单卡时租价。
 
     URL: https://www.shengsuanyun.com/hashrate
-    返回 {GPU型号: 单卡元/小时}
+    ⚠️ 该网站为 React SPA，urllib 只能拿到空壳 HTML。
+    实际数据需通过 AI session + MCP 浏览器工具抓取后写入
+    data/shengsuanyun_{DATE}.json，本函数读取该文件。
+    若文件不存在或过期，回退到硬编码 fallback。
+    返回 {GPU型号: {"hourly_cny": float, "source": str}}
     """
-    html = fetch_text("https://www.shengsuanyun.com/hashrate")
-    if not html:
-        print("[discover] shengsuanyun: fetch failed", file=sys.stderr)
-        return {}
-    prices: dict[str, float] = {}
-    # 匹配 "摩尔线程 MTT S4000" 附近的 "1.69元/小时" 或 "¥1.69/h"
-    patterns = {
-        "摩尔线程 MTT S4000": r'(?:MTT\s*S4000|S\s*4000|摩尔线程)[^0-9]{0,30}?(\d+\.?\d*)\s*(?:元/小时|元/时|/h|/hr)',
-        "摩尔线程 MTT S5000": r'(?:MTT\s*S5000|S\s*5000)[^0-9]{0,30}?(\d+\.?\d*)\s*(?:元/小时|元/时|/h|/hr)',
+    # 尝试读取 AI session 写入的抓取结果
+    ssy_cache = ROOT / "data" / f"shengsuanyun_{DATE}.json"
+    if ssy_cache.exists():
+        try:
+            cached = json.loads(ssy_cache.read_text(encoding="utf-8"))
+            if isinstance(cached, dict) and cached.get("scraped_at") == DATE:
+                print(f"[discover] shengsuanyun: loaded from cache {ssy_cache.name}")
+                return cached.get("prices", {})
+        except (json.JSONDecodeError, KeyError):
+            pass
+
+    # 硬编码 fallback（2026-07-15 人工验证值）
+    print("[discover] shengsuanyun: SPA site, using hardcoded fallback (last verified 2026-07-15)", file=sys.stderr)
+    return {
+        "摩尔线程 MTT S4000": {"hourly_cny": 1.69, "source": "胜算云(fallback)"},
+        "壁仞 天垓100": {"hourly_cny": 1.49, "source": "胜算云(fallback)"},
+        "华为 Ascend 910": {"hourly_cny": 2.36, "source": "胜算云(fallback)"},
     }
-    for gpu, pat in patterns.items():
-        m = re.search(pat, html, re.IGNORECASE)
-        if m:
-            try:
-                val = float(m.group(1))
-                if val > 0:
-                    prices[gpu] = val
-            except ValueError:
-                pass
-    if prices:
-        record_source("云价折算", "生数云 GPU 算力租赁", "https://www.shengsuanyun.com/hashrate", f"采集到 {len(prices)} 款 GPU 单卡时租价")
-    print(f"[discover] shengsuanyun: {len(prices)} prices found")
-    return prices
+
+
+def scrape_gitee_ai_gpu_prices() -> dict[str, dict[str, Any]]:
+    """从模力方舟（Gitee AI）抓取国产 GPU 单卡时租价。
+
+    URL: https://ai.gitee.com/compute
+    ⚠️ 该网站为 JS 动态渲染，urllib 只能拿到空壳 HTML。
+    实际数据需通过 AI session + MCP 浏览器工具抓取后写入
+    data/gitee_ai_{DATE}.json，本函数读取该文件。
+    若文件不存在或过期，回退到硬编码 fallback。
+    返回 {GPU型号: {"hourly_cny": float, "source": str}}
+    """
+    # 尝试读取 AI session 写入的抓取结果
+    gitee_cache = ROOT / "data" / f"gitee_ai_{DATE}.json"
+    if gitee_cache.exists():
+        try:
+            cached = json.loads(gitee_cache.read_text(encoding="utf-8"))
+            if isinstance(cached, dict) and cached.get("scraped_at") == DATE:
+                print(f"[discover] gitee-ai: loaded from cache {gitee_cache.name}")
+                return cached.get("prices", {})
+        except (json.JSONDecodeError, KeyError):
+            pass
+
+    # 硬编码 fallback（2026-07-15 人工验证值）
+    print("[discover] gitee-ai: SPA site, using hardcoded fallback (last verified 2026-07-15)", file=sys.stderr)
+    return {
+        "海光 BW1000": {"hourly_cny": 3.00, "source": "模力方舟(fallback)"},
+        "摩尔线程 MTT S5000": {"hourly_cny": 8.00, "source": "模力方舟(fallback)"},
+        "壁仞 天垓150": {"hourly_cny": 3.00, "source": "模力方舟(fallback)"},
+        "壁仞 壁砺106M": {"hourly_cny": 2.00, "source": "模力方舟(fallback)"},
+        "天数智芯 智铠100": {"hourly_cny": 2.00, "source": "模力方舟(fallback)"},
+        "燧原 S60": {"hourly_cny": 2.00, "source": "模力方舟(fallback)"},
+        "昇腾 910B": {"hourly_cny": 3.50, "source": "模力方舟(fallback)"},
+    }
 
 
 def build_dynamic_domestic_anchors() -> dict[str, dict[str, Any]]:
@@ -1216,33 +1249,56 @@ def build_dynamic_domestic_anchors() -> dict[str, dict[str, Any]]:
                 "_price_basis": "公开成交/主口径价",
             }
 
-    # 4. 生数云单卡时租 -> 云价折算（补充到 cloud_only）
+    # 4. 胜算云单卡时租 -> 云价折算（国产卡补充到 cloud_only）
     ssy = scrape_shengsuanyun_gpu_prices()
-    for gpu, hourly in ssy.items():
-        monthly_wan = round(hourly * 8 * 24 * 30 / 10000, 2)
+    for gpu, info in ssy.items():
+        hourly = info["hourly_cny"]
+        # 单卡时价 × 8卡 × 24时 × 30天 × 0.7长协折扣 / 10000 = 万元/月
+        monthly_wan = round(hourly * 8 * 24 * 30 * 0.7 / 10000, 2)
         if gpu not in cloud_only:
             cloud_only[gpu] = {
                 "cloud_monthly_wan": monthly_wan,
-                "cloud_source": f"生数云{hourly}元/时反推8卡整机",
-                "cloud_note": f"生数云单卡{hourly}元/时；云价折算8卡整机约{monthly_wan}万/月（含云平台溢价）",
+                "cloud_source": f"胜算云{hourly}元/时×8×24×30×0.7折算",
+                "cloud_note": f"胜算云单卡{hourly}元/时；单卡云价×8折算8卡整机约{monthly_wan}万/月（含0.7长协折扣系数）",
+                "price_band_aux": monthly_wan,
+            }
+
+    # 5. 模力方舟单卡时租 -> 云价折算（国产卡补充到 cloud_only）
+    gitee = scrape_gitee_ai_gpu_prices()
+    for gpu, info in gitee.items():
+        hourly = info["hourly_cny"]
+        monthly_wan = round(hourly * 8 * 24 * 30 * 0.7 / 10000, 2)
+        # 模力方舟价格与胜算云可能覆盖同系列不同型号（如S4000 vs S5000）
+        existing = cloud_only.get(gpu, {})
+        # 优先保留已有的胜算云数据（更便宜），模力方舟作为补充
+        if gpu not in cloud_only or monthly_wan < existing.get("cloud_monthly_wan", 999):
+            cloud_only[gpu] = {
+                "cloud_monthly_wan": monthly_wan,
+                "cloud_source": f"模力方舟{hourly}元/时×8×24×30×0.7折算",
+                "cloud_note": f"模力方舟单卡{hourly}元/时；单卡云价×8折算8卡整机约{monthly_wan}万/月（含0.7长协折扣系数）",
+                "price_band_aux": monthly_wan,
             }
 
     # --- 第二轮：合并 ---
 
-    # 对已有裸金属价格的型号，附上云价参考
+    # 对已有裸金属价格的型号，附上云价参考和折算值
     for gpu, cloud_info in cloud_only.items():
         if gpu in anchors:
             # 已有裸金属价，云价仅作参考
             anchors[gpu]["cloud_monthly_wan"] = cloud_info.get("cloud_monthly_wan")
             anchors[gpu]["cloud_source"] = cloud_info.get("cloud_source", "")
             anchors[gpu]["cloud_note"] = cloud_info.get("cloud_note", "")
+            # 折算参考值（用于柱状图和表格辅助展示）
+            if "price_band_aux" in cloud_info:
+                anchors[gpu]["price_band_aux"] = cloud_info["price_band_aux"]
         else:
-            # 无裸金属价，云价折算作为兜底（price_basis 标记为"云价折算"而非主口径）
+            # 无裸金属价，云价折算作为兜底
             anchors[gpu] = {
                 "monthly_wan": cloud_info.get("cloud_monthly_wan"),
                 "monthly_source": cloud_info.get("cloud_source", ""),
                 "note": cloud_info.get("cloud_note", ""),
-                "_price_basis": "云价折算（含平台溢价，非裸金属价）",
+                "_price_basis": "云价折算（含0.7长协折扣系数，非裸金属价）",
+                "price_band_aux": cloud_info.get("price_band_aux"),
             }
 
     # 5. 合并静态锚点（裸金属数据优先，静态补充缺失型号）
