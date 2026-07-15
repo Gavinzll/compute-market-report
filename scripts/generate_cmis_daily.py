@@ -622,7 +622,7 @@ def _load_discovered_gpu_prices() -> tuple[dict[str, dict], dict[str, dict]]:
 
         # 处理国内锚点 -> DOMESTIC_RENTAL_INPUT 格式
         for gpu, info in d_anchors.items():
-            if info.get("status") == "DISCONTINUED":
+            if info.get("status") in ("DISCONTINUED", "SKIP"):
                 continue
             monthly = info.get("monthly_wan")
             source = info.get("monthly_source") or info.get("note", "动态采集")[:40]
