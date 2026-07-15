@@ -16,6 +16,7 @@ from __future__ import annotations
 import json
 import os
 import subprocess
+import urllib.request
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
@@ -32,7 +33,29 @@ FX_USD_CNY = 7.18
 REPORT_VERSION = "v1.2.0"
 
 
+def _fetch_live_fx() -> float | None:
+    """尝试从免费 API 获取最新 USD/CNY 汇率，失败返回 None。"""
+    import json as _json
+    try:
+        url = "https://open.er-api.com/v6/latest/USD"
+        req = urllib.request.Request(url, headers={"User-Agent": "CMIS-Daily/1.0"})
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            data = _json.loads(resp.read().decode("utf-8"))
+            rate = data.get("rates", {}).get("CNY")
+            if rate and rate > 1:
+                return round(rate, 4)
+    except Exception:
+        pass
+    return None
+
+
+_LIVE_FX = _fetch_live_fx()
+if _LIVE_FX:
+    FX_USD_CNY = _LIVE_FX
+
+
 def git_commit() -> str:
+    """获取整个仓库的最新 commit 哈希。"""
     try:
         return subprocess.check_output(
             ["git", "rev-parse", "--short", "HEAD"],
@@ -44,7 +67,23 @@ def git_commit() -> str:
         return "unknown"
 
 
-PROMPT_VERSION = git_commit()
+def git_prompt_commit() -> str:
+    """获取 prompts/ 目录的最新 commit 哈希，用于追踪 Prompt 版本稳定性。"""
+    try:
+        prompts_dir = ROOT / "prompts"
+        if not prompts_dir.exists():
+            return "unknown"
+        return subprocess.check_output(
+            ["git", "log", "-1", "--format=%h", "--", "prompts/"],
+            cwd=ROOT,
+            text=True,
+            stderr=subprocess.DEVNULL,
+        ).strip()
+    except Exception:
+        return "unknown"
+
+
+PROMPT_VERSION = git_prompt_commit()
 
 SOURCES = [
     {
@@ -1995,7 +2034,8 @@ def write_charts():
   }}
   var isMobile = window.innerWidth <= 768;
   function bar(id, labels, values, name, color, ratios, kinds) {{
-    var maxVal = Math.max.apply(null, values.filter(function(v){{return v > 0;}}));
+    var positiveValues = values.filter(function(v){{return v > 0;}});
+    var maxVal = positiveValues.length > 0 ? Math.max.apply(null, positiveValues) : 1;
     var yMax = maxVal > 0 ? Math.ceil((maxVal * 1.3) / 5) * 5 : undefined;
     var seriesData = values.map(function(v, i) {{
       var kind = kinds && kinds[i] ? kinds[i] : '';

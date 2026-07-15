@@ -18,6 +18,7 @@ import json
 import os
 import re
 import sys
+import time
 import urllib.request
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
@@ -48,34 +49,42 @@ def record_source(tier: str, title: str, url: str, note: str = "") -> None:
         "note": note,
     })
 
-def fetch_json(url: str, timeout: int = 30) -> dict | list | None:
-    """从 URL 获取 JSON 数据。"""
-    try:
-        req = urllib.request.Request(url, headers={"User-Agent": "CMIS-Daily-Discovery/1.0"})
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            return json.loads(resp.read().decode("utf-8", errors="ignore"))
-    except Exception as e:
-        print(f"[discover] fetch failed: {url} -> {e}", file=sys.stderr)
-        return None
+def fetch_json(url: str, timeout: int = 30, retries: int = 3) -> dict | list | None:
+    """从 URL 获取 JSON 数据，带指数退避重试。"""
+    for attempt in range(retries):
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "CMIS-Daily-Discovery/1.0"})
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                return json.loads(resp.read().decode("utf-8", errors="ignore"))
+        except Exception as e:
+            print(f"[discover] fetch_json attempt {attempt+1}/{retries} failed: {url} -> {e}", file=sys.stderr)
+            if attempt < retries - 1:
+                time.sleep(2 ** attempt)  # 指数退避: 1s, 2s, 4s
+            continue
+    return None
 
 
-def fetch_text(url: str, timeout: int = 30) -> str | None:
-    """从 URL 获取纯文本/HTML（自动处理 gzip）。"""
-    try:
-        req = urllib.request.Request(url, headers={
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-            "Accept-Encoding": "gzip, deflate",
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        })
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            data = resp.read()
-            if resp.headers.get("Content-Encoding") == "gzip":
-                import gzip
-                data = gzip.decompress(data)
-            return data.decode("utf-8", errors="ignore")
-    except Exception as e:
-        print(f"[discover] fetch failed: {url} -> {e}", file=sys.stderr)
-        return None
+def fetch_text(url: str, timeout: int = 30, retries: int = 3) -> str | None:
+    """从 URL 获取纯文本/HTML（自动处理 gzip），带指数退避重试。"""
+    for attempt in range(retries):
+        try:
+            req = urllib.request.Request(url, headers={
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                "Accept-Encoding": "gzip, deflate",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            })
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                data = resp.read()
+                if resp.headers.get("Content-Encoding") == "gzip":
+                    import gzip
+                    data = gzip.decompress(data)
+                return data.decode("utf-8", errors="ignore")
+        except Exception as e:
+            print(f"[discover] fetch_text attempt {attempt+1}/{retries} failed: {url} -> {e}", file=sys.stderr)
+            if attempt < retries - 1:
+                time.sleep(2 ** attempt)  # 指数退避: 1s, 2s, 4s
+            continue
+    return None
 
 
 # ---------------------------------------------------------------------------
