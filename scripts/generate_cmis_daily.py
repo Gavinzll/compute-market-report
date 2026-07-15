@@ -633,8 +633,6 @@ def _load_discovered_gpu_prices() -> tuple[dict[str, dict], dict[str, dict]]:
                 price_basis = dynamic_basis
             elif info.get("status") == "NEW_RELEASE":
                 price_basis = None  # 新发布无公开价
-            elif "市场核价" in source or "市场核价" in note:
-                price_basis = "市场核价区间（估算）"
             elif "折算" in source or "折算" in note or "小时价反推" in source:
                 price_basis = "云价折算"
             elif "SMM区间中点" in source or "低置信" in note:
@@ -1100,59 +1098,53 @@ DOMESTIC_RENTAL_INPUT = {
         "note": "910B 子型号、形态和异地部署限制未拆清；极智算和云擎天下已验证有 910B 8卡裸金属价（1.5-1.7 万/月），与 SMM 区间 1.2-1.5 万/月部分重叠。模力方舟有 910B 单卡云实例价（3-4元/时），但无8卡整机月租。因属于国产战略关注卡，按 SMM 区间中点进入国内指数展示，但需继续扩源确认子型号差异，不进入 ROI。",
     },
     "寒武纪 MLU370-X8": {
-        "original": "天翼云 PCH1 寒武纪云主机最大公开规格 pch1.21xlarge.3：84 vCPU / 252GB / 4×MLU370-S4 / 包月 24964.07 元；折算 8 卡云实例等效价=24964.07×2×0.85≈4.24 万元/月（国产计算加速型云主机 1-3 年 8.5 折）。另按国产8卡整机供给、云价溢价和可比租赁模型给出裸机市场核价区间 2.8-3.8 万元/月，仅作估算。极智算、云擎天下公开页面未找到寒武纪 MLU 租赁价。什么值得买区域调研显示厦门地区思元590单卡 7,000-8,000 元/月（非8卡整机价）。",
+        "original": "天翼云 PCH1 寒武纪云主机最大公开规格 pch1.21xlarge.3：84 vCPU / 252GB / 4×MLU370-S4 / 包月 24964.07 元；折算 8 卡云实例等效价=24964.07×2×0.85≈4.24 万元/月（国产计算加速型云主机 1-3 年 8.5 折）。极智算、云擎天下公开页面未找到寒武纪 MLU 租赁价。什么值得买区域调研显示厦门地区思元590单卡 7,000-8,000 元/月（非8卡整机价）。",
         "monthly_wan": 4.24,
         "price_basis": "云价折算",
-        "price_band": "云价折算 4.24；裸机市场核价 2.8-3.8",
-        "price_refresh_rule": "每日优先检索寒武纪 MLU 8卡整机/裸机长租公开价（SMM、曙光智算 scnet.cn、天翼云、运营商、IDC、什么值得买区域调研）；若找到明确市场价，用公开市场价替代云价折算；若未找到，继续使用天翼云 4卡云实例折算价，并保留裸机市场核价区间作参考。关键词：寒武纪 MLU590 月租、MLU370-X8 租赁。",
+        "price_band": "云价折算 4.24",
+        "price_refresh_rule": "每日优先检索寒武纪 MLU 8卡整机/裸机长租公开价（SMM、曙光智算 scnet.cn、天翼云、运营商、IDC、什么值得买区域调研）；若找到明确市场价，用公开市场价替代云价折算；若未找到，继续使用天翼云 4卡云实例折算价。关键词：寒武纪 MLU590 月租、MLU370-X8 租赁。",
         "source": "天翼云 PCH1：4×MLU370-S4 云主机包月价折算为 8卡云实例等效价（非8卡整机长租成交价）",
         "confidence": 62,
         "consensus": "Low",
         "historical": "HIST_INSUFFICIENT",
         "status": "REVIEW",
-        "note": "寒武纪 MLU 属于国产战略关注卡；当前入图价格基于天翼云明确 4卡云主机配置与包月价折算到 8卡云实例等效价，不是8卡整机长租成交价。裸机市场核价区间 2.8-3.8 万元/月仅用于价格带判断。截至2026-07-15，寒武纪MLU590无任何公开8卡整机月租；什么值得买仅发现思元590单卡区域数据（7,000-8,000元/月）。需继续扩源至曙光智算、SMM 算力快讯。不进入 ROI。",
+        "note": "寒武纪 MLU 属于国产战略关注卡；当前入图价格基于天翼云明确 4卡云主机配置与包月价折算到 8卡云实例等效价，不是8卡整机长租成交价。截至2026-07-15，寒武纪MLU590无任何公开8卡整机月租；什么值得买仅发现思元590单卡区域数据（7,000-8,000元/月）。需继续扩源至曙光智算、SMM 算力快讯。不进入 ROI。",
     },
     "海光 DCU K100": {
-        "original": "已确认金品 KG4208-H73 为海光 7300 双路 4U 8卡国产化 GPU 服务器，支持 8×全高全长双宽 GPU 卡。模力方舟有海光 BW1000 单卡云实例 3.00 元/时（非8卡整机价）。未取得公开成交月租价；按已确认 8卡服务器形态、国产智算供给线索、H100 8卡租赁研报锚点和可比国产裸机租赁带，市场核价区间估为 3.5-4.5 万元/月，中位数 4.0 万元入图。极智算、云擎天下公开页面未找到海光 DCU 租赁价。另按 BW1000 单卡云价折算：3.00×8×24×30×0.7/10000≈1.21万元/月，仅作量级参考。",
-        "monthly_wan": 4.0,
-        "price_basis": "市场核价区间（估算）",
-        "price_band": "3.5-4.5",
-        "price_band_aux": 1.21,
-        "price_refresh_rule": "每日优先检索海光 DCU 8卡整机、裸机、智算中心或集成商明确月租（SMM、曙光智算 scnet.cn、天翼云、模力方舟 ai.gitee.com/compute、运营商、IDC、淘宝/闲鱼）；若找到公开市场价，按来源置信度更新价格口径和标准化价格；若未找到，沿用 3.5-4.5 万元/月市场核价区间，中位数入图。关键词：海光 DCU Z100 租赁、DCU K100 月租、海光 BW1000。",
-        "source": "金品 KG4208-H73 海光双路8卡服务器配置确认；行业租赁模型与国产裸机可比区间核价（非公开成交价）",
+        "original": "模力方舟有海光 BW1000 单卡云实例 3.00 元/时。按单卡云价×8折算：3.00×8×24×30×0.7/10000≈1.21 万元/月。极智算、云擎天下公开页面未找到海光 DCU 租赁价；天翼云仅有 DCU-K100。",
+        "monthly_wan": 1.21,
+        "price_basis": "单卡云价折算",
+        "price_refresh_rule": "每日通过胜算云 shengsuanyun.com、模力方舟 ai.gitee.com/compute 抓取海光 BW1000 单卡时价并自动折算；另检索 SMM、曙光智算 scnet.cn、天翼云、运营商、IDC 是否有 8卡整机月租。关键词：海光 DCU Z100 租赁、DCU K100 月租、海光 BW1000。",
+        "source": "模力方舟 BW1000 单卡 3.00 元/时 ×8×24×30×0.7 折算（非8卡整机成交价）",
         "confidence": 48,
         "consensus": "Low",
         "historical": "HIST_INSUFFICIENT",
         "status": "REVIEW",
-        "note": "海光 DCU 属于国产战略关注卡；已确认 8卡服务器架构，但未取得公开成交月租。截至2026-07-15，模力方舟有海光 BW1000 单卡云实例价（3.00元/时），但无DCU Z100或BW1000的8卡整机月租；天翼云仅有DCU-K100。BW1000 云价×8折算约1.21万元/月仅作量级参考。不进入 ROI。",
+        "note": "海光 DCU 属于国产战略关注卡；截至2026-07-15，模力方舟有 BW1000 单卡云实例价（3.00元/时），但无 DCU Z100 或 BW1000 的8卡整机月租；天翼云仅有 DCU-K100。当前价格基于单卡云价×8折算，含0.7长协折扣系数，仅作量级参考，非成交价。不进入 ROI。",
     },
     "壁仞 BR100": {
-        "original": "已确认壁仞 BR100/BR104 具备 OAM/PCIe 板卡形态，8个 OAM 模组可置于 UBB 形成单节点8卡全互联；海玄 OAM 服务器为 8PFLOPS / 512GB HBM2e / 最大功耗 7kW。胜算云有壁仞天垓100单卡云实例 1.49 元/时；模力方舟有天垓150单卡 3.00 元/时、壁砺106M单卡 2.00 元/时（均非8卡整机价）。未取得公开成交月租价；按 8卡 OAM 整机形态、H100 8卡租赁研报锚点和国产高端训练卡折价，市场核价区间估为 3.8-4.8 万元/月，中位数 4.3 万元入图。另按天垓100单卡云价折算：1.49×8×24×30×0.7/10000≈0.60万元/月，仅作量级参考。",
-        "monthly_wan": 4.3,
-        "price_basis": "市场核价区间（估算）",
-        "price_band": "3.8-4.8",
-        "price_band_aux": 0.60,
-        "price_refresh_rule": "每日优先检索壁仞 BR100/BR104/BR106 8卡 OAM 整机、裸机或智算中心明确月租（SMM、曙光智算 scnet.cn、胜算云 shengsuanyun.com、模力方舟 ai.gitee.com/compute、运营商、IDC、淘宝/闲鱼）；若找到公开市场价，替换估算区间中位数；若未找到，沿用 3.8-4.8 万元/月市场核价区间，中位数入图。关键词：壁仞 BR100 月租、BR106M 租赁、天垓100 天垓150。",
-        "source": "壁仞 BR100/BR104 8卡 OAM 服务器形态确认；行业租赁模型与国产高端训练卡可比区间核价（非公开成交价）",
+        "original": "胜算云有壁仞天垓100单卡云实例 1.49 元/时；模力方舟有天垓150单卡 3.00 元/时、壁砺106M单卡 2.00 元/时。按天垓100单卡云价×8折算：1.49×8×24×30×0.7/10000≈0.60 万元/月。极智算、云擎天下公开页面未找到壁仞 BR100 租赁价。",
+        "monthly_wan": 0.60,
+        "price_basis": "单卡云价折算",
+        "price_refresh_rule": "每日通过胜算云 shengsuanyun.com、模力方舟 ai.gitee.com/compute 抓取壁仞天垓100/150单卡时价并自动折算；另检索 SMM、曙光智算 scnet.cn、运营商、IDC 是否有 8卡整机月租。关键词：壁仞 BR100 月租、BR106M 租赁、天垓100 天垓150。",
+        "source": "胜算云天垓100 单卡 1.49 元/时 ×8×24×30×0.7 折算（非8卡整机成交价）",
         "confidence": 48,
         "consensus": "Low",
         "historical": "HIST_INSUFFICIENT",
         "status": "REVIEW",
-        "note": "壁仞 BR100 属于国产战略关注卡；已补充 BR100/BR104 8卡 OAM 服务器形态依据，但未取得公开成交月租。截至2026-07-15，胜算云有天垓100单卡云实例（1.49元/时），模力方舟有天垓150（3.00元/时）和壁砺106M（2.00元/时）单卡价，但均无BR100 OAM服务器8卡整机月租。天垓100云价×8折算约0.60万元/月仅作量级参考。不进入 ROI。",
+        "note": "壁仞 BR100 属于国产战略关注卡；截至2026-07-15，胜算云有天垓100单卡云实例（1.49元/时），模力方舟有天垓150（3.00元/时）和壁砺106M（2.00元/时）单卡价，但均无 BR100 OAM服务器8卡整机月租。当前价格基于天垓100单卡云价×8折算，含0.7长协折扣系数，仅作量级参考，非成交价。不进入 ROI。",
     },
     "摩尔线程 MTT S4000": {
-        "original": "UCache 公开页确认摩尔线程 S4000 8卡训推一体机可租赁；摩尔线程官方 S4000 支持单机8卡和多机多卡，Gitee AI 文档显示 MTT S5000 面向大模型训练推理，80GB 显存、Dense 1000 TFlops、MTLink 8卡全连接拓扑。胜算云有 S4000 单卡云实例 1.69 元/时；模力方舟有 S5000 单卡 8.00 元/时（均非8卡整机价）。未取得公开成交月租价；按已确认 8卡供给、S5000 规格提升和国产租赁可比带，市场核价区间估为 3.0-4.0 万元/月，中位数 3.5 万元入图。另按 S4000 单卡云价折算：1.69×8×24×30×0.7/10000≈0.68万元/月，仅作量级参考。",
-        "monthly_wan": 3.5,
-        "price_basis": "市场核价区间（估算）",
-        "price_band": "3.0-4.0",
-        "price_band_aux": 0.68,
-        "price_refresh_rule": "每日优先检索摩尔线程 S4000/S5000 8卡训推一体机、裸机或智算中心明确月租（SMM、AutoDL、胜算云 shengsuanyun.com、模力方舟 ai.gitee.com/compute、运营商、IDC、淘宝/闲鱼）；若找到公开市场价，替换估算区间中位数；若未找到，沿用 3.0-4.0 万元/月市场核价区间，中位数入图。关键词：摩尔线程 S4000 租赁、MTT S5000 月租。",
-        "source": "UCache S4000 8卡训推一体机租赁供给、摩尔线程 S4000 官方单机8卡能力、Gitee AI S5000 8卡互联规格；市场核价区间（非公开成交价）",
+        "original": "胜算云有 S4000 单卡云实例 1.69 元/时；模力方舟有 S5000 单卡 8.00 元/时。按 S4000 单卡云价×8折算：1.69×8×24×30×0.7/10000≈0.68 万元/月。UCache 公开页确认 S4000 8卡训推一体机可租赁但无标准月租价。",
+        "monthly_wan": 0.68,
+        "price_basis": "单卡云价折算",
+        "price_refresh_rule": "每日通过胜算云 shengsuanyun.com、模力方舟 ai.gitee.com/compute 抓取摩尔线程 S4000/S5000 单卡时价并自动折算；另检索 SMM、AutoDL、运营商、IDC 是否有 8卡整机月租。关键词：摩尔线程 S4000 租赁、MTT S5000 月租。",
+        "source": "胜算云 S4000 单卡 1.69 元/时 ×8×24×30×0.7 折算（非8卡整机成交价）",
         "confidence": 50,
         "consensus": "Low",
         "historical": "HIST_INSUFFICIENT",
         "status": "REVIEW",
-        "note": "摩尔线程 MTT S4000 属于国产战略关注卡；已确认 8卡 S4000 租赁供给、官方单机8卡能力，并补充 S5000 8卡互联规格。截至2026-07-15，胜算云有 S4000 单卡云实例（1.69元/时），模力方舟有 S5000 单卡（8.00元/时），但均无8卡整机月租。S4000 云价×8折算约0.68万元/月仅作量级参考。不进入 ROI。",
+        "note": "摩尔线程 MTT S4000 属于国产战略关注卡；截至2026-07-15，胜算云有 S4000 单卡云实例（1.69元/时），模力方舟有 S5000 单卡（8.00元/时），但均无8卡整机月租。当前价格基于 S4000 单卡云价×8折算，含0.7长协折扣系数，仅作量级参考，非成交价。不进入 ROI。",
     },
     "寒武纪 MLU590": {
         "original": "截至2026-07-15，未找到寒武纪 MLU590 任何公开 8卡整机月租价。什么值得买区域调研仅发现厦门地区思元590单卡 7,000-8,000 元/月（非8卡整机价）。SMM 算力快讯主要跟踪 H100/A100/4090/5090/910B 等，MLU590 尚未进入监测体系。",
@@ -1209,9 +1201,9 @@ def domestic_rows() -> list[dict]:
     for idx, gpu in enumerate(GPU_ORDER, 1):
         # 优先使用动态发现的价格，回退到硬编码
         item = _DYNAMIC_DOMESTIC.get(gpu) or DOMESTIC_RENTAL_INPUT.get(gpu)
-        # 动态数据可能缺少辅助字段（price_band_aux 等），从硬编码补齐
+        # 动态数据可能缺少 price_refresh_rule，从硬编码补齐
         if gpu in _DYNAMIC_DOMESTIC and gpu in DOMESTIC_RENTAL_INPUT:
-            for aux_key in ("price_band", "price_band_aux", "price_refresh_rule"):
+            for aux_key in ("price_refresh_rule",):
                 if aux_key not in item and aux_key in DOMESTIC_RENTAL_INPUT[gpu]:
                     item[aux_key] = DOMESTIC_RENTAL_INPUT[gpu][aux_key]
         if item:
@@ -1247,7 +1239,7 @@ def domestic_rows() -> list[dict]:
         # 根据口径类型重写口径说明，只保留增量信息
         if "云价折算" in _basis:
             brief_note = f"{_note[:80]}..." if len(_note) > 80 else _note
-        elif "市场核价" in _basis or "低置信" in _basis:
+        elif "低置信" in _basis:
             brief_note = f"{_note[:80]}..." if len(_note) > 80 else _note
         else:
             brief_note = _src
@@ -1260,7 +1252,6 @@ def domestic_rows() -> list[dict]:
             "主数据源": item["source"],
             "原始价格": item["original"],
             "价格口径": _basis,
-            "核价区间（万元/月）": item.get("price_band", ""),
             "价格更新规则": item.get("price_refresh_rule", "每日优先检索更高置信的新报价；若无新来源，沿用当前主口径样本并保留审计备注。"),
             "标准化价格": None if monthly is None else monthly,
             "标准化单位": "万元/8卡整机/月",
@@ -1274,7 +1265,6 @@ def domestic_rows() -> list[dict]:
             "是否进入主指数": included,
             "Reject/Review 原因": reason,
             "口径说明": _note,
-            "折算参考": item.get("price_band_aux", ""),
             "数据来源与口径": brief_note,
         })
     return rows
@@ -1330,17 +1320,17 @@ DOMESTIC_RENTAL = domestic_rows()
 OVERSEAS_RENTAL = overseas_rows()
 
 PROCUREMENT_INPUT = {
-    "H100 80G": {"purchase_min_wan": 230, "purchase_mid_wan": 275, "purchase_max_wan": 320, "basis": "市场核价区间（估算）", "source": "BIZON H100/H200 配置价、公开 8卡 GPU 服务器中标样本、国内渠道核价", "confidence": 58, "status": "REVIEW", "note": "H100 8卡 HGX 国内采购价公开成交样本稀缺；本期按海外整机配置价、国内招投标通用 8卡服务器样本和渠道核价给出 230-320 万元区间。"},
-    "H20": {"purchase_min_wan": 100, "purchase_mid_wan": 120, "purchase_max_wan": 140, "basis": "三方渠道价/市场核价", "source": "超聚变 8U AI 8卡 H20 服务器渠道价约 109 万元；结合 H20 141GB 供需溢价核价", "confidence": 55, "status": "REVIEW", "note": "H20 8卡整机存在公开渠道价线索，但非政府中标或厂商官方报价；按 100-140 万元区间进入参考测算。"},
-    "A100 80G": {"purchase_min_wan": 90, "purchase_mid_wan": 115, "purchase_max_wan": 140, "basis": "市场核价区间（估算）", "source": "BIZON A100 80GB 配置价、国内 8卡 GPU 服务器中标样本、存量卡渠道价", "confidence": 55, "status": "REVIEW", "note": "A100 80G 已进入存量/二级市场，公开 8卡整机成交价分散；按 90-140 万元区间做采购成本参考。"},
+    "H100 80G": {"purchase_min_wan": 230, "purchase_mid_wan": 275, "purchase_max_wan": 320, "basis": "采购价估算", "source": "BIZON H100/H200 配置价、公开 8卡 GPU 服务器中标样本、国内渠道核价", "confidence": 58, "status": "REVIEW", "note": "H100 8卡 HGX 国内采购价公开成交样本稀缺；本期按海外整机配置价、国内招投标通用 8卡服务器样本和渠道核价给出 230-320 万元区间。"},
+    "H20": {"purchase_min_wan": 100, "purchase_mid_wan": 120, "purchase_max_wan": 140, "basis": "三方渠道价/估算", "source": "超聚变 8U AI 8卡 H20 服务器渠道价约 109 万元；结合 H20 141GB 供需溢价核价", "confidence": 55, "status": "REVIEW", "note": "H20 8卡整机存在公开渠道价线索，但非政府中标或厂商官方报价；按 100-140 万元区间进入参考测算。"},
+    "A100 80G": {"purchase_min_wan": 90, "purchase_mid_wan": 115, "purchase_max_wan": 140, "basis": "采购价估算", "source": "BIZON A100 80GB 配置价、国内 8卡 GPU 服务器中标样本、存量卡渠道价", "confidence": 55, "status": "REVIEW", "note": "A100 80G 已进入存量/二级市场，公开 8卡整机成交价分散；按 90-140 万元区间做采购成本参考。"},
     "RTX 5090": {"purchase_min_wan": 28, "purchase_mid_wan": 34, "purchase_max_wan": 40, "basis": "三方渠道价", "source": "1688 4090/5090 8卡一体机约 37-37.94 万元，结合 RTX 5090 单卡溢价和整机集成成本核价", "confidence": 60, "status": "REVIEW", "note": "消费级 8卡整机渠道价波动大，需持续跟踪显卡现货与整机集成商报价。"},
     "RTX 4090": {"purchase_min_wan": 18, "purchase_mid_wan": 23, "purchase_max_wan": 28, "basis": "三方渠道价", "source": "ZOL RTX 4090 8卡服务器约 26 万元、1688 4090/5090 一体机区间作交叉参考", "confidence": 62, "status": "REVIEW", "note": "RTX 4090 单卡与整机渠道充足，但税费、保修、供电散热和品牌差异明显；按 18-28 万元做参考测算。"},
-    "昇腾 910C": {"purchase_min_wan": 170, "purchase_mid_wan": 220, "purchase_max_wan": 270, "basis": "市场核价区间（估算）", "source": "昇腾 910B 框架协议价、910C 供需溢价和国产高端训练服务器市场核价", "confidence": 48, "status": "REVIEW", "note": "910C 明确 8卡整机采购成交价仍少；按 910B 框架协议训练服务器价格带上修估算，需继续追踪运营商和银行集采。"},
-    "昇腾 910B": {"purchase_min_wan": 155, "purchase_mid_wan": 190, "purchase_max_wan": 225, "basis": "框架协议线索/市场核价", "source": "农业发展银行国产 GPU 服务器框架协议线索：910B 推理服务器 154.5 万元/台、训练服务器 212.2 万元/台、配件约 9.7 万元", "confidence": 52, "status": "REVIEW", "note": "910B 采购价有框架协议线索，但原始公告仍需追溯；租赁端价格受 B2/B3/B4 子型号、库存和生态迁移影响，毛回本仅作风险观察。"},
-    "寒武纪 MLU370-X8": {"purchase_min_wan": 20, "purchase_mid_wan": 30, "purchase_max_wan": 40, "basis": "三方渠道价/市场核价", "source": "MLU370-S4/X8 公开卡价与国产 8卡整机渠道核价", "confidence": 40, "status": "REVIEW", "note": "寒武纪 MLU370-X8 当前租赁价为云价折算，采购价按 MLU370 卡价和整机集成成本估算；二者口径不同，毛回本不进入 ROI 结论。"},
-    "海光 DCU K100": {"purchase_min_wan": 60, "purchase_mid_wan": 78, "purchase_max_wan": 95, "basis": "公开卡价/市场核价", "source": "海光 K100 64GB GPU 卡高校采购单价 4.6 万元、公开渠道 8.4 万元/张，加服务器底座和集成成本核价", "confidence": 56, "status": "REVIEW", "note": "海光 DCU K100 采购价按单卡公开价×8加整机底座、网络、电源、维保和集成成本估算；需继续补 8卡整机中标价。"},
-    "壁仞 BR100": {"purchase_min_wan": 60, "purchase_mid_wan": 80, "purchase_max_wan": 100, "basis": "市场核价区间（估算）", "source": "壁仞 BR100/BR104 8卡 OAM 服务器形态、国产高端训练卡可比价格、渠道核价", "confidence": 35, "status": "REVIEW", "note": "未取得壁仞 BR100 8卡整机公开采购价；按已确认 8卡 OAM 服务器形态和国产训练卡可比区间估算，需重点扩源。"},
-    "摩尔线程 MTT S4000": {"purchase_min_wan": 65, "purchase_mid_wan": 80, "purchase_max_wan": 95, "basis": "公开卡价/市场核价", "source": "MTT S4000 公开报价约 5.9-8.64 万元/张，叠加 8卡服务器底座、网络、供电和维保核价", "confidence": 52, "status": "REVIEW", "note": "摩尔线程 MTT S4000 8卡整机采购价按公开单卡价和整机集成成本估算；S5000/SGX5000 需继续查官方和集成商报价。"},
+    "昇腾 910C": {"purchase_min_wan": 170, "purchase_mid_wan": 220, "purchase_max_wan": 270, "basis": "采购价估算", "source": "昇腾 910B 框架协议价、910C 供需溢价和国产高端训练服务器渠道估算", "confidence": 48, "status": "REVIEW", "note": "910C 明确 8卡整机采购成交价仍少；按 910B 框架协议训练服务器价格带上修估算，需继续追踪运营商和银行集采。"},
+    "昇腾 910B": {"purchase_min_wan": 155, "purchase_mid_wan": 190, "purchase_max_wan": 225, "basis": "框架协议线索/估算", "source": "农业发展银行国产 GPU 服务器框架协议线索：910B 推理服务器 154.5 万元/台、训练服务器 212.2 万元/台、配件约 9.7 万元", "confidence": 52, "status": "REVIEW", "note": "910B 采购价有框架协议线索，但原始公告仍需追溯；租赁端价格受 B2/B3/B4 子型号、库存和生态迁移影响，毛回本仅作风险观察。"},
+    "寒武纪 MLU370-X8": {"purchase_min_wan": 20, "purchase_mid_wan": 30, "purchase_max_wan": 40, "basis": "三方渠道价/估算", "source": "MLU370-S4/X8 公开卡价与国产 8卡整机渠道估算", "confidence": 40, "status": "REVIEW", "note": "寒武纪 MLU370-X8 当前租赁价为云价折算，采购价按 MLU370 卡价和整机集成成本估算；二者口径不同，毛回本不进入 ROI 结论。"},
+    "海光 DCU K100": {"purchase_min_wan": 60, "purchase_mid_wan": 78, "purchase_max_wan": 95, "basis": "公开卡价/估算", "source": "海光 K100 64GB GPU 卡高校采购单价 4.6 万元、公开渠道 8.4 万元/张，加服务器底座和集成成本估算", "confidence": 56, "status": "REVIEW", "note": "海光 DCU K100 采购价按单卡公开价×8加整机底座、网络、电源、维保和集成成本估算；需继续补 8卡整机中标价。"},
+    "壁仞 BR100": {"purchase_min_wan": 60, "purchase_mid_wan": 80, "purchase_max_wan": 100, "basis": "采购价估算", "source": "壁仞 BR100/BR104 8卡 OAM 服务器形态、国产高端训练卡可比价格、渠道估算", "confidence": 35, "status": "REVIEW", "note": "未取得壁仞 BR100 8卡整机公开采购价；按已确认 8卡 OAM 服务器形态和国产训练卡可比区间估算，需重点扩源。"},
+    "摩尔线程 MTT S4000": {"purchase_min_wan": 65, "purchase_mid_wan": 80, "purchase_max_wan": 95, "basis": "公开卡价/估算", "source": "MTT S4000 公开报价约 5.9-8.64 万元/张，叠加 8卡服务器底座、网络、供电和维保估算", "confidence": 52, "status": "REVIEW", "note": "摩尔线程 MTT S4000 8卡整机采购价按公开单卡价和整机集成成本估算；S5000/SGX5000 需继续查官方和集成商报价。"},
 }
 
 
@@ -1654,9 +1644,9 @@ def market_summary_html() -> str:
     h100_text = f'H100 80G 国内 8卡整机月租为 {fmt(h100.get("标准化价格"))} 万元' if h100 else "H100 80G 当期主口径价格暂不可得"
     token_vendors = len({r["厂商"] for r in TOKEN_DATA})
     return (
-        f"<p>本期国内算力租赁指数共展示 {len(domestic_index_rows)} 个型号，其中 {len(pass_rows)} 个为 PASS 主口径样本，{h100_text}；国产战略关注卡继续保留在指数和图表中，但低置信、云价折算和市场核价样本均标注为观察口径。</p>"
+        f"<p>本期国内算力租赁指数共展示 {len(domestic_index_rows)} 个型号，其中 {len(pass_rows)} 个为 PASS 主口径样本，{h100_text}；国产战略关注卡继续保留在指数和图表中，但低置信和云价折算样本均标注为观察口径。</p>"
         f"<p>海外 GPU Cloud 继续作为辅助参考，不与国内长租指数混用；采购覆盖和毛回本测算只跟随国内指数型号展开。Token 价格覆盖 {token_vendors} 家厂商，展示官方价、海外三方价和境内三方价，用于观察模型 API 市场价差。</p>"
-        f"<p>当前需要重点复核的是 {len(strategic_review)} 个国产战略关注样本：若后续采集到明确 8卡整机/裸机/月租或采购价，应优先用新公开价格替换市场核价区间；未取得新价前，不进入 ROI 或方向性市场结论。</p>"
+        f"<p>当前需要重点复核的是 {len(strategic_review)} 个国产战略关注样本：若后续采集到明确 8卡整机/裸机/月租或采购价，应优先用新公开价格替换云价折算；未取得新价前，不进入 ROI 或方向性市场结论。</p>"
     )
 
 
@@ -1727,9 +1717,9 @@ def render_html(relative_prefix: str = "./") -> str:
 
     <section id="domestic">
       <h2>国内算力租赁主指数</h2>
-      <p class="note">高置信样本仍要求 PASS 且 Confidence≥70；昇腾 910B、寒武纪 MLU370-X8、海光 DCU K100、壁仞 BR100、摩尔线程 MTT S4000 作为国产战略关注卡强制列入指数表和柱状图。寒武纪为天翼云 4卡实例折算的 8卡云价；海光/壁仞/摩尔线程采用市场核价区间中位数入图，并在表格中显示区间和依据。柱状图按价格口径分色：主口径、低置信观察、云价折算、市场核价和价格待补分别展示。</p>
-      <figure><figcaption>国内指数：万元/8卡整机/月；颜色区分主口径、低置信观察、云价折算、单卡云价折算与市场核价</figcaption><div id="chart-domestic-main" class="chart"></div></figure>
-      {table(domestic_index_rows, ["GPU 型号", "GPU 分类", "价格口径", "标准化价格", "折算参考", "国内月租/海外月租", "Confidence Score", "校验状态", "口径说明"], headers=["GPU 型号", "GPU 分类", "价格口径", "标准化价格（万/月）", "折算参考", "国内月租/海外月租", "Confidence", "校验状态", "口径说明"] if domestic_index_rows else None)}
+      <p class="note">高置信样本仍要求 PASS 且 Confidence≥70；昇腾 910B、寒武纪 MLU370-X8、海光 DCU K100、壁仞 BR100、摩尔线程 MTT S4000 作为国产战略关注卡强制列入指数表和柱状图。柱状图按价格口径分色：主口径、低置信观察、云价折算和价格待补分别展示。</p>
+      <figure><figcaption>国内指数：万元/8卡整机/月；颜色区分主口径、低置信观察、云价折算与价格待补</figcaption><div id="chart-domestic-main" class="chart"></div></figure>
+      {table(domestic_index_rows, ["GPU 型号", "GPU 分类", "价格口径", "标准化价格", "国内月租/海外月租", "Confidence Score", "校验状态", "口径说明"], headers=["GPU 型号", "GPU 分类", "价格口径", "标准化价格（万/月）", "国内月租/海外月租", "Confidence", "校验状态", "口径说明"] if domestic_index_rows else None)}
     </section>
 
     <section id="domestic-price-basis">
@@ -1738,7 +1728,6 @@ def render_html(relative_prefix: str = "./") -> str:
         <p><strong>公开成交/主口径价</strong> — 来源为 SMM 算力快讯等行业基准渠道，样本明确标注 8卡/台、起租量（≥16/32台）、租期（1-3年长协）、含电含托管等关键信息，经合理性校验后进入主指数。Confidence ≥ 85。</p>
         <p style="margin-top:10px"><strong>低置信观察</strong> — 来自 SMM 买方出价/行业均价、或多个公开渠道交叉验证的区间中位数。价格已公开但样本口径（如子型号、异地部署限制）未完全拆清。Confidence 70-80。不进入 ROI 计算。</p>
         <p style="margin-top:10px"><strong>云价折算</strong> — 分两种：<br>① 同类配置扩倍：来源为明确配置的云主机（如天翼云 4×MLU370-S4），按配置倍数扩到 8 卡并保留长协折扣政策（如 1-3 年 85 折）折算。<br>② 单卡云价 ×8 折算：仅有单卡云实例小时价（如胜算云、模力方舟），无 8 卡整机月租时，公式：<br><code style="background:rgba(255,255,255,.06);padding:4px 8px;border-radius:4px;font-size:12px">参考价 = 单卡时价(元) × 8 × 24 × 30 × 0.7 ÷ 10000</code><br>其中 0.7 为长协折扣系数（云实例含虚拟化加价，批量裸金属长协价通常比云零售价低 30-40%）。该折算价仅作量级参考，非 8 卡整机成交价，不进入 ROI。</p>
-        <p style="margin-top:10px"><strong>市场核价区间（估算）</strong> — 已确认 8 卡服务器形态（如 OAM/PCIe 板卡架构），但无任何公开成交价时，基于可比卡租赁研报锚点和国产供给线索给出区间和中位数，保留在表格中作为价格带参考。柱状图中若有单卡云实例折算价则以折算值展示，无折算价则显示为"价格待补"。不进入 ROI。</p>
         <p style="margin-top:10px"><strong>价格待补</strong> — 截至当日未找到任何公开 8 卡整机月租价、云价折算基础或可参考的采购价线索。图表中以缺失值展示，每日持续扩源。</p>
       </div>
     </section>
@@ -1768,7 +1757,7 @@ def render_html(relative_prefix: str = "./") -> str:
 
     <section id="profit">
       <h2>利润测算</h2>
-      <p class="note">利润测算覆盖范围与国内算力租赁指数保持一致。采购价按公开招投标/框架协议、三方渠道、自媒体线索和市场核价区间分层；本期先展示月租收入 ÷ 采购价中位数和毛回本月数，不含电力、机柜、网络、维保、资金成本、税费和空置率。凡租赁价或采购价仍为 REVIEW/估算口径的样本，仅作参考测算，不进入方向性 ROI 结论。</p>
+      <p class="note">利润测算覆盖范围与国内算力租赁指数保持一致。采购价按公开招投标/框架协议、三方渠道、自媒体线索和采购价估算分层；本期先展示月租收入 ÷ 采购价中位数和毛回本月数，不含电力、机柜、网络、维保、资金成本、税费和空置率。凡租赁价或采购价仍为 REVIEW/估算口径的样本，仅作参考测算，不进入方向性 ROI 结论。</p>
       <h3>采购价覆盖</h3>
       {table(PROCUREMENT)}
       <h3>毛回本参考</h3>
@@ -1783,7 +1772,7 @@ def render_html(relative_prefix: str = "./") -> str:
     <section id="ai-summary">
       <h2>AI 总结</h2>
       <div class="panel">
-        <p>本期国内服务器价格覆盖继续扩大：H100 80G 约 7.6 万元/8卡整机/月，A100 80G 约 3.15-3.8 万元/月，H20 141GB 约 4.8 万元/月，RTX 5090 约 1.2 万元/月，RTX 4090 约 0.68-0.88 万元/月，昇腾 910C 行业均价约 6.2 万元/月。昇腾 910B、寒武纪 MLU370-X8、海光 DCU K100、壁仞 BR100、摩尔线程 MTT S4000已作为国产战略关注卡进入国内指数表和柱状图；寒武纪使用云实例折算口径，海光/壁仞/摩尔线程使用市场核价区间中位数展示，均不进入 ROI。</p>
+        <p>本期国内服务器价格覆盖继续扩大：H100 80G 约 7.6 万元/8卡整机/月，A100 80G 约 3.15-3.8 万元/月，H20 141GB 约 4.8 万元/月，RTX 5090 约 1.2 万元/月，RTX 4090 约 0.68-0.88 万元/月，昇腾 910C 行业均价约 6.2 万元/月。昇腾 910B、寒武纪 MLU370-X8、海光 DCU K100、壁仞 BR100、摩尔线程 MTT S4000已作为国产战略关注卡进入国内指数表和柱状图；寒武纪使用天翼云实例折算口径，海光/壁仞/摩尔线程使用单卡云价×8折算展示，均不进入 ROI。</p>
       </div>
     </section>
 
@@ -1919,53 +1908,28 @@ def write_charts():
         return None if a is None or b is None else round(a - b, 2)
     def domestic_chart_tag(row: dict) -> str:
         if row["GPU 型号"] in STRATEGIC_DOMESTIC_GPUS and row["标准化价格"] is None:
-            _aux = row.get("折算参考")
-            if _aux is not None and _aux != "" and _aux != 0:
-                return "云折"
             return "价格待补"
-        if row.get("价格口径") == "市场核价区间（估算）":
-            _aux = row.get("折算参考")
-            if _aux is not None and _aux != "" and _aux != 0:
-                return "云折"
-            return "市场核价"
-        if row["GPU 型号"] == "寒武纪 MLU370-X8":
+        kind = row.get("价格口径", "")
+        if "云价折算" in kind or "单卡云价" in kind:
             return "云折"
         if row["GPU 型号"] in STRATEGIC_DOMESTIC_GPUS and not pass_status(row):
             return "低置信观察"
         return row.get("国内月租/海外月租")
     def domestic_chart_kind(row: dict) -> str:
         if row["标准化价格"] is None:
-            _aux = row.get("折算参考")
-            if _aux is not None and _aux != "" and _aux != 0:
-                return "单卡云价折算"
             return "价格待补"
         kind = row.get("价格口径", "")
-        # 市场核价：有折算参考则用折算值展示，否则也用折算或待补
-        if "市场核价" in kind:
-            _aux = row.get("折算参考")
-            if _aux is not None and _aux != "" and _aux != 0:
-                return "单卡云价折算"
-            # 无折算参考的市场核价，柱状图中不再展示估算中位数
-            return "价格待补"
-        if "云价折算" in kind:
+        if "云价折算" in kind or "单卡云价" in kind:
             return "单卡云价折算"
         if "低置信" in kind or (row["GPU 型号"] in STRATEGIC_DOMESTIC_GPUS and not pass_status(row)):
             return "低置信观察"
         return "公开成交/主口径价"
 
     def _domestic_chart_value(row: dict) -> float:
-        """柱状图数值：优先用标准化价格；若为市场核价/价格待补且有折算参考，用折算值"""
+        """柱状图数值：直接用标准化价格"""
         primary = row["标准化价格"]
         if primary is not None and primary > 0:
-            # 市场核价 + 有折算参考 → 优先展示折算参考（更具体）
-            kind = row.get("价格口径", "")
-            _aux = row.get("折算参考")
-            if ("市场核价" in kind or primary is None) and _aux is not None and _aux != "" and _aux != 0:
-                return float(_aux)
             return primary
-        _aux = row.get("折算参考")
-        if _aux is not None and _aux != "" and _aux != 0:
-            return float(_aux)
         return 0
 
     data = {
@@ -2004,9 +1968,7 @@ def write_charts():
   var domesticPalette = {{
     '公开成交/主口径价': '#22c55e',
     '低置信观察': '#f97316',
-    '云价折算': '#8b5cf6',
     '单卡云价折算': '#a78bfa',
-    '市场核价': '#38bdf8',
     '价格待补': '#64748b'
   }};
   function legendForKinds(kinds) {{
