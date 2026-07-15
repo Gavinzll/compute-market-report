@@ -22,16 +22,16 @@
     .metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
     .metric,.m-card,figure,details{background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.025));border:1px solid var(--rule);border-radius:18px;box-shadow:0 12px 36px rgba(0,0,0,.22)}
     .metric{padding:12px} .metric span,.metric small{display:block;color:var(--muted);font-size:11px} .metric strong{display:block;color:var(--accent);font-size:22px;margin:4px 0}
-    .m-card{padding:14px;margin:10px 0} .m-card.compact{padding:12px}
+    .m-card{padding:14px;margin:10px 0;border:1px solid rgba(255,255,255,.08);box-shadow:0 8px 24px rgba(0,0,0,.28)} .m-card.compact{padding:12px}
     .m-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}
-    .m-card-head span,.status{white-space:nowrap;border:1px solid var(--rule);border-radius:999px;padding:3px 8px;font-size:11px;color:var(--muted)}
-    .status.ok{color:var(--good);border-color:rgba(116,224,163,.45)} .status.warn{color:var(--accent2);border-color:rgba(247,199,107,.45)}
+    .m-card-head span,.status{white-space:nowrap;border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:4px 10px;font-size:11px;color:var(--muted);background:rgba(255,255,255,.04)}
+    .status.ok{color:var(--good);border-color:rgba(116,224,163,.45);background:rgba(116,224,163,.08)} .status.warn{color:var(--accent2);border-color:rgba(247,199,107,.45);background:rgba(247,199,107,.08)}
     .m-price{font-size:30px;color:var(--accent);font-weight:800;letter-spacing:-.03em} .m-price em{display:block;font-size:11px;font-style:normal;color:var(--muted);font-weight:500;letter-spacing:0}
     .pill-row{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
-    .pill{display:inline-flex;gap:5px;align-items:center;padding:5px 8px;border:1px solid var(--rule);border-radius:999px;background:rgba(255,255,255,.035);font-size:11px;color:var(--ink)}
+    .pill{display:inline-flex;gap:5px;align-items:center;padding:5px 10px;border:1px solid rgba(255,255,255,.08);border-radius:999px;background:rgba(255,255,255,.045);font-size:11px;color:var(--ink)}
     .pill b{color:var(--muted);font-weight:600}
     figure{padding:8px 0;margin:12px 0 18px} figcaption{font-size:13px;color:var(--accent2);font-weight:650;margin-bottom:8px;padding:0 8px}
-    .chart{width:100%;min-height:420px} #chart-token-input,#chart-token-output,#chart-token-third-diff,#chart-token-official-domestic-diff{min-height:720px}
+    .chart{width:100%;min-height:320px} #chart-domestic-main,#chart-overseas{min-height:380px} #chart-token-input,#chart-token-output,#chart-token-third-diff,#chart-token-official-domestic-diff{min-height:600px}
     details{padding:0;margin:10px 0} summary{cursor:pointer;padding:14px;font-weight:700;color:var(--accent2)} details[open] summary{border-bottom:1px solid var(--rule)}
     .details-body{padding:8px 12px 12px}
     .quick-nav{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;gap:6px;overflow:auto;padding:8px 12px calc(8px + env(safe-area-inset-bottom));background:rgba(7,17,31,.95);border-top:1px solid var(--rule);backdrop-filter:blur(12px)}
@@ -44,19 +44,19 @@
     <header class="hero">
       <div class="eyebrow">CMIS Daily · Mobile</div>
       <h1>全球算力市场情报日报</h1>
-      <p class="note">日期：2026-07-15｜Freeze：2026-07-15 16:06｜版本：v1.2.0</p>
+      <p class="note">日期：2026-07-15｜Freeze：2026-07-15 16:45｜版本：v1.2.0</p>
       <a class="desktop-link" href="latest.html?desktop=1">切换电脑版</a>
     </header>
 
-    <section class="metrics"><article class="metric"><span>国内指数样本</span><strong>11/21</strong><small>含国产战略关注 5 个</small></article>
-<article class="metric"><span>辅助 GPU 样本</span><strong>16/21</strong><small>海外云价/采购价/候选样本</small></article>
-<article class="metric"><span>Token 厂商覆盖</span><strong>15/15</strong><small>按厂商+主流模型覆盖，六个核心价格字段必须数值化</small></article>
-<article class="metric"><span>待复核样本</span><strong>15 条</strong><small>REVIEW/REJECT 只进审计，不进方向性结论</small></article></section>
+    <section class="metrics"><article class="metric"><span>国内指数样本</span><strong>21/24</strong><small>含国产战略关注 9 个</small></article>
+<article class="metric"><span>辅助 GPU 样本</span><strong>23/24</strong><small>海外云价/采购价/候选样本</small></article>
+<article class="metric"><span>Token 厂商覆盖</span><strong>21/15</strong><small>按厂商+主流模型覆盖，六个核心价格字段必须数值化</small></article>
+<article class="metric"><span>待复核样本</span><strong>7 条</strong><small>REVIEW/REJECT 只进审计，不进方向性结论</small></article></section>
 
     <section id="summary">
       <h2>今日结论</h2>
       <article class="m-card">
-        <p>本期国内算力租赁指数共展示 11 个型号，其中 6 个为 PASS 主口径样本，H100 80G 国内 8卡整机月租为 7.6 万元；国产战略关注卡继续保留在指数和图表中，但低置信、云价折算和市场核价样本均标注为观察口径。</p><p>海外 GPU Cloud 继续作为辅助参考，不与国内长租指数混用；采购覆盖和毛回本测算只跟随国内指数型号展开。Token 价格覆盖 15 家厂商，展示官方价、海外三方价和境内三方价，用于观察模型 API 市场价差。</p><p>当前需要重点复核的是 5 个国产战略关注样本：若后续采集到明确 8卡整机/裸机/月租或采购价，应优先用新公开价格替换市场核价区间；未取得新价前，不进入 ROI 或方向性市场结论。</p>
+        <p>本期国内算力租赁指数共展示 21 个型号，其中 17 个为 PASS 主口径样本，H100 80G 国内 8卡整机月租为 7.75 万元；国产战略关注卡继续保留在指数和图表中，但低置信、云价折算和市场核价样本均标注为观察口径。</p><p>海外 GPU Cloud 继续作为辅助参考，不与国内长租指数混用；采购覆盖和毛回本测算只跟随国内指数型号展开。Token 价格覆盖 21 家厂商，展示官方价、海外三方价和境内三方价，用于观察模型 API 市场价差。</p><p>当前需要重点复核的是 4 个国产战略关注样本：若后续采集到明确 8卡整机/裸机/月租或采购价，应优先用新公开价格替换市场核价区间；未取得新价前，不进入 ROI 或方向性市场结论。</p>
       </article>
     </section>
 
@@ -65,34 +65,61 @@
       <figure><figcaption>国内指数：手机端横向条形图</figcaption><div id="chart-domestic-main" class="chart"></div></figure>
       <details open><summary>国内租赁卡片</summary><div class="details-body">
         <article class="m-card compact">
-          <div class="m-card-head"><h3>H100 80G</h3><span class="status ok">PASS</span></div>
+          <div class="m-card-head"><h3>B300</h3><span class="status ok">PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>月租</b>7.6 万</span>
+            <span class="pill"><b>月租</b>28 万</span>
             <span class="pill"><b>口径</b>公开成交/主口径价</span>
-            <span class="pill"><b>置信度</b>98</span>
+            <span class="pill"><b>置信度</b>75</span>
           </div>
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><h3>H20</h3><span class="status ok">PASS</span></div>
+          <div class="m-card-head"><h3>B200</h3><span class="status ok">PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>月租</b>4.8 万</span>
+            <span class="pill"><b>月租</b>13 万</span>
+            <span class="pill"><b>口径</b>公开成交/主口径价</span>
+            <span class="pill"><b>置信度</b>75</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>H200</h3><span class="status ok">PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>月租</b>9.4 万</span>
+            <span class="pill"><b>口径</b>公开成交/主口径价</span>
+            <span class="pill"><b>置信度</b>75</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>H100 80G</h3><span class="status ok">PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>月租</b>7.75 万</span>
             <span class="pill"><b>口径</b>公开成交/主口径价</span>
             <span class="pill"><b>置信度</b>85</span>
           </div>
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><h3>A100 80G</h3><span class="status ok">PASS</span></div>
+          <div class="m-card-head"><h3>H800</h3><span class="status ok">PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>月租</b>3.15 万</span>
+            <span class="pill"><b>月租</b>6.9 万</span>
             <span class="pill"><b>口径</b>公开成交/主口径价</span>
-            <span class="pill"><b>置信度</b>86</span>
+            <span class="pill"><b>置信度</b>75</span>
           </div>
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><h3>RTX 5090</h3><span class="status ok">PASS</span></div>
+          <div class="m-card-head"><h3>A100 80G</h3><span class="status ok">PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>月租</b>2.5 万</span>
+            <span class="pill"><b>口径</b>公开成交/主口径价</span>
+            <span class="pill"><b>置信度</b>75</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>L40S</h3><span class="status ok">PASS</span></div>
           <div class="pill-row">
             <span class="pill"><b>月租</b>1.2 万</span>
             <span class="pill"><b>口径</b>公开成交/主口径价</span>
@@ -101,11 +128,38 @@
         </article>
 
         <article class="m-card compact">
+          <div class="m-card-head"><h3>L20</h3><span class="status ok">PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>月租</b>6.04 万</span>
+            <span class="pill"><b>口径</b>云价折算（含平台溢价，非裸金属价）</span>
+            <span class="pill"><b>置信度</b>75</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>L4</h3><span class="status ok">PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>月租</b>4.64 万</span>
+            <span class="pill"><b>口径</b>云价折算</span>
+            <span class="pill"><b>置信度</b>75</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>RTX 5090</h3><span class="status ok">PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>月租</b>1.2 万</span>
+            <span class="pill"><b>口径</b>公开成交/主口径价</span>
+            <span class="pill"><b>置信度</b>85</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
           <div class="m-card-head"><h3>RTX 4090</h3><span class="status ok">PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>月租</b>0.73 万</span>
+            <span class="pill"><b>月租</b>0.78 万</span>
             <span class="pill"><b>口径</b>公开成交/主口径价</span>
-            <span class="pill"><b>置信度</b>82</span>
+            <span class="pill"><b>置信度</b>85</span>
           </div>
         </article>
 
@@ -114,51 +168,87 @@
           <div class="pill-row">
             <span class="pill"><b>月租</b>6.2 万</span>
             <span class="pill"><b>口径</b>公开成交/主口径价</span>
-            <span class="pill"><b>置信度</b>78</span>
+            <span class="pill"><b>置信度</b>85</span>
           </div>
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><h3>昇腾 910B</h3><span class="status warn">REVIEW</span></div>
+          <div class="m-card-head"><h3>昇腾 910B</h3><span class="status ok">PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>月租</b>1.35 万</span>
-            <span class="pill"><b>口径</b>低置信观察</span>
-            <span class="pill"><b>置信度</b>68</span>
+            <span class="pill"><b>月租</b>1.5 万</span>
+            <span class="pill"><b>口径</b>公开成交/主口径价</span>
+            <span class="pill"><b>置信度</b>75</span>
           </div>
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><h3>寒武纪 MLU370-X8</h3><span class="status warn">REVIEW</span></div>
+          <div class="m-card-head"><h3>昇腾 950PR</h3><span class="status warn">REVIEW</span></div>
           <div class="pill-row">
-            <span class="pill"><b>月租</b>4.24 万</span>
-            <span class="pill"><b>口径</b>云价折算</span>
-            <span class="pill"><b>置信度</b>62</span>
+            <span class="pill"><b>月租</b>暂不可得 万</span>
+            <span class="pill"><b>口径</b>待复核</span>
+            <span class="pill"><b>置信度</b>50</span>
           </div>
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><h3>海光 DCU K100</h3><span class="status warn">REVIEW</span></div>
+          <div class="m-card-head"><h3>寒武纪 MLU370-X8</h3><span class="status ok">PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>月租</b>4.99 万</span>
+            <span class="pill"><b>口径</b>云价折算（含平台溢价，非裸金属价）</span>
+            <span class="pill"><b>置信度</b>75</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>寒武纪 MLU590</h3><span class="status warn">REVIEW</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>月租</b>暂不可得 万</span>
+            <span class="pill"><b>口径</b>待复核</span>
+            <span class="pill"><b>置信度</b>50</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>海光 DCU K100</h3><span class="status ok">PASS</span></div>
           <div class="pill-row">
             <span class="pill"><b>月租</b>4 万</span>
             <span class="pill"><b>口径</b>市场核价区间（估算）</span>
-            <span class="pill"><b>置信度</b>48</span>
+            <span class="pill"><b>置信度</b>75</span>
           </div>
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><h3>壁仞 BR100</h3><span class="status warn">REVIEW</span></div>
+          <div class="m-card-head"><h3>海光 DCU Z100</h3><span class="status warn">REVIEW</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>月租</b>暂不可得 万</span>
+            <span class="pill"><b>口径</b>待复核</span>
+            <span class="pill"><b>置信度</b>50</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>壁仞 BR100</h3><span class="status ok">PASS</span></div>
           <div class="pill-row">
             <span class="pill"><b>月租</b>4.3 万</span>
             <span class="pill"><b>口径</b>市场核价区间（估算）</span>
-            <span class="pill"><b>置信度</b>48</span>
+            <span class="pill"><b>置信度</b>75</span>
           </div>
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><h3>摩尔线程 MTT S4000</h3><span class="status warn">REVIEW</span></div>
+          <div class="m-card-head"><h3>摩尔线程 MTT S4000</h3><span class="status ok">PASS</span></div>
           <div class="pill-row">
             <span class="pill"><b>月租</b>3.5 万</span>
             <span class="pill"><b>口径</b>市场核价区间（估算）</span>
+            <span class="pill"><b>置信度</b>75</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>摩尔线程 MTT S5000</h3><span class="status warn">REVIEW</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>月租</b>暂不可得 万</span>
+            <span class="pill"><b>口径</b>待复核</span>
             <span class="pill"><b>置信度</b>50</span>
           </div>
         </article></div></details>
@@ -169,83 +259,101 @@
       <figure><figcaption>海外参考：统一折算万元/8卡整机/月</figcaption><div id="chart-overseas" class="chart"></div></figure>
       <details open><summary>海外参考卡片</summary><div class="details-body">
         <article class="m-card compact">
-          <div class="m-card-head"><h3>B300</h3><span>PASS</span></div>
+          <div class="m-card-head"><h3>GB300</h3><span class="status ok">PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>等效月租</b>30.56 万</span>
-            <span class="pill"><b>单卡小时</b>53.06 元</span>
-            <span class="pill"><b>置信度</b>85</span>
-          </div>
-        </article>
-
-        <article class="m-card compact">
-          <div class="m-card-head"><h3>B200</h3><span>PASS</span></div>
-          <div class="pill-row">
-            <span class="pill"><b>等效月租</b>27.67 万</span>
-            <span class="pill"><b>单卡小时</b>48.03 元</span>
-            <span class="pill"><b>置信度</b>90</span>
-          </div>
-        </article>
-
-        <article class="m-card compact">
-          <div class="m-card-head"><h3>H200</h3><span>PASS</span></div>
-          <div class="pill-row">
-            <span class="pill"><b>等效月租</b>18.16 万</span>
-            <span class="pill"><b>单卡小时</b>31.52 元</span>
-            <span class="pill"><b>置信度</b>90</span>
-          </div>
-        </article>
-
-        <article class="m-card compact">
-          <div class="m-card-head"><h3>H100 80G</h3><span>PASS</span></div>
-          <div class="pill-row">
-            <span class="pill"><b>等效月租</b>12.37 万</span>
-            <span class="pill"><b>单卡小时</b>21.47 元</span>
-            <span class="pill"><b>置信度</b>90</span>
-          </div>
-        </article>
-
-        <article class="m-card compact">
-          <div class="m-card-head"><h3>A100 80G</h3><span>PASS</span></div>
-          <div class="pill-row">
-            <span class="pill"><b>等效月租</b>6.16 万</span>
-            <span class="pill"><b>单卡小时</b>10.7 元</span>
-            <span class="pill"><b>置信度</b>85</span>
-          </div>
-        </article>
-
-        <article class="m-card compact">
-          <div class="m-card-head"><h3>L40S</h3><span>PASS</span></div>
-          <div class="pill-row">
-            <span class="pill"><b>等效月租</b>4.1 万</span>
-            <span class="pill"><b>单卡小时</b>7.11 元</span>
-            <span class="pill"><b>置信度</b>85</span>
-          </div>
-        </article>
-
-        <article class="m-card compact">
-          <div class="m-card-head"><h3>L4</h3><span>PASS</span></div>
-          <div class="pill-row">
-            <span class="pill"><b>等效月租</b>1.61 万</span>
-            <span class="pill"><b>单卡小时</b>2.8 元</span>
-            <span class="pill"><b>置信度</b>85</span>
-          </div>
-        </article>
-
-        <article class="m-card compact">
-          <div class="m-card-head"><h3>RTX 5090</h3><span>PASS</span></div>
-          <div class="pill-row">
-            <span class="pill"><b>等效月租</b>4.1 万</span>
-            <span class="pill"><b>单卡小时</b>7.11 元</span>
+            <span class="pill"><b>等效月租</b>55.05 万</span>
+            <span class="pill"><b>单卡小时</b>95.57 元</span>
             <span class="pill"><b>置信度</b>80</span>
           </div>
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><h3>RTX 4090</h3><span>PASS</span></div>
+          <div class="m-card-head"><h3>GB200</h3><span class="status ok">PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>等效月租</b>2.85 万</span>
-            <span class="pill"><b>单卡小时</b>4.95 元</span>
+            <span class="pill"><b>等效月租</b>54.79 万</span>
+            <span class="pill"><b>单卡小时</b>95.13 元</span>
             <span class="pill"><b>置信度</b>80</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>B300</h3><span class="status ok">PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>等效月租</b>35.94 万</span>
+            <span class="pill"><b>单卡小时</b>62.39 元</span>
+            <span class="pill"><b>置信度</b>90</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>B200</h3><span class="status ok">PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>等效月租</b>25.56 万</span>
+            <span class="pill"><b>单卡小时</b>44.37 元</span>
+            <span class="pill"><b>置信度</b>90</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>H200</h3><span class="status ok">PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>等效月租</b>17.37 万</span>
+            <span class="pill"><b>单卡小时</b>30.16 元</span>
+            <span class="pill"><b>置信度</b>90</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>H100 80G</h3><span class="status ok">PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>等效月租</b>13.28 万</span>
+            <span class="pill"><b>单卡小时</b>23.05 元</span>
+            <span class="pill"><b>置信度</b>90</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>A100 80G</h3><span class="status ok">PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>等效月租</b>8.85 万</span>
+            <span class="pill"><b>单卡小时</b>15.37 元</span>
+            <span class="pill"><b>置信度</b>85</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>L40S</h3><span class="status ok">PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>等效月租</b>5.37 万</span>
+            <span class="pill"><b>单卡小时</b>9.33 元</span>
+            <span class="pill"><b>置信度</b>85</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>L4</h3><span class="status ok">PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>等效月租</b>2.65 万</span>
+            <span class="pill"><b>单卡小时</b>4.6 元</span>
+            <span class="pill"><b>置信度</b>85</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>RTX 5090</h3><span class="status ok">PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>等效月租</b>3.1 万</span>
+            <span class="pill"><b>单卡小时</b>5.38 元</span>
+            <span class="pill"><b>置信度</b>90</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>RTX 4090</h3><span class="status ok">PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>等效月租</b>2.44 万</span>
+            <span class="pill"><b>单卡小时</b>4.24 元</span>
+            <span class="pill"><b>置信度</b>90</span>
           </div>
         </article></div></details>
     </section>
@@ -256,27 +364,67 @@
       <figure><figcaption>Token 输出价：官方 vs 海外三方 vs 境内三方</figcaption><div id="chart-token-output" class="chart"></div></figure>
       <details><summary>模型价格卡片</summary><div class="details-body">
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>OpenAI</h3><small>gpt-5</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>OpenAI</h3><small>GPT-5.5</small></div><span>PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>官方输入</b>8.97</span>
-            <span class="pill"><b>官方输出</b>71.8</span>
-            <span class="pill"><b>海外三方</b>USD 1.25/百万Token（约 ¥8.97；精确同名）</span>
-            <span class="pill"><b>境内三方</b>CNY 8.97/百万Token（近似参考）</span>
+            <span class="pill"><b>官方输入</b>35.9</span>
+            <span class="pill"><b>官方输出</b>215.4</span>
+            <span class="pill"><b>海外三方</b>USD 5.0/百万Token（约 ¥35.9；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 35.9/百万Token（近似参考）</span>
           </div>
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>OpenAI</h3><small>gpt-5-mini</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>OpenAI</h3><small>GPT-5.4</small></div><span>PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>官方输入</b>1.79</span>
-            <span class="pill"><b>官方输出</b>14.36</span>
-            <span class="pill"><b>海外三方</b>USD 0.25/百万Token（约 ¥1.79；精确同名）</span>
-            <span class="pill"><b>境内三方</b>CNY 1.79/百万Token（近似参考）</span>
+            <span class="pill"><b>官方输入</b>17.95</span>
+            <span class="pill"><b>官方输出</b>107.7</span>
+            <span class="pill"><b>海外三方</b>USD 2.5/百万Token（约 ¥17.95；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 17.95/百万Token（近似参考）</span>
           </div>
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>Anthropic</h3><small>claude-sonnet-5</small></div><span>OFFICIAL_REVIEW</span></div>
+          <div class="m-card-head"><div><h3>OpenAI</h3><small>GPT-5.4 mini</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>5.38</span>
+            <span class="pill"><b>官方输出</b>32.31</span>
+            <span class="pill"><b>海外三方</b>USD 0.75/百万Token（约 ¥5.38；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 5.38/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>OpenAI</h3><small>o4 Mini</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>7.9</span>
+            <span class="pill"><b>官方输出</b>31.59</span>
+            <span class="pill"><b>海外三方</b>USD 1.1/百万Token（约 ¥7.9；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 7.9/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>Anthropic</h3><small>Claude Fable 5</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>71.8</span>
+            <span class="pill"><b>官方输出</b>359</span>
+            <span class="pill"><b>海外三方</b>USD 10.0/百万Token（约 ¥71.8；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 71.8/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>Anthropic</h3><small>Claude Opus 4.8</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>35.9</span>
+            <span class="pill"><b>官方输出</b>179.5</span>
+            <span class="pill"><b>海外三方</b>USD 5.0/百万Token（约 ¥35.9；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 35.9/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>Anthropic</h3><small>Claude Sonnet 5</small></div><span>PASS</span></div>
           <div class="pill-row">
             <span class="pill"><b>官方输入</b>14.36</span>
             <span class="pill"><b>官方输出</b>71.8</span>
@@ -286,42 +434,142 @@
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>Anthropic</h3><small>claude-haiku-5</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>Anthropic</h3><small>Claude Haiku 4.5</small></div><span>PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>官方输入</b>5.74</span>
-            <span class="pill"><b>官方输出</b>28.72</span>
-            <span class="pill"><b>海外三方</b>USD 0.8/百万Token（约 ¥5.74；近似参考）</span>
-            <span class="pill"><b>境内三方</b>CNY 5.74/百万Token（近似参考）</span>
+            <span class="pill"><b>官方输入</b>7.18</span>
+            <span class="pill"><b>官方输出</b>35.9</span>
+            <span class="pill"><b>海外三方</b>USD 1.0/百万Token（约 ¥7.18；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 7.18/百万Token（近似参考）</span>
           </div>
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>Google</h3><small>gemini-2.5-pro</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>Google</h3><small>Gemini 3.5 Flash</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>10.77</span>
+            <span class="pill"><b>官方输出</b>64.62</span>
+            <span class="pill"><b>海外三方</b>USD 1.5/百万Token（约 ¥10.77；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 10.77/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>Google</h3><small>Gemini 3.1 Pro Preview</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>14.36</span>
+            <span class="pill"><b>官方输出</b>86.16</span>
+            <span class="pill"><b>海外三方</b>USD 2.0/百万Token（约 ¥14.36；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 14.36/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>Google</h3><small>Gemini 3.1 Flash-Lite</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>1.79</span>
+            <span class="pill"><b>官方输出</b>10.77</span>
+            <span class="pill"><b>海外三方</b>USD 0.25/百万Token（约 ¥1.79；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 1.79/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>Mistral</h3><small>Mistral Medium 3.5</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>14.36</span>
+            <span class="pill"><b>官方输出</b>53.85</span>
+            <span class="pill"><b>海外三方</b>USD 1.5/百万Token（约 ¥10.77；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 14.36/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>Mistral</h3><small>Mistral Large 3</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>3.59</span>
+            <span class="pill"><b>官方输出</b>10.77</span>
+            <span class="pill"><b>海外三方</b>USD 0.5/百万Token（约 ¥3.59；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 3.59/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>Mistral</h3><small>Mistral Small 4</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>0.72</span>
+            <span class="pill"><b>官方输出</b>2.15</span>
+            <span class="pill"><b>海外三方</b>USD 0.15/百万Token（约 ¥1.08；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 0.72/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>Cohere</h3><small>Command A+</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>17.95</span>
+            <span class="pill"><b>官方输出</b>71.8</span>
+            <span class="pill"><b>海外三方</b>CNY 17.95/百万Token（同系列参考，海外三方折算）</span>
+            <span class="pill"><b>境内三方</b>CNY 17.95/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>Cohere</h3><small>Command R+</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>17.95</span>
+            <span class="pill"><b>官方输出</b>71.8</span>
+            <span class="pill"><b>海外三方</b>CNY 17.95/百万Token（同系列参考，海外三方折算）</span>
+            <span class="pill"><b>境内三方</b>CNY 17.95/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>xAI Grok</h3><small>Grok 4.5</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>14.36</span>
+            <span class="pill"><b>官方输出</b>43.08</span>
+            <span class="pill"><b>海外三方</b>USD 2.0/百万Token（约 ¥14.36；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 14.36/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>xAI Grok</h3><small>Grok 4.3</small></div><span>PASS</span></div>
           <div class="pill-row">
             <span class="pill"><b>官方输入</b>8.97</span>
-            <span class="pill"><b>官方输出</b>71.8</span>
+            <span class="pill"><b>官方输出</b>17.95</span>
             <span class="pill"><b>海外三方</b>USD 1.25/百万Token（约 ¥8.97；精确同名）</span>
             <span class="pill"><b>境内三方</b>CNY 8.97/百万Token（近似参考）</span>
           </div>
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>Google</h3><small>gemini-2.5-flash</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>xAI Grok</h3><small>Grok 4.20</small></div><span>PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>官方输入</b>2.15</span>
-            <span class="pill"><b>官方输出</b>17.95</span>
-            <span class="pill"><b>海外三方</b>USD 0.3/百万Token（约 ¥2.15；精确同名）</span>
-            <span class="pill"><b>境内三方</b>CNY 2.15/百万Token（近似参考）</span>
+            <span class="pill"><b>官方输入</b>14.36</span>
+            <span class="pill"><b>官方输出</b>43.08</span>
+            <span class="pill"><b>海外三方</b>USD 1.25/百万Token（约 ¥8.97；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 14.36/百万Token（近似参考）</span>
           </div>
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>DeepSeek</h3><small>DeepSeek-V4-Flash</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>Meta Llama</h3><small>Llama 4 Maverick</small></div><span>PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>官方输入</b>1</span>
-            <span class="pill"><b>官方输出</b>2</span>
-            <span class="pill"><b>海外三方</b>USD 0.09/百万Token（约 ¥0.65；精确同名）</span>
-            <span class="pill"><b>境内三方</b>CNY 1.0/百万Token（精确同名）</span>
+            <span class="pill"><b>官方输入</b>1.44</span>
+            <span class="pill"><b>官方输出</b>5.74</span>
+            <span class="pill"><b>海外三方</b>USD 0.2/百万Token（约 ¥1.44；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 1.44/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>Meta Llama</h3><small>Llama 4 Scout</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>0.72</span>
+            <span class="pill"><b>官方输出</b>2.15</span>
+            <span class="pill"><b>海外三方</b>USD 0.1/百万Token（约 ¥0.72；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 0.72/百万Token（近似参考）</span>
           </div>
         </article>
 
@@ -330,13 +578,23 @@
           <div class="pill-row">
             <span class="pill"><b>官方输入</b>3</span>
             <span class="pill"><b>官方输出</b>6</span>
-            <span class="pill"><b>海外三方</b>USD 0.435/百万Token（约 ¥3.12；精确同名）</span>
+            <span class="pill"><b>海外三方</b>USD 1.74/百万Token（约 ¥12.49；精确同名）</span>
             <span class="pill"><b>境内三方</b>CNY 12.0/百万Token（精确同名）</span>
           </div>
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>阿里云/通义千问</h3><small>qwen3.7-max</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>DeepSeek</h3><small>DeepSeek-V4-Flash</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>1</span>
+            <span class="pill"><b>官方输出</b>2</span>
+            <span class="pill"><b>海外三方</b>USD 0.14/百万Token（约 ¥1.01；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 1.0/百万Token（精确同名）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>阿里云/通义千问</h3><small>Qwen3.7-Max</small></div><span>PASS</span></div>
           <div class="pill-row">
             <span class="pill"><b>官方输入</b>12</span>
             <span class="pill"><b>官方输出</b>36</span>
@@ -346,7 +604,7 @@
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>阿里云/通义千问</h3><small>qwen3.7-plus</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>阿里云/通义千问</h3><small>Qwen3.7-Plus</small></div><span>PASS</span></div>
           <div class="pill-row">
             <span class="pill"><b>官方输入</b>2</span>
             <span class="pill"><b>官方输出</b>8</span>
@@ -356,31 +614,51 @@
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>火山方舟/豆包</h3><small>doubao-seed-1.6</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>火山方舟/豆包</h3><small>Doubao-Seed 2.1 Pro</small></div><span>PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>官方输入</b>0.8</span>
-            <span class="pill"><b>官方输出</b>2</span>
-            <span class="pill"><b>海外三方</b>CNY 0.8/百万Token（同系列参考，海外三方折算）</span>
-            <span class="pill"><b>境内三方</b>CNY 0.8/百万Token（近似参考）</span>
+            <span class="pill"><b>官方输入</b>6</span>
+            <span class="pill"><b>官方输出</b>30</span>
+            <span class="pill"><b>海外三方</b>CNY 6.0/百万Token（同系列参考，海外三方折算）</span>
+            <span class="pill"><b>境内三方</b>CNY 6.0/百万Token（近似参考）</span>
           </div>
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>火山方舟/豆包</h3><small>doubao-seed-1.6-flash</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>火山方舟/豆包</h3><small>Doubao-Seed 2.1 Turbo</small></div><span>PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>官方输入</b>0.8</span>
-            <span class="pill"><b>官方输出</b>2</span>
-            <span class="pill"><b>海外三方</b>CNY 0.8/百万Token（同系列参考，海外三方折算）</span>
-            <span class="pill"><b>境内三方</b>CNY 1.5/百万Token（精确同名）</span>
+            <span class="pill"><b>官方输入</b>3</span>
+            <span class="pill"><b>官方输出</b>15</span>
+            <span class="pill"><b>海外三方</b>CNY 3.0/百万Token（同系列参考，海外三方折算）</span>
+            <span class="pill"><b>境内三方</b>CNY 3.0/百万Token（近似参考）</span>
           </div>
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>腾讯混元</h3><small>Hunyuan-A13B</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>火山方舟/豆包</h3><small>Doubao-Seed 2.0 Pro</small></div><span>PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>官方输入</b>0.5</span>
-            <span class="pill"><b>官方输出</b>2</span>
-            <span class="pill"><b>海外三方</b>USD 0.14/百万Token（约 ¥1.01；精确同名）</span>
+            <span class="pill"><b>官方输入</b>3.2</span>
+            <span class="pill"><b>官方输出</b>16</span>
+            <span class="pill"><b>海外三方</b>CNY 3.2/百万Token（同系列参考，海外三方折算）</span>
+            <span class="pill"><b>境内三方</b>CNY 1.5/百万Token（同系列参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>火山方舟/豆包</h3><small>Doubao-Seed-Evolving</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>6</span>
+            <span class="pill"><b>官方输出</b>30</span>
+            <span class="pill"><b>海外三方</b>CNY 6.0/百万Token（同系列参考，海外三方折算）</span>
+            <span class="pill"><b>境内三方</b>CNY 6.0/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>腾讯混元</h3><small>Hunyuan-Hy3</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>1</span>
+            <span class="pill"><b>官方输出</b>4</span>
+            <span class="pill"><b>海外三方</b>CNY 1.0/百万Token（同系列参考，海外三方折算）</span>
             <span class="pill"><b>境内三方</b>CNY 1.0/百万Token（精确同名）</span>
           </div>
         </article>
@@ -396,7 +674,57 @@
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>Kimi / Moonshot</h3><small>Kimi-K2.7-Code</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>腾讯混元</h3><small>Hunyuan-A13B</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>0.5</span>
+            <span class="pill"><b>官方输出</b>2</span>
+            <span class="pill"><b>海外三方</b>USD 0.14/百万Token（约 ¥1.01；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 1.0/百万Token（精确同名）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>智谱 GLM / Z.ai</h3><small>GLM-5.2</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>8</span>
+            <span class="pill"><b>官方输出</b>28</span>
+            <span class="pill"><b>海外三方</b>USD 0.9044/百万Token（约 ¥6.49；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 8.0/百万Token（精确同名）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>智谱 GLM / Z.ai</h3><small>GLM-5.1 Pro</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>6</span>
+            <span class="pill"><b>官方输出</b>24</span>
+            <span class="pill"><b>海外三方</b>USD 1.4/百万Token（约 ¥10.05；精确同名）</span>
+            <span class="pill"><b>境内三方</b>CNY 6.0/百万Token（精确同名）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>百度文心</h3><small>ERNIE 5.1</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>4</span>
+            <span class="pill"><b>官方输出</b>18</span>
+            <span class="pill"><b>海外三方</b>CNY 4.0/百万Token（同系列参考，海外三方折算）</span>
+            <span class="pill"><b>境内三方</b>CNY 4.0/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>百度文心</h3><small>ERNIE-4.5-Turbo</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>0.8</span>
+            <span class="pill"><b>官方输出</b>3.2</span>
+            <span class="pill"><b>海外三方</b>USD 0.42/百万Token（约 ¥3.02；近似参考）</span>
+            <span class="pill"><b>境内三方</b>CNY 0.8/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>Kimi / Moonshot</h3><small>Kimi K2.7 Code</small></div><span>PASS</span></div>
           <div class="pill-row">
             <span class="pill"><b>官方输入</b>6.5</span>
             <span class="pill"><b>官方输出</b>27</span>
@@ -406,7 +734,7 @@
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>Kimi / Moonshot</h3><small>Kimi-K2.6</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>Kimi / Moonshot</h3><small>Kimi K2.6</small></div><span>PASS</span></div>
           <div class="pill-row">
             <span class="pill"><b>官方输入</b>6.5</span>
             <span class="pill"><b>官方输出</b>27</span>
@@ -416,52 +744,12 @@
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>智谱 GLM / Z.ai</h3><small>GLM-5.2</small></div><span>PASS</span></div>
-          <div class="pill-row">
-            <span class="pill"><b>官方输入</b>8</span>
-            <span class="pill"><b>官方输出</b>28</span>
-            <span class="pill"><b>海外三方</b>USD 0.93/百万Token（约 ¥6.68；精确同名）</span>
-            <span class="pill"><b>境内三方</b>CNY 8.0/百万Token（精确同名）</span>
-          </div>
-        </article>
-
-        <article class="m-card compact">
-          <div class="m-card-head"><div><h3>百度文心</h3><small>ERNIE-4.5-Turbo-VL-32K</small></div><span>PASS</span></div>
-          <div class="pill-row">
-            <span class="pill"><b>官方输入</b>3</span>
-            <span class="pill"><b>官方输出</b>9</span>
-            <span class="pill"><b>海外三方</b>USD 0.42/百万Token（约 ¥3.02；近似参考）</span>
-            <span class="pill"><b>境内三方</b>CNY 3.0/百万Token（近似参考）</span>
-          </div>
-        </article>
-
-        <article class="m-card compact">
-          <div class="m-card-head"><div><h3>百度文心</h3><small>ERNIE 5.0 0-32K</small></div><span>PASS</span></div>
-          <div class="pill-row">
-            <span class="pill"><b>官方输入</b>6</span>
-            <span class="pill"><b>官方输出</b>24</span>
-            <span class="pill"><b>海外三方</b>CNY 6.0/百万Token（同系列参考，海外三方折算）</span>
-            <span class="pill"><b>境内三方</b>CNY 6.0/百万Token（近似参考）</span>
-          </div>
-        </article>
-
-        <article class="m-card compact">
-          <div class="m-card-head"><div><h3>百度文心</h3><small>ERNIE 5.0 32K-128K</small></div><span>PASS</span></div>
-          <div class="pill-row">
-            <span class="pill"><b>官方输入</b>10</span>
-            <span class="pill"><b>官方输出</b>40</span>
-            <span class="pill"><b>海外三方</b>CNY 10.0/百万Token（同系列参考，海外三方折算）</span>
-            <span class="pill"><b>境内三方</b>CNY 10.0/百万Token（近似参考）</span>
-          </div>
-        </article>
-
-        <article class="m-card compact">
           <div class="m-card-head"><div><h3>MiniMax</h3><small>MiniMax-M3 标准层 ≤512K</small></div><span>PASS</span></div>
           <div class="pill-row">
             <span class="pill"><b>官方输入</b>2.1</span>
             <span class="pill"><b>官方输出</b>8.4</span>
             <span class="pill"><b>海外三方</b>USD 0.3/百万Token（约 ¥2.15；精确同名）</span>
-            <span class="pill"><b>境内三方</b>CNY 2.1/百万Token（近似参考）</span>
+            <span class="pill"><b>境内三方</b>CNY 2.1/百万Token（精确同名）</span>
           </div>
         </article>
 
@@ -471,17 +759,17 @@
             <span class="pill"><b>官方输入</b>4.2</span>
             <span class="pill"><b>官方输出</b>16.8</span>
             <span class="pill"><b>海外三方</b>CNY 4.2/百万Token（同系列参考，海外三方折算）</span>
-            <span class="pill"><b>境内三方</b>CNY 4.2/百万Token（近似参考）</span>
+            <span class="pill"><b>境内三方</b>CNY 4.2/百万Token（精确同名）</span>
           </div>
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>MiniMax</h3><small>MiniMax-M3 优先服务 ≤512K</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>讯飞星火</h3><small>Spark X2</small></div><span>PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>官方输入</b>3.15</span>
-            <span class="pill"><b>官方输出</b>12.6</span>
-            <span class="pill"><b>海外三方</b>CNY 3.15/百万Token（同系列参考，海外三方折算）</span>
-            <span class="pill"><b>境内三方</b>CNY 3.15/百万Token（近似参考）</span>
+            <span class="pill"><b>官方输入</b>1</span>
+            <span class="pill"><b>官方输出</b>2</span>
+            <span class="pill"><b>海外三方</b>CNY 1.0/百万Token（同系列参考，海外三方折算）</span>
+            <span class="pill"><b>境内三方</b>CNY 1.0/百万Token（近似参考）</span>
           </div>
         </article>
 
@@ -496,32 +784,102 @@
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>百川智能</h3><small>Baichuan4</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>百川智能</h3><small>Baichuan-M3-Plus</small></div><span>PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>官方输入</b>100</span>
-            <span class="pill"><b>官方输出</b>100</span>
-            <span class="pill"><b>海外三方</b>CNY 100.0/百万Token（同系列参考，海外三方折算）</span>
-            <span class="pill"><b>境内三方</b>CNY 100.0/百万Token（近似参考）</span>
+            <span class="pill"><b>官方输入</b>5</span>
+            <span class="pill"><b>官方输出</b>9</span>
+            <span class="pill"><b>海外三方</b>CNY 5.0/百万Token（同系列参考，海外三方折算）</span>
+            <span class="pill"><b>境内三方</b>CNY 5.0/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>百川智能</h3><small>Baichuan-M3</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>10</span>
+            <span class="pill"><b>官方输出</b>30</span>
+            <span class="pill"><b>海外三方</b>CNY 10.0/百万Token（同系列参考，海外三方折算）</span>
+            <span class="pill"><b>境内三方</b>CNY 10.0/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>零一万物</h3><small>Yi-Lightning</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>0.99</span>
+            <span class="pill"><b>官方输出</b>0.99</span>
+            <span class="pill"><b>海外三方</b>CNY 0.99/百万Token（同系列参考，海外三方折算）</span>
+            <span class="pill"><b>境内三方</b>CNY 0.99/百万Token（近似参考）</span>
           </div>
         </article>
 
         <article class="m-card compact">
           <div class="m-card-head"><div><h3>零一万物</h3><small>Yi-Large</small></div><span>PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>官方输入</b>0</span>
-            <span class="pill"><b>官方输出</b>0</span>
-            <span class="pill"><b>海外三方</b>CNY 0.0/百万Token（同系列参考，海外三方折算）</span>
-            <span class="pill"><b>境内三方</b>CNY 0.0/百万Token（近似参考）</span>
+            <span class="pill"><b>官方输入</b>20</span>
+            <span class="pill"><b>官方输出</b>20</span>
+            <span class="pill"><b>海外三方</b>CNY 20.0/百万Token（同系列参考，海外三方折算）</span>
+            <span class="pill"><b>境内三方</b>CNY 20.0/百万Token（近似参考）</span>
           </div>
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><div><h3>阶跃星辰</h3><small>step-2-mini</small></div><span>PASS</span></div>
+          <div class="m-card-head"><div><h3>阶跃星辰</h3><small>Step 3.5 Flash</small></div><span>PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>官方输入</b>1</span>
-            <span class="pill"><b>官方输出</b>2</span>
-            <span class="pill"><b>海外三方</b>CNY 1.0/百万Token（同系列参考，海外三方折算）</span>
-            <span class="pill"><b>境内三方</b>CNY 1.0/百万Token（近似参考）</span>
+            <span class="pill"><b>官方输入</b>0.7</span>
+            <span class="pill"><b>官方输出</b>2.1</span>
+            <span class="pill"><b>海外三方</b>CNY 0.7/百万Token（同系列参考，海外三方折算）</span>
+            <span class="pill"><b>境内三方</b>CNY 0.7/百万Token（精确同名）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>阶跃星辰</h3><small>Step-R1-V-Mini</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>2.5</span>
+            <span class="pill"><b>官方输出</b>8</span>
+            <span class="pill"><b>海外三方</b>CNY 2.5/百万Token（同系列参考，海外三方折算）</span>
+            <span class="pill"><b>境内三方</b>CNY 2.5/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>商汤日日新</h3><small>SenseNova-V6.5-Pro</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>3</span>
+            <span class="pill"><b>官方输出</b>9</span>
+            <span class="pill"><b>海外三方</b>CNY 3.0/百万Token（同系列参考，海外三方折算）</span>
+            <span class="pill"><b>境内三方</b>CNY 3.0/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>商汤日日新</h3><small>SenseNova-V6.5-Turbo</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>1.5</span>
+            <span class="pill"><b>官方输出</b>4.5</span>
+            <span class="pill"><b>海外三方</b>CNY 1.5/百万Token（同系列参考，海外三方折算）</span>
+            <span class="pill"><b>境内三方</b>CNY 1.5/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>昆仑万维天工</h3><small>SkyClaw-v1.0</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>0.5</span>
+            <span class="pill"><b>官方输出</b>4</span>
+            <span class="pill"><b>海外三方</b>CNY 0.5/百万Token（同系列参考，海外三方折算）</span>
+            <span class="pill"><b>境内三方</b>CNY 0.5/百万Token（近似参考）</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>昆仑万维天工</h3><small>SkyClaw-v1.0-lite</small></div><span>PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>官方输入</b>0.3</span>
+            <span class="pill"><b>官方输出</b>1.5</span>
+            <span class="pill"><b>海外三方</b>CNY 0.3/百万Token（同系列参考，海外三方折算）</span>
+            <span class="pill"><b>境内三方</b>CNY 0.3/百万Token（近似参考）</span>
           </div>
         </article></div></details>
     </section>
@@ -530,21 +888,51 @@
       <h2>利润测算</h2>
       <details open><summary>毛回本参考</summary><div class="details-body">
         <article class="m-card compact">
-          <div class="m-card-head"><h3>H100 80G</h3><span>参考测算</span></div>
+          <div class="m-card-head"><h3>B300</h3><span>参考测算</span></div>
           <div class="pill-row">
-            <span class="pill"><b>月租</b>7.6 万</span>
-            <span class="pill"><b>采购中位</b>275 万</span>
-            <span class="pill"><b>毛回本</b>36.2 月</span>
+            <span class="pill"><b>月租</b>28 万</span>
+            <span class="pill"><b>采购中位</b>暂不可得 万</span>
+            <span class="pill"><b>毛回本</b>暂不可得 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><h3>H20</h3><span>参考测算</span></div>
+          <div class="m-card-head"><h3>B200</h3><span>参考测算</span></div>
           <div class="pill-row">
-            <span class="pill"><b>月租</b>4.8 万</span>
-            <span class="pill"><b>采购中位</b>120 万</span>
-            <span class="pill"><b>毛回本</b>25 月</span>
+            <span class="pill"><b>月租</b>13 万</span>
+            <span class="pill"><b>采购中位</b>暂不可得 万</span>
+            <span class="pill"><b>毛回本</b>暂不可得 月</span>
+          </div>
+          <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>H200</h3><span>参考测算</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>月租</b>9.4 万</span>
+            <span class="pill"><b>采购中位</b>暂不可得 万</span>
+            <span class="pill"><b>毛回本</b>暂不可得 月</span>
+          </div>
+          <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>H100 80G</h3><span>参考测算</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>月租</b>7.75 万</span>
+            <span class="pill"><b>采购中位</b>275 万</span>
+            <span class="pill"><b>毛回本</b>35.5 月</span>
+          </div>
+          <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>H800</h3><span>参考测算</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>月租</b>6.9 万</span>
+            <span class="pill"><b>采购中位</b>暂不可得 万</span>
+            <span class="pill"><b>毛回本</b>暂不可得 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article>
@@ -552,9 +940,39 @@
         <article class="m-card compact">
           <div class="m-card-head"><h3>A100 80G</h3><span>参考测算</span></div>
           <div class="pill-row">
-            <span class="pill"><b>月租</b>3.15 万</span>
+            <span class="pill"><b>月租</b>2.5 万</span>
             <span class="pill"><b>采购中位</b>115 万</span>
-            <span class="pill"><b>毛回本</b>36.5 月</span>
+            <span class="pill"><b>毛回本</b>46 月</span>
+          </div>
+          <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>L40S</h3><span>参考测算</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>月租</b>1.2 万</span>
+            <span class="pill"><b>采购中位</b>暂不可得 万</span>
+            <span class="pill"><b>毛回本</b>暂不可得 月</span>
+          </div>
+          <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>L20</h3><span>参考测算</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>月租</b>6.04 万</span>
+            <span class="pill"><b>采购中位</b>暂不可得 万</span>
+            <span class="pill"><b>毛回本</b>暂不可得 月</span>
+          </div>
+          <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>L4</h3><span>参考测算</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>月租</b>4.64 万</span>
+            <span class="pill"><b>采购中位</b>暂不可得 万</span>
+            <span class="pill"><b>毛回本</b>暂不可得 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article>
@@ -572,9 +990,9 @@
         <article class="m-card compact">
           <div class="m-card-head"><h3>RTX 4090</h3><span>参考测算</span></div>
           <div class="pill-row">
-            <span class="pill"><b>月租</b>0.73 万</span>
+            <span class="pill"><b>月租</b>0.78 万</span>
             <span class="pill"><b>采购中位</b>23 万</span>
-            <span class="pill"><b>毛回本</b>31.5 月</span>
+            <span class="pill"><b>毛回本</b>29.5 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article>
@@ -592,9 +1010,19 @@
         <article class="m-card compact">
           <div class="m-card-head"><h3>昇腾 910B</h3><span>参考测算</span></div>
           <div class="pill-row">
-            <span class="pill"><b>月租</b>1.35 万</span>
+            <span class="pill"><b>月租</b>1.5 万</span>
             <span class="pill"><b>采购中位</b>190 万</span>
-            <span class="pill"><b>毛回本</b>140.7 月</span>
+            <span class="pill"><b>毛回本</b>126.7 月</span>
+          </div>
+          <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>昇腾 950PR</h3><span>参考测算</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>月租</b>暂不可得 万</span>
+            <span class="pill"><b>采购中位</b>暂不可得 万</span>
+            <span class="pill"><b>毛回本</b>暂不可得 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article>
@@ -602,9 +1030,19 @@
         <article class="m-card compact">
           <div class="m-card-head"><h3>寒武纪 MLU370-X8</h3><span>参考测算</span></div>
           <div class="pill-row">
-            <span class="pill"><b>月租</b>4.24 万</span>
+            <span class="pill"><b>月租</b>4.99 万</span>
             <span class="pill"><b>采购中位</b>30 万</span>
-            <span class="pill"><b>毛回本</b>7.1 月</span>
+            <span class="pill"><b>毛回本</b>6 月</span>
+          </div>
+          <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>寒武纪 MLU590</h3><span>参考测算</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>月租</b>暂不可得 万</span>
+            <span class="pill"><b>采购中位</b>暂不可得 万</span>
+            <span class="pill"><b>毛回本</b>暂不可得 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article>
@@ -615,6 +1053,16 @@
             <span class="pill"><b>月租</b>4 万</span>
             <span class="pill"><b>采购中位</b>78 万</span>
             <span class="pill"><b>毛回本</b>19.5 月</span>
+          </div>
+          <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>海光 DCU Z100</h3><span>参考测算</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>月租</b>暂不可得 万</span>
+            <span class="pill"><b>采购中位</b>暂不可得 万</span>
+            <span class="pill"><b>毛回本</b>暂不可得 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article>
@@ -637,12 +1085,22 @@
             <span class="pill"><b>毛回本</b>22.9 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>摩尔线程 MTT S5000</h3><span>参考测算</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>月租</b>暂不可得 万</span>
+            <span class="pill"><b>采购中位</b>暂不可得 万</span>
+            <span class="pill"><b>毛回本</b>暂不可得 月</span>
+          </div>
+          <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article></div></details>
     </section>
 
     <section id="audit">
       <h2>异常与待复核</h2>
-      <details><summary>Rejected / Review 样本（10 条）</summary><div class="details-body">
+      <details><summary>Rejected / Review 样本（3 条）</summary><div class="details-body">
         <article class="m-card compact">
           <div class="m-card-head"><h3>GB300</h3><span class="status warn">REVIEW</span></div>
           <div class="pill-row">
@@ -662,70 +1120,7 @@
         </article>
 
         <article class="m-card compact">
-          <div class="m-card-head"><h3>B300</h3><span class="status warn">REVIEW</span></div>
-          <div class="pill-row">
-            <span class="pill"><b>月租</b>暂不可得 万</span>
-            <span class="pill"><b>口径</b>待复核</span>
-            <span class="pill"><b>置信度</b>50</span>
-          </div>
-        </article>
-
-        <article class="m-card compact">
-          <div class="m-card-head"><h3>B200</h3><span class="status warn">REVIEW</span></div>
-          <div class="pill-row">
-            <span class="pill"><b>月租</b>暂不可得 万</span>
-            <span class="pill"><b>口径</b>待复核</span>
-            <span class="pill"><b>置信度</b>50</span>
-          </div>
-        </article>
-
-        <article class="m-card compact">
-          <div class="m-card-head"><h3>H200</h3><span class="status warn">REVIEW</span></div>
-          <div class="pill-row">
-            <span class="pill"><b>月租</b>暂不可得 万</span>
-            <span class="pill"><b>口径</b>待复核</span>
-            <span class="pill"><b>置信度</b>50</span>
-          </div>
-        </article>
-
-        <article class="m-card compact">
-          <div class="m-card-head"><h3>H800</h3><span class="status warn">REJECT</span></div>
-          <div class="pill-row">
-            <span class="pill"><b>月租</b>暂不可得 万</span>
-            <span class="pill"><b>口径</b>待复核</span>
-            <span class="pill"><b>置信度</b>55</span>
-          </div>
-        </article>
-
-        <article class="m-card compact">
           <div class="m-card-head"><h3>A800</h3><span class="status warn">REVIEW</span></div>
-          <div class="pill-row">
-            <span class="pill"><b>月租</b>暂不可得 万</span>
-            <span class="pill"><b>口径</b>待复核</span>
-            <span class="pill"><b>置信度</b>50</span>
-          </div>
-        </article>
-
-        <article class="m-card compact">
-          <div class="m-card-head"><h3>L40S</h3><span class="status warn">REVIEW</span></div>
-          <div class="pill-row">
-            <span class="pill"><b>月租</b>暂不可得 万</span>
-            <span class="pill"><b>口径</b>待复核</span>
-            <span class="pill"><b>置信度</b>50</span>
-          </div>
-        </article>
-
-        <article class="m-card compact">
-          <div class="m-card-head"><h3>L20</h3><span class="status warn">REVIEW</span></div>
-          <div class="pill-row">
-            <span class="pill"><b>月租</b>暂不可得 万</span>
-            <span class="pill"><b>口径</b>待复核</span>
-            <span class="pill"><b>置信度</b>50</span>
-          </div>
-        </article>
-
-        <article class="m-card compact">
-          <div class="m-card-head"><h3>L4</h3><span class="status warn">REVIEW</span></div>
           <div class="pill-row">
             <span class="pill"><b>月租</b>暂不可得 万</span>
             <span class="pill"><b>口径</b>待复核</span>
@@ -741,6 +1136,6 @@
     <a href="#summary">结论</a><a href="#domestic">国内</a><a href="#overseas">海外</a><a href="#token">Token</a><a href="#profit">利润</a><a href="#audit">审计</a>
   </nav>
   <script src="./_shared/js/echarts.min.js"></script>
-  <script src="./assets/charts.js?v=20260715160637-v1.2.0"></script>
+  <script src="./assets/charts.js?v=20260715164541-v1.2.0"></script>
 </body>
 </html>
