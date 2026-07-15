@@ -1205,6 +1205,11 @@ def domestic_rows() -> list[dict]:
     for idx, gpu in enumerate(GPU_ORDER, 1):
         # 优先使用动态发现的价格，回退到硬编码
         item = _DYNAMIC_DOMESTIC.get(gpu) or DOMESTIC_RENTAL_INPUT.get(gpu)
+        # 动态数据可能缺少辅助字段（price_band_aux 等），从硬编码补齐
+        if gpu in _DYNAMIC_DOMESTIC and gpu in DOMESTIC_RENTAL_INPUT:
+            for aux_key in ("price_band", "price_band_aux", "price_refresh_rule"):
+                if aux_key not in item and aux_key in DOMESTIC_RENTAL_INPUT[gpu]:
+                    item[aux_key] = DOMESTIC_RENTAL_INPUT[gpu][aux_key]
         if item:
             monthly = item["monthly_wan"]
             hourly = monthly_wan_to_hourly_cny(monthly)
