@@ -44,19 +44,19 @@
     <header class="hero">
       <div class="eyebrow">CMIS Daily · Mobile</div>
       <h1>全球算力市场情报日报</h1>
-      <p class="note">日期：2026-07-15｜Freeze：2026-07-15 12:48｜版本：v1.2.0</p>
+      <p class="note">日期：2026-07-15｜Freeze：2026-07-15 13:09｜版本：v1.2.0</p>
       <a class="desktop-link" href="2026-07-15.html?desktop=1">切换电脑版</a>
     </header>
 
-    <section class="metrics"><article class="metric"><span>国内指数样本</span><strong>17/24</strong><small>含国产战略关注 9 个</small></article>
-<article class="metric"><span>辅助 GPU 样本</span><strong>22/24</strong><small>海外云价/采购价/候选样本</small></article>
+    <section class="metrics"><article class="metric"><span>国内指数样本</span><strong>21/24</strong><small>含国产战略关注 9 个</small></article>
+<article class="metric"><span>辅助 GPU 样本</span><strong>23/24</strong><small>海外云价/采购价/候选样本</small></article>
 <article class="metric"><span>Token 厂商覆盖</span><strong>21/15</strong><small>按厂商+主流模型覆盖，六个核心价格字段必须数值化</small></article>
-<article class="metric"><span>待复核样本</span><strong>11 条</strong><small>REVIEW/REJECT 只进审计，不进方向性结论</small></article></section>
+<article class="metric"><span>待复核样本</span><strong>7 条</strong><small>REVIEW/REJECT 只进审计，不进方向性结论</small></article></section>
 
     <section id="summary">
       <h2>今日结论</h2>
       <article class="m-card">
-        <p>本期国内算力租赁指数共展示 17 个型号，其中 13 个为 PASS 主口径样本，H100 80G 国内 8卡整机月租为 7.6 万元；国产战略关注卡继续保留在指数和图表中，但低置信、云价折算和市场核价样本均标注为观察口径。</p><p>海外 GPU Cloud 继续作为辅助参考，不与国内长租指数混用；采购覆盖和毛回本测算只跟随国内指数型号展开。Token 价格覆盖 21 家厂商，展示官方价、海外三方价和境内三方价，用于观察模型 API 市场价差。</p><p>当前需要重点复核的是 4 个国产战略关注样本：若后续采集到明确 8卡整机/裸机/月租或采购价，应优先用新公开价格替换市场核价区间；未取得新价前，不进入 ROI 或方向性市场结论。</p>
+        <p>本期国内算力租赁指数共展示 21 个型号，其中 17 个为 PASS 主口径样本，H100 80G 国内 8卡整机月租为 7.75 万元；国产战略关注卡继续保留在指数和图表中，但低置信、云价折算和市场核价样本均标注为观察口径。</p><p>海外 GPU Cloud 继续作为辅助参考，不与国内长租指数混用；采购覆盖和毛回本测算只跟随国内指数型号展开。Token 价格覆盖 21 家厂商，展示官方价、海外三方价和境内三方价，用于观察模型 API 市场价差。</p><p>当前需要重点复核的是 4 个国产战略关注样本：若后续采集到明确 8卡整机/裸机/月租或采购价，应优先用新公开价格替换市场核价区间；未取得新价前，不进入 ROI 或方向性市场结论。</p>
       </article>
     </section>
 
@@ -65,20 +65,56 @@
       <figure><figcaption>国内指数：手机端横向条形图</figcaption><div id="chart-domestic-main" class="chart"></div></figure>
       <details open><summary>国内租赁卡片</summary><div class="details-body">
         <article class="m-card compact">
+          <div class="m-card-head"><h3>B300</h3><span class="status ok">PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>月租</b>28 万</span>
+            <span class="pill"><b>口径</b>公开成交/主口径价</span>
+            <span class="pill"><b>置信度</b>75</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>B200</h3><span class="status ok">PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>月租</b>13 万</span>
+            <span class="pill"><b>口径</b>公开成交/主口径价</span>
+            <span class="pill"><b>置信度</b>75</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>H200</h3><span class="status ok">PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>月租</b>9.4 万</span>
+            <span class="pill"><b>口径</b>公开成交/主口径价</span>
+            <span class="pill"><b>置信度</b>75</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
           <div class="m-card-head"><h3>H100 80G</h3><span class="status ok">PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>月租</b>7.6 万</span>
+            <span class="pill"><b>月租</b>7.75 万</span>
             <span class="pill"><b>口径</b>公开成交/主口径价</span>
             <span class="pill"><b>置信度</b>85</span>
           </div>
         </article>
 
         <article class="m-card compact">
+          <div class="m-card-head"><h3>H800</h3><span class="status ok">PASS</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>月租</b>6.9 万</span>
+            <span class="pill"><b>口径</b>公开成交/主口径价</span>
+            <span class="pill"><b>置信度</b>75</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
           <div class="m-card-head"><h3>A100 80G</h3><span class="status ok">PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>月租</b>3.15 万</span>
+            <span class="pill"><b>月租</b>2.5 万</span>
             <span class="pill"><b>口径</b>公开成交/主口径价</span>
-            <span class="pill"><b>置信度</b>85</span>
+            <span class="pill"><b>置信度</b>75</span>
           </div>
         </article>
 
@@ -94,7 +130,7 @@
         <article class="m-card compact">
           <div class="m-card-head"><h3>L20</h3><span class="status ok">PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>月租</b>10.08 万</span>
+            <span class="pill"><b>月租</b>9.05 万</span>
             <span class="pill"><b>口径</b>云价折算</span>
             <span class="pill"><b>置信度</b>75</span>
           </div>
@@ -114,14 +150,14 @@
           <div class="pill-row">
             <span class="pill"><b>月租</b>1.2 万</span>
             <span class="pill"><b>口径</b>公开成交/主口径价</span>
-            <span class="pill"><b>置信度</b>75</span>
+            <span class="pill"><b>置信度</b>85</span>
           </div>
         </article>
 
         <article class="m-card compact">
           <div class="m-card-head"><h3>RTX 4090</h3><span class="status ok">PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>月租</b>0.73 万</span>
+            <span class="pill"><b>月租</b>0.78 万</span>
             <span class="pill"><b>口径</b>公开成交/主口径价</span>
             <span class="pill"><b>置信度</b>85</span>
           </div>
@@ -139,9 +175,9 @@
         <article class="m-card compact">
           <div class="m-card-head"><h3>昇腾 910B</h3><span class="status ok">PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>月租</b>1.35 万</span>
-            <span class="pill"><b>口径</b>低置信观察</span>
-            <span class="pill"><b>置信度</b>85</span>
+            <span class="pill"><b>月租</b>22.15 万</span>
+            <span class="pill"><b>口径</b>云价折算</span>
+            <span class="pill"><b>置信度</b>75</span>
           </div>
         </article>
 
@@ -157,7 +193,7 @@
         <article class="m-card compact">
           <div class="m-card-head"><h3>寒武纪 MLU370-X8</h3><span class="status ok">PASS</span></div>
           <div class="pill-row">
-            <span class="pill"><b>月租</b>4.24 万</span>
+            <span class="pill"><b>月租</b>7.49 万</span>
             <span class="pill"><b>口径</b>云价折算</span>
             <span class="pill"><b>置信度</b>75</span>
           </div>
@@ -852,11 +888,51 @@
       <h2>利润测算</h2>
       <details open><summary>毛回本参考</summary><div class="details-body">
         <article class="m-card compact">
+          <div class="m-card-head"><h3>B300</h3><span>参考测算</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>月租</b>28 万</span>
+            <span class="pill"><b>采购中位</b>暂不可得 万</span>
+            <span class="pill"><b>毛回本</b>暂不可得 月</span>
+          </div>
+          <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>B200</h3><span>参考测算</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>月租</b>13 万</span>
+            <span class="pill"><b>采购中位</b>暂不可得 万</span>
+            <span class="pill"><b>毛回本</b>暂不可得 月</span>
+          </div>
+          <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>H200</h3><span>参考测算</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>月租</b>9.4 万</span>
+            <span class="pill"><b>采购中位</b>暂不可得 万</span>
+            <span class="pill"><b>毛回本</b>暂不可得 月</span>
+          </div>
+          <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
+        </article>
+
+        <article class="m-card compact">
           <div class="m-card-head"><h3>H100 80G</h3><span>参考测算</span></div>
           <div class="pill-row">
-            <span class="pill"><b>月租</b>7.6 万</span>
+            <span class="pill"><b>月租</b>7.75 万</span>
             <span class="pill"><b>采购中位</b>275 万</span>
-            <span class="pill"><b>毛回本</b>36.2 月</span>
+            <span class="pill"><b>毛回本</b>35.5 月</span>
+          </div>
+          <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><h3>H800</h3><span>参考测算</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>月租</b>6.9 万</span>
+            <span class="pill"><b>采购中位</b>暂不可得 万</span>
+            <span class="pill"><b>毛回本</b>暂不可得 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article>
@@ -864,9 +940,9 @@
         <article class="m-card compact">
           <div class="m-card-head"><h3>A100 80G</h3><span>参考测算</span></div>
           <div class="pill-row">
-            <span class="pill"><b>月租</b>3.15 万</span>
+            <span class="pill"><b>月租</b>2.5 万</span>
             <span class="pill"><b>采购中位</b>115 万</span>
-            <span class="pill"><b>毛回本</b>36.5 月</span>
+            <span class="pill"><b>毛回本</b>46 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article>
@@ -884,7 +960,7 @@
         <article class="m-card compact">
           <div class="m-card-head"><h3>L20</h3><span>参考测算</span></div>
           <div class="pill-row">
-            <span class="pill"><b>月租</b>10.08 万</span>
+            <span class="pill"><b>月租</b>9.05 万</span>
             <span class="pill"><b>采购中位</b>暂不可得 万</span>
             <span class="pill"><b>毛回本</b>暂不可得 月</span>
           </div>
@@ -914,9 +990,9 @@
         <article class="m-card compact">
           <div class="m-card-head"><h3>RTX 4090</h3><span>参考测算</span></div>
           <div class="pill-row">
-            <span class="pill"><b>月租</b>0.73 万</span>
+            <span class="pill"><b>月租</b>0.78 万</span>
             <span class="pill"><b>采购中位</b>23 万</span>
-            <span class="pill"><b>毛回本</b>31.5 月</span>
+            <span class="pill"><b>毛回本</b>29.5 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article>
@@ -934,9 +1010,9 @@
         <article class="m-card compact">
           <div class="m-card-head"><h3>昇腾 910B</h3><span>参考测算</span></div>
           <div class="pill-row">
-            <span class="pill"><b>月租</b>1.35 万</span>
+            <span class="pill"><b>月租</b>22.15 万</span>
             <span class="pill"><b>采购中位</b>190 万</span>
-            <span class="pill"><b>毛回本</b>140.7 月</span>
+            <span class="pill"><b>毛回本</b>8.6 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article>
@@ -954,9 +1030,9 @@
         <article class="m-card compact">
           <div class="m-card-head"><h3>寒武纪 MLU370-X8</h3><span>参考测算</span></div>
           <div class="pill-row">
-            <span class="pill"><b>月租</b>4.24 万</span>
+            <span class="pill"><b>月租</b>7.49 万</span>
             <span class="pill"><b>采购中位</b>30 万</span>
-            <span class="pill"><b>毛回本</b>7.1 月</span>
+            <span class="pill"><b>毛回本</b>4 月</span>
           </div>
           <p>租赁价或采购价仍含 REVIEW/估算口径，仅展示毛回本，不进入方向性利润结论。</p>
         </article>
@@ -1024,7 +1100,7 @@
 
     <section id="audit">
       <h2>异常与待复核</h2>
-      <details><summary>Rejected / Review 样本（7 条）</summary><div class="details-body">
+      <details><summary>Rejected / Review 样本（3 条）</summary><div class="details-body">
         <article class="m-card compact">
           <div class="m-card-head"><h3>GB300</h3><span class="status warn">REVIEW</span></div>
           <div class="pill-row">
@@ -1040,42 +1116,6 @@
             <span class="pill"><b>月租</b>暂不可得 万</span>
             <span class="pill"><b>口径</b>待复核</span>
             <span class="pill"><b>置信度</b>50</span>
-          </div>
-        </article>
-
-        <article class="m-card compact">
-          <div class="m-card-head"><h3>B300</h3><span class="status warn">REVIEW</span></div>
-          <div class="pill-row">
-            <span class="pill"><b>月租</b>暂不可得 万</span>
-            <span class="pill"><b>口径</b>待复核</span>
-            <span class="pill"><b>置信度</b>50</span>
-          </div>
-        </article>
-
-        <article class="m-card compact">
-          <div class="m-card-head"><h3>B200</h3><span class="status warn">REVIEW</span></div>
-          <div class="pill-row">
-            <span class="pill"><b>月租</b>暂不可得 万</span>
-            <span class="pill"><b>口径</b>待复核</span>
-            <span class="pill"><b>置信度</b>50</span>
-          </div>
-        </article>
-
-        <article class="m-card compact">
-          <div class="m-card-head"><h3>H200</h3><span class="status warn">REVIEW</span></div>
-          <div class="pill-row">
-            <span class="pill"><b>月租</b>暂不可得 万</span>
-            <span class="pill"><b>口径</b>待复核</span>
-            <span class="pill"><b>置信度</b>50</span>
-          </div>
-        </article>
-
-        <article class="m-card compact">
-          <div class="m-card-head"><h3>H800</h3><span class="status warn">REJECT</span></div>
-          <div class="pill-row">
-            <span class="pill"><b>月租</b>暂不可得 万</span>
-            <span class="pill"><b>口径</b>待复核</span>
-            <span class="pill"><b>置信度</b>55</span>
           </div>
         </article>
 
@@ -1096,6 +1136,6 @@
     <a href="#summary">结论</a><a href="#domestic">国内</a><a href="#overseas">海外</a><a href="#token">Token</a><a href="#profit">利润</a><a href="#audit">审计</a>
   </nav>
   <script src="../_shared/js/echarts.min.js"></script>
-  <script src="../assets/charts.js?v=20260715124843-v1.2.0"></script>
+  <script src="../assets/charts.js?v=20260715130900-v1.2.0"></script>
 </body>
 </html>

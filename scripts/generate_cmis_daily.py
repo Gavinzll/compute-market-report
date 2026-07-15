@@ -585,8 +585,11 @@ def _load_discovered_gpu_prices() -> tuple[dict[str, dict], dict[str, tuple]]:
             monthly = info.get("monthly_wan")
             source = info.get("monthly_source") or info.get("note", "动态采集")[:40]
             note = info.get("note", "")
-            # 推断 price_basis（价格口径），用于柱状图颜色区分
-            if info.get("status") == "NEW_RELEASE":
+            # 优先使用动态数据自带的 _price_basis，否则按来源推断
+            dynamic_basis = info.get("_price_basis")
+            if dynamic_basis:
+                price_basis = dynamic_basis
+            elif info.get("status") == "NEW_RELEASE":
                 price_basis = None  # 新发布无公开价
             elif "市场核价" in source or "市场核价" in note:
                 price_basis = "市场核价区间（估算）"
@@ -1875,8 +1878,8 @@ def write_charts():
         color:legend ? legend.map(function(k){{return domesticPalette[k] || color;}}) : [color],
         tooltip:{{trigger:'axis', appendToBody:true}},
         legend:legend ? {{top:0,textStyle:{{color:muted}}}} : undefined,
-        grid:{{left:70,right:40,top:legend ? 72 : 44,bottom:80,containLabel:true}},
-        xAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}}}},
+        grid:{{left:70,right:40,top:legend ? 72 : 44,bottom:100,containLabel:true}},
+        xAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0,rotate:35,fontSize:11}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}}}},
         yAxis:{{type:'value',name:name,nameTextStyle:{{color:muted}},axisLabel:{{color:muted}},splitLine:{{lineStyle:{{color:rule}}}}}},
         series:series
       }});

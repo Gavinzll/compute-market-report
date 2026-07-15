@@ -43,11 +43,19 @@ def fetch_json(url: str, timeout: int = 30) -> dict | list | None:
 
 
 def fetch_text(url: str, timeout: int = 30) -> str | None:
-    """从 URL 获取纯文本/HTML。"""
+    """从 URL 获取纯文本/HTML（自动处理 gzip）。"""
     try:
-        req = urllib.request.Request(url, headers={"User-Agent": "CMIS-Daily-Discovery/1.0"})
+        req = urllib.request.Request(url, headers={
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Accept-Encoding": "gzip, deflate",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        })
         with urllib.request.urlopen(req, timeout=timeout) as resp:
-            return resp.read().decode("utf-8", errors="ignore")
+            data = resp.read()
+            if resp.headers.get("Content-Encoding") == "gzip":
+                import gzip
+                data = gzip.decompress(data)
+            return data.decode("utf-8", errors="ignore")
     except Exception as e:
         print(f"[discover] fetch failed: {url} -> {e}", file=sys.stderr)
         return None
@@ -927,6 +935,265 @@ def discover_gpu_prices_from_cloudgpus() -> dict[str, float]:
     return prices
 
 
+def scrape_tianyi_gpu_prices() -> dict[str, float]:
+    """从天翼云文档页抓取 GPU 单卡按量小时价。
+
+    页面为静态 HTML 表格，URL: https://www.ctyun.cn/document/10029787/10047957
+    返回 {GPU型号: 单卡元/小时}
+    """
+    html = fetch_text("https://www.ctyun.cn/document/10029787/10047957")
+    if not html:
+        print("[discover] tianyi: fetch failed", file=sys.stderr)
+        return {}
+    prices: dict[str, float] = {}
+    # 天翼云表格格式：<td>...L40S...</td><td>...</td>...<td>31.28</td>
+    # 每个型号区域有一个标题 + 表格，表格中第一行1卡实例的"按需（元/小时）"即为单卡价
+    # 策略：找到型号关键词，往后搜索第一个 <td>数字.数字</td> 模式
+    search_map = {
+        "L40S": ["L40S", "L40 S"],
+        "L20": ["L20计算", "L20 "],
+        "昇腾 910B": ["910B", "Ascend 910B"],
+        "寒武纪 MLU370-X8": ["MLU370", "Cambricon MLU370"],
+        "海光 DCU K100": ["DCU", "K100", "海光"],
+    }
+    for gpu_name, keywords in search_map.items():
+        for kw in keywords:
+            idx = html.find(kw)
+            if idx < 0:
+                continue
+            # 从关键词位置往后搜索 2000 字符，找第一个 <td>price</td>
+            snippet = html[idx:idx+2000]
+            # 匹配 <td class="...">31.28</td> 或 <td>31.28</td>
+            m = re.search(r'<td[^>]*>\s*(\d+\.\d+)\s*</td>', snippet)
+            if m:
+                try:
+                    val = float(m.group(1))
+                    if 0.1 < val < 500:  # 合理的小时价范围
+                        prices[gpu_name] = val
+                        break
+                except ValueError:
+                    pass
+    print(f"[discover] tianyi: {len(prices)} prices found: {list(prices.keys())}")
+    return prices
+
+
+def scrape_smm_gpu_prices() -> dict[str, dict[str, Any]]:
+    """从 SMM 算力频道直播页抓取 GPU 8卡整机月租报价。
+
+    URL: https://news.smm.cn/live/metal/143
+    返回 {GPU型号: {"monthly_wan": float, "note": str}}
+    """
+    html = fetch_text("https://news.smm.cn/live/metal/143")
+    if not html:
+        print("[discover] smm: fetch failed", file=sys.stderr)
+        return {}
+    # 去标签，纯文本搜索
+    text = re.sub(r'<[^>]+>', ' ', html)
+    text = re.sub(r'\s+', ' ', text)
+    results: dict[str, dict[str, Any]] = {}
+    # SMM 文本格式多样，需优先匹配"主流报价区间"/"实际成交"/"报价集中"等关键词
+    # 跳过"含电"报价（含电费的高价不是裸金属市场价）
+    gpu_search = [
+        ("H100 80G", [
+            # 优先：主流报价区间 7.5-8万/月
+            r'H100[^万]{0,40}?(?:主流报价区间|实际成交区间|报价集中|成交区间)[^万]{0,20}?(\d+\.?\d*)\s*[-—~]\s*(\d+\.?\d*)\s*万',
+            # 裸金属报价 X万以内
+            r'H100[^万]{0,30}?裸金属[^万]{0,20}?(\d+\.?\d*)\s*万',
+            # 排除含电的单值
+            r'H100[^万含]{0,40}?(?<!含电费)(\d+\.?\d*)\s*[-—~]\s*(\d+\.?\d*)\s*万\s*/\s*月',
+        ]),
+        ("A100 80G", [
+            r'A100[^万]{0,40}?(\d+\.?\d*)\s*[-—~]\s*(\d+\.?\d*)\s*万\s*/\s*月',
+            r'A100[^万]{0,40}?(\d+\.?\d*)\s*万\s*/\s*月',
+        ]),
+        ("RTX 5090", [
+            r'5090[^万]{0,30}?报.*?(\d+\.?\d*)\s*万',
+            r'5090[^万]{0,30}?(\d+\.?\d*)\s*万\s*/\s*月',
+        ]),
+        ("RTX 4090", [
+            r'4090[^元万]{0,40}?(\d[\d,]*)\s*[-—~]\s*(\d[\d,]*)\s*元\s*/\s*台\s*/\s*月',
+            r'4090[^元万]{0,30}?市场价报(\d[\d,]*)\s*元',
+            r'4090[^元万]{0,30}?成交价(\d[\d,]*)\s*元',
+        ]),
+    ]
+    for gpu, patterns in gpu_search:
+        for pat in patterns:
+            m = re.search(pat, text, re.IGNORECASE)
+            if m:
+                try:
+                    if len(m.groups()) == 2:
+                        low = float(m.group(1).replace(",", ""))
+                        high = float(m.group(2).replace(",", ""))
+                        # 判断是万元还是元
+                        if "万" in text[m.start():m.end()+10]:
+                            mid = round((low + high) / 2, 2)
+                            results[gpu] = {"monthly_wan": mid, "note": f"SMM直播：{low}-{high}万/月，中位{mid}万"}
+                        else:
+                            mid = round((low + high) / 2 / 10000, 2)
+                            results[gpu] = {"monthly_wan": mid, "note": f"SMM直播：{low}-{high}元/台/月，中位{mid}万"}
+                    else:
+                        val = float(m.group(1).replace(",", ""))
+                        if "万" in text[m.start():m.end()+10]:
+                            results[gpu] = {"monthly_wan": val, "note": f"SMM直播：{val}万/月"}
+                        elif val > 1000:
+                            results[gpu] = {"monthly_wan": round(val / 10000, 2), "note": f"SMM直播：{val}元/台/月"}
+                    break
+                except (ValueError, IndexError):
+                    pass
+    print(f"[discover] smm: {len(results)} prices found: {list(results.keys())}")
+    return results
+
+
+def scrape_omniyq_gpu_prices() -> dict[str, float]:
+    """从云擎天下抓取 8卡整机月租价。
+
+    URL: https://www.omniyq.com/h-col-104.html
+    页面直接列出各型号8卡整机月租价文本。
+    返回 {GPU型号: 月租万元}
+    """
+    html = fetch_text("https://www.omniyq.com/h-col-104.html")
+    if not html:
+        print("[discover] omniyq: fetch failed", file=sys.stderr)
+        return {}
+    prices: dict[str, float] = {}
+    # 去标签，纯文本搜索
+    text = re.sub(r'<[^>]+>', ' ', html)
+    text = re.sub(r'\s+', ' ', text)
+    # 格式：8*910B - 15000/月  或  8*H100 - 75000/月
+    patterns = {
+        "昇腾 910B": r'8\s*[*×xX\\]\s*910B?\s*[-–—]\s*(\d[\d,]*)\s*/\s*月',
+        "H100 80G": r'8\s*[*×xX\\]\s*H100\s*[-–—]\s*(\d[\d,]*)\s*/\s*月',
+        "H800": r'8\s*[*×xX\\]\s*H800\s*[-–—]\s*(\d[\d,]*)\s*/\s*月',
+        "H200": r'8\s*[*×xX\\]\s*H200\s*[-–—]\s*(\d[\d,]*)\s*/\s*月',
+        "A100 80G": r'8\s*[*×xX\\]\s*A100\s*(?:nvlink|pcie)?\s*80G?\s*[-–—]\s*(\d[\d,]*)\s*/\s*月',
+        "A800": r'8\s*[*×xX\\]\s*A800\s*[-–—]\s*(\d[\d,]*)\s*/\s*月',
+        "RTX 4090": r'8\s*[*×xX\\]\s*4090\s*[-–—]\s*(\d[\d,]*)\s*/\s*月',
+        "RTX 5090": r'8\s*[*×xX\\]\s*5090\s*[-–—]\s*(\d[\d,]*)\s*/\s*月',
+        "L40S": r'8\s*[*×xX\\]\s*L40S?\s*[-–—]\s*(\d[\d,]*)\s*/\s*月',
+        "L40": r'8\s*[*×xX\\]\s*L40(?!\w)\s*[-–—]\s*(\d[\d,]*)\s*/\s*月',
+        "B200": r'8\s*[*×xX\\]\s*B200\s*[-–—]\s*(\d[\d,]*)\s*/\s*月',
+        "B300": r'8\s*[*×xX\\]\s*B300\s*[-–—]\s*(\d[\d,]*)\s*/\s*月',
+    }
+    for gpu, pat in patterns.items():
+        m = re.search(pat, text, re.IGNORECASE)
+        if m:
+            try:
+                val = float(m.group(1).replace(",", ""))
+                monthly_wan = round(val / 10000, 2)
+                if monthly_wan > 0:
+                    prices[gpu] = monthly_wan
+            except ValueError:
+                pass
+    print(f"[discover] omniyq: {len(prices)} prices found: {list(prices.keys())}")
+    return prices
+
+
+def scrape_shengsuanyun_gpu_prices() -> dict[str, float]:
+    """从生数云抓取 GPU 单卡时租价。
+
+    URL: https://www.shengsuanyun.com/hashrate
+    返回 {GPU型号: 单卡元/小时}
+    """
+    html = fetch_text("https://www.shengsuanyun.com/hashrate")
+    if not html:
+        print("[discover] shengsuanyun: fetch failed", file=sys.stderr)
+        return {}
+    prices: dict[str, float] = {}
+    # 匹配 "摩尔线程 MTT S4000" 附近的 "1.69元/小时" 或 "¥1.69/h"
+    patterns = {
+        "摩尔线程 MTT S4000": r'(?:MTT\s*S4000|S\s*4000|摩尔线程)[^0-9]{0,30}?(\d+\.?\d*)\s*(?:元/小时|元/时|/h|/hr)',
+        "摩尔线程 MTT S5000": r'(?:MTT\s*S5000|S\s*5000)[^0-9]{0,30}?(\d+\.?\d*)\s*(?:元/小时|元/时|/h|/hr)',
+    }
+    for gpu, pat in patterns.items():
+        m = re.search(pat, html, re.IGNORECASE)
+        if m:
+            try:
+                val = float(m.group(1))
+                if val > 0:
+                    prices[gpu] = val
+            except ValueError:
+                pass
+    print(f"[discover] shengsuanyun: {len(prices)} prices found")
+    return prices
+
+
+def build_dynamic_domestic_anchors() -> dict[str, dict[str, Any]]:
+    """汇总所有动态采集源的国内 GPU 价格，合并到锚点字典。
+
+    采集顺序：
+    1. 天翼云 -> 单卡时租（云价折算口径）
+    2. SMM直播页 -> 8卡整机月租（公开成交口径）
+    3. 云擎天下 -> 8卡整机月租（公开成交口径）
+    4. 生数云 -> 单卡时租（云价折算口径）
+    5. 合并到 DOMESTIC_GPU_PRICE_ANCHORS 静态锚点
+    """
+    anchors: dict[str, dict[str, Any]] = {}
+
+    # 1. 天翼云单卡时租 -> 云价折算
+    tianyi = scrape_tianyi_gpu_prices()
+    for gpu, hourly in tianyi.items():
+        monthly_wan = round(hourly * 8 * 24 * 30 / 10000, 2)
+        anchors[gpu] = {
+            "tianyi_hourly": hourly,
+            "monthly_wan": monthly_wan,
+            "monthly_source": f"天翼云{hourly}元/时反推8卡整机",
+            "note": f"天翼云单卡{hourly}元/时；反推8卡整机约{monthly_wan}万/月",
+            "_price_basis": "云价折算",
+        }
+
+    # 2. SMM 8卡整机月租 -> 公开成交
+    smm = scrape_smm_gpu_prices()
+    for gpu, info in smm.items():
+        if gpu in anchors:
+            anchors[gpu]["monthly_wan"] = info["monthly_wan"]
+            anchors[gpu]["monthly_source"] = "SMM直播页 8卡整机"
+            anchors[gpu]["note"] = info["note"]
+            anchors[gpu]["_price_basis"] = "公开成交/主口径价"
+        else:
+            anchors[gpu] = {
+                "monthly_wan": info["monthly_wan"],
+                "monthly_source": "SMM直播页 8卡整机",
+                "note": info["note"],
+                "_price_basis": "公开成交/主口径价",
+            }
+
+    # 3. 云擎天下 8卡整机月租 -> 公开成交
+    omniyq = scrape_omniyq_gpu_prices()
+    for gpu, monthly_wan in omniyq.items():
+        if gpu not in anchors:
+            anchors[gpu] = {
+                "monthly_wan": monthly_wan,
+                "monthly_source": "云擎天下 8卡整机月租",
+                "note": f"云擎天下报价：{monthly_wan}万/月",
+                "_price_basis": "公开成交/主口径价",
+            }
+
+    # 4. 生数云单卡时租 -> 云价折算
+    ssy = scrape_shengsuanyun_gpu_prices()
+    for gpu, hourly in ssy.items():
+        monthly_wan = round(hourly * 8 * 24 * 30 / 10000, 2)
+        if gpu not in anchors:
+            anchors[gpu] = {
+                "monthly_wan": monthly_wan,
+                "monthly_source": f"生数云{hourly}元/时反推8卡整机",
+                "note": f"生数云单卡{hourly}元/时；反推8卡整机约{monthly_wan}万/月",
+                "_price_basis": "云价折算",
+            }
+
+    # 5. 合并静态锚点（动态数据优先，静态补充缺失型号）
+    for gpu, info in DOMESTIC_GPU_PRICE_ANCHORS.items():
+        if gpu not in anchors:
+            # 深拷贝静态锚点
+            anchors[gpu] = dict(info)
+        else:
+            # 用静态锚点补充动态数据缺失的字段
+            for k, v in info.items():
+                if k not in anchors[gpu]:
+                    anchors[gpu][k] = v
+
+    return anchors
+
+
 DOMESTIC_GPU_PRICE_ANCHORS: dict[str, dict[str, Any]] = {
     # 数据来源：国内云厂商官方定价页实际采集（2026-07-15）
     # 价格单位为：元/小时（单卡按量计费）或 万元/月（8卡整机）
@@ -1048,8 +1315,8 @@ def build_discovered_gpu_list() -> dict[str, Any]:
         "discovered_prices_from_cloudgpus": cloudgpu_prices,
         "new_candidates": new_gpus,
         "overseas_price_anchors": OVERSEAS_GPU_PRICE_ANCHORS,
-        "domestic_price_anchors": DOMESTIC_GPU_PRICE_ANCHORS,
-        "recommendation": "基线名单已更新至2026-07-15；H20停产保留审计；新增国产候选型号；价格锚点含多源真实数据。",
+        "domestic_price_anchors": build_dynamic_domestic_anchors(),
+        "recommendation": "基线名单已更新至2026-07-15；H20停产保留审计；新增国产候选型号；价格锚点含多源真实数据（天翼云/SMM/云擎天下/生数云动态采集+静态锚点补充）。",
     }
 
 
