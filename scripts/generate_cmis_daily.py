@@ -1892,6 +1892,8 @@ def write_charts():
   }}
   var isMobile = window.innerWidth <= 768;
   function bar(id, labels, values, name, color, ratios, kinds) {{
+    var maxVal = Math.max.apply(null, values.filter(function(v){{return v > 0;}}));
+    var yMax = maxVal > 0 ? Math.ceil((maxVal * 1.3) / 5) * 5 : undefined;
     var seriesData = values.map(function(v, i) {{
       var kind = kinds && kinds[i] ? kinds[i] : '';
       var radius = isMobile ? [0,6,6,0] : [6,6,0,0];
@@ -1917,7 +1919,7 @@ def write_charts():
         legend:legend ? {{top:0,textStyle:{{color:muted}}}} : undefined,
         grid:{{left:2,right:65,top:legend?62:36,bottom:20,containLabel:true}},
         yAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0,fontSize:10,width:70,overflow:'truncate',align:'right'}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}},inverse:true}},
-        xAxis:{{type:'value',name:'',axisLabel:{{color:muted,fontSize:10}},splitLine:{{lineStyle:{{color:rule}}}}}},
+        xAxis:{{type:'value',name:'',max:yMax,axisLabel:{{color:muted,fontSize:10}},splitLine:{{lineStyle:{{color:rule}}}}}},
         series:series
       }});
     }} else {{
@@ -1928,7 +1930,7 @@ def write_charts():
         legend:legend ? {{top:0,textStyle:{{color:muted}}}} : undefined,
         grid:{{left:70,right:40,top:legend ? 80 : 52,bottom:100,containLabel:true}},
         xAxis:{{type:'category',data:labels,axisLabel:{{color:muted,interval:0,rotate:35,fontSize:11}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}}}},
-        yAxis:{{type:'value',name:name,nameTextStyle:{{color:muted}},axisLabel:{{color:muted}},splitLine:{{lineStyle:{{color:rule}}}}}},
+        yAxis:{{type:'value',name:name,max:yMax,nameTextStyle:{{color:muted}},axisLabel:{{color:muted}},splitLine:{{lineStyle:{{color:rule}}}}}},
         series:series
       }});
     }}
