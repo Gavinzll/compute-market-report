@@ -1,0 +1,17 @@
+{
+  "scraped_at": "2026-07-18",
+  "prices": {
+    "海光 BW1000": {"hourly_cny": 3.00, "vram_gb": 64, "source": "模力方舟", "available": "8/8"},
+    "摩尔线程 MTT S5000": {"hourly_cny": 8.00, "vram_gb": 80, "source": "模力方舟", "available": "8/8"},
+    "壁仞 天垓150": {"hourly_cny": 2.00, "vram_gb": 32, "source": "模力方舟", "available": "16/16"},
+    "壁仞 壁砺106M": {"hourly_cny": 2.00, "vram_gb": 32, "source": "模力方舟", "available": "5/8"},
+    "天数智芯 智铠100": {"hourly_cny": 1.50, "vram_gb": 32, "source": "模力方舟", "available": "3/8"},
+    "燧原 S60": {"hourly_cny": 2.00, "vram_gb": 48, "source": "模力方舟", "available": "4/9"},
+    "昇腾 910B": {"hourly_cny": 3.00, "vram_gb": 64, "source": "模力方舟", "available": "4/16"},
+    "沐曦 曦云C500": {"hourly_cny": 1.00, "vram_gb": 16, "source": "模力方舟", "available": "7/24"},
+    "RTX 5090": {"hourly_cny": 3.00, "vram_gb": 32, "source": "模力方舟", "available": "6/8"},
+    "RTX 4090": {"hourly_cny": 1.99, "vram_gb": 24, "source": "模力方舟", "available": "5/8"},
+    "RTX 4090 D": {"hourly_cny": 1.88, "vram_gb": 24, "source": "模力方舟", "available": "8/8"},
+    "A100": {"hourly_cny": 7.00, "vram_gb": 80, "source": "模力方舟", "available": "0/20"}
+  }
+}

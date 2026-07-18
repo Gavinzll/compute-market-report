@@ -1,0 +1,11 @@
+{
+  "scraped_at": "2026-07-18",
+  "prices": {
+    "A100 PCIE": {"hourly_cny": 6.42, "source": "胜算云"},
+    "RTX 6000 Ada": {"hourly_cny": 5.28, "source": "胜算云"},
+    "RTX 4090": {"hourly_cny": 2.27, "source": "胜算云"},
+    "华为 Ascend 910": {"hourly_cny": 2.36, "source": "胜算云"},
+    "壁仞 天垓100": {"hourly_cny": 1.49, "source": "胜算云"},
+    "摩尔线程 MTT S4000": {"hourly_cny": 1.69, "source": "胜算云"}
+  }
+}
