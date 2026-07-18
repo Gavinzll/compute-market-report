@@ -313,25 +313,34 @@ grey_market 数据必须满足以下规则：
 
 ## 8. 全局覆盖度矩阵
 
-每次运行结束后，更新以下按型号 × 数据类别的覆盖度矩阵，作为下一次运行的扩源优先级输入。
+每次运行结束后，生成以下按型号 × 数据类别的覆盖度矩阵，作为下一次运行的扩源优先级输入。
 
-### 8.1 GPU 型号覆盖度
+**动态生成规则**：覆盖度矩阵不得在规则文件中写死固定型号列表。必须从当天 `cmis_snapshot_{date}.json` 的 `domestic_rental`、`overseas_rental`、`gpu_procurement` 三个数组的去重 GPU 型号集合中自动生成行，三个数据类别作为列。同时将 `GPU_ORDER` 基线名单中的型号也纳入（即使当天无数据，也占一行标注 ❌）。
 
-| GPU 型号 | 国内租赁（8卡整机月租） | 海外 Cloud（$/h） | 采购价（万元/8卡） | 国产替代 |
-|---|---|---|---|---|
-| H100 80G | SMM/网宿/极智算/云擎天下 | AWS/Azure/GCP/Lambda/RunPod/CoreWeave/TensorDock/IntuitionLabs/Computestacker | Amnic/Mercatus/Petronella/Gpu Lease Index | — |
-| A100 80G | SMM/网宿/晨涧云/极智算 | AWS/GCP/Lambda/RunPod | Amnic/Mercatus | — |
-| H200 141G | SMM/网宿 | AWS/Lambda/RunPod/Vast/Thunder Compute | Amnic/Mercatus | — |
-| B200 | ❌（合规管制） | AWS/Thunder Compute/CoreWeave | Amnic/Mercatus | — |
-| H20 96G | SMM/网宿/啸月网络 | — | — | 昇腾910C 替代观察 |
-| RTX 5090 | SMM/网宿/极智算/啸月网络 | RunPod/Vast | — | — |
-| RTX 4090 | SMM/网宿/极智算/啸月网络 | RunPod/Vast | — | — |
-| 昇腾 910B | SMM/极智算/云擎天下/胜算云/模力方舟 | — | — | ✅ 主力 |
-| 昇腾 910C | SMM（偶有） | — | — | ✅ 主力 |
-| 寒武纪 MLU590 | ❌ 无公开价 | — | — | ✅ 待补 |
-| 海光 BW1000 | 模力方舟（单卡） | — | — | ✅ 待补 |
-| 壁仞 天垓100/150 | 胜算云/模力方舟（单卡） | — | — | ✅ 待补 |
-| 摩尔线程 S4000/S5000 | 胜算云/模力方舟/UCACHE | — | — | ✅ 待补 |
+### 8.1 GPU 型号覆盖度（运行时动态生成）
+
+由 `generate_cmis_daily.py` 在生成报告后自动输出 `data/coverage_matrix_{date}.json`，格式如下：
+
+```json
+{
+  "generated_at": "2026-07-18",
+  "columns": ["国内租赁（8卡整机月租）", "海外 Cloud（$/h）", "采购价（万元/8卡）"],
+  "rows": [
+    {
+      "GPU 型号": "H100 80G",
+      "国内租赁（8卡整机月租）": {"status": "✅", "sources": ["SMM", "网宿商城", "极智算", "云擎天下"]},
+      "海外 Cloud（$/h）": {"status": "✅", "sources": ["AWS", "RunPod", "Lambda", "CoreWeave"]},
+      "采购价（万元/8卡）": {"status": "✅", "sources": ["Amnic", "Mercatus", "Petronella"]}
+    },
+    {
+      "GPU 型号": "寒武纪 MLU590",
+      "国内租赁（8卡整机月租）": {"status": "❌", "sources": []},
+      "海外 Cloud（$/h）": {"status": "❌", "sources": []},
+      "采购价（万元/8卡）": {"status": "❌", "sources": []}
+    }
+  ]
+}
+```
 
 ### 8.2 覆盖度评分规则
 
@@ -339,13 +348,14 @@ grey_market 数据必须满足以下规则：
 - ⚠️ = 仅 1 个来源或有待验证数据
 - ❌ = 无公开数据，需持续扩源
 
-### 8.3 厂商报价缺口（待补清单）
+### 8.3 厂商报价缺口（运行时动态生成）
 
-| 缺口来源 | 型号 | 状态 | 优先级 |
+由生成脚本自动扫描 `source_pool.md` 中标记为"待验证""待补""❓""需登录"的源+型号组合，输出 `data/coverage_gaps_{date}.json`。人工维护部分仅限以下需要浏览器实际验证的明确条目（这些条目在验证后应从待补清单中移除）：
+
+| 缺口来源 | 型号 | 验证动作 | 优先级 |
 |---|---|---|---|
-| OVH 8 卡 H100 | H100 | 需直接询价或通过 Computestacker 查区域价 | P2 |
-| Equinix 8 卡 H100 | H100 | 需直接询价或通过 Computestacker 查 | P2 |
-| Oracle Cloud A100/4090 | A100/4090 | 已在 source_pool，待首次采集验证 | P2 |
-| 网宿商城国产卡 | MLU590/DCU Z100/BR100/S4000 | 待浏览器验证 | P2 |
-| 晨涧云非 A100 | H100/H20/4090/国产卡 | 待浏览器验证 | P2 |
-| 啸月网络国产卡 | MLU590/DCU Z100/BR100/S4000 | 待浏览器验证 | P2 |
+| OVH 8 卡 H100 | H100 | 通过 Computestacker 查区域价或访问 OVH 官方 | P2 |
+| Equinix 8 卡 H100 | H100 | 通过 Computestacker 查区域价或访问 Equinix 官方 | P2 |
+| Oracle Cloud | A100/4090 | 运行时首次采集验证 | P2 |
+
+其余缺口（如"网宿商城国产卡待验证""晨涧云非 A100 待验证"等）均由脚本在运行时自动检测：如果当天采集发现该源有对应型号数据，则自动从缺口清单移除并更新验证状态。
