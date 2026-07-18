@@ -68,6 +68,15 @@ Token 扩源执行规则：
 |---|---|---|---|---|
 | P2 聚合源 | Cloud-GPUs | https://cloud-gpus.com/ | 多 provider、多 GPU 型号、实例配置和 Price Analytics | 用于补齐覆盖率、中位价和最低价，不进入国内租赁主指数 |
 | P2 聚合源 | GPUCloudPricing | https://www.gpucloudpricing.com/ | RunPod、Vast、Novita、Salad 等平台横向对比 | 适合做海外云价和平台特性辅助 |
+| P2 聚合源 | IntuitionLabs GPU 对比 | https://intuitionlabs.ai/articles/h100-rental-prices-cloud-comparison | H100 8 卡 $/h 跨平台横向对比（AWS/Azure/GCP/Lambda/RunPod/CoreWeave） | 跨云中位价校验，B200/H200 部分覆盖；独立于 Cloud-GPUs 的第三视角 |
+| P2 聚合源 | Computestacker | https://computestacker.com/region/global/ | 全球区全云 GPU 价格地图，含区域价差 | 比 Cloud-GPUs 颗粒度更细，适合做海外 GPU Cloud 区域价校验和趋势辅助 |
+| P2 聚合源 | Computestacker 2026 指南 | https://computestacker.com/insights/gpu-cloud-pricing-guide-2026/ | 2026 GPU Cloud 趋势报告 | 年度行业报告，适合做趋势参考 |
+| P2 聚合源 | GPU Compare 日报 | https://gpucompare.com/blog/ | 日级 GPU Cloud 价格更新 | 提供历史价格变化趋势，适合做日环比辅助 |
+| P2 聚合源 | Cloudprice Azure | https://cloudprice.net/vm/Standard_NC40ads_H100_v5 | Azure ND H100 v5 区域级详价 | Azure 实例价颗粒度比官方价目更细，适合做 Azure 特定区域价校验 |
+| P2 聚合源 | Thunder Compute H100 | https://www.thundercompute.com/blog/nvidia-h100-pricing | H100 8 卡 $/h 对比 | 覆盖 AWS/Azure/GCP/Lambda 等 |
+| P2 聚合源 | Thunder Compute B200 | https://www.thundercompute.com/blog/nvidia-b200-pricing | B200 8 卡 $/h（约 $82/h） | 补齐 B200 数据，我们 B200 海外源偏少 |
+
+**Hyperscaler 区域价差异注脚**：以上主要 hyperscaler（AWS/Azure/GCP/阿里云）的关键 GPU 型号在不同区域定价差异显著（可达 30-50%），采集时至少记录两个锚点区域：`us-east-1`（北美基准）和 `cn-north-1`（中国区基准），其他区域价格作为辅助。Azure 中国区（azure.cn）与全球区（azure.microsoft.com）价目独立，必须分开记录。阿里云国内（aliyun.com）与海外（alibabacloud.com）同理。汇率折算时必须标注原始区域和币种。
 
 ### 2.2 官方/Marketplace 价格源
 
@@ -144,6 +153,9 @@ SMM 价格分类规则：
 | P2 平台 | 模力方舟 ai.gitee.com/compute | https://ai.gitee.com/compute | Gitee AI算力市场 | 已验证有海光BW1000（3.00元/时）、摩尔线程S5000（8.00元/时）、壁仞天垓150（3.00元/时）、壁砺106M（2.00元/时）、天数智芯智铠100（2.00元/时）、燧原S60（2.00元/时）、昇腾910B（3.00-4.00元/时）单卡云实例价；**无8卡整机月租价** |
 | P2 平台 | 智星云 ai-galaxy.cn | https://www.ai-galaxy.cn/ | GPU算力服务平台 | 有昇腾910B、海光DCU、壁仞天垓100现货，但**公开页面无价格**；裸金属/云主机需登录查看 |
 | P2 平台 | UCACHE ucache.cn | https://ucache.cn/enterprise/new/302.html | 北京IDC/服务器托管/算力租赁 | 有摩尔线程S4000 8卡训推一体机租赁，**无标准月租价**（案例：某电商2万元/项目） |
+| P2 平台 | 网宿商城 online.wangsu.com | https://online.wangsu.com/product/gpu- | GPU算力服务器租赁（8卡整机） | 已验证覆盖H100/H200/A100/H20/4090/A800/H800，**有8卡¥/月详表**；国内少数公开列出8卡整机月租的平台，可进入国内主指数候选 |
+| P2 平台 | 晨涧云 mornai.cn | https://www.mornai.cn/news/gpu/a100-gpu-rent-trend/ | A100 GPU租用价格趋势 | A100 价目较全（2.8-6.5元/h），可做A100辅助校验；**尚未验证**其他GPU型号覆盖 |
+| P2 平台 | 啸月网络 xiaoyueidc.com | https://www.xiaoyueidc.com/news/detail/article/8278 | GPU服务器租赁（8卡整机） | 已验证有H100/A100/H20/4090的8卡¥/月；**尚未验证**国产GPU覆盖 |
 | P2/P3 门户 | 什么值得买（区域GPU租用调研） | https://post.m.smzdm.com/ | 区域市场GPU服务器租用价格 | 厦门地区：寒武纪思元590单卡7,000-8,000元/月；昇腾910B单卡8,500-9,500元/月；**非8卡整机价** |
 | P2/P3 门户 | GoGPU、墨天轮、东方财富财富号、CSDN、掘金、51CTO 等 | 逐站点检索 | 服务器价格榜单、行业文章、价格走势线索 | 只作为 Candidate / Lead，必须标注低置信度 |
 | P3 自媒体 | 微信公众号、视频号、抖音、B站、小红书、知乎等公开可访问内容 | 平台内搜索或公开网页索引 | 渠道报价、截图、供需线索、联系方式 | 不进入主指数；截图/口述必须保留来源、发布时间和原始上下文 |
@@ -158,6 +170,9 @@ SMM 价格分类规则：
 | 云擎天下 omniyq.com | ✅ 15,000元/月 | ❌ 未覆盖 | ❌ 未覆盖 | ❌ 未覆盖 | ❌ 未覆盖 | 浏览器直接访问首页 |
 | 胜算云 shengsuanyun.com | ✅ 2.36元/时（单卡） | ✅ S4000 1.69元/时 | ✅ 天垓100 1.49元/时 | ❌ 未覆盖 | ❌ 未覆盖 | 浏览器直接访问首页 |
 | 模力方舟 ai.gitee.com | ✅ 3.00-4.00元/时 | ✅ S5000 8.00元/时 | ✅ 天垓150 3.00元/时 | ❌ 未覆盖 | ✅ BW1000 3.00元/时 | 浏览器翻页1-4 |
+| 网宿商城 online.wangsu.com | ✅ 有H100/H200/A100/H20/4090/A800/H800 8卡月租 | ❓ 待验证 | ❓ 待验证 | ❓ 待验证 | ❓ 待验证 | 浏览器访问GPU产品页 |
+| 晨涧云 mornai.cn | ❌ 未验证 | ❌ 未验证 | ❌ 未验证 | ❌ 未覆盖 | ❌ 未覆盖 | 浏览器访问价格页（已验证A100） |
+| 啸月网络 xiaoyueidc.com | ✅ 有H100/A100/H20/4090 8卡月租 | ❓ 待验证 | ❓ 待验证 | ❓ 待验证 | ❓ 待验证 | 浏览器访问新闻页（已验证NVIDIA系列） |
 | 智星云 ai-galaxy.cn | ✅ 有现货 | ❓ 未确认 | ✅ 天垓100现货 | ❓ 未确认 | ✅ 有现货 | 首页无价格 |
 | 曙光智算 scnet.cn | ❓ 需登录确认 | ❓ 需登录确认 | ❓ 需登录确认 | ❓ 需登录确认 | ❓ 需登录确认 | 浏览器访问平台首页 |
 | SMM 算力快讯 | ✅ 有数据 | ⚠️ 偶有线索 | ⚠️ 偶有线索 | ✅ MLU370-X8有数据 | ⚠️ 偶有线索 | 历史采集记录 |
@@ -245,6 +260,8 @@ SMM 价格分类规则：
 | P2 渠道 | BIZON GPU Workstations/Servers | https://bizon-tech.com/ | 工作站/服务器公开配置价 | 多为 2卡/4卡，不可直接折 8卡 HGX |
 | P2 渠道 | Exxact GPU Systems | https://www.exxactcorp.com/ | 整机配置价 | 区分工作站和服务器 |
 | P2 渠道 | Thinkmate GPU Servers | https://www.thinkmate.com/ | 整机配置价 | 作为采购辅助 |
+| P2 渠道 | Petronella SXM TCO | https://petronellatech.com/hardware/nvidia-sxm-total-cost-ownership/ | OEM 8 卡 SXM TCO 成本拆解 | 独立于 Amnic/Mercatus 的第三视角，适合做采购价交叉验证 |
+| P2 聚合 | Gpu Lease Index | https://gpuleaseindex.com/calculators/gpu-cost | 多平台 GPU 成本计算器 + H100 单价 | 多平台 TCO 对比，适合做采购价辅助和回本分析 |
 | P2/P3 渠道 | ZOL、1688、淘宝、苏宁、e算商城 | 逐站点检索 | 消费级 8卡整机、国产卡单卡和服务器公开报价 | 只能作为三方渠道或 Candidate，需标注税费/保修/渠道不确定性 |
 | P2/P3 财经/社区 | 雪球、东方财富、CSDN、腾讯云开发者、商业新知 | 逐站点检索 | 国产 GPU 框架协议、集采、采购价估算线索 | 必须追溯原始公告；未追溯前只作线索或采购价估算依据 |
 
@@ -254,8 +271,81 @@ SMM 价格分类规则：
 
 0. **Token 模型目录更新（最高优先级）**：每次运行必须先检索各家厂商最新模型矩阵，按"主流/核心/先进"标准筛选模型目录，淘汰 deprecated 模型和无数据旧模型，更新脚本中的模型清单后再进入价格采集。此步骤不依赖价格数据，只依赖厂商官网/文档/发布页的模型列表。
 1. Token 官方价缺失：在已更新的模型目录基础上，检索各模型的官方价格页和开发者文档，再查云平台官方计费页，最后用 LiteLLM / OpenRouter / models.dev / BenchLM / llmpricing / morph-llm 作为辅助。
-2. 海外 GPU Cloud 覆盖不足：先抓 RunPod、Lambda、Vast.ai、TensorDock、DataCrunch、CUDO，再用 Cloud-GPUs 和 GPUCloudPricing 补齐 provider 与中位价。
-3. 国内主指数 PASS 少于 3，或国产战略关注卡缺价格：先查 SMM 和 IDC/运营商线索，再查国内云厂商包月/包年、AutoDL/矩池云等辅助价，最后查招投标、集成商、国产智算中心和媒体线索。
-4. 采购价不足：先查政府采购/高校招标、运营商/银行/央国企框架协议和中标公告，再查整机厂商和渠道配置价，最后查媒体/研报/社区线索；若精确采购价不可得但配置或单卡价可确认，形成采购价估算并标注估算依据。
+2. 海外 GPU Cloud 覆盖不足：先抓 RunPod、Lambda、Vast.ai、TensorDock、DataCrunch、CUDO，再用 Cloud-GPUs、GPUCloudPricing、IntuitionLabs、Computestacker、Thunder Compute、GPU Compare、Cloudprice 补齐 provider、中位价、区域价差和历史趋势。
+3. 国内主指数 PASS 少于 3，或国产战略关注卡缺价格：先查 SMM 和 IDC/运营商线索，再查网宿商城、晨涧云、啸月网络、AutoDL/矩池云等平台辅助价，最后查招投标、集成商、国产智算中心和媒体线索。
+4. 采购价不足：先查政府采购/高校招标、运营商/银行/央国企框架协议和中标公告，再查整机厂商和渠道配置价（Petronella SXM TCO / Gpu Lease Index 可做交叉验证），最后查媒体/研报/社区线索；若精确采购价不可得但配置或单卡价可确认，形成采购价估算并标注估算依据。
 5. 任一数据无法确认单位、GPU 数、地区或税费时，不得进入主指数；保留到 `Candidate Samples` 或 `Rejected Samples`。
-6. 新算力卡发现：每次采集时除覆盖基线名单外，必须主动扫描 NVIDIA 官方产品页、国产 GPU 厂商发布页、Cloud-GPUs / GPUCloudPricing 新增型号、SMM 快讯和行业媒体，发现基线名单外的新卡（如 NVIDIA 新架构、国产新厂商/新系列）。新卡首次出现时进入 `Candidate Samples`；连续 3 期均有可追溯数据后，升级加入 `GPU_ORDER` 基线名单并同步更新脚本配置。纳入标准：① 有明确型号和显存规格；② 至少有一个可追溯价格来源；③ 已发布非 rumor/概念产品。
+6. 新算力卡发现：每次采集时除覆盖基线名单外，必须主动扫描 NVIDIA 官方产品页、国产 GPU 厂商发布页、Cloud-GPUs / GPUCloudPricing / Computestacker 新增型号、SMM 快讯和行业媒体，发现基线名单外的新卡（如 NVIDIA 新架构、国产新厂商/新系列）。新卡首次出现时进入 `Candidate Samples`；连续 3 期均有可追溯数据后，升级加入 `GPU_ORDER` 基线名单并同步更新脚本配置。纳入标准：① 有明确型号和显存规格；② 至少有一个可追溯价格来源；③ 已发布非 rumor/概念产品。
+
+## 6. 数据层级分级（data_tier）
+
+每条数据在快照中必须标注 `data_tier` 字段，用于区分数据可信度和用途边界：
+
+| data_tier | 定义 | 进入主指数 | 进入图表/AI 摘要 | 典型来源 |
+|---|---|---|---|---|
+| `official` | 厂商官方价目表、政府采购中标公告 | 经校验后可进入 | 可引用 | AWS/Azure/GCP/阿里云/腾讯云/华为云官方价、政府采购网 |
+| `market` | 行业媒体、交易平台公开报价、IDC/运营商公开价 | 经校验后可进入 | 可引用 | SMM、RunPod/Lambda 官方价、网宿商城、极智算 |
+| `grey_market` | 灰色渠道、非正规市场、黑市溢价、二手转售 | **不得进入**主指数 | 只作趋势观察，AI 摘要中标注"趋势参考" | 微博黑市价、头条灰色渠道、雪球非官方报价、闲鱼/淘宝二手转售 |
+
+grey_market 数据必须满足以下规则：
+- 在快照 JSON 中 `data_tier: "grey_market"` 字段必填
+- 在报告中展示时必须标注"（趋势参考，非正规渠道）"
+- 不得参与标准化价格计算、中位价计算或 Source Consensus 投票
+- 可用于补充说明市场供需紧张程度（如溢价幅度反映紧缺度）
+
+## 7. 数据时效性矩阵
+
+每次运行必须更新以下时效性矩阵，记录每个关键数据源的最近采集时间和可信窗口。超期源自动标记为 `stale`，在 `searched_sources` 中标注需要重新验证。
+
+| 数据源类别 | 关键源 | 默认可信窗口 | 更新频率 |
+|---|---|---|---|
+| Token 官方价 | 各厂商定价页 | 7 天 | 每次运行 |
+| Token 市场价 | OpenRouter / LiteLLM / 硅基流动 | 3 天 | 每次运行 |
+| 海外 GPU Cloud | RunPod / Lambda / Vast.ai | 7 天 | 每次运行 |
+| 海外聚合对比 | IntuitionLabs / Computestacker / Thunder Compute | 30 天 | 每周验证 |
+| 国内行业媒体 | SMM 算力快讯 | 7 天 | 每次运行 |
+| 国内云厂商 | 阿里云 / 腾讯云 / 华为云 / 火山引擎 | 30 天 | 每周验证 |
+| 国内租赁平台 | 网宿商城 / 极智算 / 云擎天下 / 胜算云 / 模力方舟 | 14 天 | 每周验证 |
+| 采购价 | Amnic / Mercatus / Petronella / Gpu Lease Index | 90 天 | 每月验证 |
+| 招投标 | 政府采购网 / 高校采购 | 按公告时效 | 每次运行扫描 |
+
+**标记规则**：超过可信窗口的源在快照中标注 `stale: true`，在审计文件中记录 `reason: "超过可信窗口 N 天，需重新验证"`。连续 2 次运行 stale 的源降级一个优先级（P0→P1，P1→P2）。
+
+## 8. 全局覆盖度矩阵
+
+每次运行结束后，更新以下按型号 × 数据类别的覆盖度矩阵，作为下一次运行的扩源优先级输入。
+
+### 8.1 GPU 型号覆盖度
+
+| GPU 型号 | 国内租赁（8卡整机月租） | 海外 Cloud（$/h） | 采购价（万元/8卡） | 国产替代 |
+|---|---|---|---|---|
+| H100 80G | SMM/网宿/极智算/云擎天下 | AWS/Azure/GCP/Lambda/RunPod/CoreWeave/TensorDock/IntuitionLabs/Computestacker | Amnic/Mercatus/Petronella/Gpu Lease Index | — |
+| A100 80G | SMM/网宿/晨涧云/极智算 | AWS/GCP/Lambda/RunPod | Amnic/Mercatus | — |
+| H200 141G | SMM/网宿 | AWS/Lambda/RunPod/Vast/Thunder Compute | Amnic/Mercatus | — |
+| B200 | ❌（合规管制） | AWS/Thunder Compute/CoreWeave | Amnic/Mercatus | — |
+| H20 96G | SMM/网宿/啸月网络 | — | — | 昇腾910C 替代观察 |
+| RTX 5090 | SMM/网宿/极智算/啸月网络 | RunPod/Vast | — | — |
+| RTX 4090 | SMM/网宿/极智算/啸月网络 | RunPod/Vast | — | — |
+| 昇腾 910B | SMM/极智算/云擎天下/胜算云/模力方舟 | — | — | ✅ 主力 |
+| 昇腾 910C | SMM（偶有） | — | — | ✅ 主力 |
+| 寒武纪 MLU590 | ❌ 无公开价 | — | — | ✅ 待补 |
+| 海光 BW1000 | 模力方舟（单卡） | — | — | ✅ 待补 |
+| 壁仞 天垓100/150 | 胜算云/模力方舟（单卡） | — | — | ✅ 待补 |
+| 摩尔线程 S4000/S5000 | 胜算云/模力方舟/UCACHE | — | — | ✅ 待补 |
+
+### 8.2 覆盖度评分规则
+
+- ✅ = 有 2+ 个独立来源交叉验证
+- ⚠️ = 仅 1 个来源或有待验证数据
+- ❌ = 无公开数据，需持续扩源
+
+### 8.3 厂商报价缺口（待补清单）
+
+| 缺口来源 | 型号 | 状态 | 优先级 |
+|---|---|---|---|
+| OVH 8 卡 H100 | H100 | 需直接询价或通过 Computestacker 查区域价 | P2 |
+| Equinix 8 卡 H100 | H100 | 需直接询价或通过 Computestacker 查 | P2 |
+| Oracle Cloud A100/4090 | A100/4090 | 已在 source_pool，待首次采集验证 | P2 |
+| 网宿商城国产卡 | MLU590/DCU Z100/BR100/S4000 | 待浏览器验证 | P2 |
+| 晨涧云非 A100 | H100/H20/4090/国产卡 | 待浏览器验证 | P2 |
+| 啸月网络国产卡 | MLU590/DCU Z100/BR100/S4000 | 待浏览器验证 | P2 |
