@@ -2010,6 +2010,8 @@ def render_mobile_html(relative_prefix: str = "./", desktop_href: str = "latest.
 
     <h2>模型能力评测</h2>
     <p class="note">AA Intelligence Index v4.1，覆盖主流模型综合/编程能力。</p>
+    <figure><figcaption>AA Intelligence Index 综合/编程双维度排行</figcaption><div id="chart-benchmark-intel" class="chart"></div></figure>
+    <figure><figcaption>Cost per Task vs Intelligence（性价比象限图）</figcaption><div id="chart-benchmark-cost" class="chart"></div></figure>
     <details><summary>评测排行卡片</summary><div class="details-body">{mobile_benchmark_cards(BENCHMARK_DATA)}</div></details>
 
     <section id="token">

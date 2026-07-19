@@ -46,7 +46,7 @@
     <header class="hero">
       <div class="eyebrow">CMIS Daily · Mobile</div>
       <h1>全球算力市场情报日报</h1>
-      <p class="note">日期：2026-07-19｜Freeze：2026-07-19 16:10｜版本：v1.2.0</p>
+      <p class="note">日期：2026-07-19｜Freeze：2026-07-19 16:31｜版本：v1.2.0</p>
       <a class="desktop-link" href="latest.html?desktop=1">切换电脑版</a>
     </header>
 
@@ -362,6 +362,8 @@
 
     <h2>模型能力评测</h2>
     <p class="note">AA Intelligence Index v4.1，覆盖主流模型综合/编程能力。</p>
+    <figure><figcaption>AA Intelligence Index 综合/编程双维度排行</figcaption><div id="chart-benchmark-intel" class="chart"></div></figure>
+    <figure><figcaption>Cost per Task vs Intelligence（性价比象限图）</figcaption><div id="chart-benchmark-cost" class="chart"></div></figure>
     <details><summary>评测排行卡片</summary><div class="details-body">
         <article class="m-card compact">
           <div class="m-card-head"><div><h3>OpenAI</h3><small>GPT-5.6 Sol</small></div><span>Artificial Analysis</span></div>
@@ -500,6 +502,26 @@
             <span class="pill"><b>编程指数</b>84</span>
             <span class="pill"><b>Elo</b>1,079</span>
             <span class="pill"><b>$/Task</b>0.22</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>MiniMax</h3><small>MiniMax-M3 标准层 ≤512K</small></div><span>Artificial Analysis（与 MiniMax-M3 同系列）</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>智能指数</b>44</span>
+            <span class="pill"><b>编程指数</b>84</span>
+            <span class="pill"><b>Elo</b>1,079</span>
+            <span class="pill"><b>$/Task</b>0.22</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>MiniMax</h3><small>MiniMax-M3 标准层 &gt;512K</small></div><span>Artificial Analysis（长上下文变体，按 M3 同能力估算）</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>智能指数</b>44</span>
+            <span class="pill"><b>编程指数</b>84</span>
+            <span class="pill"><b>Elo</b>1,079</span>
+            <span class="pill"><b>$/Task</b>0.44</span>
           </div>
         </article>
 
@@ -675,6 +697,246 @@
 
         <article class="m-card compact">
           <div class="m-card-head"><div><h3>百川智能</h3><small>Baichuan-M3-Plus</small></div><span>暂无评测数据</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>智能指数</b>暂无</span>
+            <span class="pill"><b>编程指数</b>暂无</span>
+            <span class="pill"><b>Elo</b>0</span>
+            <span class="pill"><b>$/Task</b>0</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>OpenAI</h3><small>GPT-5.4</small></div><span>暂无评测数据（已迭代至 GPT-5.5/5.6 Sol）</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>智能指数</b>暂无</span>
+            <span class="pill"><b>编程指数</b>暂无</span>
+            <span class="pill"><b>Elo</b>0</span>
+            <span class="pill"><b>$/Task</b>0</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>OpenAI</h3><small>GPT-5.4 mini</small></div><span>暂无评测数据（轻量模型，AA 未单独评测）</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>智能指数</b>暂无</span>
+            <span class="pill"><b>编程指数</b>暂无</span>
+            <span class="pill"><b>Elo</b>0</span>
+            <span class="pill"><b>$/Task</b>0</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>OpenAI</h3><small>o4 Mini</small></div><span>暂无评测数据（推理模型，AA 未单独评测）</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>智能指数</b>暂无</span>
+            <span class="pill"><b>编程指数</b>暂无</span>
+            <span class="pill"><b>Elo</b>0</span>
+            <span class="pill"><b>$/Task</b>0</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>Anthropic</h3><small>Claude Fable 5</small></div><span>暂无评测数据</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>智能指数</b>暂无</span>
+            <span class="pill"><b>编程指数</b>暂无</span>
+            <span class="pill"><b>Elo</b>0</span>
+            <span class="pill"><b>$/Task</b>0</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>Anthropic</h3><small>Claude Haiku 4.5</small></div><span>暂无评测数据</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>智能指数</b>暂无</span>
+            <span class="pill"><b>编程指数</b>暂无</span>
+            <span class="pill"><b>Elo</b>0</span>
+            <span class="pill"><b>$/Task</b>0</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>xAI Grok</h3><small>Grok 4.20</small></div><span>暂无评测数据（已迭代至 Grok 4.5）</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>智能指数</b>暂无</span>
+            <span class="pill"><b>编程指数</b>暂无</span>
+            <span class="pill"><b>Elo</b>0</span>
+            <span class="pill"><b>$/Task</b>0</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>智谱 GLM / Z.ai</h3><small>GLM-5.1 Pro</small></div><span>暂无评测数据（已迭代至 GLM-5.2）</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>智能指数</b>暂无</span>
+            <span class="pill"><b>编程指数</b>暂无</span>
+            <span class="pill"><b>Elo</b>0</span>
+            <span class="pill"><b>$/Task</b>0</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>腾讯混元</h3><small>Hunyuan-A13B</small></div><span>暂无评测数据（豆包系列，AA 未评测）</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>智能指数</b>暂无</span>
+            <span class="pill"><b>编程指数</b>暂无</span>
+            <span class="pill"><b>Elo</b>0</span>
+            <span class="pill"><b>$/Task</b>0</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>火山方舟/豆包</h3><small>Doubao-Seed 2.0 Pro</small></div><span>暂无评测数据</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>智能指数</b>暂无</span>
+            <span class="pill"><b>编程指数</b>暂无</span>
+            <span class="pill"><b>Elo</b>0</span>
+            <span class="pill"><b>$/Task</b>0</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>火山方舟/豆包</h3><small>Doubao-Seed 2.1 Pro</small></div><span>暂无评测数据</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>智能指数</b>暂无</span>
+            <span class="pill"><b>编程指数</b>暂无</span>
+            <span class="pill"><b>Elo</b>0</span>
+            <span class="pill"><b>$/Task</b>0</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>火山方舟/豆包</h3><small>Doubao-Seed 2.1 Turbo</small></div><span>暂无评测数据</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>智能指数</b>暂无</span>
+            <span class="pill"><b>编程指数</b>暂无</span>
+            <span class="pill"><b>Elo</b>0</span>
+            <span class="pill"><b>$/Task</b>0</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>火山方舟/豆包</h3><small>Doubao-Seed-Evolving</small></div><span>暂无评测数据</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>智能指数</b>暂无</span>
+            <span class="pill"><b>编程指数</b>暂无</span>
+            <span class="pill"><b>Elo</b>0</span>
+            <span class="pill"><b>$/Task</b>0</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>百川智能</h3><small>Baichuan-M3</small></div><span>暂无评测数据</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>智能指数</b>暂无</span>
+            <span class="pill"><b>编程指数</b>暂无</span>
+            <span class="pill"><b>Elo</b>0</span>
+            <span class="pill"><b>$/Task</b>0</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>百度文心</h3><small>ERNIE-4.5-Turbo</small></div><span>暂无评测数据（轻量模型，AA 未单独评测）</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>智能指数</b>暂无</span>
+            <span class="pill"><b>编程指数</b>暂无</span>
+            <span class="pill"><b>Elo</b>0</span>
+            <span class="pill"><b>$/Task</b>0</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>腾讯混元</h3><small>Hunyuan-role-latest</small></div><span>暂无评测数据（角色扮演模型，AA 未评测）</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>智能指数</b>暂无</span>
+            <span class="pill"><b>编程指数</b>暂无</span>
+            <span class="pill"><b>Elo</b>0</span>
+            <span class="pill"><b>$/Task</b>0</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>讯飞星火</h3><small>Spark Max</small></div><span>暂无评测数据</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>智能指数</b>暂无</span>
+            <span class="pill"><b>编程指数</b>暂无</span>
+            <span class="pill"><b>Elo</b>0</span>
+            <span class="pill"><b>$/Task</b>0</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>商汤日日新</h3><small>SenseNova-V6.5-Pro</small></div><span>暂无评测数据</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>智能指数</b>暂无</span>
+            <span class="pill"><b>编程指数</b>暂无</span>
+            <span class="pill"><b>Elo</b>0</span>
+            <span class="pill"><b>$/Task</b>0</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>商汤日日新</h3><small>SenseNova-V6.5-Turbo</small></div><span>暂无评测数据</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>智能指数</b>暂无</span>
+            <span class="pill"><b>编程指数</b>暂无</span>
+            <span class="pill"><b>Elo</b>0</span>
+            <span class="pill"><b>$/Task</b>0</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>昆仑万维天工</h3><small>SkyClaw-v1.0</small></div><span>暂无评测数据</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>智能指数</b>暂无</span>
+            <span class="pill"><b>编程指数</b>暂无</span>
+            <span class="pill"><b>Elo</b>0</span>
+            <span class="pill"><b>$/Task</b>0</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>昆仑万维天工</h3><small>SkyClaw-v1.0-lite</small></div><span>暂无评测数据</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>智能指数</b>暂无</span>
+            <span class="pill"><b>编程指数</b>暂无</span>
+            <span class="pill"><b>Elo</b>0</span>
+            <span class="pill"><b>$/Task</b>0</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>阶跃星辰</h3><small>Step 3.5 Flash</small></div><span>暂无评测数据</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>智能指数</b>暂无</span>
+            <span class="pill"><b>编程指数</b>暂无</span>
+            <span class="pill"><b>Elo</b>0</span>
+            <span class="pill"><b>$/Task</b>0</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>阶跃星辰</h3><small>Step-R1-V-Mini</small></div><span>暂无评测数据</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>智能指数</b>暂无</span>
+            <span class="pill"><b>编程指数</b>暂无</span>
+            <span class="pill"><b>Elo</b>0</span>
+            <span class="pill"><b>$/Task</b>0</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>零一万物</h3><small>Yi-Large</small></div><span>暂无评测数据</span></div>
+          <div class="pill-row">
+            <span class="pill"><b>智能指数</b>暂无</span>
+            <span class="pill"><b>编程指数</b>暂无</span>
+            <span class="pill"><b>Elo</b>0</span>
+            <span class="pill"><b>$/Task</b>0</span>
+          </div>
+        </article>
+
+        <article class="m-card compact">
+          <div class="m-card-head"><div><h3>零一万物</h3><small>Yi-Lightning</small></div><span>暂无评测数据</span></div>
           <div class="pill-row">
             <span class="pill"><b>智能指数</b>暂无</span>
             <span class="pill"><b>编程指数</b>暂无</span>
@@ -1471,6 +1733,6 @@
     <a href="#summary">结论</a><a href="#domestic">国内</a><a href="#overseas">海外</a><a href="#token">Token</a><a href="#profit">利润</a><a href="#audit">审计</a>
   </nav>
   <script src="./_shared/js/echarts.min.js"></script>
-  <script src="./assets/charts.js?v=20260719161017-v1.2.0"></script>
+  <script src="./assets/charts.js?v=20260719163157-v1.2.0"></script>
 </body>
 </html>

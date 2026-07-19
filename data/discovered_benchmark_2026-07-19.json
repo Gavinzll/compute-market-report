@@ -1,7 +1,7 @@
 {
   "date": "2026-07-19",
-  "discovered_at": "2026-07-19T16:06:25.782621+08:00",
-  "record_count": 32,
+  "discovered_at": "2026-07-19T16:29:43.941628+08:00",
+  "record_count": 58,
   "rows": [
     {
       "模型": "GPT-5.5",
@@ -354,6 +354,292 @@
       "Cost per Task (USD)": 0.0,
       "来源": "Artificial Analysis",
       "更新时间": "2026-07-17"
+    },
+    {
+      "模型": "GPT-5.4",
+      "厂商": "OpenAI",
+      "AA Intelligence Index": 0,
+      "AA Coding Index": 0,
+      "GDPval-AA v2 Elo": 0,
+      "Output Speed (t/s)": 0,
+      "Cost per Task (USD)": 0.0,
+      "来源": "暂无评测数据（已迭代至 GPT-5.5/5.6 Sol）",
+      "更新时间": "2026-07-19"
+    },
+    {
+      "模型": "GPT-5.4 mini",
+      "厂商": "OpenAI",
+      "AA Intelligence Index": 0,
+      "AA Coding Index": 0,
+      "GDPval-AA v2 Elo": 0,
+      "Output Speed (t/s)": 0,
+      "Cost per Task (USD)": 0.0,
+      "来源": "暂无评测数据（轻量模型，AA 未单独评测）",
+      "更新时间": "2026-07-19"
+    },
+    {
+      "模型": "o4 Mini",
+      "厂商": "OpenAI",
+      "AA Intelligence Index": 0,
+      "AA Coding Index": 0,
+      "GDPval-AA v2 Elo": 0,
+      "Output Speed (t/s)": 0,
+      "Cost per Task (USD)": 0.0,
+      "来源": "暂无评测数据（推理模型，AA 未单独评测）",
+      "更新时间": "2026-07-19"
+    },
+    {
+      "模型": "Claude Fable 5",
+      "厂商": "Anthropic",
+      "AA Intelligence Index": 0,
+      "AA Coding Index": 0,
+      "GDPval-AA v2 Elo": 0,
+      "Output Speed (t/s)": 0,
+      "Cost per Task (USD)": 0.0,
+      "来源": "暂无评测数据",
+      "更新时间": "2026-07-19"
+    },
+    {
+      "模型": "Claude Haiku 4.5",
+      "厂商": "Anthropic",
+      "AA Intelligence Index": 0,
+      "AA Coding Index": 0,
+      "GDPval-AA v2 Elo": 0,
+      "Output Speed (t/s)": 0,
+      "Cost per Task (USD)": 0.0,
+      "来源": "暂无评测数据",
+      "更新时间": "2026-07-19"
+    },
+    {
+      "模型": "Grok 4.20",
+      "厂商": "xAI Grok",
+      "AA Intelligence Index": 0,
+      "AA Coding Index": 0,
+      "GDPval-AA v2 Elo": 0,
+      "Output Speed (t/s)": 0,
+      "Cost per Task (USD)": 0.0,
+      "来源": "暂无评测数据（已迭代至 Grok 4.5）",
+      "更新时间": "2026-07-19"
+    },
+    {
+      "模型": "MiniMax-M3 标准层 ≤512K",
+      "厂商": "MiniMax",
+      "AA Intelligence Index": 44,
+      "AA Coding Index": 84,
+      "GDPval-AA v2 Elo": 1079,
+      "Output Speed (t/s)": 2,
+      "Cost per Task (USD)": 0.22,
+      "来源": "Artificial Analysis（与 MiniMax-M3 同系列）",
+      "更新时间": "2026-07-17"
+    },
+    {
+      "模型": "MiniMax-M3 标准层 >512K",
+      "厂商": "MiniMax",
+      "AA Intelligence Index": 44,
+      "AA Coding Index": 84,
+      "GDPval-AA v2 Elo": 1079,
+      "Output Speed (t/s)": 2,
+      "Cost per Task (USD)": 0.44,
+      "来源": "Artificial Analysis（长上下文变体，按 M3 同能力估算）",
+      "更新时间": "2026-07-17"
+    },
+    {
+      "模型": "GLM-5.1 Pro",
+      "厂商": "智谱 GLM / Z.ai",
+      "AA Intelligence Index": 0,
+      "AA Coding Index": 0,
+      "GDPval-AA v2 Elo": 0,
+      "Output Speed (t/s)": 0,
+      "Cost per Task (USD)": 0.0,
+      "来源": "暂无评测数据（已迭代至 GLM-5.2）",
+      "更新时间": "2026-07-19"
+    },
+    {
+      "模型": "Hunyuan-A13B",
+      "厂商": "腾讯混元",
+      "AA Intelligence Index": 0,
+      "AA Coding Index": 0,
+      "GDPval-AA v2 Elo": 0,
+      "Output Speed (t/s)": 0,
+      "Cost per Task (USD)": 0.0,
+      "来源": "暂无评测数据（豆包系列，AA 未评测）",
+      "更新时间": "2026-07-19"
+    },
+    {
+      "模型": "Doubao-Seed 2.0 Pro",
+      "厂商": "火山方舟/豆包",
+      "AA Intelligence Index": 0,
+      "AA Coding Index": 0,
+      "GDPval-AA v2 Elo": 0,
+      "Output Speed (t/s)": 0,
+      "Cost per Task (USD)": 0.0,
+      "来源": "暂无评测数据",
+      "更新时间": "2026-07-19"
+    },
+    {
+      "模型": "Doubao-Seed 2.1 Pro",
+      "厂商": "火山方舟/豆包",
+      "AA Intelligence Index": 0,
+      "AA Coding Index": 0,
+      "GDPval-AA v2 Elo": 0,
+      "Output Speed (t/s)": 0,
+      "Cost per Task (USD)": 0.0,
+      "来源": "暂无评测数据",
+      "更新时间": "2026-07-19"
+    },
+    {
+      "模型": "Doubao-Seed 2.1 Turbo",
+      "厂商": "火山方舟/豆包",
+      "AA Intelligence Index": 0,
+      "AA Coding Index": 0,
+      "GDPval-AA v2 Elo": 0,
+      "Output Speed (t/s)": 0,
+      "Cost per Task (USD)": 0.0,
+      "来源": "暂无评测数据",
+      "更新时间": "2026-07-19"
+    },
+    {
+      "模型": "Doubao-Seed-Evolving",
+      "厂商": "火山方舟/豆包",
+      "AA Intelligence Index": 0,
+      "AA Coding Index": 0,
+      "GDPval-AA v2 Elo": 0,
+      "Output Speed (t/s)": 0,
+      "Cost per Task (USD)": 0.0,
+      "来源": "暂无评测数据",
+      "更新时间": "2026-07-19"
+    },
+    {
+      "模型": "Baichuan-M3",
+      "厂商": "百川智能",
+      "AA Intelligence Index": 0,
+      "AA Coding Index": 0,
+      "GDPval-AA v2 Elo": 0,
+      "Output Speed (t/s)": 0,
+      "Cost per Task (USD)": 0.0,
+      "来源": "暂无评测数据",
+      "更新时间": "2026-07-19"
+    },
+    {
+      "模型": "ERNIE-4.5-Turbo",
+      "厂商": "百度文心",
+      "AA Intelligence Index": 0,
+      "AA Coding Index": 0,
+      "GDPval-AA v2 Elo": 0,
+      "Output Speed (t/s)": 0,
+      "Cost per Task (USD)": 0.0,
+      "来源": "暂无评测数据（轻量模型，AA 未单独评测）",
+      "更新时间": "2026-07-19"
+    },
+    {
+      "模型": "Hunyuan-role-latest",
+      "厂商": "腾讯混元",
+      "AA Intelligence Index": 0,
+      "AA Coding Index": 0,
+      "GDPval-AA v2 Elo": 0,
+      "Output Speed (t/s)": 0,
+      "Cost per Task (USD)": 0.0,
+      "来源": "暂无评测数据（角色扮演模型，AA 未评测）",
+      "更新时间": "2026-07-19"
+    },
+    {
+      "模型": "Spark Max",
+      "厂商": "讯飞星火",
+      "AA Intelligence Index": 0,
+      "AA Coding Index": 0,
+      "GDPval-AA v2 Elo": 0,
+      "Output Speed (t/s)": 0,
+      "Cost per Task (USD)": 0.0,
+      "来源": "暂无评测数据",
+      "更新时间": "2026-07-19"
+    },
+    {
+      "模型": "SenseNova-V6.5-Pro",
+      "厂商": "商汤日日新",
+      "AA Intelligence Index": 0,
+      "AA Coding Index": 0,
+      "GDPval-AA v2 Elo": 0,
+      "Output Speed (t/s)": 0,
+      "Cost per Task (USD)": 0.0,
+      "来源": "暂无评测数据",
+      "更新时间": "2026-07-19"
+    },
+    {
+      "模型": "SenseNova-V6.5-Turbo",
+      "厂商": "商汤日日新",
+      "AA Intelligence Index": 0,
+      "AA Coding Index": 0,
+      "GDPval-AA v2 Elo": 0,
+      "Output Speed (t/s)": 0,
+      "Cost per Task (USD)": 0.0,
+      "来源": "暂无评测数据",
+      "更新时间": "2026-07-19"
+    },
+    {
+      "模型": "SkyClaw-v1.0",
+      "厂商": "昆仑万维天工",
+      "AA Intelligence Index": 0,
+      "AA Coding Index": 0,
+      "GDPval-AA v2 Elo": 0,
+      "Output Speed (t/s)": 0,
+      "Cost per Task (USD)": 0.0,
+      "来源": "暂无评测数据",
+      "更新时间": "2026-07-19"
+    },
+    {
+      "模型": "SkyClaw-v1.0-lite",
+      "厂商": "昆仑万维天工",
+      "AA Intelligence Index": 0,
+      "AA Coding Index": 0,
+      "GDPval-AA v2 Elo": 0,
+      "Output Speed (t/s)": 0,
+      "Cost per Task (USD)": 0.0,
+      "来源": "暂无评测数据",
+      "更新时间": "2026-07-19"
+    },
+    {
+      "模型": "Step 3.5 Flash",
+      "厂商": "阶跃星辰",
+      "AA Intelligence Index": 0,
+      "AA Coding Index": 0,
+      "GDPval-AA v2 Elo": 0,
+      "Output Speed (t/s)": 0,
+      "Cost per Task (USD)": 0.0,
+      "来源": "暂无评测数据",
+      "更新时间": "2026-07-19"
+    },
+    {
+      "模型": "Step-R1-V-Mini",
+      "厂商": "阶跃星辰",
+      "AA Intelligence Index": 0,
+      "AA Coding Index": 0,
+      "GDPval-AA v2 Elo": 0,
+      "Output Speed (t/s)": 0,
+      "Cost per Task (USD)": 0.0,
+      "来源": "暂无评测数据",
+      "更新时间": "2026-07-19"
+    },
+    {
+      "模型": "Yi-Large",
+      "厂商": "零一万物",
+      "AA Intelligence Index": 0,
+      "AA Coding Index": 0,
+      "GDPval-AA v2 Elo": 0,
+      "Output Speed (t/s)": 0,
+      "Cost per Task (USD)": 0.0,
+      "来源": "暂无评测数据",
+      "更新时间": "2026-07-19"
+    },
+    {
+      "模型": "Yi-Lightning",
+      "厂商": "零一万物",
+      "AA Intelligence Index": 0,
+      "AA Coding Index": 0,
+      "GDPval-AA v2 Elo": 0,
+      "Output Speed (t/s)": 0,
+      "Cost per Task (USD)": 0.0,
+      "来源": "暂无评测数据",
+      "更新时间": "2026-07-19"
     }
   ]
 }
