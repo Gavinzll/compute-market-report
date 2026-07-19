@@ -355,23 +355,10 @@ def build_card_success(s):
                     "content": f"**国产战略关注观察：** {s['strategic_watch']}",
                 },
                 {"tag": "hr"},
-                # 按钮行
+                # 报告链接（v2.0 schema 不支持 action 标签，用 markdown 链接替代）
                 {
-                    "tag": "action",
-                    "actions": [
-                        {
-                            "tag": "button",
-                            "text": {"tag": "plain_text", "content": "📊 查看完整报告（桌面版）"},
-                            "type": "primary",
-                            "url": REPORT_URL,
-                        },
-                        {
-                            "tag": "button",
-                            "text": {"tag": "plain_text", "content": "手机版"},
-                            "type": "default",
-                            "url": REPORT_MOBILE_URL,
-                        },
-                    ],
+                    "tag": "markdown",
+                    "content": f"📊 **[查看完整报告（桌面版）]({REPORT_URL})**　|　[手机版]({REPORT_MOBILE_URL})",
                 },
             ],
         },
@@ -410,16 +397,10 @@ def build_card_failure():
                     ),
                 },
                 {"tag": "hr"},
+                # 报告链接（v2.0 schema 不支持 action 标签，用 markdown 链接替代）
                 {
-                    "tag": "action",
-                    "actions": [
-                        {
-                            "tag": "button",
-                            "text": {"tag": "plain_text", "content": "前往报告入口"},
-                            "type": "default",
-                            "url": REPORT_URL,
-                        },
-                    ],
+                    "tag": "markdown",
+                    "content": f"[前往报告入口]({REPORT_URL})",
                 },
             ],
         },
