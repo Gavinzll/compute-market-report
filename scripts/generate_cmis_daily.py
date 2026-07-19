@@ -2054,6 +2054,7 @@ def render_mobile_html(relative_prefix: str = "./", desktop_href: str = "latest.
       <h2>Token 价格</h2>
       <figure><figcaption>Token 输入价：官方 vs 海外三方 vs 境内三方</figcaption><div id="chart-token-input" class="chart"></div></figure>
       <figure><figcaption>Token 输出价：官方 vs 海外三方 vs 境内三方</figcaption><div id="chart-token-output" class="chart"></div></figure>
+      <figure><figcaption>三方输入价差：境内三方 - 海外三方</figcaption><div id="chart-token-third-diff" class="chart"></div></figure>
       <details><summary>模型价格卡片</summary><div class="details-body">{mobile_token_cards(TOKEN_DATA)}</div></details>
     </section>
 
@@ -2403,10 +2404,10 @@ def write_charts():
       init('chart-benchmark-cost', {{
         animation:false,
         tooltip:{{trigger:'item', appendToBody:true, formatter:function(p){{return p.name + '<br/>费用: ¥' + p.value[0].toFixed(1) + '/Task<br/>Intelligence: ' + p.value[1];}}}},
-        grid:{{left:2,right:30,top:20,bottom:20,containLabel:true}},
+        grid:{{left:2,right:30,top:40,bottom:20,containLabel:true}},
         xAxis:{{type:'value',name:'¥/Task',max:xMax,nameTextStyle:{{color:muted}},axisLabel:{{color:muted,fontSize:9}},splitLine:{{lineStyle:{{color:rule}}}}}},
         yAxis:{{type:'value',name:'Intel',max:yMax,axisLabel:{{color:muted,fontSize:9}},splitLine:{{lineStyle:{{color:rule}}}}}},
-        series:[{{type:'scatter',data:scatterData,itemStyle:{{color:accent,borderRadius:4,opacity:0.8}},label:{{show:false}}}}]
+        series:[{{type:'scatter',data:scatterData,itemStyle:{{color:accent,borderRadius:4,opacity:0.8}},label:{{show:true,position:'top',color:muted,fontSize:8,formatter:function(p){{return p.name;}},rotate:30}}}}]
       }});
     }} else {{
       init('chart-benchmark-cost', {{

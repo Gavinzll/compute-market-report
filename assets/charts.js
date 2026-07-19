@@ -237,10 +237,10 @@
       init('chart-benchmark-cost', {
         animation:false,
         tooltip:{trigger:'item', appendToBody:true, formatter:function(p){return p.name + '<br/>费用: ¥' + p.value[0].toFixed(1) + '/Task<br/>Intelligence: ' + p.value[1];}},
-        grid:{left:2,right:30,top:20,bottom:20,containLabel:true},
+        grid:{left:2,right:30,top:40,bottom:20,containLabel:true},
         xAxis:{type:'value',name:'¥/Task',max:xMax,nameTextStyle:{color:muted},axisLabel:{color:muted,fontSize:9},splitLine:{lineStyle:{color:rule}}},
         yAxis:{type:'value',name:'Intel',max:yMax,axisLabel:{color:muted,fontSize:9},splitLine:{lineStyle:{color:rule}}},
-        series:[{type:'scatter',data:scatterData,itemStyle:{color:accent,borderRadius:4,opacity:0.8},label:{show:false}}]
+        series:[{type:'scatter',data:scatterData,itemStyle:{color:accent,borderRadius:4,opacity:0.8},label:{show:true,position:'top',color:muted,fontSize:8,formatter:function(p){return p.name;},rotate:30}}]
       });
     } else {
       init('chart-benchmark-cost', {
