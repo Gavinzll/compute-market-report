@@ -1,6 +1,6 @@
 {
   "date": "2026-07-19",
-  "discovered_at": "2026-07-19T18:25:11.965686+08:00",
+  "discovered_at": "2026-07-19T19:18:39.883225+08:00",
   "record_count": 58,
   "rows": [
     {
@@ -391,12 +391,12 @@
     {
       "模型": "Claude Fable 5",
       "厂商": "Anthropic",
-      "AA Intelligence Index": 0,
+      "AA Intelligence Index": 60,
       "SciCode 编程能力 (%)": 60.2,
       "GDPval-AA v2 Elo": 0,
       "Output Speed (t/s)": 0,
       "Cost per Task (USD)": 0.0,
-      "来源": "暂无评测数据",
+      "来源": "Artificial Analysis（Intel=60 全球第1；Speed/Cost/Elo 暂无数据）",
       "更新时间": "2026-07-19"
     },
     {

@@ -1170,7 +1170,7 @@
   },
   "recommendation": "基线名单已更新至2026-07-15；H20停产保留审计；新增国产候选型号；价格锚点含多源真实数据（天翼云/SMM/云擎天下/生数云动态采集+静态锚点补充）。",
   "date": "2026-07-19",
-  "discovered_at": "2026-07-19T18:25:11.965686+08:00",
+  "discovered_at": "2026-07-19T19:18:39.883225+08:00",
   "dynamic_sources": [
     {
       "id": 1,
@@ -1181,20 +1181,27 @@
     },
     {
       "id": 2,
+      "tier": "官方/校验",
+      "title": "LiteLLM 模型价格与上下文窗口 JSON",
+      "url": "https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json",
+      "note": "验证 183 个模型"
+    },
+    {
+      "id": 3,
       "tier": "云价折算",
       "title": "天翼云 GPU 云主机价格总览",
       "url": "https://www.ctyun.cn/document/10029787/10047957",
       "note": "采集到 4 款 GPU 单卡包月价"
     },
     {
-      "id": 3,
+      "id": 4,
       "tier": "裸金属/行业",
       "title": "SMM 算力快讯直播页",
       "url": "https://news.smm.cn/live/metal/143",
       "note": "采集到 3 款 GPU 裸金属月租价"
     },
     {
-      "id": 4,
+      "id": 5,
       "tier": "裸金属/行业",
       "title": "云擎天下 8卡整机裸金属月租",
       "url": "https://www.omniyq.com/h-col-104.html",
