@@ -1883,9 +1883,10 @@ def render_html(relative_prefix: str = "./") -> str:
 
     <section id="model-benchmark">
       <h2>模型能力评测排行</h2>
-      <p class="note">评测数据来自 Artificial Analysis Intelligence Index v4.1（综合 9 项评测），覆盖与 Token 价格表相同的模型。Intelligence Index 越高表示综合智能越强；Coding Agent Index 衡量编程 Agent（模型+框架+配置组合）能力；GDPval-AA v2 Elo 衡量实际工作价值。注意：Intelligence Index 与 Coding Agent Index 是不同指标体系，不可直接对比。更新频率约 2-3 天/次，以来源标注日期为准。</p>
+      <p class="note">评测数据来自 Artificial Analysis Intelligence Index v4.1（综合 9 项评测），覆盖与 Token 价格表相同的模型。Intelligence Index 越高表示综合智能越强。表格同时列出 AA Coding Agent Index（编程 Agent 能力，仅部分模型参与评测，0 = 未评测）。更新频率约 2-3 天/次，以来源标注日期为准。</p>
       <figure><figcaption>AA Intelligence Index 综合智能排行</figcaption><div id="chart-benchmark-intel" class="chart"></div></figure>
-      <figure><figcaption>性价比概览（Cost per Task vs Intelligence）</figcaption><div id="chart-benchmark-cost" class="chart"></div></figure>
+      <figure><figcaption>AA Coding Agent Index 编程 Agent 排行（仅已评测模型）</figcaption><div id="chart-benchmark-coding" class="chart"></div></figure>
+      <figure><figcaption>性价比概览（费用/Task 人民币，汇率 ¥7.25/$）</figcaption><div id="chart-benchmark-cost" class="chart"></div></figure>
       {table(BENCHMARK_DATA, BENCHMARK_COLUMNS)}
     </section>
 
@@ -2013,9 +2014,10 @@ def render_mobile_html(relative_prefix: str = "./", desktop_href: str = "latest.
     </section>
 
     <h2>模型能力评测</h2>
-    <p class="note">AA Intelligence Index v4.1，覆盖主流模型综合智能。</p>
+    <p class="note">AA Intelligence Index v4.1 综合智能排行 + Coding Agent Index 编程 Agent 排行。</p>
     <figure><figcaption>AA Intelligence Index 综合智能排行</figcaption><div id="chart-benchmark-intel" class="chart"></div></figure>
-    <figure><figcaption>性价比概览（Cost per Task vs Intelligence）</figcaption><div id="chart-benchmark-cost" class="chart"></div></figure>
+    <figure><figcaption>AA Coding Agent Index 编程 Agent 排行（仅已评测模型）</figcaption><div id="chart-benchmark-coding" class="chart"></div></figure>
+    <figure><figcaption>性价比概览（¥/Task）</figcaption><div id="chart-benchmark-cost" class="chart"></div></figure>
     <details><summary>评测排行卡片</summary><div class="details-body">{mobile_benchmark_cards(BENCHMARK_DATA)}</div></details>
 
     <section id="token">
@@ -2108,6 +2110,15 @@ def write_charts():
     data["benchmarkCost"] = [r.get("Cost per Task (USD)", 0) or 0 for r in _bench_sorted]
     data["benchmarkSpeed"] = [r.get("Output Speed (t/s)", 0) or 0 for r in _bench_sorted]
     data["benchmarkElo"] = [r.get("GDPval-AA v2 Elo", 0) or 0 for r in _bench_sorted]
+
+    # Coding Agent Index（仅筛选有数据的模型）
+    _coding_sorted = sorted(
+        [r for r in BENCHMARK_DATA if (r.get("AA Coding Agent Index (%)", 0) or 0) > 0],
+        key=lambda r: r.get("AA Coding Agent Index (%)", 0),
+        reverse=True,
+    )
+    data["benchmarkCodingLabels"] = [r.get("模型", "") for r in _coding_sorted]
+    data["benchmarkCodingAgent"] = [r.get("AA Coding Agent Index (%)", 0) or 0 for r in _coding_sorted]
 
     js = f"""(function(){{
   var DATA = {json.dumps(data, ensure_ascii=False)};
@@ -2291,9 +2302,42 @@ def write_charts():
       }});
     }}
   }})();
-  // 图2: 散点图 - Cost per Task vs Intelligence（性价比概览）
+  // 图2: 柱状图 - Coding Agent Index 编程 Agent 排行（仅已评测模型）
+  (function(){{
+    if (!DATA.benchmarkCodingLabels || !DATA.benchmarkCodingLabels.length) return;
+    var cLabels = DATA.benchmarkCodingLabels;
+    var cAgent = DATA.benchmarkCodingAgent;
+    var cMax = Math.max.apply(null, cAgent) || 1;
+    if (isMobile) {{
+      init('chart-benchmark-coding', {{
+        animation:false,
+        color:[accent2],
+        tooltip:{{trigger:'axis', appendToBody:true, formatter:function(p){{return p[0].name + ': ' + p[0].value + '%';}}}},
+        grid:{{left:2,right:45,top:20,bottom:20,containLabel:true}},
+        yAxis:{{type:'category',data:cLabels,axisLabel:{{color:muted,interval:0,fontSize:9,width:65,overflow:'truncate',align:'right'}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}},inverse:true}},
+        xAxis:{{type:'value',name:'%',max:Math.ceil(cMax*1.15),axisLabel:{{color:muted,fontSize:9}},splitLine:{{lineStyle:{{color:rule}}}}}},
+        series:[
+          {{name:'Coding Agent Index',type:'bar',data:cAgent,label:{{show:true,position:'right',color:ink,fontSize:9,formatter:function(p){{return p.value + '%';}}}},itemStyle:{{borderRadius:[0,4,4,0]}}}}
+        ]
+      }});
+    }} else {{
+      init('chart-benchmark-coding', {{
+        animation:false,
+        color:[accent2],
+        tooltip:{{trigger:'axis', appendToBody:true, formatter:function(p){{return p[0].name + ': ' + p[0].value + '%';}}}},
+        grid:{{left:70,right:30,top:30,bottom:40,containLabel:true}},
+        xAxis:{{type:'category',data:cLabels,axisLabel:{{color:muted,interval:0,rotate:25,fontSize:11}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}}}},
+        yAxis:{{type:'value',name:'pass@1 %',max:Math.ceil(cMax*1.15),nameTextStyle:{{color:muted}},axisLabel:{{color:muted}},splitLine:{{lineStyle:{{color:rule}}}}}},
+        series:[
+          {{name:'Coding Agent Index',type:'bar',data:cAgent,label:{{show:true,position:'top',color:ink,fontSize:11,formatter:function(p){{return p.value + '%';}}}},itemStyle:{{borderRadius:[4,4,0,0]}}}}
+        ]
+      }});
+    }}
+  }})();
+  // 图3: 散点图 - Cost per Task vs Intelligence（性价比概览，价格换算为人民币）
   (function(){{
     if (!DATA.benchmarkLabels || !DATA.benchmarkLabels.length) return;
+    var USD2CNY = 7.25; // 实时汇率参考
     var scatterData = [];
     for (var i = 0; i < DATA.benchmarkLabels.length; i++) {{
       var cost = DATA.benchmarkCost[i];
@@ -2309,23 +2353,23 @@ def write_charts():
     if (!scatterData.length) return;
     var xVals = scatterData.map(function(d){{return d.value[0];}});
     var yVals = scatterData.map(function(d){{return d.value[1];}});
-    var xMax = Math.ceil(Math.max.apply(null, xVals) * 1.2) || 5;
+    var xMax = Math.ceil(Math.max.apply(null, xVals) * USD2CNY * 1.2) || 36;
     var yMax = Math.ceil(Math.max.apply(null, yVals) * 1.15) || 60;
     if (isMobile) {{
       init('chart-benchmark-cost', {{
         animation:false,
-        tooltip:{{trigger:'item', appendToBody:true, formatter:function(p){{return p.name + '<br/>Cost: $' + p.value[0] + '/Task<br/>Intelligence: ' + p.value[1];}}}},
+        tooltip:{{trigger:'item', appendToBody:true, formatter:function(p){{return p.name + '<br/>费用: ¥' + (p.value[0]*USD2CNY).toFixed(1) + '/Task<br/>Intelligence: ' + p.value[1];}}}},
         grid:{{left:2,right:30,top:20,bottom:20,containLabel:true}},
-        xAxis:{{type:'value',name:'$/Task',max:xMax,nameTextStyle:{{color:muted}},axisLabel:{{color:muted,fontSize:9}},splitLine:{{lineStyle:{{color:rule}}}}}},
+        xAxis:{{type:'value',name:'¥/Task',max:xMax,nameTextStyle:{{color:muted}},axisLabel:{{color:muted,fontSize:9}},splitLine:{{lineStyle:{{color:rule}}}}}},
         yAxis:{{type:'value',name:'Intel',max:yMax,axisLabel:{{color:muted,fontSize:9}},splitLine:{{lineStyle:{{color:rule}}}}}},
         series:[{{type:'scatter',data:scatterData,itemStyle:{{color:accent,borderRadius:4,opacity:0.8}},label:{{show:false}}}}]
       }});
     }} else {{
       init('chart-benchmark-cost', {{
         animation:false,
-        tooltip:{{trigger:'item', appendToBody:true, formatter:function(p){{return p.name + '<br/>Cost per Task: $' + p.value[0] + '<br/>Intelligence Index: ' + p.value[1];}}}},
+        tooltip:{{trigger:'item', appendToBody:true, formatter:function(p){{return p.name + '<br/>费用: ¥' + (p.value[0]*USD2CNY).toFixed(1) + '/Task ($' + p.value[0] + ')<br/>Intelligence Index: ' + p.value[1];}}}},
         grid:{{left:50,right:30,top:36,bottom:50,containLabel:true}},
-        xAxis:{{type:'value',name:'Cost per Task (USD)',max:xMax,nameTextStyle:{{color:muted}},axisLabel:{{color:muted}},splitLine:{{lineStyle:{{color:rule}}}}}},
+        xAxis:{{type:'value',name:'费用/Task（¥，汇率 ¥7.25/$）',max:xMax,nameTextStyle:{{color:muted}},axisLabel:{{color:muted}},splitLine:{{lineStyle:{{color:rule}}}}}},
         yAxis:{{type:'value',name:'Intelligence Index',max:yMax,nameTextStyle:{{color:muted}},axisLabel:{{color:muted}},splitLine:{{lineStyle:{{color:rule}}}}}},
         series:[{{type:'scatter',data:scatterData,itemStyle:{{color:accent2,borderRadius:6,opacity:0.85,borderColor:accent,borderWidth:1}},label:{{show:true,position:'top',color:ink,fontSize:10,formatter:function(p){{return p.name;}}}}}}]
       }});
