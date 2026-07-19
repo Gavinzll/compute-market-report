@@ -1,0 +1,48 @@
+{
+  "scraped_at": "2026-07-19",
+  "scrape_status": "success",
+  "source_url": "https://www.shengsuanyun.com/hashrate",
+  "prices": {
+    "A100 PCIE": {
+      "hourly_cny": 6.42,
+      "memory_gb": 80,
+      "source": "胜算云",
+      "note": "80GB 显存, AMD EPYC 9654"
+    },
+    "RTX 6000 Ada": {
+      "hourly_cny": 5.28,
+      "memory_gb": 48,
+      "source": "胜算云",
+      "note": "48GB 显存, AMD EPYC 7443"
+    },
+    "RTX 4090": {
+      "hourly_cny": 2.27,
+      "memory_gb": 24,
+      "source": "胜算云",
+      "note": "24GB 显存, AMD EPYC 9354"
+    },
+    "华为 Ascend 910": {
+      "hourly_cny": 2.36,
+      "memory_gb": 32,
+      "source": "胜算云",
+      "note": "32GB 显存, AMD EPYC 7R32"
+    },
+    "壁仞 天垓100": {
+      "hourly_cny": 1.49,
+      "memory_gb": 32,
+      "source": "胜算云",
+      "note": "32GB 显存, AMD EPYC 75F3"
+    },
+    "摩尔线程 MTT S4000": {
+      "hourly_cny": 1.69,
+      "memory_gb": 48,
+      "source": "胜算云",
+      "note": "48GB 显存, AMD EPYC 9554"
+    }
+  },
+  "domestic_gpu_summary": {
+    "壁仞 天垓100": 1.49,
+    "摩尔线程 MTT S4000": 1.69,
+    "华为 Ascend 910": 2.36
+  }
+}
