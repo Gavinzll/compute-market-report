@@ -1714,6 +1714,22 @@ def discover_benchmark(date_str: str) -> list[dict]:
 # 主入口
 # ---------------------------------------------------------------------------
 
+def fetch_usd_cny_rate() -> float:
+    """动态获取 USD/CNY 汇率（Frankfurter API，欧洲央行数据，免费无需 key）"""
+    import urllib.request, json
+    try:
+        url = "https://api.frankfurter.app/latest?from=USD&to=CNY"
+        req = urllib.request.Request(url, headers={"User-Agent": "CMIS-Daily/1.0"})
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+        rate = float(data["rates"]["CNY"])
+        print(f"  [fx] Frankfurter API: USD/CNY = {rate} (date: {data['date']})")
+        return rate
+    except Exception as e:
+        print(f"  [fx] Frankfurter API 失败: {e}, 使用央行中间价 6.7934")
+        return 6.7934
+
+
 def main() -> None:
     print(f"[discover] CMIS Daily Discovery Start: {DATE}")
 
@@ -1766,6 +1782,21 @@ def main() -> None:
     DISCOVERED_BENCHMARK_PATH.write_text(json.dumps(benchmark_result, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"[discover] Benchmark records: {len(benchmark_records)}")
     print(f"[discover] Written: {DISCOVERED_BENCHMARK_PATH}")
+
+    # 汇率获取
+    print("[discover] === FX Rate ===")
+    usd_cny = fetch_usd_cny_rate()
+    fx_result = {
+        "date": DATE,
+        "fetched_at": NOW.isoformat(),
+        "usd_cny": round(usd_cny, 4),
+        "source": "Frankfurter (ECB reference rate)",
+    }
+    fx_path = ROOT / "data" / f"fx_rate_{DATE}.json"
+    fx_path.parent.mkdir(parents=True, exist_ok=True)
+    fx_path.write_text(json.dumps(fx_result, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"[discover] USD/CNY = {usd_cny}")
+    print(f"[discover] Written: {fx_path}")
 
     print("[discover] Done.")
 

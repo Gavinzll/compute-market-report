@@ -1015,6 +1015,21 @@ def _load_discovered_benchmark() -> list[dict] | None:
     return None
 
 
+def _load_fx_rate() -> float:
+    """加载动态获取的 USD/CNY 汇率；失败时返回 7.25。"""
+    path = ROOT / "data" / f"fx_rate_{DATE}.json"
+    try:
+        if not path.exists():
+            return 7.25
+        data = json.loads(path.read_text(encoding="utf-8"))
+        rate = float(data.get("usd_cny", 7.25))
+        if rate <= 0:
+            return 7.25
+        return rate
+    except Exception:
+        return 7.25
+
+
 # Benchmark fallback 数据（与 discover_latest.py 中的 _BENCHMARK_FALLBACK 一致）
 _BENCHMARK_FALLBACK = [
     # SciCode 编程能力 (%) 来源: data/aa_scicode_scores.json (AA SciCode pass@1%)
@@ -1884,7 +1899,7 @@ def render_html(relative_prefix: str = "./") -> str:
       <p class="note">评测数据来自 Artificial Analysis Intelligence Index v4.1（综合 9 项评测），覆盖与 Token 价格表相同的模型。Intelligence Index 越高表示综合智能越强。表格同时列出 SciCode 编程能力（模型级编程 pass@1%，0 = 未评测）。更新频率约 2-3 天/次，以来源标注日期为准。</p>
       <figure><figcaption>AA Intelligence Index 综合智能排行</figcaption><div id="chart-benchmark-intel" class="chart"></div></figure>
       <figure><figcaption>SciCode 编程能力排行（仅已评测模型（AA SciCode，模型级编程 pass@1%））</figcaption><div id="chart-benchmark-coding" class="chart"></div></figure>
-      <figure><figcaption>性价比概览（费用/Task 人民币，汇率 ¥7.25/$）</figcaption><div id="chart-benchmark-cost" class="chart"></div></figure>
+      <figure><figcaption>性价比概览（费用/Task 人民币，汇率来自 Frankfurter/ECB）</figcaption><div id="chart-benchmark-cost" class="chart"></div></figure>
       {table(BENCHMARK_DATA, BENCHMARK_COLUMNS)}
     </section>
 
@@ -2118,6 +2133,9 @@ def write_charts():
     data["benchmarkCodingLabels"] = [r.get("模型", "") for r in _coding_sorted]
     data["benchmarkCodingAgent"] = [r.get("SciCode 编程能力 (%)", 0) or 0 for r in _coding_sorted]
 
+    FX_RATE = round(_load_fx_rate(), 4)
+    SNAPSHOT["fx_rate"] = FX_RATE
+
     js = f"""(function(){{
   var DATA = {json.dumps(data, ensure_ascii=False)};
   var style = getComputedStyle(document.documentElement);
@@ -2335,7 +2353,7 @@ def write_charts():
   // 图3: 散点图 - Cost per Task vs Intelligence（性价比概览，价格已换算为人民币）
   (function(){{
     if (!DATA.benchmarkLabels || !DATA.benchmarkLabels.length) return;
-    var USD2CNY = 7.25; // 实时汇率参考
+    var USD2CNY = {FX_RATE}; // 动态获取汇率（Frankfurter / ECB，日期：{DATE}）
     var scatterData = [];
     for (var i = 0; i < DATA.benchmarkLabels.length; i++) {{
       var cost = DATA.benchmarkCost[i];
@@ -2367,7 +2385,7 @@ def write_charts():
         animation:false,
         tooltip:{{trigger:'item', appendToBody:true, formatter:function(p){{return p.name + '<br/>费用: ¥' + p.value[0].toFixed(1) + '/Task<br/>Intelligence: ' + p.value[1];}}}},
         grid:{{left:50,right:30,top:36,bottom:50,containLabel:true}},
-        xAxis:{{type:'value',name:'费用/Task（¥，汇率 ¥7.25/$）',max:xMax,nameTextStyle:{{color:muted}},axisLabel:{{color:muted}},splitLine:{{lineStyle:{{color:rule}}}}}},
+        xAxis:{{type:'value',name:'费用/Task（¥，汇率' + USD2CNY.toFixed(2) + '）',max:xMax,nameTextStyle:{{color:muted}},axisLabel:{{color:muted}},splitLine:{{lineStyle:{{color:rule}}}}}},
         yAxis:{{type:'value',name:'Intelligence Index',max:yMax,nameTextStyle:{{color:muted}},axisLabel:{{color:muted}},splitLine:{{lineStyle:{{color:rule}}}}}},
         series:[{{type:'scatter',data:scatterData,itemStyle:{{color:accent2,borderRadius:6,opacity:0.85,borderColor:accent,borderWidth:1}},label:{{show:true,position:'top',color:ink,fontSize:10,formatter:function(p){{return p.name;}}}}}}]
       }});

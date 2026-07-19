@@ -215,7 +215,7 @@
   // 图3: 散点图 - Cost per Task vs Intelligence（性价比概览，价格已换算为人民币）
   (function(){
     if (!DATA.benchmarkLabels || !DATA.benchmarkLabels.length) return;
-    var USD2CNY = 7.25; // 实时汇率参考
+    var USD2CNY = 6.7775; // 动态获取汇率（Frankfurter / ECB，日期：2026-07-19）
     var scatterData = [];
     for (var i = 0; i < DATA.benchmarkLabels.length; i++) {
       var cost = DATA.benchmarkCost[i];
@@ -247,7 +247,7 @@
         animation:false,
         tooltip:{trigger:'item', appendToBody:true, formatter:function(p){return p.name + '<br/>费用: ¥' + p.value[0].toFixed(1) + '/Task<br/>Intelligence: ' + p.value[1];}},
         grid:{left:50,right:30,top:36,bottom:50,containLabel:true},
-        xAxis:{type:'value',name:'费用/Task（¥，汇率 ¥7.25/$）',max:xMax,nameTextStyle:{color:muted},axisLabel:{color:muted},splitLine:{lineStyle:{color:rule}}},
+        xAxis:{type:'value',name:'费用/Task（¥，汇率' + USD2CNY.toFixed(2) + '）',max:xMax,nameTextStyle:{color:muted},axisLabel:{color:muted},splitLine:{lineStyle:{color:rule}}},
         yAxis:{type:'value',name:'Intelligence Index',max:yMax,nameTextStyle:{color:muted},axisLabel:{color:muted},splitLine:{lineStyle:{color:rule}}},
         series:[{type:'scatter',data:scatterData,itemStyle:{color:accent2,borderRadius:6,opacity:0.85,borderColor:accent,borderWidth:1},label:{show:true,position:'top',color:ink,fontSize:10,formatter:function(p){return p.name;}}}]
       });
