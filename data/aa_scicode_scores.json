@@ -1,0 +1,254 @@
+[
+  {
+    "model": "Claude Fable 5",
+    "scicode": 60.2,
+    "source": "AA/evaluations/scicode",
+    "note": "Adaptive Reasoning, Max Effort, Opus 4.8 Fallback. #1 on AA SciCode."
+  },
+  {
+    "model": "Gemini 3.1 Pro Preview",
+    "scicode": 58.9,
+    "source": "AA/evaluations/scicode"
+  },
+  {
+    "model": "Kimi K3",
+    "scicode": 58.7,
+    "source": "AA/evaluations/scicode",
+    "note": "Confirmed #3 on AA SciCode page (AA uses Adaptive Reasoning, Max Effort)"
+  },
+  {
+    "model": "Muse Spark 1.1",
+    "scicode": 58.2,
+    "source": "AA/evaluations/scicode",
+    "note": "xhigh variant"
+  },
+  {
+    "model": "GPT-5.6 Sol",
+    "scicode": 56.9,
+    "source": "AA/evaluations/scicode",
+    "note": "High effort; effort levels: max=56.1, xhigh=56.0, medium=56.5, low=55.4"
+  },
+  {
+    "model": "GPT-5.4",
+    "scicode": 56.6,
+    "source": "AA/evaluations/scicode",
+    "note": "xhigh effort; low=50.3, non-reasoning=47.1"
+  },
+  {
+    "model": "GPT-5.5",
+    "scicode": 56.1,
+    "source": "AA/evaluations/scicode",
+    "note": "xhigh effort; high=55.9, medium=53.5, low=51.6"
+  },
+  {
+    "model": "GPT-5.2",
+    "scicode": 54.6,
+    "source": "AA/evaluations/scicode",
+    "note": "Codex xhigh; medium=46.2"
+  },
+  {
+    "model": "Claude Opus 4.7",
+    "scicode": 54.5,
+    "source": "AA/evaluations/scicode",
+    "note": "Adaptive Reasoning, Max Effort"
+  },
+  {
+    "model": "Grok 4.5",
+    "scicode": 54.1,
+    "source": "AA/evaluations/scicode",
+    "note": "High effort"
+  },
+  {
+    "model": "GPT-5.6 Terra",
+    "scicode": 53.9,
+    "source": "AA/evaluations/scicode",
+    "note": "Max effort; xhigh=51.6, high=50.1, medium=49.7, low=49.2"
+  },
+  {
+    "model": "Claude Sonnet 5",
+    "scicode": 53.6,
+    "source": "AA/evaluations/scicode",
+    "note": "Adaptive Reasoning, Max Effort; non-reasoning high=48.6"
+  },
+  {
+    "model": "Claude Opus 4.8",
+    "scicode": 53.5,
+    "source": "AA/evaluations/scicode",
+    "note": "Adaptive Reasoning, Max Effort"
+  },
+  {
+    "model": "Kimi K2.6",
+    "scicode": 53.5,
+    "source": "AA/evaluations/scicode"
+  },
+  {
+    "model": "GPT-5.3",
+    "scicode": 53.2,
+    "source": "AA/evaluations/scicode",
+    "note": "Codex xhigh"
+  },
+  {
+    "model": "Gemini 3.5 Flash",
+    "scicode": 53.1,
+    "source": "AA/evaluations/scicode",
+    "note": "High effort; medium=53.0, minimal=48.8"
+  },
+  {
+    "model": "GPT-5.6 Luna",
+    "scicode": 52.5,
+    "source": "AA/evaluations/scicode",
+    "note": "Max effort; xhigh=50.0, high=50.7, medium=45.8, low=45.6"
+  },
+  {
+    "model": "GPT-5.5 Instant",
+    "scicode": 50.3,
+    "source": "AA/evaluations/scicode",
+    "note": "May 2026 variant"
+  },
+  {
+    "model": "GLM-5.2",
+    "scicode": 50.5,
+    "source": "AA/evaluations/scicode",
+    "note": "From madebyagents.com aggregated AA data; AA GLM-5 Reasoning=46.2"
+  },
+  {
+    "model": "GPT-5.4 mini",
+    "scicode": 49.9,
+    "source": "AA/evaluations/scicode",
+    "note": "xhigh effort; medium=44.2"
+  },
+  {
+    "model": "Kimi K2.5",
+    "scicode": 49.0,
+    "source": "AA/evaluations/scicode",
+    "note": "Reasoning variant"
+  },
+  {
+    "model": "Qwen3.7-Max",
+    "scicode": 48.8,
+    "source": "AA/evaluations/scicode"
+  },
+  {
+    "model": "Kimi K2.7 Code",
+    "scicode": 47.5,
+    "source": "AA/evaluations/scicode",
+    "note": "From madebyagents.com aggregated data"
+  },
+  {
+    "model": "Grok 4.3",
+    "scicode": 47.3,
+    "source": "AA/evaluations/scicode",
+    "note": "High effort; medium=44.6"
+  },
+  {
+    "model": "DeepSeek-V4-Pro",
+    "scicode": 50.0,
+    "source": "AA/evaluations/scicode",
+    "note": "Reasoning, Max Effort; high effort=46.4"
+  },
+  {
+    "model": "Qwen3.7-Plus",
+    "scicode": 45.5,
+    "source": "AA/evaluations/scicode"
+  },
+  {
+    "model": "o4 Mini",
+    "scicode": 46.5,
+    "source": "AA/evaluations/scicode",
+    "note": "High effort"
+  },
+  {
+    "model": "GLM-5.1 Pro",
+    "scicode": 43.8,
+    "source": "AA/evaluations/scicode",
+    "note": "From madebyagents.com aggregated data (GLM-5.1)"
+  },
+  {
+    "model": "Grok 4.20",
+    "scicode": 45.6,
+    "source": "AA/evaluations/scicode",
+    "note": "0309 v2 Reasoning"
+  },
+  {
+    "model": "MiniMax-M3",
+    "scicode": 45.4,
+    "source": "AA/evaluations/scicode"
+  },
+  {
+    "model": "DeepSeek-V4-Flash",
+    "scicode": 44.9,
+    "source": "AA/evaluations/scicode",
+    "note": "Reasoning, Max Effort"
+  },
+  {
+    "model": "Hunyuan-Hy3",
+    "scicode": 41.2,
+    "source": "AA/evaluations/scicode",
+    "note": "Hy3 Preview from benchlm.ai SciCode data"
+  },
+  {
+    "model": "Mistral Medium 3.5",
+    "scicode": 39.6,
+    "source": "AA/evaluations/scicode",
+    "note": "From madebyagents.com aggregated data"
+  },
+  {
+    "model": "Mistral Large 3",
+    "scicode": 36.2,
+    "source": "AA/evaluations/scicode",
+    "note": "From madebyagents.com aggregated data (Mistral Large 3 675B)"
+  },
+  {
+    "model": "Llama 4 Maverick",
+    "scicode": 33.1,
+    "source": "AA/evaluations/scicode",
+    "note": "From madebyagents.com aggregated data"
+  },
+  {
+    "model": "Llama 4 Scout",
+    "scicode": 17.0,
+    "source": "AA/evaluations/scicode",
+    "note": "From madebyagents.com aggregated data"
+  },
+  {
+    "model": "Mistral Small 4",
+    "scicode": null,
+    "source": "AA/evaluations/scicode",
+    "note": "Not found in AA SciCode leaderboard as of July 2026"
+  },
+  {
+    "model": "Claude Haiku 4.5",
+    "scicode": null,
+    "source": "AA/evaluations/scicode",
+    "note": "Not found in AA SciCode leaderboard as of July 2026"
+  },
+  {
+    "model": "Gemini 3.1 Flash-Lite",
+    "scicode": null,
+    "source": "AA/evaluations/scicode",
+    "note": "Not found in AA SciCode leaderboard"
+  },
+  {
+    "model": "Command R+",
+    "scicode": null,
+    "source": "AA/evaluations/scicode",
+    "note": "Not found in AA SciCode leaderboard"
+  },
+  {
+    "model": "MiMo-V2.5-Pro",
+    "scicode": 50.2,
+    "source": "AA/evaluations/scicode"
+  },
+  {
+    "model": "Mistral Small 3",
+    "scicode": 23.6,
+    "source": "AA/evaluations/scicode",
+    "note": "From madebyagents.com aggregated data (Mistral Small 3 24B)"
+  },
+  {
+    "model": "GLM-5",
+    "scicode": 46.2,
+    "source": "AA/evaluations/scicode",
+    "note": "Reasoning variant"
+  }
+]

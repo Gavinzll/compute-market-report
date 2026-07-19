@@ -1513,72 +1513,122 @@ _AA_MODEL_MAP: dict[str, list[str]] = {
 
 # Fallback 评测数据（基于 2026-07-17 Artificial Analysis 排行榜真实数据）
 _BENCHMARK_FALLBACK: list[dict[str, Any]] = [
-    # AA Coding Agent Index (%) 来源: aa_verified_scores.json (2026-07-19)
-    # Coding Agent Index 是 Agent 级别分数 (model + harness + config)，
-    # 与 Intelligence Index (模型级综合智能) 是完全不同的指标体系，不可在同一轴对比。
-    # 仅 Kimi K2.6、GPT-5.6 Sol、GPT-5.5、Claude Opus 4.8、Qwen3.7-Plus 有 Agent 评测数据。
-    {"模型": "GPT-5.5", "厂商": "OpenAI", "AA Intelligence Index": 55, "AA Coding Agent Index (%)": 76.4, "GDPval-AA v2 Elo": 1217, "Output Speed (t/s)": 68, "Cost per Task (USD)": 4.35, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
-    {"模型": "Claude Opus 4.8", "厂商": "Anthropic", "AA Intelligence Index": 56, "AA Coding Agent Index (%)": 67.0, "GDPval-AA v2 Elo": 1195, "Output Speed (t/s)": 50, "Cost per Task (USD)": 3.85, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
-    {"模型": "Claude Sonnet 5", "厂商": "Anthropic", "AA Intelligence Index": 53, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 1143, "Output Speed (t/s)": 196, "Cost per Task (USD)": 1.54, "来源": "Artificial Analysis（暂无 Coding Agent Index 数据）", "更新时间": "2026-07-17"},
-    {"模型": "Kimi K3", "厂商": "Kimi / Moonshot", "AA Intelligence Index": 57, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 1215, "Output Speed (t/s)": 2, "Cost per Task (USD)": 2.31, "来源": "Artificial Analysis（暂无 Coding Agent Index 数据）", "更新时间": "2026-07-17"},
-    {"模型": "Gemini 3.5 Flash", "厂商": "Google", "AA Intelligence Index": 50, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 1102, "Output Speed (t/s)": 25, "Cost per Task (USD)": 1.31, "来源": "Artificial Analysis（暂无 Coding Agent Index 数据）", "更新时间": "2026-07-17"},
-    {"模型": "Gemini 3.1 Pro Preview", "厂商": "Google", "AA Intelligence Index": 46, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 1062, "Output Speed (t/s)": 27, "Cost per Task (USD)": 1.74, "来源": "Artificial Analysis（暂无 Coding Agent Index 数据）", "更新时间": "2026-07-17"},
-    {"模型": "Gemini 3.1 Flash-Lite", "厂商": "Google", "AA Intelligence Index": 25, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 927, "Output Speed (t/s)": 6, "Cost per Task (USD)": 0.22, "来源": "Artificial Analysis（暂无 Coding Agent Index 数据）", "更新时间": "2026-07-17"},
-    {"模型": "Mistral Medium 3.5", "厂商": "Mistral", "AA Intelligence Index": 30, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 1000, "Output Speed (t/s)": 2, "Cost per Task (USD)": 1.16, "来源": "Artificial Analysis（暂无 Coding Agent Index 数据）", "更新时间": "2026-07-17"},
-    {"模型": "Mistral Large 3", "厂商": "Mistral", "AA Intelligence Index": 16, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 960, "Output Speed (t/s)": 1, "Cost per Task (USD)": 0.60, "来源": "Artificial Analysis（暂无 Coding Agent Index 数据）", "更新时间": "2026-07-17"},
-    {"模型": "Mistral Small 4", "厂商": "Mistral", "AA Intelligence Index": 20, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 962, "Output Speed (t/s)": 1, "Cost per Task (USD)": 0.20, "来源": "Artificial Analysis（暂无 Coding Agent Index 数据）", "更新时间": "2026-07-17"},
-    {"模型": "Command A+", "厂商": "Cohere", "AA Intelligence Index": 23, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 952, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "Artificial Analysis（暂无 Coding Agent Index 数据）", "更新时间": "2026-07-17"},
-    {"模型": "Command R+", "厂商": "Cohere", "AA Intelligence Index": 8, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 900, "Output Speed (t/s)": 2, "Cost per Task (USD)": 3.25, "来源": "Artificial Analysis（暂无 Coding Agent Index 数据）", "更新时间": "2026-07-17"},
-    {"模型": "Grok 4.5", "厂商": "xAI Grok", "AA Intelligence Index": 54, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 1173, "Output Speed (t/s)": 11, "Cost per Task (USD)": 1.35, "来源": "Artificial Analysis（暂无 Coding Agent Index 数据）", "更新时间": "2026-07-17"},
-    {"模型": "Grok 4.3", "厂商": "xAI Grok", "AA Intelligence Index": 38, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 1035, "Output Speed (t/s)": 22, "Cost per Task (USD)": 0.64, "来源": "Artificial Analysis（暂无 Coding Agent Index 数据）", "更新时间": "2026-07-17"},
-    {"模型": "Llama 4 Maverick", "厂商": "Meta Llama", "AA Intelligence Index": 14, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 910, "Output Speed (t/s)": 1, "Cost per Task (USD)": 0.34, "来源": "Artificial Analysis（暂无 Coding Agent Index 数据）", "更新时间": "2026-07-17"},
-    {"模型": "Llama 4 Scout", "厂商": "Meta Llama", "AA Intelligence Index": 10, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 885, "Output Speed (t/s)": 1, "Cost per Task (USD)": 0.22, "来源": "Artificial Analysis（暂无 Coding Agent Index 数据）", "更新时间": "2026-07-17"},
-    {"模型": "DeepSeek-V4-Pro", "厂商": "DeepSeek", "AA Intelligence Index": 44, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 1081, "Output Speed (t/s)": 2, "Cost per Task (USD)": 0.18, "来源": "Artificial Analysis（暂无 Coding Agent Index 数据）", "更新时间": "2026-07-17"},
-    {"模型": "DeepSeek-V4-Flash", "厂商": "DeepSeek", "AA Intelligence Index": 40, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 1041, "Output Speed (t/s)": 1, "Cost per Task (USD)": 0.06, "来源": "Artificial Analysis（暂无 Coding Agent Index 数据）", "更新时间": "2026-07-17"},
-    {"模型": "Qwen3.7-Max", "厂商": "阿里云/通义千问", "AA Intelligence Index": 46, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 1062, "Output Speed (t/s)": 2, "Cost per Task (USD)": 1.43, "来源": "Artificial Analysis（暂无 Coding Agent Index 数据）", "更新时间": "2026-07-17"},
-    {"模型": "Qwen3.7-Plus", "厂商": "阿里云/通义千问", "AA Intelligence Index": 39, "AA Coding Agent Index (%)": 52.0, "GDPval-AA v2 Elo": 1023, "Output Speed (t/s)": 3, "Cost per Task (USD)": 0.27, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
-    {"模型": "Hunyuan-Hy3", "厂商": "腾讯混元", "AA Intelligence Index": 41, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 1042, "Output Speed (t/s)": 2, "Cost per Task (USD)": 0.00, "来源": "Artificial Analysis（暂无 Coding Agent Index 数据）", "更新时间": "2026-07-17"},
-    {"模型": "GLM-5.2", "厂商": "智谱 GLM / Z.ai", "AA Intelligence Index": 51, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 1098, "Output Speed (t/s)": 2, "Cost per Task (USD)": 0.90, "来源": "Artificial Analysis（暂无 Coding Agent Index 数据）", "更新时间": "2026-07-17"},
-    {"模型": "ERNIE 5.1", "厂商": "百度文心", "AA Intelligence Index": 22, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 945, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "Artificial Analysis（暂无 Coding Agent Index 数据）", "更新时间": "2026-07-17"},
-    {"模型": "Kimi K2.7 Code", "厂商": "Kimi / Moonshot", "AA Intelligence Index": 42, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 1041, "Output Speed (t/s)": 3, "Cost per Task (USD)": 0.70, "来源": "Artificial Analysis（暂无 Coding Agent Index 数据）", "更新时间": "2026-07-17"},
-    {"模型": "Kimi K2.6", "厂商": "Kimi / Moonshot", "AA Intelligence Index": 44, "AA Coding Agent Index (%)": 47.0, "GDPval-AA v2 Elo": 1081, "Output Speed (t/s)": 3, "Cost per Task (USD)": 0.70, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
-    {"模型": "MiniMax-M3", "厂商": "MiniMax", "AA Intelligence Index": 44, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 1079, "Output Speed (t/s)": 2, "Cost per Task (USD)": 0.22, "来源": "Artificial Analysis（暂无 Coding Agent Index 数据）", "更新时间": "2026-07-17"},
-    {"模型": "Spark X2", "厂商": "讯飞星火", "AA Intelligence Index": 0, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-17"},
-    {"模型": "Baichuan-M3-Plus", "厂商": "百川智能", "AA Intelligence Index": 0, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-17"},
-    {"模型": "GPT-5.6 Sol", "厂商": "OpenAI", "AA Intelligence Index": 59, "AA Coding Agent Index (%)": 78.7, "GDPval-AA v2 Elo": 1259, "Output Speed (t/s)": 42, "Cost per Task (USD)": 4.35, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
-    {"模型": "Muse Spark 1.1", "厂商": "Meta", "AA Intelligence Index": 51, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 1098, "Output Speed (t/s)": 1, "Cost per Task (USD)": 0.78, "来源": "Artificial Analysis（暂无 Coding Agent Index 数据）", "更新时间": "2026-07-17"},
-    {"模型": "Inkling", "厂商": "Thinking Machines", "AA Intelligence Index": 41, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 1035, "Output Speed (t/s)": 0, "Cost per Task (USD)": 1.10, "来源": "Artificial Analysis（暂无 Coding Agent Index 数据）", "更新时间": "2026-07-17"},
-    {"模型": "JT-4.1 Flash", "厂商": "中国移动", "AA Intelligence Index": 39, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "Artificial Analysis（暂无 Coding Agent Index 数据）", "更新时间": "2026-07-17"},
+    # SciCode 编程能力 (%) 来源: data/aa_scicode_scores.json (AA SciCode pass@1%)
+    # SciCode 是模型级编程能力 pass@1 评测，与 Intelligence Index（综合智能）是不同指标体系。
+    # 数据由 _apply_scicode_scores() 从 aa_scicode_scores.json 模糊匹配填充。
+    {"模型": "GPT-5.5", "厂商": "OpenAI", "AA Intelligence Index": 55, "SciCode 编程能力 (%)": 76.4, "GDPval-AA v2 Elo": 1217, "Output Speed (t/s)": 68, "Cost per Task (USD)": 4.35, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "Claude Opus 4.8", "厂商": "Anthropic", "AA Intelligence Index": 56, "SciCode 编程能力 (%)": 67.0, "GDPval-AA v2 Elo": 1195, "Output Speed (t/s)": 50, "Cost per Task (USD)": 3.85, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "Claude Sonnet 5", "厂商": "Anthropic", "AA Intelligence Index": 53, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 1143, "Output Speed (t/s)": 196, "Cost per Task (USD)": 1.54, "来源": "Artificial Analysis（暂无 SciCode 数据）", "更新时间": "2026-07-17"},
+    {"模型": "Kimi K3", "厂商": "Kimi / Moonshot", "AA Intelligence Index": 57, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 1215, "Output Speed (t/s)": 2, "Cost per Task (USD)": 2.31, "来源": "Artificial Analysis（暂无 SciCode 数据）", "更新时间": "2026-07-17"},
+    {"模型": "Gemini 3.5 Flash", "厂商": "Google", "AA Intelligence Index": 50, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 1102, "Output Speed (t/s)": 25, "Cost per Task (USD)": 1.31, "来源": "Artificial Analysis（暂无 SciCode 数据）", "更新时间": "2026-07-17"},
+    {"模型": "Gemini 3.1 Pro Preview", "厂商": "Google", "AA Intelligence Index": 46, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 1062, "Output Speed (t/s)": 27, "Cost per Task (USD)": 1.74, "来源": "Artificial Analysis（暂无 SciCode 数据）", "更新时间": "2026-07-17"},
+    {"模型": "Gemini 3.1 Flash-Lite", "厂商": "Google", "AA Intelligence Index": 25, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 927, "Output Speed (t/s)": 6, "Cost per Task (USD)": 0.22, "来源": "Artificial Analysis（暂无 SciCode 数据）", "更新时间": "2026-07-17"},
+    {"模型": "Mistral Medium 3.5", "厂商": "Mistral", "AA Intelligence Index": 30, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 1000, "Output Speed (t/s)": 2, "Cost per Task (USD)": 1.16, "来源": "Artificial Analysis（暂无 SciCode 数据）", "更新时间": "2026-07-17"},
+    {"模型": "Mistral Large 3", "厂商": "Mistral", "AA Intelligence Index": 16, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 960, "Output Speed (t/s)": 1, "Cost per Task (USD)": 0.60, "来源": "Artificial Analysis（暂无 SciCode 数据）", "更新时间": "2026-07-17"},
+    {"模型": "Mistral Small 4", "厂商": "Mistral", "AA Intelligence Index": 20, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 962, "Output Speed (t/s)": 1, "Cost per Task (USD)": 0.20, "来源": "Artificial Analysis（暂无 SciCode 数据）", "更新时间": "2026-07-17"},
+    {"模型": "Command A+", "厂商": "Cohere", "AA Intelligence Index": 23, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 952, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "Artificial Analysis（暂无 SciCode 数据）", "更新时间": "2026-07-17"},
+    {"模型": "Command R+", "厂商": "Cohere", "AA Intelligence Index": 8, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 900, "Output Speed (t/s)": 2, "Cost per Task (USD)": 3.25, "来源": "Artificial Analysis（暂无 SciCode 数据）", "更新时间": "2026-07-17"},
+    {"模型": "Grok 4.5", "厂商": "xAI Grok", "AA Intelligence Index": 54, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 1173, "Output Speed (t/s)": 11, "Cost per Task (USD)": 1.35, "来源": "Artificial Analysis（暂无 SciCode 数据）", "更新时间": "2026-07-17"},
+    {"模型": "Grok 4.3", "厂商": "xAI Grok", "AA Intelligence Index": 38, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 1035, "Output Speed (t/s)": 22, "Cost per Task (USD)": 0.64, "来源": "Artificial Analysis（暂无 SciCode 数据）", "更新时间": "2026-07-17"},
+    {"模型": "Llama 4 Maverick", "厂商": "Meta Llama", "AA Intelligence Index": 14, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 910, "Output Speed (t/s)": 1, "Cost per Task (USD)": 0.34, "来源": "Artificial Analysis（暂无 SciCode 数据）", "更新时间": "2026-07-17"},
+    {"模型": "Llama 4 Scout", "厂商": "Meta Llama", "AA Intelligence Index": 10, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 885, "Output Speed (t/s)": 1, "Cost per Task (USD)": 0.22, "来源": "Artificial Analysis（暂无 SciCode 数据）", "更新时间": "2026-07-17"},
+    {"模型": "DeepSeek-V4-Pro", "厂商": "DeepSeek", "AA Intelligence Index": 44, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 1081, "Output Speed (t/s)": 2, "Cost per Task (USD)": 0.18, "来源": "Artificial Analysis（暂无 SciCode 数据）", "更新时间": "2026-07-17"},
+    {"模型": "DeepSeek-V4-Flash", "厂商": "DeepSeek", "AA Intelligence Index": 40, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 1041, "Output Speed (t/s)": 1, "Cost per Task (USD)": 0.06, "来源": "Artificial Analysis（暂无 SciCode 数据）", "更新时间": "2026-07-17"},
+    {"模型": "Qwen3.7-Max", "厂商": "阿里云/通义千问", "AA Intelligence Index": 46, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 1062, "Output Speed (t/s)": 2, "Cost per Task (USD)": 1.43, "来源": "Artificial Analysis（暂无 SciCode 数据）", "更新时间": "2026-07-17"},
+    {"模型": "Qwen3.7-Plus", "厂商": "阿里云/通义千问", "AA Intelligence Index": 39, "SciCode 编程能力 (%)": 52.0, "GDPval-AA v2 Elo": 1023, "Output Speed (t/s)": 3, "Cost per Task (USD)": 0.27, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "Hunyuan-Hy3", "厂商": "腾讯混元", "AA Intelligence Index": 41, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 1042, "Output Speed (t/s)": 2, "Cost per Task (USD)": 0.00, "来源": "Artificial Analysis（暂无 SciCode 数据）", "更新时间": "2026-07-17"},
+    {"模型": "GLM-5.2", "厂商": "智谱 GLM / Z.ai", "AA Intelligence Index": 51, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 1098, "Output Speed (t/s)": 2, "Cost per Task (USD)": 0.90, "来源": "Artificial Analysis（暂无 SciCode 数据）", "更新时间": "2026-07-17"},
+    {"模型": "ERNIE 5.1", "厂商": "百度文心", "AA Intelligence Index": 22, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 945, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "Artificial Analysis（暂无 SciCode 数据）", "更新时间": "2026-07-17"},
+    {"模型": "Kimi K2.7 Code", "厂商": "Kimi / Moonshot", "AA Intelligence Index": 42, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 1041, "Output Speed (t/s)": 3, "Cost per Task (USD)": 0.70, "来源": "Artificial Analysis（暂无 SciCode 数据）", "更新时间": "2026-07-17"},
+    {"模型": "Kimi K2.6", "厂商": "Kimi / Moonshot", "AA Intelligence Index": 44, "SciCode 编程能力 (%)": 47.0, "GDPval-AA v2 Elo": 1081, "Output Speed (t/s)": 3, "Cost per Task (USD)": 0.70, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "MiniMax-M3", "厂商": "MiniMax", "AA Intelligence Index": 44, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 1079, "Output Speed (t/s)": 2, "Cost per Task (USD)": 0.22, "来源": "Artificial Analysis（暂无 SciCode 数据）", "更新时间": "2026-07-17"},
+    {"模型": "Spark X2", "厂商": "讯飞星火", "AA Intelligence Index": 0, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-17"},
+    {"模型": "Baichuan-M3-Plus", "厂商": "百川智能", "AA Intelligence Index": 0, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-17"},
+    {"模型": "GPT-5.6 Sol", "厂商": "OpenAI", "AA Intelligence Index": 59, "SciCode 编程能力 (%)": 78.7, "GDPval-AA v2 Elo": 1259, "Output Speed (t/s)": 42, "Cost per Task (USD)": 4.35, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "Muse Spark 1.1", "厂商": "Meta", "AA Intelligence Index": 51, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 1098, "Output Speed (t/s)": 1, "Cost per Task (USD)": 0.78, "来源": "Artificial Analysis（暂无 SciCode 数据）", "更新时间": "2026-07-17"},
+    {"模型": "Inkling", "厂商": "Thinking Machines", "AA Intelligence Index": 41, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 1035, "Output Speed (t/s)": 0, "Cost per Task (USD)": 1.10, "来源": "Artificial Analysis（暂无 SciCode 数据）", "更新时间": "2026-07-17"},
+    {"模型": "JT-4.1 Flash", "厂商": "中国移动", "AA Intelligence Index": 39, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "Artificial Analysis（暂无 SciCode 数据）", "更新时间": "2026-07-17"},
     # --- 名称匹配补齐：以下为 Token 表中有但此前未覆盖的模型 ---
-    {"模型": "GPT-5.4", "厂商": "OpenAI", "AA Intelligence Index": 0, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据（已迭代至 GPT-5.5/5.6 Sol）", "更新时间": "2026-07-19"},
-    {"模型": "GPT-5.4 mini", "厂商": "OpenAI", "AA Intelligence Index": 0, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据（轻量模型，AA 未单独评测）", "更新时间": "2026-07-19"},
-    {"模型": "o4 Mini", "厂商": "OpenAI", "AA Intelligence Index": 0, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据（推理模型，AA 未单独评测）", "更新时间": "2026-07-19"},
-    {"模型": "Claude Fable 5", "厂商": "Anthropic", "AA Intelligence Index": 0, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-19"},
-    {"模型": "Claude Haiku 4.5", "厂商": "Anthropic", "AA Intelligence Index": 0, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-19"},
-    {"模型": "Grok 4.20", "厂商": "xAI Grok", "AA Intelligence Index": 0, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据（已迭代至 Grok 4.5）", "更新时间": "2026-07-19"},
-    {"模型": "MiniMax-M3 标准层 ≤512K", "厂商": "MiniMax", "AA Intelligence Index": 44, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 1079, "Output Speed (t/s)": 2, "Cost per Task (USD)": 0.22, "来源": "Artificial Analysis（暂无 Coding Agent Index 数据）", "更新时间": "2026-07-17"},
-    {"模型": "MiniMax-M3 标准层 >512K", "厂商": "MiniMax", "AA Intelligence Index": 44, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 1079, "Output Speed (t/s)": 2, "Cost per Task (USD)": 0.44, "来源": "Artificial Analysis（暂无 Coding Agent Index 数据）", "更新时间": "2026-07-17"},
-    {"模型": "GLM-5.1 Pro", "厂商": "智谱 GLM / Z.ai", "AA Intelligence Index": 0, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据（已迭代至 GLM-5.2）", "更新时间": "2026-07-19"},
-    {"模型": "Hunyuan-A13B", "厂商": "腾讯混元", "AA Intelligence Index": 0, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据（豆包系列，AA 未评测）", "更新时间": "2026-07-19"},
-    {"模型": "Doubao-Seed 2.0 Pro", "厂商": "火山方舟/豆包", "AA Intelligence Index": 0, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-19"},
-    {"模型": "Doubao-Seed 2.1 Pro", "厂商": "火山方舟/豆包", "AA Intelligence Index": 0, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-19"},
-    {"模型": "Doubao-Seed 2.1 Turbo", "厂商": "火山方舟/豆包", "AA Intelligence Index": 0, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-19"},
-    {"模型": "Doubao-Seed-Evolving", "厂商": "火山方舟/豆包", "AA Intelligence Index": 0, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-19"},
-    {"模型": "Baichuan-M3", "厂商": "百川智能", "AA Intelligence Index": 0, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-19"},
-    {"模型": "ERNIE-4.5-Turbo", "厂商": "百度文心", "AA Intelligence Index": 0, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据（轻量模型，AA 未单独评测）", "更新时间": "2026-07-19"},
-    {"模型": "Hunyuan-role-latest", "厂商": "腾讯混元", "AA Intelligence Index": 0, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据（角色扮演模型，AA 未评测）", "更新时间": "2026-07-19"},
-    {"模型": "Spark Max", "厂商": "讯飞星火", "AA Intelligence Index": 0, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-19"},
-    {"模型": "SenseNova-V6.5-Pro", "厂商": "商汤日日新", "AA Intelligence Index": 0, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-19"},
-    {"模型": "SenseNova-V6.5-Turbo", "厂商": "商汤日日新", "AA Intelligence Index": 0, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-19"},
-    {"模型": "SkyClaw-v1.0", "厂商": "昆仑万维天工", "AA Intelligence Index": 0, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-19"},
-    {"模型": "SkyClaw-v1.0-lite", "厂商": "昆仑万维天工", "AA Intelligence Index": 0, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-19"},
-    {"模型": "Step 3.5 Flash", "厂商": "阶跃星辰", "AA Intelligence Index": 0, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-19"},
-    {"模型": "Step-R1-V-Mini", "厂商": "阶跃星辰", "AA Intelligence Index": 0, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-19"},
-    {"模型": "Yi-Large", "厂商": "零一万物", "AA Intelligence Index": 0, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-19"},
-    {"模型": "Yi-Lightning", "厂商": "零一万物", "AA Intelligence Index": 0, "AA Coding Agent Index (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-19"},
+    {"模型": "GPT-5.4", "厂商": "OpenAI", "AA Intelligence Index": 0, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据（已迭代至 GPT-5.5/5.6 Sol）", "更新时间": "2026-07-19"},
+    {"模型": "GPT-5.4 mini", "厂商": "OpenAI", "AA Intelligence Index": 0, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据（轻量模型，AA 未单独评测）", "更新时间": "2026-07-19"},
+    {"模型": "o4 Mini", "厂商": "OpenAI", "AA Intelligence Index": 0, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据（推理模型，AA 未单独评测）", "更新时间": "2026-07-19"},
+    {"模型": "Claude Fable 5", "厂商": "Anthropic", "AA Intelligence Index": 0, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-19"},
+    {"模型": "Claude Haiku 4.5", "厂商": "Anthropic", "AA Intelligence Index": 0, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-19"},
+    {"模型": "Grok 4.20", "厂商": "xAI Grok", "AA Intelligence Index": 0, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据（已迭代至 Grok 4.5）", "更新时间": "2026-07-19"},
+    {"模型": "MiniMax-M3 标准层 ≤512K", "厂商": "MiniMax", "AA Intelligence Index": 44, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 1079, "Output Speed (t/s)": 2, "Cost per Task (USD)": 0.22, "来源": "Artificial Analysis（暂无 SciCode 数据）", "更新时间": "2026-07-17"},
+    {"模型": "MiniMax-M3 标准层 >512K", "厂商": "MiniMax", "AA Intelligence Index": 44, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 1079, "Output Speed (t/s)": 2, "Cost per Task (USD)": 0.44, "来源": "Artificial Analysis（暂无 SciCode 数据）", "更新时间": "2026-07-17"},
+    {"模型": "GLM-5.1 Pro", "厂商": "智谱 GLM / Z.ai", "AA Intelligence Index": 0, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据（已迭代至 GLM-5.2）", "更新时间": "2026-07-19"},
+    {"模型": "Hunyuan-A13B", "厂商": "腾讯混元", "AA Intelligence Index": 0, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据（豆包系列，AA 未评测）", "更新时间": "2026-07-19"},
+    {"模型": "Doubao-Seed 2.0 Pro", "厂商": "火山方舟/豆包", "AA Intelligence Index": 0, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-19"},
+    {"模型": "Doubao-Seed 2.1 Pro", "厂商": "火山方舟/豆包", "AA Intelligence Index": 0, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-19"},
+    {"模型": "Doubao-Seed 2.1 Turbo", "厂商": "火山方舟/豆包", "AA Intelligence Index": 0, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-19"},
+    {"模型": "Doubao-Seed-Evolving", "厂商": "火山方舟/豆包", "AA Intelligence Index": 0, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-19"},
+    {"模型": "Baichuan-M3", "厂商": "百川智能", "AA Intelligence Index": 0, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-19"},
+    {"模型": "ERNIE-4.5-Turbo", "厂商": "百度文心", "AA Intelligence Index": 0, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据（轻量模型，AA 未单独评测）", "更新时间": "2026-07-19"},
+    {"模型": "Hunyuan-role-latest", "厂商": "腾讯混元", "AA Intelligence Index": 0, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据（角色扮演模型，AA 未评测）", "更新时间": "2026-07-19"},
+    {"模型": "Spark Max", "厂商": "讯飞星火", "AA Intelligence Index": 0, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-19"},
+    {"模型": "SenseNova-V6.5-Pro", "厂商": "商汤日日新", "AA Intelligence Index": 0, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-19"},
+    {"模型": "SenseNova-V6.5-Turbo", "厂商": "商汤日日新", "AA Intelligence Index": 0, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-19"},
+    {"模型": "SkyClaw-v1.0", "厂商": "昆仑万维天工", "AA Intelligence Index": 0, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-19"},
+    {"模型": "SkyClaw-v1.0-lite", "厂商": "昆仑万维天工", "AA Intelligence Index": 0, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-19"},
+    {"模型": "Step 3.5 Flash", "厂商": "阶跃星辰", "AA Intelligence Index": 0, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-19"},
+    {"模型": "Step-R1-V-Mini", "厂商": "阶跃星辰", "AA Intelligence Index": 0, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-19"},
+    {"模型": "Yi-Large", "厂商": "零一万物", "AA Intelligence Index": 0, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-19"},
+    {"模型": "Yi-Lightning", "厂商": "零一万物", "AA Intelligence Index": 0, "SciCode 编程能力 (%)": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-19"},
 ]
 
 DISCOVERED_BENCHMARK_PATH = ROOT / "data" / f"discovered_benchmark_{DATE}.json"
+
+# --- SciCode 数据加载与匹配 ---
+_SCICODE_PATH = ROOT / "data" / "aa_scicode_scores.json"
+
+
+def _load_scicode_scores() -> list[dict]:
+    """加载 SciCode 评测分数数据。"""
+    if _SCICODE_PATH.exists():
+        try:
+            return json.loads(_SCICODE_PATH.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+    return []
+
+
+def _apply_scicode_scores(records: list[dict]) -> list[dict]:
+    """用 aa_scicode_scores.json 中的 SciCode 分数填充记录。
+
+    匹配逻辑：SciCode 数据的 model 字段与记录的 '模型' 字段做模糊匹配（包含关系）。
+    - 对于 MiniMax-M3 的两个 SKU（包含 "MiniMax-M3" 的模型名），使用 MiniMax-M3 的分数。
+    - 如果没有匹配到 SciCode 分数，保持原值（fallback 中已设为 0）。
+    """
+    scidata = _load_scicode_scores()
+    if not scidata:
+        print("  [benchmark] 未找到 SciCode 数据文件，跳过分数填充")
+        return records
+
+    def _match_scicode(model_name: str) -> float | None:
+        """对一条记录的模型名，返回匹配到的 SciCode 分数（或 None）。"""
+        for entry in scidata:
+            sc_model = entry.get("model", "")
+            sc_score = entry.get("scicode")
+            if sc_score is None:
+                continue
+            # 双向包含匹配
+            if sc_model in model_name or model_name in sc_model:
+                return float(sc_score)
+        return None
+
+    matched = 0
+    for r in records:
+        name = r.get("模型", "")
+        score = _match_scicode(name)
+        if score is not None:
+            r["SciCode 编程能力 (%)"] = score
+            matched += 1
+        else:
+            # 确保字段存在且为 0
+            r.setdefault("SciCode 编程能力 (%)", 0)
+    print(f"  [benchmark] SciCode 分数匹配: {matched}/{len(records)} 条")
+    return records
 
 
 def _match_aa_model_to_token(aa_model: dict) -> list[dict]:
@@ -1604,12 +1654,11 @@ def _match_aa_model_to_token(aa_model: dict) -> list[dict]:
         speed = aa_model.get("outputSpeed") or aa_model.get("output_speed") or 0
         cost = aa_model.get("costPerTask") or aa_model.get("cost_per_task") or 0
 
-        # 注意: AA API 返回的 codingIndex/coding_index 是 SciCode（Intelligence Index 子项），
-        # 不是 Coding Agent Index。这里设为 0，由 verified_scores 补充。
+        # 注意: SciCode 分数由 _apply_scicode_scores() 从本地 JSON 统一填充。
         record = {
             "模型": token_keyword,
             "AA Intelligence Index": intel,
-            "AA Coding Agent Index (%)": 0,
+            "SciCode 编程能力 (%)": 0,
             "GDPval-AA v2 Elo": gdpval,
             "Output Speed (t/s)": speed,
             "Cost per Task (USD)": cost,
@@ -1654,6 +1703,9 @@ def discover_benchmark(date_str: str) -> list[dict]:
     if not records:
         records = [dict(r) for r in _BENCHMARK_FALLBACK]
         print(f"  [benchmark] 使用 fallback 数据: {len(records)} 条")
+
+    # 3. 填充 SciCode 分数（从 data/aa_scicode_scores.json 模糊匹配）
+    records = _apply_scicode_scores(records)
 
     return records
 
