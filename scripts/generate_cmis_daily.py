@@ -2005,7 +2005,7 @@ def render_mobile_html(relative_prefix: str = "./", desktop_href: str = "latest.
     .pill.payback-ok{{border-color:rgba(116,224,163,.45);background:rgba(116,224,163,.1);color:var(--good)}}
     .pill.payback-na{{border-color:rgba(247,115,115,.45);background:rgba(247,115,115,.1);color:#f87171}}
     figure{{padding:8px 0;margin:12px 0 18px}} figcaption{{font-size:13px;color:var(--accent2);font-weight:650;margin-bottom:8px;padding:0 8px}}
-    .chart{{width:100%;min-height:320px}} #chart-domestic-main,#chart-overseas{{min-height:380px}} #chart-token-input,#chart-token-output,#chart-token-third-diff,#chart-token-official-domestic-diff{{min-height:600px}}
+    .chart{{width:100%;min-height:320px}} #chart-domestic-main,#chart-overseas{{min-height:380px}} #chart-token-input,#chart-token-output,#chart-token-third-diff,#chart-token-official-domestic-diff{{min-height:600px}} #chart-profit-payback{{min-height:300px}}
     details{{padding:0;margin:10px 0}} summary{{cursor:pointer;padding:14px;font-weight:700;color:var(--accent2)}} details[open] summary{{border-bottom:1px solid var(--rule)}}
     .details-body{{padding:8px 12px 12px}}
     .quick-nav{{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;gap:6px;overflow:auto;padding:8px 12px calc(8px + env(safe-area-inset-bottom));background:rgba(7,17,31,.95);border-top:1px solid var(--rule);backdrop-filter:blur(12px)}}
@@ -2034,13 +2034,13 @@ def render_mobile_html(relative_prefix: str = "./", desktop_href: str = "latest.
     <section id="domestic">
       <h2>国内租赁指数</h2>
       <figure><figcaption>国内指数：手机端横向条形图</figcaption><div id="chart-domestic-main" class="chart"></div></figure>
-      <details open><summary>国内租赁卡片</summary><div class="details-body">{mobile_gpu_cards(domestic_index_rows)}</div></details>
+      <details><summary>国内租赁卡片</summary><div class="details-body">{mobile_gpu_cards(domestic_index_rows)}</div></details>
     </section>
 
     <section id="overseas">
       <h2>海外 GPU Cloud</h2>
       <figure><figcaption>海外参考：统一折算万元/8卡整机/月</figcaption><div id="chart-overseas" class="chart"></div></figure>
-      <details open><summary>海外参考卡片</summary><div class="details-body">{mobile_overseas_cards(overseas_pass)}</div></details>
+      <details><summary>海外参考卡片</summary><div class="details-body">{mobile_overseas_cards(overseas_pass)}</div></details>
     </section>
 
     <h2>模型能力评测</h2>
