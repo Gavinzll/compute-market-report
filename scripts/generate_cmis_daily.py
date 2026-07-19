@@ -1860,38 +1860,48 @@ def render_html(relative_prefix: str = "./") -> str:
 
     <section id="coverage">
       <h2>覆盖率诊断</h2>
+      <details><summary>覆盖率表格</summary><div class="details-body">
       <p class="note">覆盖不等于进入主指数。每张卡至少应有 Main Index、Auxiliary、Candidate、Rejected 或 Missing 状态，避免治理后报告变空。</p>
       {table(COVERAGE)}
+      </div></details>
     </section>
 
     <section id="domestic">
       <h2>国内算力租赁主指数</h2>
       <p class="note">高置信样本仍要求 PASS 且 Confidence≥70；昇腾 910B、寒武纪 MLU370-X8、海光 DCU K100、壁仞 BR100、摩尔线程 MTT S4000 作为国产战略关注卡强制列入指数表和柱状图。柱状图按价格口径分色：主口径、低置信观察、云价折算和价格待补分别展示。</p>
       <figure><figcaption>国内指数：万元/8卡整机/月；颜色区分主口径、低置信观察、云价折算与价格待补</figcaption><div id="chart-domestic-main" class="chart"></div></figure>
+      <details><summary>国内指数详细表格</summary><div class="details-body">
       {table(domestic_index_rows, ["GPU 型号", "GPU 分类", "价格口径", "标准化价格", "国内月租/海外月租", "Confidence Score", "校验状态", "口径说明"], headers=["GPU 型号", "GPU 分类", "价格口径", "标准化价格（万/月）", "国内月租/海外月租", "Confidence", "校验状态", "口径说明"] if domestic_index_rows else None, widths=["width:130px;white-space:nowrap", "width:70px;white-space:nowrap", "width:110px;white-space:nowrap", "width:95px;white-space:nowrap;text-align:right", "width:100px;white-space:nowrap", "width:70px;white-space:nowrap;text-align:right", "width:75px;white-space:nowrap", None])}
+      </div></details>
     </section>
 
     <section id="domestic-price-basis">
       <h2>国内价格口径说明</h2>
+      <details><summary>口径分类详情</summary><div class="details-body">
       <div class="panel">
         <p><strong>公开成交/主口径价</strong> — 来源为 SMM 算力快讯等行业基准渠道，样本明确标注 8卡/台、起租量（≥16/32台）、租期（1-3年长协）、含电含托管等关键信息，经合理性校验后进入主指数。Confidence ≥ 85。</p>
         <p style="margin-top:10px"><strong>低置信观察</strong> — 来自 SMM 买方出价/行业均价、或多个公开渠道交叉验证的区间中位数。价格已公开但样本口径（如子型号、异地部署限制）未完全拆清。Confidence 70-80。不进入 ROI 计算。</p>
         <p style="margin-top:10px"><strong>云价折算</strong> — 当无 8 卡整机裸金属成交月租时，从云平台价格折算。所有折算均含 0.7 长协折扣系数（云实例含虚拟化加价，批量裸金属长协价通常比云零售价低 30-40%）。三种折算路径：<br>① <strong>云主机包月价 × 卡数 × 0.7</strong>：天翼云等有明确单卡包月价的云主机（如 L20、寒武纪 MLU370）。<br><code style="background:rgba(255,255,255,.06);padding:4px 8px;border-radius:4px;font-size:12px">8卡月租(万) = 单卡包月价(元) × 8 × 0.7 ÷ 10000</code><br>② <strong>单卡时价 × 卡数 × 时长 × 0.7</strong>：胜算云、模力方舟等仅有单卡小时价的云实例（如海光 BW1000、壁仞天垓100、摩尔线程 S4000）。<br><code style="background:rgba(255,255,255,.06);padding:4px 8px;border-radius:4px;font-size:12px">8卡月租(万) = 单卡时价(元) × 8 × 24 × 30 × 0.7 ÷ 10000</code><br>③ <strong>多卡云主机包月价扩倍 × 长协折扣</strong>：天翼云 4×MLU370-S4 等明确多卡配置的云主机（如寒武纪 MLU370-X8 硬编码版）。<br><code style="background:rgba(255,255,255,.06);padding:4px 8px;border-radius:4px;font-size:12px">8卡月租(万) = 多卡云主机包月价(元) ÷ 原卡数 × 8 × 长协折扣(如0.85) ÷ 10000</code><br>以上折算价仅作量级参考，非 8 卡整机成交价，不进入 ROI。</p>
         <p style="margin-top:10px"><strong>价格待补</strong> — 截至当日未找到任何公开 8 卡整机月租价、云价折算基础或可参考的采购价线索。图表中以缺失值展示，每日持续扩源。</p>
       </div>
+      </div></details>
     </section>
 
     <section id="overseas">
       <h2>海外 GPU Cloud 参考</h2>
       <p class="note">海外 GPU Cloud 原始来源多为美元/卡/小时，已统一折算为人民币口径"万元/8卡整机/月"绘图和展示，单卡小时价保留在表格中作为辅助字段；海外月租仍只进入海外参考，不进入国内租赁指数。</p>
       <figure><figcaption>海外 GPU Cloud：统一折算为万元/8卡整机/月，仅供参考</figcaption><div id="chart-overseas" class="chart"></div></figure>
+      <details><summary>海外 GPU Cloud 详细表格</summary><div class="details-body">
       {table(overseas_pass, ["GPU 型号", "主数据源", "原始价格", "标准化价格", "单卡小时价（人民币）", "Confidence Score", "校验状态"], headers=["GPU 型号", "主数据源", "原始价格", "标准化价格（万/月）", "单卡小时价（人民币）", "Confidence", "校验状态"] if overseas_pass else None)}
+      </div></details>
     </section>
 
     <section id="audit">
       <h2>Rejected / Review 样本</h2>
+      <details><summary>审计追踪表格</summary><div class="details-body">
       <p class="note">以下数据不进入主图、主指数、ROI、历史结论或 AI 总结，只用于审计追踪。每日运行时应优先检索更高置信的新报价；若无新来源，沿用当前主口径样本并保留审计备注。</p>
       {table(domestic_review, [c for c in domestic_review[0].keys() if c not in ("category", "价格更新规则")] if domestic_review else None)}
+      </div></details>
     </section>
 
     <section id="model-benchmark">
@@ -1900,7 +1910,9 @@ def render_html(relative_prefix: str = "./") -> str:
       <figure><figcaption>AA Intelligence Index 综合智能排行</figcaption><div id="chart-benchmark-intel" class="chart"></div></figure>
       <figure><figcaption>SciCode 编程能力排行（仅已评测模型（AA SciCode，模型级编程 pass@1%））</figcaption><div id="chart-benchmark-coding" class="chart"></div></figure>
       <figure><figcaption>性价比概览（费用/Task 人民币，汇率来自 Frankfurter/ECB）</figcaption><div id="chart-benchmark-cost" class="chart"></div></figure>
+      <details><summary>评测详细表格</summary><div class="details-body">
       {table(BENCHMARK_DATA, BENCHMARK_COLUMNS)}
+      </div></details>
     </section>
 
     <section id="token">
@@ -1910,7 +1922,9 @@ def render_html(relative_prefix: str = "./") -> str:
       <figure><figcaption>Token 输出价：官方 vs 海外三方 vs 境内三方</figcaption><div id="chart-token-output" class="chart"></div></figure>
       <figure><figcaption>三方输入价差：境内三方 - 海外三方</figcaption><div id="chart-token-third-diff" class="chart"></div></figure>
       <figure><figcaption>官方与境内三方输入价差</figcaption><div id="chart-token-official-domestic-diff" class="chart"></div></figure>
+      <details><summary>Token 价格详细表格</summary><div class="details-body">
       {table(TOKEN_DATA, TOKEN_COLUMNS)}
+      </div></details>
     </section>
 
     <section id="profit">
