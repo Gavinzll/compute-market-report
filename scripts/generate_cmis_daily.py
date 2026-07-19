@@ -1915,11 +1915,14 @@ def render_html(relative_prefix: str = "./") -> str:
 
     <section id="profit">
       <h2>利润测算</h2>
+      <figure><figcaption>毛回本参考（按回本周期排序）</figcaption><div id="chart-profit-payback" class="chart"></div></figure>
+      <details><summary>采购价覆盖 + 毛回本详细表格</summary><div class="details-body">
       <p class="note">利润测算覆盖范围与国内算力租赁指数保持一致。采购价按公开招投标/框架协议、三方渠道、自媒体线索和采购价估算分层；本期先展示月租收入 ÷ 采购价中位数和毛回本月数，不含电力、机柜、网络、维保、资金成本、税费和空置率。凡租赁价或采购价仍为 REVIEW/估算口径的样本，仅作参考测算，不进入方向性 ROI 结论。</p>
       <h3>采购价覆盖</h3>
       {table(PROCUREMENT)}
       <h3>毛回本参考</h3>
       {table(GPU_PROFIT)}
+      </div></details>
     </section>
 
     <section id="sources">
@@ -2042,7 +2045,8 @@ def render_mobile_html(relative_prefix: str = "./", desktop_href: str = "latest.
 
     <section id="profit">
       <h2>利润测算</h2>
-      <details open><summary>毛回本参考</summary><div class="details-body">{mobile_profit_cards(GPU_PROFIT)}</div></details>
+      <figure><figcaption>毛回本参考</figcaption><div id="chart-profit-payback" class="chart"></div></figure>
+      <details><summary>详细数据卡片</summary><div class="details-body">{mobile_profit_cards(GPU_PROFIT)}</div></details>
     </section>
 
     <section id="audit">
@@ -2132,6 +2136,16 @@ def write_charts():
     )
     data["benchmarkCodingLabels"] = [r.get("模型", "") for r in _coding_sorted]
     data["benchmarkCodingAgent"] = [r.get("SciCode 编程能力 (%)", 0) or 0 for r in _coding_sorted]
+
+    # 毛回本数据（按回本月数从短到长排序）
+    _profit_sorted = sorted(
+        [r for r in GPU_PROFIT if r.get("毛回本（月）") is not None and r["毛回本（月）"] > 0],
+        key=lambda r: r["毛回本（月）"],
+    )
+    data["profitLabels"] = [r["GPU 型号"] for r in _profit_sorted]
+    data["profitPayback"] = [r["毛回本（月）"] for r in _profit_sorted]
+    data["profitYield"] = [r.get("月租/采购价中位数") for r in _profit_sorted]
+    data["profitRoiStatus"] = [r["ROI 状态"] for r in _profit_sorted]
 
     FX_RATE = round(_load_fx_rate(), 4)
     SNAPSHOT["fx_rate"] = FX_RATE
@@ -2388,6 +2402,44 @@ def write_charts():
         xAxis:{{type:'value',name:'费用/Task（¥，汇率' + USD2CNY.toFixed(2) + '）',max:xMax,nameTextStyle:{{color:muted}},axisLabel:{{color:muted}},splitLine:{{lineStyle:{{color:rule}}}}}},
         yAxis:{{type:'value',name:'Intelligence Index',max:yMax,nameTextStyle:{{color:muted}},axisLabel:{{color:muted}},splitLine:{{lineStyle:{{color:rule}}}}}},
         series:[{{type:'scatter',data:scatterData,itemStyle:{{color:accent2,borderRadius:6,opacity:0.85,borderColor:accent,borderWidth:1}},label:{{show:true,position:'top',color:ink,fontSize:10,formatter:function(p){{return p.name;}}}}}}]
+      }});
+    }}
+  }})();
+  // 图4: 柱状图 - 毛回本参考（按回本周期从短到长排序）
+  (function(){{
+    if (!DATA.profitLabels || !DATA.profitLabels.length) return;
+    var pLabels = DATA.profitLabels;
+    var pPayback = DATA.profitPayback;
+    var pYield = (DATA.profitYield || []).map(function(v){{ return parseFloat(v) || 0; }});
+    var pMax = Math.max.apply(null, pPayback) || 1;
+    var yMax = Math.max.apply(null, pYield) || 1;
+    if (isMobile) {{
+      init('chart-profit-payback', {{
+        animation:false,
+        color:[accent, accent2],
+        tooltip:{{trigger:'axis', appendToBody:true, formatter:function(p){{var s=p[0].name;for(var i=0;i<p.length;i++){{s+='<br/>'+p[i].seriesName+': '+p[i].value+(i===0?' 月':'%');}}return s;}}}},
+        legend:{{data:['毛回本（月）','月租收益率（%）'],textStyle:{{color:muted,fontSize:9}},top:0,itemWidth:12,itemHeight:8}},
+        grid:{{left:2,right:55,top:25,bottom:20,containLabel:true}},
+        yAxis:{{type:'category',data:pLabels,axisLabel:{{color:muted,interval:0,fontSize:9,width:55,overflow:'truncate',align:'right'}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}},inverse:true}},
+        xAxis:{{type:'value',name:'月',max:Math.ceil(pMax*1.15),axisLabel:{{color:muted,fontSize:9}},splitLine:{{lineStyle:{{color:rule}}}}}},
+        series:[
+          {{name:'毛回本（月）',type:'bar',data:pPayback,label:{{show:true,position:'right',color:ink,fontSize:9}},itemStyle:{{borderRadius:[0,4,4,0]}}}},
+          {{name:'月租收益率（%）',type:'bar',data:pYield,xAxisIndex:0,label:{{show:false}},itemStyle:{{borderRadius:[0,4,4,0],opacity:0.6}}}}
+        ]
+      }});
+    }} else {{
+      init('chart-profit-payback', {{
+        animation:false,
+        color:[accent, accent2],
+        tooltip:{{trigger:'axis', appendToBody:true, formatter:function(p){{var s=p[0].name;for(var i=0;i<p.length;i++){{s+='<br/>'+p[i].seriesName+': '+p[i].value+(i===0?' 月':'%');}}return s;}}}},
+        legend:{{data:['毛回本（月）','月租收益率（%）'],textStyle:{{color:muted}},top:0,itemWidth:14,itemHeight:10}},
+        grid:{{left:70,right:50,top:40,bottom:50,containLabel:true}},
+        xAxis:{{type:'category',data:pLabels,axisLabel:{{color:muted,interval:0,rotate:25,fontSize:11}},axisLine:{{lineStyle:{{color:rule}}}},axisTick:{{show:false}}}},
+        yAxis:{{type:'value',name:'月',max:Math.ceil(pMax*1.15),nameTextStyle:{{color:muted}},axisLabel:{{color:muted}},splitLine:{{lineStyle:{{color:rule}}}}}},
+        series:[
+          {{name:'毛回本（月）',type:'bar',data:pPayback,label:{{show:true,position:'top',color:ink,fontSize:11}},itemStyle:{{borderRadius:[4,4,0,0]}}}},
+          {{name:'月租收益率（%）',type:'bar',data:pYield,xAxisIndex:0,label:{{show:true,position:'top',color:muted,fontSize:9}},itemStyle:{{borderRadius:[4,4,0,0],opacity:0.6}}}}
+        ]
       }});
     }}
   }})();
