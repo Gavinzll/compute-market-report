@@ -1276,6 +1276,8 @@ def build_dynamic_domestic_anchors() -> dict[str, dict[str, Any]]:
     gitee = scrape_gitee_ai_gpu_prices()
     for gpu, info in gitee.items():
         hourly = info["hourly_cny"]
+        if hourly is None:
+            continue  # 跳过无可用价格的型号
         monthly_wan = round(hourly * 8 * 24 * 30 * 0.7 / 10000, 2)
         # 模力方舟价格与胜算云可能覆盖同系列不同型号（如S4000 vs S5000）
         existing = cloud_only.get(gpu, {})

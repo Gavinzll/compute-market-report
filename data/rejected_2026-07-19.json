@@ -1,7 +1,7 @@
 [
   {
     "date": "2026-07-19",
-    "freeze_time": "2026-07-19T08:51:00+08:00",
+    "freeze_time": "2026-07-19T10:55:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "GB300",
     "source": "未采集到合格来源",
@@ -20,7 +20,7 @@
   },
   {
     "date": "2026-07-19",
-    "freeze_time": "2026-07-19T08:51:00+08:00",
+    "freeze_time": "2026-07-19T10:55:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "GB200",
     "source": "未采集到合格来源",
@@ -39,7 +39,7 @@
   },
   {
     "date": "2026-07-19",
-    "freeze_time": "2026-07-19T08:51:00+08:00",
+    "freeze_time": "2026-07-19T10:55:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "A800",
     "source": "未采集到合格来源",
@@ -58,7 +58,7 @@
   },
   {
     "date": "2026-07-19",
-    "freeze_time": "2026-07-19T08:51:00+08:00",
+    "freeze_time": "2026-07-19T10:55:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "昇腾 950PR",
     "source": "未采集到合格来源",
@@ -77,7 +77,7 @@
   },
   {
     "date": "2026-07-19",
-    "freeze_time": "2026-07-19T08:51:00+08:00",
+    "freeze_time": "2026-07-19T10:55:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "寒武纪 MLU590",
     "source": "未采集到公开8卡整机月租",
@@ -96,7 +96,7 @@
   },
   {
     "date": "2026-07-19",
-    "freeze_time": "2026-07-19T08:51:00+08:00",
+    "freeze_time": "2026-07-19T10:55:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "海光 DCU K100",
     "source": "模力方舟 BW1000 单卡 3.00 元/时 ×8×24×30×0.7 折算（非8卡整机成交价）",
@@ -115,7 +115,7 @@
   },
   {
     "date": "2026-07-19",
-    "freeze_time": "2026-07-19T08:51:00+08:00",
+    "freeze_time": "2026-07-19T10:55:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "海光 DCU Z100",
     "source": "未采集到公开8卡整机月租",
@@ -134,7 +134,7 @@
   },
   {
     "date": "2026-07-19",
-    "freeze_time": "2026-07-19T08:51:00+08:00",
+    "freeze_time": "2026-07-19T10:55:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "壁仞 BR100",
     "source": "胜算云天垓100 单卡 1.49 元/时 ×8×24×30×0.7 折算（非8卡整机成交价）",
@@ -150,5 +150,24 @@
     "included_in_index": true,
     "reject_reason": "壁仞 BR100 属于国产战略关注卡；截至2026-07-15，胜算云有天垓100单卡云实例（1.49元/时），模力方舟有天垓150（3.00元/时）和壁砺106M（2.00元/时）单卡价，但均无 BR100 OAM服务器8卡整机月租。当前价格基于天垓100单卡云价×8折算，含0.7长协折扣系数，仅作量级参考，非成交价。不进入 ROI。",
     "notes": "壁仞 BR100 属于国产战略关注卡；截至2026-07-15，胜算云有天垓100单卡云实例（1.49元/时），模力方舟有天垓150（3.00元/时）和壁砺106M（2.00元/时）单卡价，但均无 BR100 OAM服务器8卡整机月租。当前价格基于天垓100单卡云价×8折算，含0.7长协折扣系数，仅作量级参考，非成交价。不进入 ROI。"
+  },
+  {
+    "date": "2026-07-19",
+    "freeze_time": "2026-07-19T10:55:00+08:00",
+    "asset_type": "GPU_RENT_CN",
+    "gpu_or_model": "摩尔线程 MTT S5000",
+    "source": "未采集到合格来源",
+    "original_price": "暂不可得",
+    "category": "GPU_RENT_CN",
+    "normalized_price": null,
+    "normalized_unit": "万元/8卡整机/月",
+    "formula": "国内主口径直接采用万元/8卡整机/月；等效单卡小时价=月租×10000÷8÷24÷30",
+    "confidence": 50,
+    "consensus": "Low",
+    "historical_validation": "HIST_INSUFFICIENT",
+    "validate_status": "REVIEW",
+    "included_in_index": true,
+    "reject_reason": "当日未获得符合国内主口径的可信样本。",
+    "notes": "当日未获得符合国内主口径的可信样本。"
   }
 ]
