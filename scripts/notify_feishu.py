@@ -157,7 +157,8 @@ def build_summary(data):
     rejected = data.get("rejected", [])
     procurement = data.get("gpu_procurement", [])
 
-    domestic_index = [r for r in domestic if r.get("是否进入主指数") == "是"]
+    # 2026-07-19 rules 改动：主图覆盖包含"是"和"是（战略关注）"两种
+    domestic_index = [r for r in domestic if r.get("是否进入主指数", "").startswith("是")]
     domestic_pass = [
         r for r in domestic_index
         if r.get("校验状态") == "PASS" and (r.get("Confidence Score") or 0) >= 70
@@ -176,6 +177,15 @@ def build_summary(data):
         if len(strategic_watch) > 4:
             names += f"等 {len(strategic_watch)} 个"
         strategic_text = names
+
+    # 覆盖诊断（覆盖 vs 质量分离，2026-07-19 rules 改动）
+    # 主图覆盖 = domestic_total（含战略关注卡强制进主指数）
+    # 基线名单 = 当日快照中出现过的所有国内 GPU 型号
+    baseline_total = len({r.get("GPU 型号") for r in domestic if r.get("GPU 型号")})
+    main_chart_coverage = f"{len(domestic_index)}/{baseline_total}"
+    main_chart_coverage_pct = (
+        f"{round(len(domestic_index) / baseline_total * 100)}%" if baseline_total > 0 else "0%"
+    )
 
     review_total = len([r for r in audit if r.get("validate_status") in {"REVIEW", "REJECT"}]) or len(rejected)
 
@@ -197,6 +207,10 @@ def build_summary(data):
         "token_pass": len(token_pass),
         "review_total": review_total,
         "strategic_watch": strategic_text,
+        # 覆盖诊断（覆盖优先原则落地，2026-07-19 rules 改动）
+        "main_chart_coverage": main_chart_coverage,
+        "main_chart_coverage_pct": main_chart_coverage_pct,
+        "baseline_total": baseline_total,
         # 新增：按 report_config.md 模板自动生成的摘要文字
         "gpu_rental_text": gpu_rental_text,
         "gpu_purchase_text": gpu_purchase_text,
@@ -327,6 +341,12 @@ def build_card_success(s):
                             ],
                         },
                     ],
+                },
+                {"tag": "hr"},
+                # 覆盖率诊断（2026-07-19 rules 改动：覆盖与质量分离）
+                {
+                    "tag": "markdown",
+                    "content": f"📊 **主图覆盖诊断：** {s['main_chart_coverage']}（{s['main_chart_coverage_pct']}） —— 国内指数 PASS {s['domestic_pass']} / {s['domestic_total']} 型号；战略关注卡强制入图，REVIEW/REJECT 仅进审计不进方向性结论。",
                 },
                 {"tag": "hr"},
                 # 国产战略关注
