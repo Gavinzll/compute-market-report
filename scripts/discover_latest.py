@@ -106,7 +106,7 @@ VENDOR_PREFIXES: dict[str, list[str]] = {
     "百度文心": ["ernie-"],
     "腾讯混元": ["hunyuan-"],
     "智谱 GLM / Z.ai": ["glm-"],
-    "Kimi / Moonshot": ["kimi-", "moonshot-"],
+    "Kimi / Moonshot": ["kimi-", "moonshot-", "moonshotai/"],
     "MiniMax": ["minimax-"],
     "讯飞星火": ["spark-"],
     "百川智能": ["baichuan-"],
@@ -416,6 +416,15 @@ VENDOR_MODEL_ANCHORS: list[dict[str, Any]] = [
         },
     ]},
     {"vendor": "Kimi / Moonshot", "models": [
+        {
+            "name": "Kimi K3", "context": "1M",
+            "official_in_cny": 20.0, "official_out_cny": 100.0,
+            "overseas_in_usd": 3.00, "overseas_out_usd": 15.00,
+            "overseas_source": "OpenRouter / moonshotai/kimi-k3",
+            "domestic_in_cny": 20.0, "domestic_out_cny": 100.0,
+            "domestic_source": "硅基流动 / 待验证",
+            "note": "旗舰模型；2026-07-16 发布；官方价 ¥20/¥100（缓存未命中）；缓存命中 ¥2；硅基流动待确认",
+        },
         {
             "name": "Kimi K2.7 Code", "context": "256K",
             "official_in_cny": 6.5, "official_out_cny": 27.0,
