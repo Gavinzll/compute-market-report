@@ -1,0 +1,42 @@
+[
+  {
+    "model": "Claude Fable 5",
+    "intel": 60,
+    "cost_per_task_usd": 2.75,
+    "speed_tps": null,
+    "gdpval_elo": 1818,
+    "note": "AA v4.1 首页榜单显示 Cost/Task=$2.75（aitoolsreview.co.uk 交叉验证）；GDPval-AA v2 Elo=1818（contracollective.com 报道，AA 独立评测）；Output Speed 未在 AA 公开页面上明确列出（模型已被美国出口管制下线，非美国用户无法通过 API 访问，AA 可能已无法测量速度）；Claude Fable 5 使用 Opus 4.8 作为约 5-9% 查询的安全回退"
+  },
+  {
+    "model": "Hunyuan-Hy3",
+    "intel": 41,
+    "cost_per_task_usd": null,
+    "speed_tps": 48,
+    "gdpval_elo": 1235,
+    "note": "AA 首页确认 Intel=41（datalearner.com 排行榜 41.2，四舍五入）；Output Speed=48 tok/s（llmbase.ai 引用 AA 数据，非推理模式）；GDPval-AA Elo=1235（AA 官方 Twitter 发布，Hy3-preview 版本数据，GA 版未找到独立 GDPval 更新）；Cost per Task AA 未提供（Hy3 官方 API 定价约 $0.15/$0.59 每百万 input/output token，但 AA 尚未将其纳入成本测试）"
+  },
+  {
+    "model": "JT-4.1 Flash",
+    "intel": 39,
+    "cost_per_task_usd": null,
+    "speed_tps": null,
+    "gdpval_elo": null,
+    "note": "AA 首页确认 Intel=39（datalearner.com 排行榜 #47）；llmbase.ai 显示 Speed=N/A, Price=N/A/N/A，模型为 China Mobile 专有模型，尚未提供公开 API 定价和托管服务；AA 未提供 Cost/Speed/GDPval 数据"
+  },
+  {
+    "model": "Command A+",
+    "intel": 37,
+    "cost_per_task_usd": null,
+    "speed_tps": 281,
+    "gdpval_elo": null,
+    "note": "Intel=37（Cohere 官方博客及多家日本科技媒体报道 AA 独立评测结果；注意：原始要求标注 Intel=23，但 AA 实测为 37，已用实测值覆盖）；Output Speed=281 tok/s（digital-madoguchi.site 引用 AA 独立评测数据）；Cost per Task 和 GDPval-AA Elo AA 均未提供（Command A+ 为开源权重模型，主要面向自托管部署，AA 可能未通过标准 API 路径进行成本和 GDPval 评测）；Cohere API 定价 $2.50/$10.00 每百万 input/output token"
+  },
+  {
+    "model": "ERNIE 5.1",
+    "intel": 22,
+    "cost_per_task_usd": null,
+    "speed_tps": null,
+    "gdpval_elo": null,
+    "note": "注意：未在 AA 排行榜（datalearner.com 收录的 261 个模型）中找到 ERNIE 5.1 的条目，也未在任何引用 AA 数据的第三方来源中找到其 Cost/Speed/GDPval 数值；ERNIE 5.1 主要通过百度千帆平台（Qianfan API）向中国境内用户提供服务，AA 可能未对其进行独立评测；Intel=22 为用户提供值，AA 未验证"
+  }
+]

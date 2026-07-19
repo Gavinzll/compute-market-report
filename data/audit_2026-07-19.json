@@ -1,7 +1,7 @@
 [
   {
     "date": "2026-07-19",
-    "freeze_time": "2026-07-19T19:20:00+08:00",
+    "freeze_time": "2026-07-19T19:43:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "GB300",
     "source": "未采集到合格来源",
@@ -20,7 +20,7 @@
   },
   {
     "date": "2026-07-19",
-    "freeze_time": "2026-07-19T19:20:00+08:00",
+    "freeze_time": "2026-07-19T19:43:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "GB200",
     "source": "未采集到合格来源",
@@ -39,7 +39,7 @@
   },
   {
     "date": "2026-07-19",
-    "freeze_time": "2026-07-19T19:20:00+08:00",
+    "freeze_time": "2026-07-19T19:43:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "B300",
     "source": "云擎天下 8卡整机裸金属月租",
@@ -58,7 +58,7 @@
   },
   {
     "date": "2026-07-19",
-    "freeze_time": "2026-07-19T19:20:00+08:00",
+    "freeze_time": "2026-07-19T19:43:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "B200",
     "source": "云擎天下 8卡整机裸金属月租",
@@ -77,7 +77,7 @@
   },
   {
     "date": "2026-07-19",
-    "freeze_time": "2026-07-19T19:20:00+08:00",
+    "freeze_time": "2026-07-19T19:43:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "H200",
     "source": "云擎天下 8卡整机裸金属月租",
@@ -96,7 +96,7 @@
   },
   {
     "date": "2026-07-19",
-    "freeze_time": "2026-07-19T19:20:00+08:00",
+    "freeze_time": "2026-07-19T19:43:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "H100 80G",
     "source": "SMM直播页 8卡整机裸金属",
@@ -115,7 +115,7 @@
   },
   {
     "date": "2026-07-19",
-    "freeze_time": "2026-07-19T19:20:00+08:00",
+    "freeze_time": "2026-07-19T19:43:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "H800",
     "source": "云擎天下 8卡整机裸金属月租",
@@ -134,7 +134,7 @@
   },
   {
     "date": "2026-07-19",
-    "freeze_time": "2026-07-19T19:20:00+08:00",
+    "freeze_time": "2026-07-19T19:43:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "A100 80G",
     "source": "云擎天下 8卡整机裸金属月租",
@@ -153,7 +153,7 @@
   },
   {
     "date": "2026-07-19",
-    "freeze_time": "2026-07-19T19:20:00+08:00",
+    "freeze_time": "2026-07-19T19:43:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "A800",
     "source": "未采集到合格来源",
@@ -172,7 +172,7 @@
   },
   {
     "date": "2026-07-19",
-    "freeze_time": "2026-07-19T19:20:00+08:00",
+    "freeze_time": "2026-07-19T19:43:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "L40S",
     "source": "云擎天下 8卡整机裸金属月租",
@@ -191,7 +191,7 @@
   },
   {
     "date": "2026-07-19",
-    "freeze_time": "2026-07-19T19:20:00+08:00",
+    "freeze_time": "2026-07-19T19:43:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "L20",
     "source": "天翼云包月7545.0元/卡/月×8×0.7折算",
@@ -210,7 +210,7 @@
   },
   {
     "date": "2026-07-19",
-    "freeze_time": "2026-07-19T19:20:00+08:00",
+    "freeze_time": "2026-07-19T19:43:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "L4",
     "source": "火山8.06/时；RunPod $0.39/时 小时价×0.7折算",
@@ -229,7 +229,7 @@
   },
   {
     "date": "2026-07-19",
-    "freeze_time": "2026-07-19T19:20:00+08:00",
+    "freeze_time": "2026-07-19T19:43:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "RTX 5090",
     "source": "SMM直播页 8卡整机裸金属",
@@ -248,7 +248,7 @@
   },
   {
     "date": "2026-07-19",
-    "freeze_time": "2026-07-19T19:20:00+08:00",
+    "freeze_time": "2026-07-19T19:43:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "RTX 4090",
     "source": "SMM直播页 8卡整机裸金属",
@@ -267,7 +267,7 @@
   },
   {
     "date": "2026-07-19",
-    "freeze_time": "2026-07-19T19:20:00+08:00",
+    "freeze_time": "2026-07-19T19:43:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "昇腾 910C",
     "source": "SMM样本 8卡整机",
@@ -286,7 +286,7 @@
   },
   {
     "date": "2026-07-19",
-    "freeze_time": "2026-07-19T19:20:00+08:00",
+    "freeze_time": "2026-07-19T19:43:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "昇腾 910B",
     "source": "云擎天下 8卡整机裸金属月租",
@@ -305,7 +305,7 @@
   },
   {
     "date": "2026-07-19",
-    "freeze_time": "2026-07-19T19:20:00+08:00",
+    "freeze_time": "2026-07-19T19:43:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "昇腾 950PR",
     "source": "未采集到合格来源",
@@ -324,7 +324,7 @@
   },
   {
     "date": "2026-07-19",
-    "freeze_time": "2026-07-19T19:20:00+08:00",
+    "freeze_time": "2026-07-19T19:43:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "寒武纪 MLU370-X8",
     "source": "天翼云包月6241.02元/卡/月×8×0.7折算",
@@ -343,7 +343,7 @@
   },
   {
     "date": "2026-07-19",
-    "freeze_time": "2026-07-19T19:20:00+08:00",
+    "freeze_time": "2026-07-19T19:43:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "寒武纪 MLU590",
     "source": "未采集到公开8卡整机月租",
@@ -362,7 +362,7 @@
   },
   {
     "date": "2026-07-19",
-    "freeze_time": "2026-07-19T19:20:00+08:00",
+    "freeze_time": "2026-07-19T19:43:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "海光 DCU K100",
     "source": "模力方舟 BW1000 单卡 3.00 元/时 ×8×24×30×0.7 折算（非8卡整机成交价）",
@@ -381,7 +381,7 @@
   },
   {
     "date": "2026-07-19",
-    "freeze_time": "2026-07-19T19:20:00+08:00",
+    "freeze_time": "2026-07-19T19:43:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "海光 DCU Z100",
     "source": "未采集到公开8卡整机月租",
@@ -400,7 +400,7 @@
   },
   {
     "date": "2026-07-19",
-    "freeze_time": "2026-07-19T19:20:00+08:00",
+    "freeze_time": "2026-07-19T19:43:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "壁仞 BR100",
     "source": "胜算云天垓100 单卡 1.49 元/时 ×8×24×30×0.7 折算（非8卡整机成交价）",
@@ -419,7 +419,7 @@
   },
   {
     "date": "2026-07-19",
-    "freeze_time": "2026-07-19T19:20:00+08:00",
+    "freeze_time": "2026-07-19T19:43:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "摩尔线程 MTT S4000",
     "source": "胜算云1.69元/时×8×24×30×0.7折算",
@@ -438,7 +438,7 @@
   },
   {
     "date": "2026-07-19",
-    "freeze_time": "2026-07-19T19:20:00+08:00",
+    "freeze_time": "2026-07-19T19:43:00+08:00",
     "asset_type": "GPU_RENT_CN",
     "gpu_or_model": "摩尔线程 MTT S5000",
     "source": "未采集到合格来源",
