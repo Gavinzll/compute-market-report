@@ -1462,6 +1462,171 @@ def build_discovered_gpu_list() -> dict[str, Any]:
 
 
 # ---------------------------------------------------------------------------
+# 模型能力评测数据（Artificial Analysis Intelligence Index v4.1）
+# ---------------------------------------------------------------------------
+
+# Token 价格表中模型到 AA 排行榜模型名称的映射
+# key: 我们 Token 表中的 "厂商/模型" 关键词, value: AA 排行榜模型 slug 或名称关键词
+_AA_MODEL_MAP: dict[str, list[str]] = {
+    "GPT-5.5": ["gpt-5-5"],
+    "GPT-5.6 Sol": ["gpt-5-6-sol"],
+    "Claude Opus": ["claude-opus-4-8"],
+    "Claude Sonnet": ["claude-sonnet-5"],
+    "Claude Fable": ["claude-fable-5"],
+    "Gemini 3.5 Flash": ["gemini-3-5-flash"],
+    "Gemini 3.1 Pro": ["gemini-3-1-pro"],
+    "Gemini 3.1 Flash-Lite": ["gemini-3-1-flash-lite"],
+    "Mistral Medium": ["mistral-medium-3-5"],
+    "Mistral Large": ["mistral-large-3"],
+    "Mistral Small": ["mistral-small-4"],
+    "Command A+": ["command-a-plus"],
+    "Command R+": ["command-r-plus"],
+    "Grok 4.5": ["grok-4-5"],
+    "Grok 4.3": ["grok-4-3"],
+    "Llama 4 Maverick": ["llama-4-maverick"],
+    "Llama 4 Scout": ["llama-4-scout"],
+    "DeepSeek-V4-Pro": ["deepseek-v4-pro"],
+    "DeepSeek-V4-Flash": ["deepseek-v4-flash"],
+    "Qwen3.7-Max": ["qwen3-7-max"],
+    "Qwen3.7-Plus": ["qwen3-7-plus"],
+    "Doubao": ["doubao"],
+    "Hunyuan-Hy3": ["hy3"],
+    "GLM-5.2": ["glm-5-2"],
+    "GLM-5.1": ["glm-5-1"],
+    "ERNIE 5.1": ["ernie-5-0-thinking"],
+    "ERNIE-4.5": ["ernie-4-5"],
+    "Kimi K3": ["kimi-k3"],
+    "Kimi K2.7": ["kimi-k2-7-code"],
+    "Kimi K2.6": ["kimi-k2-6"],
+    "MiniMax-M3": ["minimax-m3"],
+    "Spark X2": ["spark"],  # 讯飞星火可能不在 AA 中
+    "Baichuan-M3-Plus": ["baichuan"],
+    "Yi-Lightning": ["yi-lightning"],
+    "Yi-Large": ["yi-large"],
+    "Step 3.5 Flash": ["step-3-5-flash"],
+    "SenseNova": ["sensenova"],
+    "SkyClaw": ["skyclaw"],
+    "Muse Spark 1.1": ["muse-spark-1-1"],
+    "Inkling": ["inkling"],
+    "JT-4.1 Flash": ["jt-4-1-flash"],
+}
+
+# Fallback 评测数据（基于 2026-07-17 Artificial Analysis 排行榜真实数据）
+_BENCHMARK_FALLBACK: list[dict[str, Any]] = [
+    {"模型": "GPT-5.5", "厂商": "OpenAI", "AA Intelligence Index": 55, "AA Coding Index": 61, "GDPval-AA v2 Elo": 1217, "Output Speed (t/s)": 68, "Cost per Task (USD)": 4.35, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "Claude Opus 4.8", "厂商": "Anthropic", "AA Intelligence Index": 56, "AA Coding Index": 57, "GDPval-AA v2 Elo": 1195, "Output Speed (t/s)": 50, "Cost per Task (USD)": 3.85, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "Claude Sonnet 5", "厂商": "Anthropic", "AA Intelligence Index": 53, "AA Coding Index": 82, "GDPval-AA v2 Elo": 1143, "Output Speed (t/s)": 196, "Cost per Task (USD)": 1.54, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "Kimi K3", "厂商": "Kimi / Moonshot", "AA Intelligence Index": 57, "AA Coding Index": 62, "GDPval-AA v2 Elo": 1215, "Output Speed (t/s)": 2, "Cost per Task (USD)": 2.31, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "Gemini 3.5 Flash", "厂商": "Google", "AA Intelligence Index": 50, "AA Coding Index": 156, "GDPval-AA v2 Elo": 1102, "Output Speed (t/s)": 25, "Cost per Task (USD)": 1.31, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "Gemini 3.1 Pro Preview", "厂商": "Google", "AA Intelligence Index": 46, "AA Coding Index": 112, "GDPval-AA v2 Elo": 1062, "Output Speed (t/s)": 27, "Cost per Task (USD)": 1.74, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "Gemini 3.1 Flash-Lite", "厂商": "Google", "AA Intelligence Index": 25, "AA Coding Index": 280, "GDPval-AA v2 Elo": 927, "Output Speed (t/s)": 6, "Cost per Task (USD)": 0.22, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "Mistral Medium 3.5", "厂商": "Mistral", "AA Intelligence Index": 30, "AA Coding Index": 58, "GDPval-AA v2 Elo": 1000, "Output Speed (t/s)": 2, "Cost per Task (USD)": 1.16, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "Mistral Large 3", "厂商": "Mistral", "AA Intelligence Index": 16, "AA Coding Index": 51, "GDPval-AA v2 Elo": 960, "Output Speed (t/s)": 1, "Cost per Task (USD)": 0.60, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "Mistral Small 4", "厂商": "Mistral", "AA Intelligence Index": 20, "AA Coding Index": 168, "GDPval-AA v2 Elo": 962, "Output Speed (t/s)": 1, "Cost per Task (USD)": 0.20, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "Command A+", "厂商": "Cohere", "AA Intelligence Index": 23, "AA Coding Index": 184, "GDPval-AA v2 Elo": 952, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "Command R+", "厂商": "Cohere", "AA Intelligence Index": 8, "AA Coding Index": 56, "GDPval-AA v2 Elo": 900, "Output Speed (t/s)": 2, "Cost per Task (USD)": 3.25, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "Grok 4.5", "厂商": "xAI Grok", "AA Intelligence Index": 54, "AA Coding Index": 76, "GDPval-AA v2 Elo": 1173, "Output Speed (t/s)": 11, "Cost per Task (USD)": 1.35, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "Grok 4.3", "厂商": "xAI Grok", "AA Intelligence Index": 38, "AA Coding Index": 126, "GDPval-AA v2 Elo": 1035, "Output Speed (t/s)": 22, "Cost per Task (USD)": 0.64, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "Llama 4 Maverick", "厂商": "Meta Llama", "AA Intelligence Index": 14, "AA Coding Index": 112, "GDPval-AA v2 Elo": 910, "Output Speed (t/s)": 1, "Cost per Task (USD)": 0.34, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "Llama 4 Scout", "厂商": "Meta Llama", "AA Intelligence Index": 10, "AA Coding Index": 89, "GDPval-AA v2 Elo": 885, "Output Speed (t/s)": 1, "Cost per Task (USD)": 0.22, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "DeepSeek-V4-Pro", "厂商": "DeepSeek", "AA Intelligence Index": 44, "AA Coding Index": 61, "GDPval-AA v2 Elo": 1081, "Output Speed (t/s)": 2, "Cost per Task (USD)": 0.18, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "DeepSeek-V4-Flash", "厂商": "DeepSeek", "AA Intelligence Index": 40, "AA Coding Index": 104, "GDPval-AA v2 Elo": 1041, "Output Speed (t/s)": 1, "Cost per Task (USD)": 0.06, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "Qwen3.7-Max", "厂商": "阿里云/通义千问", "AA Intelligence Index": 46, "AA Coding Index": 200, "GDPval-AA v2 Elo": 1062, "Output Speed (t/s)": 2, "Cost per Task (USD)": 1.43, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "Qwen3.7-Plus", "厂商": "阿里云/通义千问", "AA Intelligence Index": 39, "AA Coding Index": 53, "GDPval-AA v2 Elo": 1023, "Output Speed (t/s)": 3, "Cost per Task (USD)": 0.27, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "Hunyuan-Hy3", "厂商": "腾讯混元", "AA Intelligence Index": 41, "AA Coding Index": 50, "GDPval-AA v2 Elo": 1042, "Output Speed (t/s)": 2, "Cost per Task (USD)": 0.00, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "GLM-5.2", "厂商": "智谱 GLM / Z.ai", "AA Intelligence Index": 51, "AA Coding Index": 181, "GDPval-AA v2 Elo": 1098, "Output Speed (t/s)": 2, "Cost per Task (USD)": 0.90, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "ERNIE 5.1", "厂商": "百度文心", "AA Intelligence Index": 22, "AA Coding Index": 0, "GDPval-AA v2 Elo": 945, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "Kimi K2.7 Code", "厂商": "Kimi / Moonshot", "AA Intelligence Index": 42, "AA Coding Index": 48, "GDPval-AA v2 Elo": 1041, "Output Speed (t/s)": 3, "Cost per Task (USD)": 0.70, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "Kimi K2.6", "厂商": "Kimi / Moonshot", "AA Intelligence Index": 44, "AA Coding Index": 46, "GDPval-AA v2 Elo": 1081, "Output Speed (t/s)": 3, "Cost per Task (USD)": 0.70, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "MiniMax-M3", "厂商": "MiniMax", "AA Intelligence Index": 44, "AA Coding Index": 84, "GDPval-AA v2 Elo": 1079, "Output Speed (t/s)": 2, "Cost per Task (USD)": 0.22, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "Spark X2", "厂商": "讯飞星火", "AA Intelligence Index": 0, "AA Coding Index": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-17"},
+    {"模型": "Baichuan-M3-Plus", "厂商": "百川智能", "AA Intelligence Index": 0, "AA Coding Index": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "暂无评测数据", "更新时间": "2026-07-17"},
+    {"模型": "GPT-5.6 Sol", "厂商": "OpenAI", "AA Intelligence Index": 59, "AA Coding Index": 53, "GDPval-AA v2 Elo": 1259, "Output Speed (t/s)": 42, "Cost per Task (USD)": 4.35, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "Muse Spark 1.1", "厂商": "Meta", "AA Intelligence Index": 51, "AA Coding Index": 112, "GDPval-AA v2 Elo": 1098, "Output Speed (t/s)": 1, "Cost per Task (USD)": 0.78, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "Inkling", "厂商": "Thinking Machines", "AA Intelligence Index": 41, "AA Coding Index": 0, "GDPval-AA v2 Elo": 1035, "Output Speed (t/s)": 0, "Cost per Task (USD)": 1.10, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+    {"模型": "JT-4.1 Flash", "厂商": "中国移动", "AA Intelligence Index": 39, "AA Coding Index": 0, "GDPval-AA v2 Elo": 0, "Output Speed (t/s)": 0, "Cost per Task (USD)": 0.00, "来源": "Artificial Analysis", "更新时间": "2026-07-17"},
+]
+
+DISCOVERED_BENCHMARK_PATH = ROOT / "data" / f"discovered_benchmark_{DATE}.json"
+
+
+def _match_aa_model_to_token(aa_model: dict) -> list[dict]:
+    """将 AA API 返回的单个模型匹配到 Token 表模型，返回评测记录列表。"""
+    records = []
+    aa_name = aa_model.get("name", aa_model.get("id", ""))
+    aa_slug = aa_model.get("slug", "").lower()
+    aa_id = aa_model.get("id", "").lower()
+
+    # 遍历映射表，看 AA 模型是否匹配我们的关键词
+    for token_keyword, aa_keywords in _AA_MODEL_MAP.items():
+        matched = False
+        for kw in aa_keywords:
+            if kw.lower() in aa_slug or kw.lower() in aa_id or kw.lower() in aa_name.lower():
+                matched = True
+                break
+        if not matched:
+            continue
+
+        # 获取评测指标
+        intel = aa_model.get("intelligenceIndex") or aa_model.get("intelligence_index") or aa_model.get("qualityScore") or 0
+        coding = aa_model.get("codingIndex") or aa_model.get("coding_index") or 0
+        gdpval = aa_model.get("gdpvalAAv2Elo") or aa_model.get("gdpval_elo") or 0
+        speed = aa_model.get("outputSpeed") or aa_model.get("output_speed") or 0
+        cost = aa_model.get("costPerTask") or aa_model.get("cost_per_task") or 0
+
+        record = {
+            "模型": token_keyword,
+            "AA Intelligence Index": intel,
+            "AA Coding Index": coding,
+            "GDPval-AA v2 Elo": gdpval,
+            "Output Speed (t/s)": speed,
+            "Cost per Task (USD)": cost,
+            "来源": "Artificial Analysis",
+            "更新时间": DATE,
+        }
+        records.append(record)
+        break
+
+    return records
+
+
+def discover_benchmark(date_str: str) -> list[dict]:
+    """采集模型评测数据，返回评测记录列表"""
+    records = []
+    aa_key = os.environ.get("AA_API_KEY", "")
+
+    # 1. 尝试 Artificial Analysis API
+    if aa_key:
+        try:
+            url = "https://artificialanalysis.ai/api/v2/data/llms/models"
+            req = urllib.request.Request(url, headers={
+                "x-api-key": aa_key,
+                "User-Agent": "CMIS-Daily/1.0",
+            })
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+            if isinstance(data, list):
+                for model in data:
+                    for record in _match_aa_model_to_token(model):
+                        records.append(record)
+            elif isinstance(data, dict):
+                for model in data.get("models", data.get("data", [])):
+                    for record in _match_aa_model_to_token(model):
+                        records.append(record)
+            if records:
+                print(f"  [benchmark] AA API 返回 {len(records)} 条匹配记录")
+        except Exception as e:
+            print(f"  [benchmark] AA API 调用失败: {e}")
+
+    # 2. 使用 fallback 数据
+    if not records:
+        records = [dict(r) for r in _BENCHMARK_FALLBACK]
+        print(f"  [benchmark] 使用 fallback 数据: {len(records)} 条")
+
+    return records
+
+
+# ---------------------------------------------------------------------------
 # 主入口
 # ---------------------------------------------------------------------------
 
@@ -1495,6 +1660,28 @@ def main() -> None:
     DISCOVERED_GPU_PATH.write_text(json.dumps(gpu_result, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"[discover] GPU new candidates: {len(gpu_result['new_candidates'])}")
     print(f"[discover] Written: {DISCOVERED_GPU_PATH}")
+
+    # Benchmark 评测数据发现
+    print("[discover] === Model Benchmark Discovery ===")
+    benchmark_records = discover_benchmark(DATE)
+    # 为 fallback 数据补齐厂商字段（API 采集时已由匹配函数处理）
+    for r in benchmark_records:
+        if "厂商" not in r:
+            # 从 fallback 映射中查找厂商
+            for fb in _BENCHMARK_FALLBACK:
+                if fb["模型"] == r["模型"]:
+                    r["厂商"] = fb["厂商"]
+                    break
+    benchmark_result = {
+        "date": DATE,
+        "discovered_at": NOW.isoformat(),
+        "record_count": len(benchmark_records),
+        "rows": benchmark_records,
+    }
+    DISCOVERED_BENCHMARK_PATH.parent.mkdir(parents=True, exist_ok=True)
+    DISCOVERED_BENCHMARK_PATH.write_text(json.dumps(benchmark_result, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"[discover] Benchmark records: {len(benchmark_records)}")
+    print(f"[discover] Written: {DISCOVERED_BENCHMARK_PATH}")
 
     print("[discover] Done.")
 
