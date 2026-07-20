@@ -1,0 +1,144 @@
+{
+  "scraped_at": "2026-07-21",
+  "scrape_status": "success",
+  "source_url": "https://ai.gitee.com/compute",
+  "pages_scraped": [1],
+  "prices": {
+    "沐曦 曦云 C500 (16GB)": {
+      "hourly_cny": 1.00,
+      "memory_gb": 16,
+      "source": "模力方舟",
+      "vendor": "沐曦",
+      "note": "Intel i7-8550U, 多节点可用(x3)"
+    },
+    "沐曦 曦云 C500 (32GB)": {
+      "hourly_cny": 2.00,
+      "memory_gb": 32,
+      "source": "模力方舟",
+      "vendor": "沐曦",
+      "note": "Intel i7-8550U"
+    },
+    "沐曦 曦云 C500 (64GB)": {
+      "hourly_cny": 4.00,
+      "memory_gb": 64,
+      "source": "模力方舟",
+      "vendor": "沐曦",
+      "note": "Intel i7-8550U / Intel Xeon Gold 6530, 多节点(x4)"
+    },
+    "海光 BW1000": {
+      "hourly_cny": 3.00,
+      "memory_gb": 64,
+      "source": "模力方舟",
+      "vendor": "海光",
+      "note": "Hygon C86"
+    },
+    "摩尔线程 MTT S5000": {
+      "hourly_cny": null,
+      "memory_gb": null,
+      "source": "模力方舟",
+      "vendor": "摩尔线程",
+      "note": "筛选器中存在此型号，默认视图无可租实例（复选框交互受限未能单独验证，连续两期无实例）"
+    },
+    "燧原 S60": {
+      "hourly_cny": 2.00,
+      "memory_gb": 48,
+      "source": "模力方舟",
+      "vendor": "燧原",
+      "note": "Intel Xeon Gold 6530, 多节点(x2)"
+    },
+    "壁仞 天垓150": {
+      "hourly_cny": 2.00,
+      "memory_gb": 32,
+      "source": "模力方舟",
+      "vendor": "壁仞",
+      "note": "Intel Xeon Platinum 8358P"
+    },
+    "天数智芯 智铠100": {
+      "hourly_cny": 1.50,
+      "memory_gb": 32,
+      "source": "模力方舟",
+      "vendor": "天数智芯",
+      "note": "Intel Xeon Platinum 8358P"
+    },
+    "壁仞 壁砺 106M": {
+      "hourly_cny": 2.00,
+      "memory_gb": 32,
+      "source": "模力方舟",
+      "vendor": "壁仞",
+      "note": "Intel Xeon Platinum 8462Y+"
+    },
+    "昇腾 910B (商汤节点)": {
+      "hourly_cny": 3.00,
+      "memory_gb": 64,
+      "source": "模力方舟",
+      "vendor": "昇腾",
+      "note": "Intel i7-8550U / Kunpeng-920"
+    },
+    "昇腾 910B (超级边节点)": {
+      "hourly_cny": 4.00,
+      "memory_gb": 64,
+      "source": "模力方舟",
+      "vendor": "昇腾",
+      "note": "Kunpeng-920, x2节点"
+    },
+    "RTX 4090": {
+      "hourly_cny": 1.99,
+      "memory_gb": 24,
+      "source": "模力方舟",
+      "vendor": "英伟达",
+      "note": "Intel Xeon Platinum 8358P"
+    },
+    "RTX 4090 D": {
+      "hourly_cny": 1.88,
+      "memory_gb": 24,
+      "source": "模力方舟",
+      "vendor": "英伟达",
+      "note": "AMD EPYC；较7-19的1.80元/时小幅上调"
+    },
+    "RTX 5090": {
+      "hourly_cny": 3.00,
+      "memory_gb": 32,
+      "source": "模力方舟",
+      "vendor": "英伟达",
+      "note": "Intel Xeon Platinum 8358P"
+    },
+    "A100": {
+      "hourly_cny": 7.00,
+      "memory_gb": 80,
+      "source": "模力方舟",
+      "vendor": "英伟达",
+      "note": "80GB，x3节点（经A100筛选视图验证）"
+    },
+    "RTX 3090": {
+      "hourly_cny": null,
+      "memory_gb": 24,
+      "source": "模力方舟",
+      "vendor": "英伟达",
+      "note": "筛选器中存在，默认视图无可租实例（复选框交互受限未能单独验证）"
+    },
+    "RTX 3080": {
+      "hourly_cny": null,
+      "memory_gb": 10,
+      "source": "模力方舟",
+      "vendor": "英伟达",
+      "note": "筛选器中存在，默认视图无可租实例（复选框交互受限未能单独验证）"
+    }
+  },
+  "domestic_gpu_summary": {
+    "海光 BW1000": 3.00,
+    "摩尔线程 MTT S5000": null,
+    "壁仞 天垓150": 2.00,
+    "壁仞 壁砺 106M": 2.00,
+    "天数智芯 智铠100": 1.50,
+    "燧原 S60": 2.00,
+    "昇腾 910B": "3.00-4.00",
+    "沐曦 曦云 C500": "1.00-4.00"
+  },
+  "notes": [
+    "摩尔线程 MTT S5000 在筛选器中存在，但默认视图无可租实例，价格为 null（连续两期）",
+    "昇腾 910B 存在两种不同供应商节点，价格分别为 3.00 和 4.00 元/小时",
+    "RTX 4090 D 由 7-19 的 1.80 元/时上调至 1.88 元/时",
+    "A100 80GB 经筛选视图验证有 3 个节点，7.00 元/时",
+    "RTX 3090/3080 筛选器中存在但默认视图无实例；自定义复选框在 headless 浏览器中点击不生效，未能逐一单独验证"
+  ]
+}
