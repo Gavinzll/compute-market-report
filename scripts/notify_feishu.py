@@ -17,14 +17,52 @@ if not url:
 
 ROOT = Path(__file__).resolve().parents[1]
 SNAPSHOT = ROOT / "data" / f"cmis_snapshot_{date}.json"
+HISTORY = ROOT / "data" / "history.jsonl"
 REPORT_URL = f"https://gavinzll.github.io/compute-market-report/latest.html?v={stamp}"
 REPORT_MOBILE_URL = f"https://gavinzll.github.io/compute-market-report/latest-mobile.html?v={stamp}"
+
+# 异动判定阈值：涨跌幅绝对值 >= 该值视为「异动」
+CHANGE_THRESHOLD = 3.0  # 单位 %
+# 每个板块热度 TOP 展示条数
+TOP_N = 3
+# 每个板块异动最多展示条数
+CHANGE_N = 3
 
 
 def load_snapshot():
     if not SNAPSHOT.exists():
         return None
     return json.loads(SNAPSHOT.read_text(encoding="utf-8"))
+
+
+def load_prev_snapshot():
+    """从 history.jsonl 取「昨天之前最近一期」的完整快照，用于对比往期找异动。
+
+    history.jsonl 每行是一期完整快照（含 token_prices / domestic_rental / gpu_procurement）。
+    返回倒数第二期（最新一期 == 今天，跳过），没有历史则返回 None。
+    """
+    if not HISTORY.exists():
+        return None
+    try:
+        rows = [json.loads(l) for l in HISTORY.read_text(encoding="utf-8").splitlines() if l.strip()]
+    except Exception:
+        return None
+    # 去掉 date 等于今天的（最新一条），取剩余的最后一条作为「昨日基准」
+    prior = [r for r in rows if r.get("date") != date]
+    return prior[-1] if prior else None
+
+
+def _pct_change(new, old):
+    """计算涨跌幅百分比；old 为 0 / 非数值返回 None。"""
+    if not isinstance(new, (int, float)) or not isinstance(old, (int, float)):
+        return None
+    if old == 0:
+        return None
+    return (new - old) / old * 100.0
+
+
+def _arrow(pct):
+    return "↑" if pct > 0 else "↓"
 
 
 def _fmt_price(v):
@@ -36,89 +74,132 @@ def _fmt_price(v):
     return str(v)
 
 
-def _gpu_rental_line(domestic_index):
-    """从快照 domestic_rental 中提取关键 GPU 价格，生成 GPU 租赁摘要。
-
-    只使用「是否进入主指数 == 是」且「校验状态 == PASS」且「标准化价格」为数值的样本，
-    避免引用 REVIEW / Rejected / 价格待补 的样本。
-    优先展示 H100 80G、A100 80G、RTX 5090、昇腾 910C、昇腾 910B；若都不存在则回退到前 3 个 PASS 样本。
-    """
-    key_order = ["H100 80G", "A100 80G", "RTX 5090", "昇腾 910C", "昇腾 910B"]
-    pass_rows = {
-        r.get("GPU 型号"): r for r in domestic_index
-        if r.get("校验状态") == "PASS"
+def _pass_index(rows):
+    """过滤出「进入主指数 + PASS + 标准化价格为数值」的租赁样本。"""
+    return [
+        r for r in rows
+        if r.get("是否进入主指数") == "是"
+        and r.get("校验状态") == "PASS"
         and isinstance(r.get("标准化价格"), (int, float))
-    }
-    parts = []
-    for gpu in key_order:
-        row = pass_rows.get(gpu)
-        if not row:
-            continue
-        price = row["标准化价格"]
-        unit = row.get("标准化单位", "万元/8卡整机/月")
-        parts.append(f"{gpu} {_fmt_price(price)}万/月")
-    if not parts:
-        # 回退：取前 3 个 PASS 样本
-        for row in list(pass_rows.values())[:3]:
-            gpu = row.get("GPU 型号", "")
-            price = row.get("标准化价格")
-            if gpu and isinstance(price, (int, float)):
-                parts.append(f"{gpu} {_fmt_price(price)}万/月")
-    if not parts:
-        return "国内主指数暂无 PASS 样本，数据存在分歧，等待进一步确认"
-    return "国内 " + "，".join(parts) + "（8卡整机/月）"
-
-
-def _gpu_purchase_line(procurement):
-    """从 gpu_procurement 中提取有采购价中位数的样本，生成 GPU 采购摘要。"""
-    valid = [
-        r for r in procurement
-        if isinstance(r.get("采购价中位数（万元）"), (int, float))
     ]
-    if not valid:
-        return "主流卡采购价多为待补或估算口径，暂无新增公开成交价"
-    parts = []
-    for r in valid[:4]:
-        gpu = r.get("GPU 型号", "")
-        med = r.get("采购价中位数（万元）")
-        band = r.get("采购价区间（万元/8卡整机）", "")
-        if gpu and isinstance(med, (int, float)):
-            parts.append(f"{gpu} 中位{_fmt_price(med)}万")
-    if not parts:
-        return "主流卡采购价多为待补或估算口径，暂无新增公开成交价"
-    return "；".join(parts) + "（8卡整机采购）"
 
 
-def _token_line(token_rows):
-    """从 token_prices 中提取代表性模型官方价，生成 Token 价格摘要。
+def _gpu_rental_line(domestic_index, prev_index=None):
+    """GPU 租赁摘要 = 🔝 热度 TOP + ⚡ 对比昨日异动（动态，不再固定型号）。
 
-    优先展示 GPT-5.5、DeepSeek-V4-Pro、Qwen3.7-Max；若不存在则回退到前 3 个 PASS 样本。
-    价格一律取自「输入官方价（人民币/百万Token）」「输出官方价（人民币/百万Token）」。
+    - 热度 TOP：按「热度排序」升序取前 TOP_N 个 PASS 样本。
+    - 对比昨日：与上一期快照同型号标准化价格对比，|涨跌幅|>=CHANGE_THRESHOLD% 列入，按幅度降序取前 CHANGE_N 条。
     """
-    key_models = ["GPT-5.5", "DeepSeek-V4-Pro", "Qwen3.7-Max"]
-    pass_rows = {
-        r.get("模型"): r for r in token_rows
-        if r.get("校验状态") == "PASS"
-        and isinstance(r.get("输入官方价（人民币/百万Token）"), (int, float))
-    }
-    parts = []
-    for model in key_models:
-        row = pass_rows.get(model)
-        if not row:
-            continue
-        inp = row["输入官方价（人民币/百万Token）"]
-        outp = row["输出官方价（人民币/百万Token）"]
-        parts.append(f"{model} ¥{_fmt_price(inp)}/¥{_fmt_price(outp)}")
-    if not parts:
-        for row in list(pass_rows.values())[:3]:
-            model = row.get("模型", "")
-            inp = row.get("输入官方价（人民币/百万Token）")
-            outp = row.get("输出官方价（人民币/百万Token）")
-            if model and isinstance(inp, (int, float)) and isinstance(outp, (int, float)):
-                parts.append(f"{model} ¥{_fmt_price(inp)}/¥{_fmt_price(outp)}")
-    if not parts:
+    cur = _pass_index(domestic_index)
+    if not cur:
+        return "国内主指数暂无 PASS 样本，数据存在分歧，等待进一步确认"
+
+    # —— 🔝 热度 TOP ——
+    top = sorted(cur, key=lambda r: (r.get("热度排序") is None, r.get("热度排序") or 999))[:TOP_N]
+    top_parts = []
+    for r in top:
+        gpu = r.get("GPU 型号", "")
+        if gpu:
+            top_parts.append(f"{gpu} {_fmt_price(r['标准化价格'])}万/月")
+    top_text = "🔝 " + "，".join(top_parts) if top_parts else ""
+
+    # —— ⚡ 对比昨日异动 ——
+    change_parts = []
+    if prev_index:
+        prev_map = {r.get("GPU 型号"): r.get("标准化价格") for r in _pass_index(prev_index)}
+        diffs = []
+        for r in cur:
+            gpu = r.get("GPU 型号")
+            pct = _pct_change(r.get("标准化价格"), prev_map.get(gpu))
+            if pct is not None and abs(pct) >= CHANGE_THRESHOLD:
+                diffs.append((abs(pct), gpu, pct, r.get("标准化价格")))
+        diffs.sort(reverse=True)
+        for _, gpu, pct, price in diffs[:CHANGE_N]:
+            change_parts.append(f"{gpu} {_arrow(pct)}{abs(pct):.1f}%（{_fmt_price(price)}万）")
+
+    change_text = "⚡ 较昨日 " + ("，".join(change_parts) if change_parts else "价格平稳，无异动")
+    return (top_text + "；" if top_text else "") + change_text + "（8卡整机/月）"
+
+
+def _gpu_purchase_line(procurement, prev_procurement=None):
+    """GPU 采购摘要 = 🔝 中位价最高 TOP + ⚡ 对比昨日异动（动态）。
+
+    采购样本无「热度排序」，TOP 维度用「采购价中位数」降序（价最高 = 市场关注度最高的高端卡）。
+    对比昨日取「采购价中位数（万元）」同型号对比。
+    """
+    def valid(rows):
+        return [
+            r for r in (rows or [])
+            if isinstance(r.get("采购价中位数（万元）"), (int, float))
+        ]
+    cur = valid(procurement)
+    if not cur:
+        return "主流卡采购价多为待补或估算口径，暂无新增公开成交价"
+
+    top = sorted(cur, key=lambda r: r["采购价中位数（万元）"], reverse=True)[:TOP_N]
+    top_parts = [
+        f"{r.get('GPU 型号','')} 中位{_fmt_price(r['采购价中位数（万元）'])}万"
+        for r in top if r.get("GPU 型号")
+    ]
+    top_text = "🔝 " + "，".join(top_parts) if top_parts else ""
+
+    change_parts = []
+    if prev_procurement:
+        prev_map = {r.get("GPU 型号"): r.get("采购价中位数（万元）") for r in valid(prev_procurement)}
+        diffs = []
+        for r in cur:
+            gpu = r.get("GPU 型号")
+            pct = _pct_change(r.get("采购价中位数（万元）"), prev_map.get(gpu))
+            if pct is not None and abs(pct) >= CHANGE_THRESHOLD:
+                diffs.append((abs(pct), gpu, pct, r.get("采购价中位数（万元）")))
+        diffs.sort(reverse=True)
+        for _, gpu, pct, med in diffs[:CHANGE_N]:
+            change_parts.append(f"{gpu} {_arrow(pct)}{abs(pct):.1f}%（{_fmt_price(med)}万）")
+
+    change_text = "⚡ 较昨日 " + ("，".join(change_parts) if change_parts else "采购价平稳，无异动")
+    return (top_text + "；" if top_text else "") + change_text + "（8卡整机采购）"
+
+
+def _token_line(token_rows, prev_token=None):
+    """Token 价格摘要 = 🔝 输出价最高 TOP + ⚡ 对比昨日异动（动态）。
+
+    Token 无「热度排序」，TOP 维度用「输出官方价（人民币/百万Token）」降序
+    （输出价最高 = 头部旗舰模型，最具代表性）。
+    价格一律取自官方价人民币字段；对比昨日同模型官方输出价。
+    """
+    def valid(rows):
+        return [
+            r for r in (rows or [])
+            if r.get("校验状态") == "PASS"
+            and isinstance(r.get("输入官方价（人民币/百万Token）"), (int, float))
+            and isinstance(r.get("输出官方价（人民币/百万Token）"), (int, float))
+        ]
+    cur = valid(token_rows)
+    if not cur:
         return "Token 官方价暂无 PASS 样本"
-    return "；".join(parts) + "（输入/输出，元/百万Token）"
+
+    top = sorted(cur, key=lambda r: r["输出官方价（人民币/百万Token）"], reverse=True)[:TOP_N]
+    top_parts = [
+        f"{r.get('模型','')} ¥{_fmt_price(r['输入官方价（人民币/百万Token）'])}/¥{_fmt_price(r['输出官方价（人民币/百万Token）'])}"
+        for r in top if r.get("模型")
+    ]
+    top_text = "🔝 " + "，".join(top_parts) if top_parts else ""
+
+    change_parts = []
+    if prev_token:
+        prev_map = {r.get("模型"): r.get("输出官方价（人民币/百万Token）") for r in valid(prev_token)}
+        diffs = []
+        for r in cur:
+            model = r.get("模型")
+            pct = _pct_change(r.get("输出官方价（人民币/百万Token）"), prev_map.get(model))
+            if pct is not None and abs(pct) >= CHANGE_THRESHOLD:
+                diffs.append((abs(pct), model, pct, r.get("输出官方价（人民币/百万Token）")))
+        diffs.sort(reverse=True)
+        for _, model, pct, outp in diffs[:CHANGE_N]:
+            change_parts.append(f"{model} {_arrow(pct)}{abs(pct):.1f}%（¥{_fmt_price(outp)}）")
+
+    change_text = "⚡ 较昨日 " + ("，".join(change_parts) if change_parts else "官方价平稳，无异动")
+    return (top_text + "；" if top_text else "") + change_text + "（输入/输出，元/百万Token）"
 
 
 def _key_change_line(data):
@@ -190,9 +271,14 @@ def build_summary(data):
     review_total = len([r for r in audit if r.get("validate_status") in {"REVIEW", "REJECT"}]) or len(rejected)
 
     # 从快照中自动提取关键价格，避免执行端引用过期硬编码值
-    gpu_rental_text = _gpu_rental_line(domestic_index)
-    gpu_purchase_text = _gpu_purchase_line(procurement)
-    token_text = _token_line(token)
+    # 加载上一期快照，用于「对比往期找异动」（动态选型，替代原固定型号清单）
+    prev = load_prev_snapshot() or {}
+    prev_domestic_index = [
+        r for r in prev.get("domestic_rental", []) if r.get("是否进入主指数", "").startswith("是")
+    ]
+    gpu_rental_text = _gpu_rental_line(domestic_index, prev_domestic_index)
+    gpu_purchase_text = _gpu_purchase_line(procurement, prev.get("gpu_procurement", []))
+    token_text = _token_line(token, prev.get("token_prices", []))
     key_change_text = _key_change_line(data)
     ai_liner = _ai_one_liner(data)
 
