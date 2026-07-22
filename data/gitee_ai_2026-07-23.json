@@ -1,0 +1,103 @@
+{
+  "scraped_at": "2026-07-23",
+  "scrape_status": "success",
+  "source_url": "https://ai.gitee.com/compute",
+  "pages_scraped": [1],
+  "prices": {
+    "沐曦 曦云 C500 (16GB)": {
+      "hourly_cny": 1.00,
+      "memory_gb": 16,
+      "source": "模力方舟",
+      "vendor": "沐曦",
+      "note": "Intel i7-8550U, 多节点可用"
+    },
+    "沐曦 曦云 C500 (32GB)": {
+      "hourly_cny": 2.00,
+      "memory_gb": 32,
+      "source": "模力方舟",
+      "vendor": "沐曦",
+      "note": "Intel i7-8550U, 已售罄"
+    },
+    "沐曦 曦云 C500 (64GB)": {
+      "hourly_cny": 4.00,
+      "memory_gb": 64,
+      "source": "模力方舟",
+      "vendor": "沐曦",
+      "note": "Intel i7-8550U, 多节点"
+    },
+    "海光 BW1000": {
+      "hourly_cny": 3.00,
+      "memory_gb": 64,
+      "source": "模力方舟",
+      "vendor": "海光",
+      "note": "Hygon C86, sugon-01, 可租8/8"
+    },
+    "摩尔线程 MTT S5000": {
+      "hourly_cny": 8.00,
+      "memory_gb": 80,
+      "source": "模力方舟",
+      "vendor": "摩尔线程",
+      "note": "AMD EPYC 9T34, moore-node01, 可租8/8"
+    },
+    "燧原 S60": {
+      "hourly_cny": 2.00,
+      "memory_gb": 48,
+      "source": "模力方舟",
+      "vendor": "燧原",
+      "note": "Intel Xeon Gold 6530, 多节点(x2)"
+    },
+    "壁仞 天垓150": {
+      "hourly_cny": 2.00,
+      "memory_gb": 32,
+      "source": "模力方舟",
+      "vendor": "壁仞",
+      "note": "Intel Xeon Platinum 8358P, 可租16/16"
+    },
+    "壁仞 壁砺106M": {
+      "hourly_cny": 2.00,
+      "memory_gb": 32,
+      "source": "模力方舟",
+      "vendor": "壁仞",
+      "note": "Intel Xeon Platinum 8462Y+, 可租7/8"
+    },
+    "天数智芯 智铠100": {
+      "hourly_cny": 1.50,
+      "memory_gb": 32,
+      "source": "模力方舟",
+      "vendor": "天数智芯",
+      "note": "Intel Xeon Platinum 8358P, 可租6/8"
+    },
+    "昇腾 910B": {
+      "hourly_cny": 3.00,
+      "hourly_cny_max": 4.00,
+      "memory_gb": 64,
+      "source": "模力方舟",
+      "vendor": "昇腾",
+      "note": "商汤节点3.00元/时(可租7/16), 超聚变节点4.00元/时(x2, 各可租4/8)"
+    },
+    "RTX 4090": {
+      "hourly_cny": 1.99,
+      "memory_gb": 24,
+      "source": "模力方舟",
+      "vendor": "英伟达",
+      "note": "Intel Xeon Platinum 8358P, 可租4/8"
+    },
+    "RTX 5090": {
+      "hourly_cny": 3.00,
+      "memory_gb": 32,
+      "source": "模力方舟",
+      "vendor": "英伟达",
+      "note": "Intel Xeon Platinum 8358P, 已售罄"
+    }
+  },
+  "domestic_gpu_summary": {
+    "海光 BW1000": 3.00,
+    "摩尔线程 MTT S5000": 8.00,
+    "壁仞 天垓150": 2.00,
+    "壁仞 壁砺106M": 2.00,
+    "天数智芯 智铠100": 1.50,
+    "燧原 S60": 2.00,
+    "昇腾 910B": 3.00,
+    "沐曦 曦云 C500 (16GB)": 1.00
+  }
+}
