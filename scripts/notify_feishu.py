@@ -493,6 +493,18 @@ def build_card_failure():
     }
 
 
+# ---------- CLI / dry-run 开关 ----------
+# 同时支持:
+#   1. --dry-run  命令行参数（推荐,CMIS 任务的 prompt 即这么写）
+#   2. FEISHU_DRY_RUN=1  环境变量（兼容旧调用）
+# 任一开关为真,只把卡片 JSON 打到 stdout,**不**触发 webhook。
+import argparse
+_argp = argparse.ArgumentParser(add_help=False)
+_argp.add_argument("--dry-run", action="store_true",
+                   help="只把渲染好的卡片 JSON 打到 stdout,不推 webhook。")
+_args, _unknown = _argp.parse_known_args()
+_dry_run = _args.dry_run or os.environ.get("FEISHU_DRY_RUN") == "1"
+
 # 构建卡片
 data = load_snapshot()
 if data:
@@ -503,7 +515,7 @@ else:
 
 payload = json.dumps({"msg_type": "interactive", "card": card}, ensure_ascii=False).encode("utf-8")
 
-if os.environ.get("FEISHU_DRY_RUN") == "1":
+if _dry_run:
     print(json.dumps(card, ensure_ascii=False, indent=2))
     raise SystemExit(0)
 

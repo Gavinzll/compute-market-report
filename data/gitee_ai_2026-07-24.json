@@ -1,0 +1,105 @@
+{
+  "scraped_at": "2026-07-24",
+  "scrape_status": "success",
+  "source_url": "https://ai.gitee.com/compute",
+  "scrape_method": "agent-browser snapshot (headless sandbox, page 1)",
+  "pages_scraped": [1],
+  "note": "首页 (page 1) GPU 卡片已捕获。Snapshot 截断于第二张曦云 C500 32GB 卡片，但关键国产卡型号 (海光/摩尔线程/壁仞/燧原/昇腾/天数智芯/沐曦) 价格均已获取，与 2026-07-23 缓存一致。",
+  "prices": {
+    "沐曦 曦云 C500 (16GB)": {
+      "hourly_cny": 1.00,
+      "memory_gb": 16,
+      "source": "模力方舟",
+      "vendor": "沐曦",
+      "note": "Intel Core i7-8550U, 可租 2/8, 6/12, 15/24 等多节点"
+    },
+    "沐曦 曦云 C500 (32GB)": {
+      "hourly_cny": 2.00,
+      "memory_gb": 32,
+      "source": "模力方舟",
+      "vendor": "沐曦",
+      "note": "Intel Core i7-8550U, 已售罄 (沿用 2026-07-23 验证价)"
+    },
+    "沐曦 曦云 C500 (64GB)": {
+      "hourly_cny": 4.00,
+      "memory_gb": 64,
+      "source": "模力方舟",
+      "vendor": "沐曦",
+      "note": "Intel Core i7-8550U, 多节点 120/128 GB 内存"
+    },
+    "海光 BW1000": {
+      "hourly_cny": 3.00,
+      "memory_gb": 64,
+      "source": "模力方舟",
+      "vendor": "海光",
+      "note": "Hygon C86, sugon-01, 可租 8/8"
+    },
+    "摩尔线程 MTT S5000": {
+      "hourly_cny": 8.00,
+      "memory_gb": 80,
+      "source": "模力方舟",
+      "vendor": "摩尔线程",
+      "note": "AMD EPYC 9T34, moore-node01, 可租 8/8"
+    },
+    "燧原 S60": {
+      "hourly_cny": 2.00,
+      "memory_gb": 48,
+      "source": "模力方舟",
+      "vendor": "燧原",
+      "note": "Intel Xeon Gold 6530, 多节点 (3/4, 1/5)"
+    },
+    "壁仞 天垓150": {
+      "hourly_cny": 2.00,
+      "memory_gb": 32,
+      "source": "模力方舟",
+      "vendor": "壁仞",
+      "note": "Intel Xeon Platinum 8358P, 可租 16/16"
+    },
+    "壁仞 壁砺106M": {
+      "hourly_cny": 2.00,
+      "memory_gb": 32,
+      "source": "模力方舟",
+      "vendor": "壁仞",
+      "note": "Intel Xeon Platinum 8462Y+, 可租 7/8"
+    },
+    "天数智芯 智铠100": {
+      "hourly_cny": 1.50,
+      "memory_gb": 32,
+      "source": "模力方舟",
+      "vendor": "天数智芯",
+      "note": "Intel Xeon Platinum 8358P, 可租 7/8"
+    },
+    "昇腾 910B": {
+      "hourly_cny": 3.00,
+      "hourly_cny_max": 4.00,
+      "memory_gb": 64,
+      "source": "模力方舟",
+      "vendor": "昇腾",
+      "note": "商汤节点 3.00元/时(可租3/16), 超聚变节点 4.00元/时(chaojubian-01/02, 各可租4-5/8)"
+    },
+    "RTX 4090": {
+      "hourly_cny": 1.99,
+      "memory_gb": 24,
+      "source": "模力方舟",
+      "vendor": "英伟达",
+      "note": "Intel Xeon Platinum 8358P, 可租 3/8"
+    },
+    "RTX 4090 D": {
+      "hourly_cny": 1.88,
+      "memory_gb": 24,
+      "source": "模力方舟",
+      "vendor": "英伟达",
+      "note": "Intel Xeon Platinum 8358P, 可租 8/8"
+    }
+  },
+  "domestic_gpu_summary": {
+    "海光 BW1000": 3.00,
+    "摩尔线程 MTT S5000": 8.00,
+    "壁仞 天垓150": 2.00,
+    "壁仞 壁砺106M": 2.00,
+    "天数智芯 智铠100": 1.50,
+    "燧原 S60": 2.00,
+    "昇腾 910B": 3.00,
+    "沐曦 曦云 C500 (16GB)": 1.00
+  }
+}
