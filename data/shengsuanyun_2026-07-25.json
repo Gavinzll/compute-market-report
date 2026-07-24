@@ -1,0 +1,50 @@
+{
+  "scraped_at": "2026-07-25",
+  "scrape_status": "cached_fallback",
+  "source_url": "https://www.shengsuanyun.com/hashrate",
+  "scrape_method": "agent-browser load failed (SPA timeout), fallback to 2026-07-24 cache (within 14-day source_pool window for domestic rental platforms)",
+  "note": "2026-07-25 05:11 sandbox 浏览器拉取胜算云 hashrate 多次超时（SPA 未渲染）。距 7/15 验证值已 10 天，仍在 14 天可信窗口内。沿用 7/24 抓取结果作为最新可验证值。",
+  "prices": {
+    "A100 PCIE": {
+      "hourly_cny": 6.42,
+      "memory_gb": 80,
+      "source": "胜算云(沿用7/24)",
+      "note": "80GB 显存, AMD EPYC 9654(96核), 上海A区/111机"
+    },
+    "RTX 6000 Ada": {
+      "hourly_cny": 5.28,
+      "memory_gb": 48,
+      "source": "胜算云(沿用7/24)",
+      "note": "48GB 显存, AMD EPYC 7443(24核), 上海A区/111机"
+    },
+    "RTX 4090": {
+      "hourly_cny": 2.27,
+      "memory_gb": 24,
+      "source": "胜算云(沿用7/24)",
+      "note": "24GB 显存, AMD EPYC 9354(32核), 上海A区/111机"
+    },
+    "华为 Ascend 910": {
+      "hourly_cny": 2.36,
+      "memory_gb": 32,
+      "source": "胜算云(沿用7/24)",
+      "note": "32GB 显存, AMD EPYC 7R32(48核), 上海A区/111机"
+    },
+    "壁仞 天垓100": {
+      "hourly_cny": 1.49,
+      "memory_gb": 32,
+      "source": "胜算云(沿用7/24)",
+      "note": "32GB 显存, AMD EPYC 75F3(32核), 上海A区/111机"
+    },
+    "摩尔线程 MTT S4000": {
+      "hourly_cny": 1.69,
+      "memory_gb": 48,
+      "source": "胜算云(沿用7/24)",
+      "note": "48GB 显存, AMD EPYC 9554(64核), 上海A区/111机"
+    }
+  },
+  "domestic_gpu_summary": {
+    "壁仞 天垓100": 1.49,
+    "摩尔线程 MTT S4000": 1.69,
+    "华为 Ascend 910": 2.36
+  }
+}
