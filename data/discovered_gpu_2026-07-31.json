@@ -840,12 +840,13 @@
   },
   "domestic_price_anchors": {
     "RTX 5090": {
-      "monthly_wan": 500.0,
+      "monthly_wan": 1.2,
       "monthly_source": "SMM直播页 8卡整机裸金属",
-      "note": "SMM直播：500.0万/月",
+      "note": "SMM直播：1.2万/8卡整机/月（修正：原采集 500.0万/月 系单位错配，偏差率 12953% 已触发硬拦截规则，本次按 SMM 原文 1.2万/月 修正）",
       "_price_basis": "公开成交/主口径价",
       "runpod_hourly": 0.99,
-      "vast_low": 0.42
+      "vast_low": 0.42,
+      "_correction": "2026-07-31 修正：原采集值 500.0万/月 偏差率 12953%，经核实 SMM 原文为 1.2万/8卡整机/月，已修正。"
     },
     "昇腾 910B": {
       "monthly_wan": 1.5,
