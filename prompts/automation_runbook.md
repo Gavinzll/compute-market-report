@@ -19,6 +19,7 @@
    - `node --check assets/charts.js`
    - 确认 `latest.html`、`latest-mobile.html`、`reports/{YYYY-MM-DD}.html`、`reports/{YYYY-MM-DD}-mobile.html` 已生成。
    - 搜索报告中不得出现 `null`、`Official Missing`、`海外三方未覆盖`、`境内三方待补采`、`无法计算`。
+   - **偏差率硬拦截自检**：确认 `domestic_rental` 中无 `校验状态 == REJECT 且 Reject/Review 原因 含 "偏差率"` 的条目进入主指数；若发现偏差率超阈值（训练卡 > 500%、消费级 > 1000%）的数据仍为 PASS，说明 `generate_cmis_daily.py` 的硬拦截逻辑被绕过，必须回查 `discovered_gpu` 的 `domestic_price_anchors` 是否有单位错配的失真值并修正后再重新生成。
 7. 提交并推送 GitHub main。
 8. 通过飞书 webhook 发送成功或失败通知。**必须调用 `FEISHU_WEBHOOK=<webhook> python3 scripts/notify_feishu.py`**，由脚本从 `data/cmis_snapshot_{YYYY-MM-DD}.json` 自动提取关键价格并按 `report_config.md` 第 9 节飞书通知固定模板渲染。执行端 AI 不得自行用 curl 或手写方式编写含具体价格数字的飞书摘要，避免引用脚本硬编码配置中的过期值（如 DOMESTIC_RENTAL_INPUT 中的旧值）与实际报告页面不一致。脚本内部已实现：GPU 租赁从 domestic_rental 的 PASS 样本提取标准化价格；GPU 采购从 gpu_procurement 提取采购价中位数；Token 价格从 token_prices 的 PASS 样本提取官方价；AI 一句话基于 PASS 且 Consensus 非 Low 的数据生成。若脚本执行失败，才允许执行端按 `report_config.md` 失败模板手写失败原因和修复建议（不得包含具体价格数字）。
 
