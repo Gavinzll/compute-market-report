@@ -1355,6 +1355,17 @@ def domestic_rows() -> list[dict]:
         overseas_ratio_label = None
         if monthly is not None:
             overseas_ratio_label = f"{overseas_ratio}%" if overseas_ratio is not None else "海外缺口"
+        # --- 偏差率硬拦截：国内月租/海外月租 超阈值 → 直接 REJECT，不进入主指数 ---
+        # 训练卡（Training）阈值 500%；消费级（Consumer）阈值 1000%。
+        # 正常国内/海外月租比通常在 30%-200% 区间，超阈值几乎可断定为采集失真或单位错配。
+        _deviation_threshold = 1000 if GPU_CLASS.get(gpu) == "Consumer" else 500
+        if overseas_ratio is not None and overseas_ratio > _deviation_threshold and status == "PASS":
+            status = "REJECT"
+            conf = min(conf, 50)
+            reason = (
+                f"偏差率 {overseas_ratio}% 超过 {_deviation_threshold}% 硬拦截阈值"
+                f"（{GPU_CLASS.get(gpu)} 类），疑似数据失真或单位错配，自动剔除。"
+            )
         included = "是" if status == "PASS" and conf >= 70 else ("是（战略关注）" if gpu in STRATEGIC_DOMESTIC_GPUS else "否")
         _basis = item.get("price_basis", "公开成交/主口径价" if status == "PASS" else "待复核")
         _note = item["note"]
