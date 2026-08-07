@@ -1,0 +1,16 @@
+{
+  "scraped_at": "2026-08-08",
+  "source_url": "https://ai.gitee.com/compute",
+  "prices": {
+    "海光 BW1000": {"hourly_cny": 3.00, "vram": "64GB", "source": "模力方舟"},
+    "摩尔线程 MTT S5000": {"hourly_cny": 8.00, "vram": "80GB", "source": "模力方舟"},
+    "壁仞 天垓150": {"hourly_cny": 2.00, "vram": "32GB", "source": "模力方舟"},
+    "壁仞 壁砺106M": {"hourly_cny": 2.00, "vram": "32GB", "source": "模力方舟"},
+    "天数智芯 智铠100": {"hourly_cny": 1.50, "vram": "32GB", "source": "模力方舟"},
+    "燧原 S60": {"hourly_cny": 2.00, "vram": "48GB", "source": "模力方舟"},
+    "昇腾 910B": {"hourly_cny": 4.00, "vram": "64GB", "source": "模力方舟", "note": "另有 Ascend 910B1 64GB ¥6.00/小时"},
+    "RTX 5090": {"hourly_cny": 3.00, "vram": "32GB", "source": "模力方舟"},
+    "RTX 4090": {"hourly_cny": 1.99, "vram": "24GB", "source": "模力方舟"},
+    "曦云 C500": {"hourly_cny": 1.00, "vram": "16GB", "source": "模力方舟", "note": "沐曦，另有 64GB 版 ¥4.00/小时、32GB 版 ¥2.00/小时"}
+  }
+}
