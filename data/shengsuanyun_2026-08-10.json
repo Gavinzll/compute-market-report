@@ -1,0 +1,8 @@
+{
+  "scraped_at": "2026-08-10",
+  "prices": {
+    "华为 Ascend 910": {"hourly_cny": 2.36, "source": "胜算云"},
+    "壁仞 天垓100": {"hourly_cny": 1.49, "source": "胜算云"},
+    "摩尔线程 MTT S4000": {"hourly_cny": 1.69, "source": "胜算云"}
+  }
+}
