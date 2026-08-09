@@ -1,0 +1,13 @@
+{
+  "scraped_at": "2026-08-10",
+  "source_note": "国产卡单卡云实例时价，由模力方舟算力市场专区一实读；BW1000/MTT S5000 当日默认专区无可用实例，沿用 2026-07-15 验证值并标注 fallback。",
+  "prices": {
+    "海光 BW1000": {"hourly_cny": 3.00, "source": "模力方舟(fallback)"},
+    "摩尔线程 MTT S5000": {"hourly_cny": 8.00, "source": "模力方舟(fallback)"},
+    "壁仞 天垓150": {"hourly_cny": 2.00, "source": "模力方舟"},
+    "壁仞 壁砺106M": {"hourly_cny": 2.00, "source": "模力方舟"},
+    "天数智芯 智铠100": {"hourly_cny": 1.50, "source": "模力方舟"},
+    "燧原 S60": {"hourly_cny": 2.00, "source": "模力方舟"},
+    "昇腾 910B": {"hourly_cny": 4.00, "source": "模力方舟"}
+  }
+}
