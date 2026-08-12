@@ -1,0 +1,15 @@
+{
+  "scraped_at": "2026-08-13",
+  "source_url": "https://ai.gitee.com/compute",
+  "scrape_method": "agent-browser snapshot (专区一为主，专区二~四抽样)",
+  "observed_variants_note": "页面未列出纯 Ascend 910B，仅有 910B1(¥6.00/h) 与 910B2C(¥4.00/h)；保留昇腾 910B 键取 fallback 3.50，910B1/B2C 记此备注不单独建键。专区二/三切换后卡片价格与专区一一致，未发现新价。",
+  "prices": {
+    "海光 BW1000": {"hourly_cny": 3.00, "source": "模力方舟"},
+    "摩尔线程 MTT S5000": {"hourly_cny": 8.00, "source": "模力方舟"},
+    "壁仞 天垓150": {"hourly_cny": 2.00, "source": "模力方舟"},
+    "壁仞 壁砺106M": {"hourly_cny": 2.00, "source": "模力方舟"},
+    "天数智芯 智铠100": {"hourly_cny": 1.50, "source": "模力方舟"},
+    "燧原 S60": {"hourly_cny": 2.00, "source": "模力方舟"},
+    "昇腾 910B": {"hourly_cny": 3.50, "source": "模力方舟(fallback, 页面仅见 910B1/B2C 变体)"}
+  }
+}
