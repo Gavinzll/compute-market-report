@@ -39,7 +39,7 @@ for fp in files:
     # GET current file sha (for update) — 404 means create
     get = api("GET", f"{BASE}/repos/{REPO}/contents/{fp}?ref=main")
     sha = get.get("sha") if isinstance(get, dict) else None
-    body = {"message": f"chore(data): update {fp} for CMIS Daily 2026-08-11",
+    body = {"message": f"chore(data): update {fp} for CMIS Daily {os.popen('date +%F').read().strip()}",
             "content": b64, "branch": "main",
             "committer": {"name":"Gavin","email":"Gavinzll@users.noreply.github.com"}}
     if sha:
