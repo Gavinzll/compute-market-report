@@ -1,0 +1,17 @@
+{
+  "scraped_at": "2026-08-15",
+  "source_url": "https://ai.gitee.com/compute",
+  "scrape_method": "agent-browser snapshot (page 1)",
+  "prices": {
+    "海光 BW1000": {"hourly_cny": 3.00, "source": "模力方舟", "note": "sugon-01, 64GB, 可租7/8"},
+    "摩尔线程 MTT S5000": {"hourly_cny": 8.00, "source": "模力方舟", "note": "moore-node01, 80GB, 可租6/8"},
+    "壁仞 天垓150": {"hourly_cny": 2.00, "source": "模力方舟", "note": "iluvatar-mrv100-node-0003, 32GB, 可租8/16; 较8-13的3.00下降"},
+    "天数智芯 智铠100": {"hourly_cny": 1.50, "source": "模力方舟", "note": "iluvatar-mrv100-node-0002, 32GB, 可租2/8; 较8-13的2.00下降"},
+    "燧原 S60": {"hourly_cny": 2.00, "source": "模力方舟", "note": "bd-suiyuan-node-0001, 48GB, 已售罄0/5"},
+    "Ascend 910B1": {"hourly_cny": 6.00, "source": "模力方舟", "note": "suanjia-ascend-910b1-node01/02, 64GB, 可租5/8与8/8"},
+    "Ascend 910B2C": {"hourly_cny": 4.00, "source": "模力方舟", "note": "shangtang-ascend-910b-node-0001, 64GB, 已售罄0/16"},
+    "RTX 5090": {"hourly_cny": 3.00, "source": "模力方舟", "note": "suanjia-nvidia5090-node01, 32GB, 已售罄0/8"},
+    "RTX 4090 D": {"hourly_cny": 1.88, "source": "模力方舟", "note": "suanjiayun-nvidia-node-0001, 24GB, 已售罄0/8"},
+    "沐曦 曦云 C500": {"hourly_cny": 2.00, "source": "模力方舟", "note": "jiajia-mxc500, 多配置1.00/2.00/4.00元(16/32/64GB); 取32GB中位2.00"}
+  }
+}
