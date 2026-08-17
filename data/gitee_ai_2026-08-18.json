@@ -1,0 +1,18 @@
+{
+  "scraped_at": "2026-08-18",
+  "source_url": "https://ai.gitee.com/compute",
+  "scrape_method": "agent-browser snapshot (page 1)",
+  "platform_alert": "海光BW1000(sugon-01)、摩尔线程MTT S5000(moore-node01) 已于8月16日22:00下线，不再提供卡时租用",
+  "prices": {
+    "Ascend 910B1": {"hourly_cny": 6.00, "source": "模力方舟", "note": "suanjia-ascend-910b1-node01/02, 64GB, 可租7/8与6/8；与8-16持平"},
+    "Ascend 910B2C": {"hourly_cny": 4.00, "source": "模力方舟", "note": "shangtang-ascend-910b-node-0001, 64GB, 可租7/16；8-16为可租2/16，本期供给回升"},
+    "壁仞 天垓150": {"hourly_cny": 2.00, "source": "模力方舟", "note": "iluvatar-mrv100-node-0004, 32GB, 可租16/16；与8-16持平"},
+    "壁仞 壁砺106M": {"hourly_cny": 2.00, "source": "模力方舟", "note": "ymh-a-server8, 32GB, 可租6/8；8-16 cache未单独记录，本期补录"},
+    "天数智芯 智铠100": {"hourly_cny": 1.50, "source": "模力方舟", "note": "iluvatar-mrv100-node-0001/0002, 32GB, 可租2/8与4/8；与8-16持平"},
+    "燧原 S60": {"hourly_cny": 2.00, "source": "模力方舟", "note": "bd-suiyuan-node-0001/0002, 48GB, 可租1/5与5/7；与8-16持平"},
+    "沐曦 曦云 C500": {"hourly_cny": 2.00, "source": "模力方舟", "note": "32GB节点(jiajia-mxc500-0003)¥2.00可租1/6、(0006)售罄；16GB节点¥1.00、64GB节点¥4.00；取32GB中位2.00，与8-15一致"},
+    "RTX 5090": {"hourly_cny": 3.00, "source": "模力方舟", "note": "suanjia-nvidia5090-node01, 32GB, 可租5/8；8-16为售罄0/8，本期恢复供给"},
+    "RTX 4090 D": {"hourly_cny": 1.88, "source": "模力方舟", "note": "suanjiayun-nvidia-node-0001, 24GB, 可租3/8；与8-16持平"},
+    "RTX 4090": {"hourly_cny": 1.99, "source": "模力方舟", "note": "nvidia-node-0001, 24GB, 售罄0/8；8-16为可租3/8，本期售罄"}
+  }
+}
