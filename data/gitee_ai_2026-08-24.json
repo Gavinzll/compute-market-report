@@ -1,0 +1,53 @@
+{
+  "scraped_at": "2026-08-24",
+  "source_url": "https://ai.gitee.com/compute",
+  "scrape_method": "agent-browser snapshot",
+  "supply_signal": "【算力下线】海光BW1000(sugon-01)、摩尔线程MTT S5000(moore-node01)已于8月16日22:00下线，不再提供卡时租用",
+  "prices": {
+    "Ascend 910B1": {
+      "hourly_cny": 6.00,
+      "source": "模力方舟",
+      "note": "suanjia-ascend-910b1-node01/node02；与8-23持平"
+    },
+    "Ascend 910B2C": {
+      "hourly_cny": 4.00,
+      "source": "模力方舟",
+      "note": "shangtang-ascend-910b-node-0001；与8-23持平"
+    },
+    "天垓150": {
+      "hourly_cny": 2.00,
+      "source": "模力方舟",
+      "note": "壁仞天垓150；与8-23持平"
+    },
+    "壁砺 166M": {
+      "hourly_cny": 5.00,
+      "source": "模力方舟",
+      "note": "壁仞壁砺166M；与8-23持平"
+    },
+    "燧原 S60": {
+      "hourly_cny": 2.00,
+      "source": "模力方舟",
+      "note": "与8-23持平"
+    },
+    "智铠100": {
+      "hourly_cny": 1.50,
+      "source": "模力方舟",
+      "note": "天数智芯智铠100；与8-23持平"
+    },
+    "曦云 C500": {
+      "hourly_cny": 1.50,
+      "source": "模力方舟",
+      "note": "摩尔线程曦云C500(16GB显存)；另有32GB版本2.50/4.00元/时；与8-23持平"
+    },
+    "海光 BW1000": {
+      "hourly_cny": 3.00,
+      "source": "模力方舟",
+      "note": "已于8月16日下线，价格为下线前最后价"
+    },
+    "摩尔线程 MTT S5000": {
+      "hourly_cny": 8.00,
+      "source": "模力方舟",
+      "note": "已于8月16日下线，价格为下线前最后价"
+    }
+  }
+}
