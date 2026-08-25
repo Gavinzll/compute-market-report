@@ -1,0 +1,53 @@
+{
+  "scraped_at": "2026-08-26",
+  "source_url": "https://ai.gitee.com/compute",
+  "scrape_method": "agent-browser snapshot",
+  "supply_signal": "【算力下线/维护】沐曦 曦云C500 因算子异常，平台今日系统升级维护，相关实例已提前关机，恢复时间另行通知；智铠100 实例 0/0 已售罄；天垓150 当日无在售实例；海光BW1000、摩尔线程MTT S5000 自8月16日下线后仍未恢复",
+  "prices": {
+    "Ascend 910B1": {
+      "hourly_cny": 6.00,
+      "source": "模力方舟",
+      "note": "suanjia-ascend-910b1-node02，可租4/8；与8-25持平"
+    },
+    "Ascend 910B2C": {
+      "hourly_cny": 4.00,
+      "source": "模力方舟",
+      "note": "shangtang-ascend-910b-node-0001，可租9/16；与8-25持平"
+    },
+    "天垓150": {
+      "hourly_cny": 2.00,
+      "source": "模力方舟",
+      "note": "壁仞天垓150；当日无在售实例（仅出现在筛选侧栏），沿用8-25最后价"
+    },
+    "壁砺 166M": {
+      "hourly_cny": 5.00,
+      "source": "模力方舟",
+      "note": "壁仞壁砺166M，wz-server005，可租6/8；与8-25持平"
+    },
+    "燧原 S60": {
+      "hourly_cny": 2.00,
+      "source": "模力方舟",
+      "note": "bd-suiyuan-node-0002，可租3/7；与8-25持平"
+    },
+    "智铠100": {
+      "hourly_cny": 1.50,
+      "source": "模力方舟",
+      "note": "天数智芯智铠100，iluvatar-mrv100-node-0001，当日可租0/0已售罄、标价0.00；沿用8-25最后价1.50"
+    },
+    "曦云 C500": {
+      "hourly_cny": 4.00,
+      "source": "模力方舟",
+      "note": "沐曦曦云C500(32GB显存)4.00元/时；另有16GB版本1.50元/时(已售罄)、64GB版本2.50元/时；因算子异常平台今日升级维护，实例已提前关机，价格为关机前最后价"
+    },
+    "海光 BW1000": {
+      "hourly_cny": 3.00,
+      "source": "模力方舟",
+      "note": "已于8月16日下线，价格为下线前最后价"
+    },
+    "摩尔线程 MTT S5000": {
+      "hourly_cny": 8.00,
+      "source": "模力方舟",
+      "note": "已于8月16日下线，价格为下线前最后价"
+    }
+  }
+}
