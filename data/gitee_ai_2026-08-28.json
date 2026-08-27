@@ -1,0 +1,88 @@
+{
+  "scraped_at": "2026-08-28",
+  "source_url": "https://ai.gitee.com/compute",
+  "scrape_method": "agent-browser snapshot（翻页1-4页）",
+  "supply_signal": "【算力下线/维护】沐曦 曦云C500 因算子异常平台升级维护通知仍在，但 64GB kyzx-0005 恢复 1/8 可租（¥4.00），其余规格当日仍售罄；天垓150 当日恢复在售（node-0004 可租14/16、node-0003 可租16/16）；海光BW1000、摩尔线程MTT S5000 自8月16日下线后仍未恢复；Ascend 910B 通用节点（¥3.00）全部售罄（0/16×6）；Ascend 910B1 可租3/8、5/8，910B2C 可租9/16",
+  "prices": {
+    "Ascend 910B1": {
+      "hourly_cny": 6.00,
+      "source": "模力方舟",
+      "note": "suanjia-ascend-910b1-node02 可租3/8；node01 可租5/8；与8-27持平"
+    },
+    "Ascend 910B2C": {
+      "hourly_cny": 4.00,
+      "source": "模力方舟",
+      "note": "shangtang-ascend-910b-node-0001 可租9/16；与8-27持平"
+    },
+    "Ascend 910B": {
+      "hourly_cny": 3.00,
+      "source": "模力方舟",
+      "note": "64GB通用节点¥3.00/时全部售罄（0/16）；另有910B1 ¥6.00、910B2C ¥4.00在租"
+    },
+    "天垓150": {
+      "hourly_cny": 2.00,
+      "source": "模力方舟",
+      "note": "壁仞天垓150；当日恢复在售（node-0004 可租14/16、node-0003 可租16/16）；价格与8-25持平"
+    },
+    "壁砺 166M": {
+      "hourly_cny": 5.00,
+      "source": "模力方舟",
+      "note": "wz-server005 可租5/8、wz-server006 可租8/8；与8-27持平"
+    },
+    "壁砺 106M": {
+      "hourly_cny": 2.00,
+      "source": "模力方舟",
+      "note": "ymh-a-server7 当日已售罄（0/8），沿用标价"
+    },
+    "燧原 S60": {
+      "hourly_cny": 2.00,
+      "source": "模力方舟",
+      "note": "bd-suiyuan-node-0003 可租8/8、0001 可租1/5、0002 可租2/7；与8-27持平"
+    },
+    "智铠100": {
+      "hourly_cny": 1.50,
+      "source": "模力方舟",
+      "note": "天数智芯智铠100 32GB，iluvatar-mrv100-node-0001 可租6/8、node-0002 可租2/8；与8-27持平"
+    },
+    "曦云 C500": {
+      "hourly_cny": 4.00,
+      "source": "模力方舟",
+      "note": "沐曦曦云C500(64GB)4.00元/时、32GB 2.50元/时、16GB 1.50元/时；维护通知仍在，64GB kyzx-0005 恢复1/8可租，其余规格当日售罄，价格为维护前标价"
+    },
+    "海光 BW1000": {
+      "hourly_cny": 3.00,
+      "source": "模力方舟",
+      "note": "已于8月16日下线，当日仍未恢复，价格为下线前最后价"
+    },
+    "摩尔线程 MTT S5000": {
+      "hourly_cny": 8.00,
+      "source": "模力方舟",
+      "note": "已于8月16日下线，当日仍未恢复，价格为下线前最后价"
+    },
+    "A100": {
+      "hourly_cny": 7.00,
+      "source": "模力方舟",
+      "note": "GITEE-A100-C/B 80GB ¥7.00/时，当日全部售罄（0/8、0/4）"
+    },
+    "RTX 5090": {
+      "hourly_cny": 3.00,
+      "source": "模力方舟",
+      "note": "suanjia-nvidia5090-node01 可租5/8 ¥3.00；另有 GITEE 专区 ¥3.30（已售罄）"
+    },
+    "RTX 4090": {
+      "hourly_cny": 1.99,
+      "source": "模力方舟",
+      "note": "nvidia-node-0001 可租3/8 ¥1.99；GITEE 专区 1.90-1.99 已售罄"
+    },
+    "RTX 4090 D": {
+      "hourly_cny": 1.88,
+      "source": "模力方舟",
+      "note": "suanjiayun-nvidia-node-0001 可租7/8 ¥1.88；GITEE 专区 ¥1.80 已售罄"
+    },
+    "RTX 3080": {
+      "hourly_cny": 0.88,
+      "source": "模力方舟",
+      "note": "第4页 GITEE 专区 ¥0.88/时，当日已售罄（0/8）"
+    }
+  }
+}
