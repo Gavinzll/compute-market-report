@@ -787,9 +787,9 @@
   },
   "domestic_price_anchors": {
     "RTX 5090": {
-      "monthly_wan": 3.6,
+      "monthly_wan": 1.25,
       "monthly_source": "SMM直播页 8卡整机裸金属",
-      "note": "SMM直播：3.6万/月",
+      "note": "SMM直播：1.15万—1.35万/月区间取中位（修正：原采集3.6万/月系正则误配Pro 6000月租报价，SMM原文明示5090整机月租1.15万—1.35万元区间）",
       "_price_basis": "公开成交/主口径价",
       "runpod_hourly": 0.99,
       "vast_low": 0.42
