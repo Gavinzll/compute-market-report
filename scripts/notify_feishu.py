@@ -230,6 +230,30 @@ def _ai_one_liner(data):
     return f"国内 {len(dom_pass)} 款、海外 {len(os_pass)} 款 GPU PASS；Token {len(tok_pass)} 个模型 PASS，价格共识整体稳定"
 
 
+def _change_log_text(s):
+    """构建价格变动追踪的飞书消息文本。
+
+    借鉴 LLM Price Index 的做法：展示当日价格变动数量和显著变动（>5%）。
+    """
+    count = s.get("change_count", 0)
+    notable = s.get("change_notable", [])
+
+    if count == 0:
+        return "📊 **价格变动追踪：** 今日无价格变动（价格未变化时仅记录时间戳，不写入新行）"
+
+    parts = [f"📊 **价格变动追踪：** 今日 {count} 条变动"]
+    if notable:
+        parts.append("\n**显著变动（≥5%）：**")
+        for nc in notable[:5]:  # 最多展示 5 个
+            parts.append(
+                f"• {nc['model']} {nc['metric']}（{nc['platform']}）: "
+                f"{nc['old']} → {nc['new']} ({nc['change_pct']})"
+            )
+        if len(notable) > 5:
+            parts.append(f"• ... 等共 {len(notable)} 个显著变动")
+    return "\n".join(parts)
+
+
 def build_summary(data):
     domestic = data.get("domestic_rental", [])
     overseas = data.get("overseas_rental", [])
@@ -281,7 +305,13 @@ def build_summary(data):
     token_text = _token_line(token, prev.get("token_prices", []))
     key_change_text = _key_change_line(data)
     ai_liner = _ai_one_liner(data)
-
+    
+    # 数据质量评分
+    dq = data.get("data_quality", {})
+    
+    # 价格变动追踪
+    cs = data.get("change_summary", {})
+    
     return {
         "freeze_time": data.get("freeze_time", "未记录"),
         "report_version": data.get("report_version", "unknown"),
@@ -303,6 +333,17 @@ def build_summary(data):
         "token_text": token_text,
         "key_change_text": key_change_text,
         "ai_liner": ai_liner,
+        # 数据质量
+        "data_quality_score": dq.get("score"),
+        "data_quality_grade": dq.get("grade"),
+        "data_quality_grade_label": dq.get("grade_label"),
+        "data_quality_grade_color": dq.get("grade_color"),
+        "fx_rate": dq.get("fx_rate"),
+        "fx_source": dq.get("fx_source"),
+        "fx_status": dq.get("fx_status"),
+        # 价格变动追踪
+        "change_count": cs.get("total_changes", 0),
+        "change_notable": cs.get("notable_changes", []),
     }
 
 
@@ -313,7 +354,148 @@ def build_card_success(s):
     日期 / GPU 租赁 / GPU 采购 / Token 价格 / 关键异动 / AI 一句话 / 完整报告链接。
     所有价格摘要均由 build_summary 从 cmis_snapshot_<date>.json 自动提取，
     禁止执行端自行编写含具体数字的摘要，避免引用过期硬编码值。
+
+    降级告警机制（借鉴 Smart DQMS 的 alerting 设计）：
+    - 评分 < 55（D 级）：卡片头部变红 + 预警提示
+    - 评分 55-69（C 级）：卡片头部变黄 + 关注提示
+    - 评分 >= 70（B/A 级）：卡片头部保持蓝色
     """
+    score = s.get("data_quality_score", 100) or 100
+    grade = s.get("data_quality_grade", "A") or "A"
+
+    # 降级告警：根据评分等级决定卡片颜色
+    if score < 55:
+        header_template = "red"
+        alert_text = f"⚠️ **数据质量预警：** 评分 {score} 分（{grade} 级），数据可靠性低，请核实数据源后使用报告数据。"
+    elif score < 70:
+        header_template = "yellow"
+        alert_text = f"💡 **数据质量关注：** 评分 {score} 分（{grade} 级），部分数据可能不准确，建议关注 REVIEW 项。"
+    else:
+        header_template = "blue"
+        alert_text = None
+
+    elements = [
+        # 日期 + 版本 + Freeze
+        {
+            "tag": "markdown",
+            "content": f"📅 **日期：** {date}    **版本：** {s['report_version']}    **Freeze：** {s['freeze_time']}",
+        },
+        # 数据新鲜度评分
+        {
+            "tag": "markdown",
+            "content": (
+                f"📊 **数据新鲜度：** {s['data_quality_score']} 分 · "
+                f"{s['data_quality_grade_label']}（{s['data_quality_grade']}）　"
+                f"汇率：{s['fx_rate']}（{s['fx_source']}）"
+            ),
+        },
+    ]
+
+    # 降级告警提示（仅当评分低于 70 时添加）
+    if alert_text:
+        elements.append({
+            "tag": "markdown",
+            "content": alert_text,
+        })
+
+    elements.append({"tag": "hr"})
+
+    # GPU 租赁
+    elements.append({
+        "tag": "markdown",
+        "content": f"📈 **GPU 租赁：**\n{s['gpu_rental_text']}",
+    })
+    elements.append({"tag": "hr"})
+    # GPU 采购
+    elements.append({
+        "tag": "markdown",
+        "content": f"💰 **GPU 采购：**\n{s['gpu_purchase_text']}",
+    })
+    elements.append({"tag": "hr"})
+    # Token 价格
+    elements.append({
+        "tag": "markdown",
+        "content": f"🪙 **Token 价格：**\n{s['token_text']}",
+    })
+    elements.append({"tag": "hr"})
+    # 关键异动
+    elements.append({
+        "tag": "markdown",
+        "content": f"⚡ **关键异动：**\n{s['key_change_text']}",
+    })
+    elements.append({"tag": "hr"})
+    # 价格变动追踪
+    elements.append({
+        "tag": "markdown",
+        "content": _change_log_text(s),
+    })
+    elements.append({"tag": "hr"})
+    # AI 一句话
+    elements.append({
+        "tag": "markdown",
+        "content": f"🧠 **AI 一句话：**\n{s['ai_liner']}",
+    })
+    elements.append({"tag": "hr"})
+    # 覆盖率统计
+    elements.append({
+        "tag": "column_set",
+        "flex_mode": "none",
+        "background_style": "default",
+        "columns": [
+            {
+                "tag": "column",
+                "width": "weighted",
+                "weight": 1,
+                "vertical_align": "center",
+                "elements": [
+                    {
+                        "tag": "markdown",
+                        "content": f"**国内指数**\n{s['domestic_pass']} / {s['domestic_total']} 型号 PASS",
+                    },
+                ],
+            },
+            {
+                "tag": "column",
+                "width": "weighted",
+                "weight": 1,
+                "vertical_align": "center",
+                "elements": [
+                    {
+                        "tag": "markdown",
+                        "content": f"**Token 模型**\n{s['token_pass']} / {s['token_models']} 个 PASS",
+                    },
+                ],
+            },
+            {
+                "tag": "column",
+                "width": "weighted",
+                "weight": 1,
+                "vertical_align": "center",
+                "elements": [
+                    {
+                        "tag": "markdown",
+                        "content": f"**REVIEW/REJECT**\n{s['review_total']} 条异常样本",
+                    },
+                ],
+            },
+        ],
+    })
+    elements.append({
+        "tag": "markdown",
+        "content": f"📊 **主图覆盖诊断：** {s['main_chart_coverage']}/{s['baseline_total']}（{s['main_chart_coverage_pct']}%） —— 国内指数 PASS {s['domestic_pass']} / {s['domestic_total']} 型号；战略关注卡强制入图，REVIEW/REJECT 仅进审计不进方向性结论。",
+    })
+    if s.get("strategic_watch"):
+        elements.append({
+            "tag": "markdown",
+            "content": f"**国产战略关注观察：** {s['strategic_watch']}",
+        })
+    elements.append({"tag": "hr"})
+    # 报告链接
+    elements.append({
+        "tag": "markdown",
+        "content": f"📊 **[查看完整报告（桌面版）]({REPORT_URL})**　|　[手机版]({REPORT_MOBILE_URL})",
+    })
+
     return {
         "schema": "2.0",
         "config": {
@@ -324,129 +506,11 @@ def build_card_success(s):
                 "tag": "plain_text",
                 "content": "📌 全球算力市场情报日报",
             },
-            "template": "blue",
+            "template": header_template,
         },
         "body": {
             "direction": "vertical",
-            "elements": [
-                # 日期 + 版本 + Freeze
-                {
-                    "tag": "markdown",
-                    "content": f"📅 **日期：** {date}    **版本：** {s['report_version']}    **Freeze：** {s['freeze_time']}",
-                },
-                {"tag": "hr"},
-                # GPU 租赁（从快照 domestic_rental PASS 样本提取）
-                {
-                    "tag": "markdown",
-                    "content": f"📈 **GPU 租赁：**\n{s['gpu_rental_text']}",
-                },
-                {"tag": "hr"},
-                # GPU 采购（从快照 gpu_procurement 提取）
-                {
-                    "tag": "markdown",
-                    "content": f"💰 **GPU 采购：**\n{s['gpu_purchase_text']}",
-                },
-                {"tag": "hr"},
-                # Token 价格（从快照 token_prices PASS 样本提取）
-                {
-                    "tag": "markdown",
-                    "content": f"🪙 **Token 价格：**\n{s['token_text']}",
-                },
-                {"tag": "hr"},
-                # 关键异动
-                {
-                    "tag": "markdown",
-                    "content": f"⚡ **关键异动：**\n{s['key_change_text']}",
-                },
-                {"tag": "hr"},
-                # AI 一句话（基于 PASS 且 Consensus 非 Low 的数据）
-                {
-                    "tag": "markdown",
-                    "content": f"🧠 **AI 一句话：**\n{s['ai_liner']}",
-                },
-                {"tag": "hr"},
-                # 覆盖率统计（补充信息）
-                {
-                    "tag": "column_set",
-                    "flex_mode": "none",
-                    "background_style": "default",
-                    "columns": [
-                        {
-                            "tag": "column",
-                            "width": "weighted",
-                            "weight": 1,
-                            "vertical_align": "center",
-                            "elements": [
-                                {
-                                    "tag": "markdown",
-                                    "content": f"**国内指数**\n{s['domestic_pass']} / {s['domestic_total']} 型号 PASS",
-                                },
-                            ],
-                        },
-                        {
-                            "tag": "column",
-                            "width": "weighted",
-                            "weight": 1,
-                            "vertical_align": "center",
-                            "elements": [
-                                {
-                                    "tag": "markdown",
-                                    "content": f"**海外 GPU Cloud**\n{s['overseas_pass']} 个型号 PASS",
-                                },
-                            ],
-                        },
-                    ],
-                },
-                {
-                    "tag": "column_set",
-                    "flex_mode": "none",
-                    "background_style": "default",
-                    "columns": [
-                        {
-                            "tag": "column",
-                            "width": "weighted",
-                            "weight": 1,
-                            "vertical_align": "center",
-                            "elements": [
-                                {
-                                    "tag": "markdown",
-                                    "content": f"**Token 价格**\n{s['token_vendors']} 厂商 / {s['token_models']} 模型\nPASS {s['token_pass']} 个",
-                                },
-                            ],
-                        },
-                        {
-                            "tag": "column",
-                            "width": "weighted",
-                            "weight": 1,
-                            "vertical_align": "center",
-                            "elements": [
-                                {
-                                    "tag": "markdown",
-                                    "content": f"**待复核样本**\n{s['review_total']} 条",
-                                },
-                            ],
-                        },
-                    ],
-                },
-                {"tag": "hr"},
-                # 覆盖率诊断（2026-07-19 rules 改动：覆盖与质量分离）
-                {
-                    "tag": "markdown",
-                    "content": f"📊 **主图覆盖诊断：** {s['main_chart_coverage']}（{s['main_chart_coverage_pct']}） —— 国内指数 PASS {s['domestic_pass']} / {s['domestic_total']} 型号；战略关注卡强制入图，REVIEW/REJECT 仅进审计不进方向性结论。",
-                },
-                {"tag": "hr"},
-                # 国产战略关注
-                {
-                    "tag": "markdown",
-                    "content": f"**国产战略关注观察：** {s['strategic_watch']}",
-                },
-                {"tag": "hr"},
-                # 报告链接（v2.0 schema 不支持 action 标签，用 markdown 链接替代）
-                {
-                    "tag": "markdown",
-                    "content": f"📊 **[查看完整报告（桌面版）]({REPORT_URL})**　|　[手机版]({REPORT_MOBILE_URL})",
-                },
-            ],
+            "elements": elements,
         },
     }
 

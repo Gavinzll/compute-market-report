@@ -517,6 +517,274 @@
     "RTX 6000"
   ],
   "discovered_prices_from_cloudgpus": {},
+  "open_dataset_prices": {
+    "MI300X": {
+      "usd": 2.79,
+      "providers": [
+        "hotaisle",
+        "crusoe",
+        "digitalocean",
+        "runpod"
+      ],
+      "provider_count": 4,
+      "source_url": "https://www.runpod.io/pricing",
+      "fetched_at": "2026-09-07T10:27:51.876Z"
+    },
+    "A100 80G": {
+      "usd": 1.9,
+      "providers": [
+        "datacrunch",
+        "hyperstack",
+        "azure",
+        "crusoe",
+        "tensordock",
+        "runpod",
+        "massedcompute",
+        "aws",
+        "gcp",
+        "lambda"
+      ],
+      "provider_count": 10,
+      "source_url": "https://www.runpod.io/pricing",
+      "fetched_at": "2026-09-07T10:27:52.383Z"
+    },
+    "B200": {
+      "usd": 6.4,
+      "providers": [
+        "nebius",
+        "datacrunch",
+        "coreweave",
+        "gmicloud",
+        "together",
+        "hyperstack",
+        "primeintellect",
+        "runpod",
+        "gcp",
+        "lambda"
+      ],
+      "provider_count": 10,
+      "source_url": "https://www.runpod.io/pricing",
+      "fetched_at": "2026-09-07T10:27:52.361Z"
+    },
+    "B300": {
+      "usd": 7.89,
+      "providers": [
+        "datacrunch",
+        "nebius",
+        "spheron",
+        "hyperstack",
+        "digitalocean",
+        "primeintellect",
+        "scaleway",
+        "latitude",
+        "runpod"
+      ],
+      "provider_count": 9,
+      "source_url": "https://www.runpod.io/pricing",
+      "fetched_at": "2026-09-07T10:27:52.361Z"
+    },
+    "RTX 3090": {
+      "usd": 0.35,
+      "providers": [
+        "tensordock",
+        "runpod"
+      ],
+      "provider_count": 2,
+      "source_url": "https://www.runpod.io/pricing",
+      "fetched_at": "2026-09-07T10:27:51.313Z"
+    },
+    "RTX 4090": {
+      "usd": 0.72,
+      "providers": [
+        "spheron",
+        "tensordock",
+        "runpod"
+      ],
+      "provider_count": 3,
+      "source_url": "https://www.runpod.io/pricing",
+      "fetched_at": "2026-09-07T10:27:51.652Z"
+    },
+    "RTX 5090": {
+      "usd": 0.83,
+      "providers": [
+        "spheron",
+        "runpod"
+      ],
+      "provider_count": 2,
+      "source_url": "https://www.runpod.io/pricing",
+      "fetched_at": "2026-09-07T10:27:51.652Z"
+    },
+    "H100 80G": {
+      "usd": 3.2,
+      "providers": [
+        "datacrunch",
+        "hyperstack",
+        "thundercompute",
+        "azure",
+        "jarvislabs",
+        "tensordock",
+        "runpod",
+        "massedcompute",
+        "aws",
+        "lambda"
+      ],
+      "provider_count": 10,
+      "source_url": "https://www.runpod.io/pricing",
+      "fetched_at": "2026-09-07T10:27:52.383Z"
+    },
+    "H200": {
+      "usd": 4.29,
+      "providers": [
+        "datacrunch",
+        "nebius",
+        "coreweave",
+        "spheron",
+        "gmicloud",
+        "together",
+        "hyperstack",
+        "digitalocean",
+        "crusoe",
+        "jarvislabs",
+        "primeintellect",
+        "massedcompute",
+        "ovh",
+        "aws",
+        "gcp",
+        "runpod"
+      ],
+      "provider_count": 16,
+      "source_url": "https://www.runpod.io/pricing",
+      "fetched_at": "2026-09-07T10:27:52.383Z"
+    },
+    "L4": {
+      "usd": 0.8048,
+      "providers": [
+        "ovh",
+        "jarvislabs",
+        "scaleway",
+        "aws",
+        "gcp",
+        "runpod"
+      ],
+      "provider_count": 6,
+      "source_url": "https://www.runpod.io/pricing",
+      "fetched_at": "2026-09-07T10:27:51.978Z"
+    },
+    "L40": {
+      "usd": 0.91,
+      "providers": [
+        "coreweave",
+        "hyperstack",
+        "thundercompute",
+        "tensordock",
+        "massedcompute",
+        "runpod"
+      ],
+      "provider_count": 6,
+      "source_url": "https://www.runpod.io/pricing",
+      "fetched_at": "2026-09-07T10:27:52.383Z"
+    },
+    "L40S": {
+      "usd": 1.57,
+      "providers": [
+        "vultr",
+        "datacrunch",
+        "nebius",
+        "coreweave",
+        "spheron",
+        "digitalocean",
+        "crusoe",
+        "massedcompute",
+        "scaleway",
+        "ovh",
+        "aws",
+        "runpod"
+      ],
+      "provider_count": 12,
+      "source_url": "https://www.runpod.io/pricing",
+      "fetched_at": "2026-09-07T10:27:52.383Z"
+    },
+    "RTX A4000": {
+      "usd": 0.15,
+      "providers": [
+        "tensordock",
+        "hyperstack",
+        "runpod"
+      ],
+      "provider_count": 3,
+      "source_url": "https://www.runpod.io/pricing",
+      "fetched_at": "2026-09-07T10:27:51.528Z"
+    },
+    "RTX A5000": {
+      "usd": 0.35,
+      "providers": [
+        "massedcompute",
+        "runpod"
+      ],
+      "provider_count": 2,
+      "source_url": "https://www.runpod.io/pricing",
+      "fetched_at": "2026-09-07T10:27:52.383Z"
+    },
+    "RTX A6000": {
+      "usd": 0.53,
+      "providers": [
+        "datacrunch",
+        "hyperstack",
+        "thundercompute",
+        "tensordock",
+        "runpod",
+        "massedcompute",
+        "lambda"
+      ],
+      "provider_count": 7,
+      "source_url": "https://www.runpod.io/pricing",
+      "fetched_at": "2026-09-07T10:27:52.383Z"
+    },
+    "A100 40G": {
+      "usd": 2.46,
+      "providers": [
+        "datacrunch",
+        "azure",
+        "jarvislabs",
+        "aws",
+        "gcp",
+        "lambda"
+      ],
+      "provider_count": 6,
+      "source_url": "https://lambda.ai/service/gpu-cloud",
+      "fetched_at": "2026-09-07T10:27:52.361Z"
+    },
+    "GH200": {
+      "usd": 2.75,
+      "providers": [
+        "spheron",
+        "coreweave",
+        "lambda"
+      ],
+      "provider_count": 3,
+      "source_url": "https://lambda.ai/service/gpu-cloud",
+      "fetched_at": "2026-09-07T10:27:52.033Z"
+    },
+    "A10": {
+      "usd": 1.15,
+      "providers": [
+        "ovh",
+        "lambda"
+      ],
+      "provider_count": 2,
+      "source_url": "https://lambda.ai/service/gpu-cloud",
+      "fetched_at": "2026-09-07T10:27:51.771Z"
+    },
+    "V100": {
+      "usd": 0.17,
+      "providers": [
+        "tensordock"
+      ],
+      "provider_count": 1,
+      "source_url": "https://www.tensordock.com/cloud-gpus.html",
+      "fetched_at": "2026-09-07T10:27:51.313Z"
+    }
+  },
   "new_candidates": [
     "A10",
     "A100",
@@ -724,7 +992,29 @@
       "vast_low": 3.41,
       "vast_median": 3.79,
       "cloudgpus": 4.43,
-      "source": "RunPod/Vast.ai/cloud-gpus.com"
+      "source": "RunPod/Vast.ai/cloud-gpus.com",
+      "open_dataset": 4.29,
+      "_avg": 4.06,
+      "_providers": [
+        "datacrunch",
+        "nebius",
+        "coreweave",
+        "spheron",
+        "gmicloud",
+        "together",
+        "hyperstack",
+        "digitalocean",
+        "crusoe",
+        "jarvislabs",
+        "primeintellect",
+        "massedcompute",
+        "ovh",
+        "aws",
+        "gcp",
+        "runpod"
+      ],
+      "_source_url": "https://www.runpod.io/pricing",
+      "_fetched_at": "2026-09-07T10:27:52.383Z"
     },
     "B200": {
       "runpod": 5.89,
@@ -732,14 +1022,45 @@
       "vast_low": 4.69,
       "vast_median": 4.99,
       "cloudgpus": 7.15,
-      "source": "RunPod/Lambda/Vast.ai/cloud-gpus.com"
+      "source": "RunPod/Lambda/Vast.ai/cloud-gpus.com",
+      "open_dataset": 6.4,
+      "_avg": 5.97,
+      "_providers": [
+        "nebius",
+        "datacrunch",
+        "coreweave",
+        "gmicloud",
+        "together",
+        "hyperstack",
+        "primeintellect",
+        "runpod",
+        "gcp",
+        "lambda"
+      ],
+      "_source_url": "https://www.runpod.io/pricing",
+      "_fetched_at": "2026-09-07T10:27:52.361Z"
     },
     "B300": {
       "runpod": 7.39,
       "vast_low": 5.83,
       "vast_median": 6.3,
       "cloudgpus": 12.37,
-      "source": "RunPod/Vast.ai/cloud-gpus.com"
+      "source": "RunPod/Vast.ai/cloud-gpus.com",
+      "open_dataset": 7.89,
+      "_avg": 7.96,
+      "_providers": [
+        "datacrunch",
+        "nebius",
+        "spheron",
+        "hyperstack",
+        "digitalocean",
+        "primeintellect",
+        "scaleway",
+        "latitude",
+        "runpod"
+      ],
+      "_source_url": "https://www.runpod.io/pricing",
+      "_fetched_at": "2026-09-07T10:27:52.361Z"
     },
     "GB200": {
       "cloudgpus": 13.25,
@@ -762,27 +1083,226 @@
       "runpod": 0.99,
       "vast_low": 0.47,
       "cloudgpus": 1.61,
-      "source": "RunPod/Vast.ai/cloud-gpus.com"
+      "source": "RunPod/Vast.ai/cloud-gpus.com",
+      "open_dataset": 1.57,
+      "_avg": 1.16,
+      "_providers": [
+        "vultr",
+        "datacrunch",
+        "nebius",
+        "coreweave",
+        "spheron",
+        "digitalocean",
+        "crusoe",
+        "massedcompute",
+        "scaleway",
+        "ovh",
+        "aws",
+        "runpod"
+      ],
+      "_source_url": "https://www.runpod.io/pricing",
+      "_fetched_at": "2026-09-07T10:27:52.383Z"
     },
     "L4": {
       "runpod": 0.39,
       "vast_low": 0.32,
       "cloudgpus": 0.88,
-      "source": "RunPod/Vast.ai/cloud-gpus.com"
+      "source": "RunPod/Vast.ai/cloud-gpus.com",
+      "open_dataset": 0.8048,
+      "_avg": 0.6,
+      "_providers": [
+        "ovh",
+        "jarvislabs",
+        "scaleway",
+        "aws",
+        "gcp",
+        "runpod"
+      ],
+      "_source_url": "https://www.runpod.io/pricing",
+      "_fetched_at": "2026-09-07T10:27:51.978Z"
     },
     "RTX 5090": {
       "runpod": 0.99,
       "vast_low": 0.42,
       "vast_median": 0.49,
       "cloudgpus": 0.77,
-      "source": "RunPod/Vast.ai/cloud-gpus.com"
+      "source": "RunPod/Vast.ai/cloud-gpus.com",
+      "open_dataset": 0.83,
+      "_avg": 0.7,
+      "_providers": [
+        "spheron",
+        "runpod"
+      ],
+      "_source_url": "https://www.runpod.io/pricing",
+      "_fetched_at": "2026-09-07T10:27:51.652Z"
     },
     "RTX 4090": {
       "runpod": 0.69,
       "vast_low": 0.35,
       "vast_median": 0.39,
       "cloudgpus": 0.68,
-      "source": "RunPod/Vast.ai/cloud-gpus.com"
+      "source": "RunPod/Vast.ai/cloud-gpus.com",
+      "open_dataset": 0.72,
+      "_avg": 0.57,
+      "_providers": [
+        "spheron",
+        "tensordock",
+        "runpod"
+      ],
+      "_source_url": "https://www.runpod.io/pricing",
+      "_fetched_at": "2026-09-07T10:27:51.652Z"
+    },
+    "MI300X": {
+      "open_dataset": 2.79,
+      "_avg": 2.79,
+      "_providers": [
+        "hotaisle",
+        "crusoe",
+        "digitalocean",
+        "runpod"
+      ],
+      "_source_url": "https://www.runpod.io/pricing",
+      "_fetched_at": "2026-09-07T10:27:51.876Z"
+    },
+    "A100 80G": {
+      "open_dataset": 1.9,
+      "_avg": 1.9,
+      "_providers": [
+        "datacrunch",
+        "hyperstack",
+        "azure",
+        "crusoe",
+        "tensordock",
+        "runpod",
+        "massedcompute",
+        "aws",
+        "gcp",
+        "lambda"
+      ],
+      "_source_url": "https://www.runpod.io/pricing",
+      "_fetched_at": "2026-09-07T10:27:52.383Z"
+    },
+    "RTX 3090": {
+      "open_dataset": 0.35,
+      "_avg": 0.35,
+      "_providers": [
+        "tensordock",
+        "runpod"
+      ],
+      "_source_url": "https://www.runpod.io/pricing",
+      "_fetched_at": "2026-09-07T10:27:51.313Z"
+    },
+    "H100 80G": {
+      "open_dataset": 3.2,
+      "_avg": 3.2,
+      "_providers": [
+        "datacrunch",
+        "hyperstack",
+        "thundercompute",
+        "azure",
+        "jarvislabs",
+        "tensordock",
+        "runpod",
+        "massedcompute",
+        "aws",
+        "lambda"
+      ],
+      "_source_url": "https://www.runpod.io/pricing",
+      "_fetched_at": "2026-09-07T10:27:52.383Z"
+    },
+    "L40": {
+      "open_dataset": 0.91,
+      "_avg": 0.91,
+      "_providers": [
+        "coreweave",
+        "hyperstack",
+        "thundercompute",
+        "tensordock",
+        "massedcompute",
+        "runpod"
+      ],
+      "_source_url": "https://www.runpod.io/pricing",
+      "_fetched_at": "2026-09-07T10:27:52.383Z"
+    },
+    "RTX A4000": {
+      "open_dataset": 0.15,
+      "_avg": 0.15,
+      "_providers": [
+        "tensordock",
+        "hyperstack",
+        "runpod"
+      ],
+      "_source_url": "https://www.runpod.io/pricing",
+      "_fetched_at": "2026-09-07T10:27:51.528Z"
+    },
+    "RTX A5000": {
+      "open_dataset": 0.35,
+      "_avg": 0.35,
+      "_providers": [
+        "massedcompute",
+        "runpod"
+      ],
+      "_source_url": "https://www.runpod.io/pricing",
+      "_fetched_at": "2026-09-07T10:27:52.383Z"
+    },
+    "RTX A6000": {
+      "open_dataset": 0.53,
+      "_avg": 0.53,
+      "_providers": [
+        "datacrunch",
+        "hyperstack",
+        "thundercompute",
+        "tensordock",
+        "runpod",
+        "massedcompute",
+        "lambda"
+      ],
+      "_source_url": "https://www.runpod.io/pricing",
+      "_fetched_at": "2026-09-07T10:27:52.383Z"
+    },
+    "A100 40G": {
+      "open_dataset": 2.46,
+      "_avg": 2.46,
+      "_providers": [
+        "datacrunch",
+        "azure",
+        "jarvislabs",
+        "aws",
+        "gcp",
+        "lambda"
+      ],
+      "_source_url": "https://lambda.ai/service/gpu-cloud",
+      "_fetched_at": "2026-09-07T10:27:52.361Z"
+    },
+    "GH200": {
+      "open_dataset": 2.75,
+      "_avg": 2.75,
+      "_providers": [
+        "spheron",
+        "coreweave",
+        "lambda"
+      ],
+      "_source_url": "https://lambda.ai/service/gpu-cloud",
+      "_fetched_at": "2026-09-07T10:27:52.033Z"
+    },
+    "A10": {
+      "open_dataset": 1.15,
+      "_avg": 1.15,
+      "_providers": [
+        "ovh",
+        "lambda"
+      ],
+      "_source_url": "https://lambda.ai/service/gpu-cloud",
+      "_fetched_at": "2026-09-07T10:27:51.771Z"
+    },
+    "V100": {
+      "open_dataset": 0.17,
+      "_avg": 0.17,
+      "_providers": [
+        "tensordock"
+      ],
+      "_source_url": "https://www.tensordock.com/cloud-gpus.html",
+      "_fetched_at": "2026-09-07T10:27:51.313Z"
     }
   },
   "domestic_price_anchors": {
@@ -1062,9 +1582,9 @@
       "note": "无公开成交月租；市场核价区间3.8-4.8万/月，中位数4.3万入图"
     }
   },
-  "recommendation": "基线名单已更新至2026-07-15；H20停产保留审计；新增国产候选型号；价格锚点含多源真实数据（天翼云/SMM/云擎天下/生数云动态采集+静态锚点补充）。",
+  "recommendation": "基线名单已更新至2026-07-15；H20停产保留审计；新增国产候选型号；价格锚点含多源真实数据（天翼云/SMM/云擎天下/生数云/gpu-rental-prices 开源数据集动态采集+静态锚点补充）。",
   "date": "2026-09-08",
-  "discovered_at": "2026-09-08T05:16:34.646732+08:00",
+  "discovered_at": "2026-09-08T10:21:05.960934+08:00",
   "dynamic_sources": [
     {
       "id": 1,
@@ -1082,20 +1602,34 @@
     },
     {
       "id": 3,
+      "tier": "海外三方",
+      "title": "models.dev API 模型定价",
+      "url": "https://models.dev/api.json",
+      "note": "验证 2888 个模型"
+    },
+    {
+      "id": 4,
+      "tier": "海外云价",
+      "title": "gpu-rental-prices 开源数据集",
+      "url": "https://github.com/adriannutiu/gpu-rental-prices",
+      "note": "采集到 19 款 GPU 海外时租价（114 个提供商）"
+    },
+    {
+      "id": 5,
       "tier": "云价折算",
       "title": "天翼云 GPU 云主机价格总览",
       "url": "https://www.ctyun.cn/document/10029787/10047957",
       "note": "采集到 4 款 GPU 单卡包月价"
     },
     {
-      "id": 4,
+      "id": 6,
       "tier": "裸金属/行业",
       "title": "SMM 算力快讯直播页",
       "url": "https://news.smm.cn/live/metal/143",
       "note": "采集到 1 款 GPU 裸金属月租价"
     },
     {
-      "id": 5,
+      "id": 7,
       "tier": "裸金属/行业",
       "title": "云擎天下 8卡整机裸金属月租",
       "url": "https://www.omniyq.com/h-col-104.html",

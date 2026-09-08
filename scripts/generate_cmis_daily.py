@@ -16,9 +16,14 @@ from __future__ import annotations
 import json
 import os
 import subprocess
+import sys
 import urllib.request
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
+
+# 导入价格变动追踪模块
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import change_log
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = Path(os.environ.get("CMIS_OUT", ROOT))
@@ -29,29 +34,65 @@ FREEZE_TIME = NOW.replace(second=0, microsecond=0).isoformat()
 FREEZE_LABEL = NOW.strftime("%Y-%m-%d %H:%M")
 STAMP = NOW.strftime("%Y-%m-%d %H:%M:%S UTC+08:00")
 ASSET_VERSION = NOW.strftime("%Y%m%d%H%M%S")
-FX_USD_CNY = 7.18
-REPORT_VERSION = "v1.2.0"
+FX_USD_CNY = 7.20
+FX_SOURCE = "fallback (默认值)"
+FX_FETCHED_AT = None
+REPORT_VERSION = "v1.4.0"
 
 
-def _fetch_live_fx() -> float | None:
-    """尝试从免费 API 获取最新 USD/CNY 汇率，失败返回 None。"""
-    import json as _json
+def _fetch_fx_from_api(url: str, rate_path: list[str], timeout: int = 10) -> float | None:
+    """从指定 API 获取 USD/CNY 汇率，失败返回 None。"""
     try:
-        url = "https://open.er-api.com/v6/latest/USD"
         req = urllib.request.Request(url, headers={"User-Agent": "CMIS-Daily/1.0"})
-        with urllib.request.urlopen(req, timeout=10) as resp:
-            data = _json.loads(resp.read().decode("utf-8"))
-            rate = data.get("rates", {}).get("CNY")
-            if rate and rate > 1:
-                return round(rate, 4)
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+        rate = data
+        for key in rate_path:
+            if isinstance(rate, dict):
+                rate = rate.get(key)
+            else:
+                return None
+        if rate and isinstance(rate, (int, float)) and 6.0 < rate < 8.0:
+            return round(float(rate), 4)
     except Exception:
         pass
     return None
 
 
-_LIVE_FX = _fetch_live_fx()
+def _fetch_live_fx() -> tuple[float | None, str]:
+    """多源获取 USD/CNY 汇率，返回 (rate, source)。
+    
+    优先级：
+    1. Frankfurter API（欧洲央行参考汇率）
+    2. open.er-api.com（免费汇率API）
+    3. 失败返回 (None, "all failed")
+    """
+    # 源1: Frankfurter / ECB
+    rate = _fetch_fx_from_api(
+        "https://api.frankfurter.app/latest?from=USD&to=CNY",
+        ["rates", "CNY"],
+        timeout=15,
+    )
+    if rate:
+        return rate, "Frankfurter (ECB reference rate)"
+    
+    # 源2: open.er-api.com
+    rate = _fetch_fx_from_api(
+        "https://open.er-api.com/v6/latest/USD",
+        ["rates", "CNY"],
+        timeout=10,
+    )
+    if rate:
+        return rate, "open.er-api.com"
+    
+    return None, "all API failed"
+
+
+_LIVE_FX, _LIVE_FX_SOURCE = _fetch_live_fx()
 if _LIVE_FX:
     FX_USD_CNY = _LIVE_FX
+    FX_SOURCE = _LIVE_FX_SOURCE
+    FX_FETCHED_AT = FREEZE_TIME
 
 
 def git_commit() -> str:
@@ -717,6 +758,11 @@ def _load_discovered_gpu_prices() -> tuple[dict[str, dict], dict[str, dict]]:
                 if v is not None:
                     prices.append(v)
                     src_labels.append(k)
+            # 开源数据集价格（gpu-rental-prices）
+            open_ds = info.get("open_dataset")
+            if open_ds is not None:
+                prices.append(open_ds)
+                src_labels.append("gpu-rental-prices")
             if not prices:
                 continue
             usd = round(sum(prices) / len(prices), 2)
@@ -1015,19 +1061,52 @@ def _load_discovered_benchmark() -> list[dict] | None:
     return None
 
 
-def _load_fx_rate() -> float:
-    """加载动态获取的 USD/CNY 汇率；失败时返回 7.25。"""
+def _load_fx_rate() -> tuple[float, str, str | None]:
+    """加载 USD/CNY 汇率，优先从本地缓存文件（discover_latest.py 产出）读取，
+    失败时使用脚本启动时获取的实时汇率，再失败尝试前一天缓存（carry-forward），
+    最终返回默认值。
+
+    借鉴 gpu-rental-prices 做法：API 失败时 carry-forward 前一天数据，
+    但明确标注 last-verified 日期，不假装是今天的实时数据。
+
+    返回: (rate, source, fetched_at)
+    """
+    # 1. 优先从 discover_latest.py 生成的缓存文件读取
     path = ROOT / "data" / f"fx_rate_{DATE}.json"
     try:
-        if not path.exists():
-            return 7.25
-        data = json.loads(path.read_text(encoding="utf-8"))
-        rate = float(data.get("usd_cny", 7.25))
-        if rate <= 0:
-            return 7.25
-        return rate
+        if path.exists():
+            data = json.loads(path.read_text(encoding="utf-8"))
+            rate = float(data.get("usd_cny", 0))
+            if 6.0 < rate < 8.0:
+                source = data.get("source", "fx_rate cache")
+                fetched_at = data.get("fetched_at")
+                return rate, source, fetched_at
     except Exception:
-        return 7.25
+        pass
+
+    # 2. 使用脚本启动时获取的实时汇率
+    if FX_FETCHED_AT:
+        return FX_USD_CNY, FX_SOURCE, FX_FETCHED_AT
+
+    # 3. Carry-forward：尝试前一天缓存（借鉴 gpu-rental-prices 的 stale flag 做法）
+    from datetime import timedelta as _td
+    for days_back in range(1, 8):
+        prev_date = (NOW - _td(days=days_back)).date().isoformat()
+        prev_path = ROOT / "data" / f"fx_rate_{prev_date}.json"
+        try:
+            if prev_path.exists():
+                data = json.loads(prev_path.read_text(encoding="utf-8"))
+                rate = float(data.get("usd_cny", 0))
+                if 6.0 < rate < 8.0:
+                    original_time = data.get("fetched_at", "")
+                    source = f"{data.get('source', 'carry-forward')} (carry-forward from {prev_date})"
+                    print(f"[report] 汇率 carry-forward: 使用 {prev_date} 的缓存值 {rate}（原始获取: {original_time}）")
+                    return rate, source, original_time
+        except Exception:
+            continue
+
+    # 4. 最终 fallback
+    return 7.20, "fallback (默认值)", None
 
 
 # Benchmark fallback 数据（与 discover_latest.py 中的 _BENCHMARK_FALLBACK 一致）
@@ -1646,6 +1725,192 @@ COVERAGE = coverage_rows()
 SNAPSHOT["coverage"] = COVERAGE
 
 
+def data_quality_stats() -> dict:
+    """计算各模块的数据质量统计，用于报告展示和监控。"""
+    # Token 数据质量
+    token_total = len(TOKEN_DATA)
+    token_pass = sum(1 for r in TOKEN_DATA if r.get("校验状态") == "PASS")
+    token_review = sum(1 for r in TOKEN_DATA if r.get("校验状态") in ("REVIEW", "REJECT"))
+    token_overseas_ok = sum(1 for r in TOKEN_DATA if r.get("海外三方输入价") is not None)
+    token_domestic_ok = sum(1 for r in TOKEN_DATA if r.get("境内三方输入价") is not None)
+    
+    # 检查是否使用了动态发现数据
+    token_discovered_path = ROOT / "data" / f"discovered_token_{DATE}.json"
+    token_using_dynamic = token_discovered_path.exists()
+    
+    # GPU 国内租赁数据质量
+    gpu_domestic_total = len(DOMESTIC_RENTAL)
+    gpu_domestic_pass = sum(1 for r in DOMESTIC_RENTAL if pass_status(r))
+    gpu_domestic_review = sum(1 for r in DOMESTIC_RENTAL if r.get("校验状态") == "REVIEW")
+    gpu_domestic_reject = sum(1 for r in DOMESTIC_RENTAL if r.get("校验状态") == "REJECT")
+    gpu_domestic_missing = sum(1 for r in DOMESTIC_RENTAL if r.get("标准化价格") is None)
+    
+    # GPU 海外租赁数据质量
+    gpu_overseas_total = len(OVERSEAS_RENTAL)
+    gpu_overseas_pass = sum(1 for r in OVERSEAS_RENTAL if r.get("校验状态") == "PASS")
+    
+    # Benchmark 数据质量
+    bench_total = len(BENCHMARK_DATA)
+    bench_has_intel = sum(1 for r in BENCHMARK_DATA if r.get("AA Intelligence Index", 0) > 0)
+    bench_has_scicode = sum(1 for r in BENCHMARK_DATA if r.get("SciCode 编程能力 (%)", 0) > 0)
+    
+    # 汇率数据质量（新增 carry-forward 状态识别）
+    if "carry-forward" in FX_SOURCE:
+        fx_status = "carry-forward"
+    elif FX_FETCHED_AT:
+        fx_status = "realtime"
+    elif "fallback" in FX_SOURCE:
+        fx_status = "fallback"
+    else:
+        fx_status = "cached"
+    
+    # 整体数据新鲜度评分（0-100）
+    # 借鉴 Smart DQMS 的多维度评分理念，但适配到本项目的数据特征
+    score = 100
+    # Token：缺一个 REVIEW 扣 1 分
+    score -= token_review * 1
+    # GPU 国内：缺一个 PASS 扣 2 分
+    score -= (gpu_domestic_total - gpu_domestic_pass) * 2
+    # 国产战略卡缺价格扣更多
+    strategic_missing = sum(
+        1 for r in DOMESTIC_RENTAL 
+        if r.get("GPU 型号") in STRATEGIC_DOMESTIC_GPUS and not pass_status(r)
+    )
+    score -= strategic_missing * 5
+    # 汇率质量扣分：fallback 扣 10 分，carry-forward 扣 3 分
+    if fx_status == "fallback":
+        score -= 10
+    elif fx_status == "carry-forward":
+        score -= 3
+    # 未使用动态发现扣 5 分
+    if not token_using_dynamic:
+        score -= 5
+    
+    score = max(0, min(100, score))
+    
+    # 评分等级
+    if score >= 85:
+        grade = "A"
+        grade_label = "优秀"
+        grade_color = "#22c55e"
+    elif score >= 70:
+        grade = "B"
+        grade_label = "良好"
+        grade_color = "#f7c76b"
+    elif score >= 55:
+        grade = "C"
+        grade_label = "一般"
+        grade_color = "#f97316"
+    else:
+        grade = "D"
+        grade_label = "待改进"
+        grade_color = "#ff7a90"
+    
+    return {
+        "score": score,
+        "grade": grade,
+        "grade_label": grade_label,
+        "grade_color": grade_color,
+        "fx_rate": FX_USD_CNY,
+        "fx_source": FX_SOURCE,
+        "fx_fetched_at": FX_FETCHED_AT,
+        "fx_status": fx_status,
+        "token": {
+            "total": token_total,
+            "pass": token_pass,
+            "review": token_review,
+            "overseas_ok": token_overseas_ok,
+            "domestic_ok": token_domestic_ok,
+            "using_dynamic": token_using_dynamic,
+        },
+        "gpu_domestic": {
+            "total": gpu_domestic_total,
+            "pass": gpu_domestic_pass,
+            "review": gpu_domestic_review,
+            "reject": gpu_domestic_reject,
+            "missing": gpu_domestic_missing,
+            "strategic_missing": strategic_missing,
+        },
+        "gpu_overseas": {
+            "total": gpu_overseas_total,
+            "pass": gpu_overseas_pass,
+        },
+        "benchmark": {
+            "total": bench_total,
+            "has_intel": bench_has_intel,
+            "has_scicode": bench_has_scicode,
+        },
+    }
+
+
+DATA_QUALITY = data_quality_stats()
+SNAPSHOT["data_quality"] = DATA_QUALITY
+
+# === 价格变动追踪（借鉴 LLM Price Index 的 append-only change log）===
+try:
+    change_count = change_log.record_price_changes(SNAPSHOT)
+    if change_count > 0:
+        print(f"[report] 记录了 {change_count} 条价格变动到 change log")
+    CHANGE_SUMMARY = change_log.get_change_summary()
+    SNAPSHOT["change_summary"] = CHANGE_SUMMARY
+except Exception as e:
+    print(f"[report] 价格变动追踪警告: {e}")
+    CHANGE_SUMMARY = {"total_changes": 0, "by_category": {}, "notable_changes": [], "log_file": "price_changes.csv"}
+
+# 预格式化数据质量显示字符串（避免 HTML 模板中嵌套 f-string）
+_fx_time_str = f" · 更新于 {DATA_QUALITY['fx_fetched_at'][:16]}" if DATA_QUALITY['fx_fetched_at'] else ""
+_token_tag_class = "tag-live" if DATA_QUALITY['token']['using_dynamic'] else "tag-static"
+_token_tag_text = "动态API采集" if DATA_QUALITY['token']['using_dynamic'] else "静态锚点"
+
+# 价格变动摘要 HTML（借鉴 LLM Price Index 的 append-only change log 展示方式）
+_change_summary_html = ""
+if CHANGE_SUMMARY.get("total_changes", 0) > 0:
+    _cat_labels = {"token": "Token 价格", "gpu_domestic": "国内 GPU 租赁", "gpu_overseas": "海外 GPU 租赁",
+                   "gpu_purchase": "GPU 采购", "fx_rate": "汇率"}
+    _cat_breakdown = " · ".join(
+        f"{_cat_labels.get(k, k)}: {v}" for k, v in CHANGE_SUMMARY.get("by_category", {}).items() if v > 0
+    )
+    _notable_rows = ""
+    for nc in CHANGE_SUMMARY.get("notable_changes", []):
+        _notable_rows += (
+            f'<tr><td>{nc["model"]}</td><td>{nc["metric"]}</td>'
+            f'<td>{nc["platform"]}</td><td style="color:#f7c76b">{nc["change_pct"]}</td>'
+            f'<td>{nc["old"]}</td><td>{nc["new"]}</td></tr>'
+        )
+    _notable_table = ""
+    if _notable_rows:
+        _notable_table = (
+            '<div style="margin-top:12px"><p class="note"><strong>显著变动（≥5%）：</strong></p>'
+            '<table class="data-table compact"><thead><tr>'
+            '<th>模型/GPU</th><th>指标</th><th>平台</th><th>变化</th><th>旧值</th><th>新值</th>'
+            '</tr></thead><tbody>' + _notable_rows + '</tbody></table></div>'
+        )
+    _change_summary_html = (
+        f'<div class="quality-overview"><div class="quality-score" style="border-left:4px solid #68e1fd">'
+        f'<div class="score-label">今日价格变动：{CHANGE_SUMMARY["total_changes"]} 条</div>'
+        f'<div class="score-detail">{_cat_breakdown}</div></div></div>'
+        f'{_notable_table}'
+        f'<p class="note" style="margin-top:8px">完整日志：<code>data/{CHANGE_SUMMARY.get("log_file", "price_changes.csv")}</code></p>'
+    )
+else:
+    # 检查是否有历史变动数据
+    _recent_7d = change_log.get_recent_changes(7)
+    if _recent_7d:
+        _change_summary_html = (
+            '<div class="quality-overview"><div class="quality-score" style="border-left:4px solid #74e0a3">'
+            f'<div class="score-label">今日无价格变动</div>'
+            f'<div class="score-detail">过去 7 天共 {len(_recent_7d)} 条变动记录</div></div></div>'
+            '<p class="note">价格未变化时仅记录时间戳，不写入新行。</p>'
+        )
+    else:
+        _change_summary_html = (
+            '<div class="quality-overview"><div class="quality-score" style="border-left:4px solid #9eb0c7">'
+            '<div class="score-label">价格变动追踪已启用</div>'
+            '<div class="score-detail">将在每日快照生成后自动对比前一天数据，记录价格变化。</div></div></div>'
+            '<p class="note">借鉴 LLM Price Index：append-only change log，仅在价格实际变动时写入。</p>'
+        )
+
+
 def html_escape(x) -> str:
     if x is None:
         return '<span class="missing">暂不可得</span>'
@@ -1849,6 +2114,20 @@ def render_html(relative_prefix: str = "./") -> str:
     tr:nth-child(even){{background:rgba(255,255,255,.02)}}
     tbody tr:hover{{background:rgba(104,225,253,.06);transition:background .15s}}
     .chart{{width:100%;min-height:420px}} footer{{margin-top:60px;padding-top:28px;border-top:1px solid var(--rule)}}
+    .quality-overview{{margin:20px 0}}
+    .quality-score{{padding:24px;border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid var(--rule)}}
+    .score-number{{font-size:56px;font-weight:800;line-height:1;letter-spacing:-.03em}}
+    .score-label{{font-size:18px;font-weight:600;margin-top:8px}}
+    .score-detail{{color:var(--muted);font-size:14px;margin-top:6px}}
+    .quality-grid{{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:16px}}
+    .quality-card{{padding:16px;border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015));border:1px solid var(--rule)}}
+    .qc-title{{font-weight:600;font-size:15px;margin-bottom:10px;color:var(--accent)}}
+    .qc-metric{{font-size:13px;color:var(--muted);margin:4px 0}}
+    .qc-metric strong{{color:var(--ink);font-size:15px}}
+    .qc-tag{{display:inline-block;margin-top:10px;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600}}
+    .tag-live{{background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.3)}}
+    .tag-static{{background:rgba(100,116,139,.15);color:#94a3b8;border:1px solid rgba(100,116,139,.3)}}
+    .tag-partial{{background:rgba(247,199,107,.15);color:#f7c76b;border:1px solid rgba(247,199,107,.3)}}
     @media(max-width:768px){{h1{{font-size:28px}} h2{{margin-top:32px;font-size:20px}} .page{{padding:16px 0 40px}} header{{padding:28px 0 18px}} .metric strong{{font-size:24px}} .chart{{min-height:320px}} table{{min-width:800px;font-size:12px}} th,td{{padding:8px 10px}} figcaption{{font-size:12px}}}}
     @media(max-width:900px){{.metrics{{grid-template-columns:1fr}} .page{{width:min(98vw,760px)}}}}
   </style>
@@ -1948,6 +2227,68 @@ def render_html(relative_prefix: str = "./") -> str:
       <h3>毛回本参考</h3>
       {table(GPU_PROFIT)}
       </div></details>
+    </section>
+
+    <section id="data-quality">
+      <h2>数据质量监控</h2>
+      <div class="quality-overview">
+        <div class="quality-score" style="border-left: 4px solid {DATA_QUALITY['grade_color']}">
+          <div class="score-number" style="color:{DATA_QUALITY['grade_color']}">{DATA_QUALITY['score']}</div>
+          <div class="score-label">数据新鲜度评分 · {DATA_QUALITY['grade_label']}（{DATA_QUALITY['grade']}）</div>
+          <div class="score-detail">汇率：{DATA_QUALITY['fx_rate']} · 来源：{DATA_QUALITY['fx_source']}{_fx_time_str}</div>
+        </div>
+      </div>
+      <div class="quality-grid">
+        <div class="quality-card">
+          <div class="qc-title">Token 价格</div>
+          <div class="qc-metric">覆盖模型：<strong>{DATA_QUALITY['token']['total']}</strong></div>
+          <div class="qc-metric">PASS：<span style="color:#22c55e">{DATA_QUALITY['token']['pass']}</span> / REVIEW：<span style="color:#f97316">{DATA_QUALITY['token']['review']}</span></div>
+          <div class="qc-metric">海外三方价：{DATA_QUALITY['token']['overseas_ok']}/{DATA_QUALITY['token']['total']}</div>
+          <div class="qc-metric">境内三方价：{DATA_QUALITY['token']['domestic_ok']}/{DATA_QUALITY['token']['total']}</div>
+          <div class="qc-tag {_token_tag_class}">{_token_tag_text}</div>
+        </div>
+        <div class="quality-card">
+          <div class="qc-title">国内 GPU 租赁</div>
+          <div class="qc-metric">覆盖型号：<strong>{DATA_QUALITY['gpu_domestic']['total']}</strong></div>
+          <div class="qc-metric">PASS：<span style="color:#22c55e">{DATA_QUALITY['gpu_domestic']['pass']}</span> / REVIEW：<span style="color:#f97316">{DATA_QUALITY['gpu_domestic']['review']}</span></div>
+          <div class="qc-metric">价格待补：<span style="color:#ff7a90">{DATA_QUALITY['gpu_domestic']['missing']}</span></div>
+          <div class="qc-metric">战略卡待补：{DATA_QUALITY['gpu_domestic']['strategic_missing']}</div>
+          <div class="qc-tag tag-partial">多源采集 + 锚点</div>
+        </div>
+        <div class="quality-card">
+          <div class="qc-title">海外 GPU Cloud</div>
+          <div class="qc-metric">覆盖型号：<strong>{DATA_QUALITY['gpu_overseas']['total']}</strong></div>
+          <div class="qc-metric">PASS：<span style="color:#22c55e">{DATA_QUALITY['gpu_overseas']['pass']}</span></div>
+          <div class="qc-metric">主源：RunPod / Lambda / Vast.ai</div>
+          <div class="qc-tag tag-partial">锚点 + 交叉验证</div>
+        </div>
+        <div class="quality-card">
+          <div class="qc-title">模型评测</div>
+          <div class="qc-metric">覆盖模型：<strong>{DATA_QUALITY['benchmark']['total']}</strong></div>
+          <div class="qc-metric">有 Intelligence：<span style="color:#22c55e">{DATA_QUALITY['benchmark']['has_intel']}</span></div>
+          <div class="qc-metric">有 SciCode：{DATA_QUALITY['benchmark']['has_scicode']}</div>
+          <div class="qc-metric">来源：Artificial Analysis</div>
+          <div class="qc-tag tag-static">Fallback 数据</div>
+        </div>
+      </div>
+      <details><summary>评分规则说明</summary><div class="details-body">
+        <p class="note">数据新鲜度评分基于以下维度计算（满分 100）：</p>
+        <ul class="note">
+          <li>Token 价格：每有 1 个 REVIEW 状态模型扣 1 分</li>
+          <li>国内 GPU 租赁：每缺 1 个 PASS 型号扣 2 分</li>
+          <li>国产战略关注卡：每缺 1 个 PASS 扣 5 分</li>
+          <li>汇率使用 fallback 值扣 10 分（carry-forward 扣 3 分）</li>
+          <li>未使用动态 API 发现扣 5 分</li>
+        </ul>
+        <p class="note">等级划分：A（≥85 优秀）· B（≥70 良好）· C（≥55 一般）· D（&lt;55 待改进）</p>
+        <p class="note" style="margin-top:8px;color:var(--muted)">借鉴开源项目：价格变动追踪（LLM Price Index）· 原始响应缓存（LLM Price Index raw/）· 过期数据标记（gpu-rental-prices）· 多维度评分（Smart DQMS）</p>
+      </div></details>
+    </section>
+
+    <section id="price-changes">
+      <h2>价格变动追踪</h2>
+      <p class="muted">借鉴 LLM Price Index 做法：仅在价格实际变动时写入日志（append-only），价格历史不可回补。</p>
+      {_change_summary_html}
     </section>
 
     <section id="sources">
@@ -2079,12 +2420,33 @@ def render_mobile_html(relative_prefix: str = "./", desktop_href: str = "latest.
       <h2>异常与待复核</h2>
       <details><summary>Rejected / Review 样本（{len(domestic_review)} 条）</summary><div class="details-body">{mobile_gpu_cards(domestic_review)}</div></details>
     </section>
+    <section id="m-quality">
+      <h2>数据质量 & 变动追踪</h2>
+      <div class="m-quality-box" style="border-left:4px solid {DATA_QUALITY['grade_color']};padding:10px 14px;margin:8px 0;background:var(--card-bg);border-radius:8px">
+        <div style="font-size:28px;font-weight:700;color:{DATA_QUALITY['grade_color']}">{DATA_QUALITY['score']}</div>
+        <div style="font-size:13px;color:var(--text)">数据新鲜度评分 · {DATA_QUALITY['grade_label']}（{DATA_QUALITY['grade']}）</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px">汇率：{DATA_QUALITY['fx_rate']} · {_token_tag_text}</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0">
+        <div style="padding:8px;background:var(--card-bg);border-radius:6px;text-align:center">
+          <div style="font-size:11px;color:var(--muted)">Token</div>
+          <div style="font-size:16px;font-weight:600">{DATA_QUALITY['token']['pass']}/{DATA_QUALITY['token']['total']}</div>
+          <div style="font-size:10px;color:#22c55e">PASS</div>
+        </div>
+        <div style="padding:8px;background:var(--card-bg);border-radius:6px;text-align:center">
+          <div style="font-size:11px;color:var(--muted)">国内 GPU</div>
+          <div style="font-size:16px;font-weight:600">{DATA_QUALITY['gpu_domestic']['pass']}/{DATA_QUALITY['gpu_domestic']['total']}</div>
+          <div style="font-size:10px;color:#f97316">PASS</div>
+        </div>
+      </div>
+      {_change_summary_html}
+    </section>
     <footer style="text-align:center;padding:20px 0 8px;font-size:11px;color:var(--muted)">
       © Gavin YszY · 算力市场情报日报
     </footer>
   </main>
   <nav class="quick-nav">
-    <a href="#summary">结论</a><a href="#domestic">国内</a><a href="#overseas">海外</a><a href="#token">Token</a><a href="#profit">利润</a><a href="#audit">审计</a>
+    <a href="#summary">结论</a><a href="#domestic">国内</a><a href="#overseas">海外</a><a href="#token">Token</a><a href="#profit">利润</a><a href="#audit">审计</a><a href="#m-quality">质量</a>
   </nav>
   <script src="{relative_prefix}_shared/js/echarts.min.js"></script>
   <script src="{relative_prefix}assets/charts.js?v={ASSET_VERSION}-{REPORT_VERSION}"></script>
@@ -2173,8 +2535,16 @@ def write_charts():
     data["profitYield"] = [r.get("月租/采购价中位数") for r in _profit_sorted]
     data["profitRoiStatus"] = [r["ROI 状态"] for r in _profit_sorted]
 
-    FX_RATE = round(_load_fx_rate(), 4)
+    FX_RATE, FX_RATE_SRC, FX_RATE_AT = _load_fx_rate()
+    FX_RATE = round(FX_RATE, 4)
     SNAPSHOT["fx_rate"] = FX_RATE
+    SNAPSHOT["fx_rate_source"] = FX_RATE_SRC
+    SNAPSHOT["fx_rate_fetched_at"] = FX_RATE_AT
+    # 同步更新 DATA_QUALITY 中的汇率信息（确保与图表使用的汇率一致）
+    DATA_QUALITY["fx_rate"] = FX_RATE
+    DATA_QUALITY["fx_source"] = FX_RATE_SRC
+    DATA_QUALITY["fx_fetched_at"] = FX_RATE_AT
+    DATA_QUALITY["fx_status"] = "realtime" if FX_RATE_AT else ("fallback" if "fallback" in FX_RATE_SRC else "cached")
 
     js = f"""(function(){{
   var DATA = {json.dumps(data, ensure_ascii=False)};

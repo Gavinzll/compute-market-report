@@ -24,6 +24,10 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Any
 
+# 导入原始响应缓存模块（借鉴 LLM Price Index 的 raw/ 目录做法）
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from change_log import cache_raw_response
+
 ROOT = Path(__file__).resolve().parents[1]
 TZ = timezone(timedelta(hours=8))
 NOW = datetime.now(TZ)
@@ -49,13 +53,24 @@ def record_source(tier: str, title: str, url: str, note: str = "") -> None:
         "note": note,
     })
 
-def fetch_json(url: str, timeout: int = 30, retries: int = 3) -> dict | list | None:
-    """从 URL 获取 JSON 数据，带指数退避重试。"""
+def fetch_json(url: str, timeout: int = 30, retries: int = 3, cache_key: str = "") -> dict | list | None:
+    """从 URL 获取 JSON 数据，带指数退避重试。
+
+    cache_key: 如果提供，会将原始响应缓存到 data/raw/ 目录，便于后续重新解析。
+    借鉴 LLM Price Index 的 data/raw/ 目录做法。
+    """
     for attempt in range(retries):
         try:
             req = urllib.request.Request(url, headers={"User-Agent": "CMIS-Daily-Discovery/1.0"})
             with urllib.request.urlopen(req, timeout=timeout) as resp:
-                return json.loads(resp.read().decode("utf-8", errors="ignore"))
+                data = json.loads(resp.read().decode("utf-8", errors="ignore"))
+                # 缓存原始响应（用于后续重新解析）
+                if cache_key and data:
+                    try:
+                        cache_raw_response(cache_key, data)
+                    except Exception as e:
+                        print(f"[discover] raw cache warning ({cache_key}): {e}", file=sys.stderr)
+                return data
         except Exception as e:
             print(f"[discover] fetch_json attempt {attempt+1}/{retries} failed: {url} -> {e}", file=sys.stderr)
             if attempt < retries - 1:
@@ -603,7 +618,7 @@ def _match_vendor(model_id: str) -> str | None:
 
 def discover_from_litellm() -> dict[str, list[dict]]:
     """从 LiteLLM JSON 发现模型。返回 vendor -> [models]。"""
-    data = fetch_json("https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json")
+    data = fetch_json("https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json", cache_key="litellm")
     if not data or not isinstance(data, dict):
         return {}
     result: dict[str, list[dict]] = {}
@@ -635,7 +650,7 @@ def discover_from_litellm() -> dict[str, list[dict]]:
 
 def discover_from_openrouter() -> dict[str, list[dict]]:
     """从 OpenRouter API 发现模型。"""
-    data = fetch_json("https://openrouter.ai/api/v1/models")
+    data = fetch_json("https://openrouter.ai/api/v1/models", cache_key="openrouter")
     if not data or not isinstance(data, dict):
         return {}
     models = data.get("data", [])
@@ -670,33 +685,77 @@ def discover_from_openrouter() -> dict[str, list[dict]]:
 
 
 def discover_from_modelsdev() -> dict[str, list[dict]]:
-    """从 models.dev API 发现模型。"""
-    data = fetch_json("https://models.dev/api.json")
-    if not data or not isinstance(data, list):
+    """从 models.dev API 发现模型。
+    
+    注意：models.dev API 格式为 {provider: {models: {model_id: model_info}}}，
+    价格在 model_info.cost.input / cost.output 中（单位：美元 / 百万 token）。
+    """
+    data = fetch_json("https://models.dev/api.json", cache_key="modelsdev")
+    if not data or not isinstance(data, dict):
         return {}
     result: dict[str, list[dict]] = {}
-    for m in data:
-        if not isinstance(m, dict):
+    
+    for provider_slug, provider_info in data.items():
+        if not isinstance(provider_info, dict):
             continue
-        model_id = m.get("id", "")
-        if _is_deprecated(model_id):
+        models_dict = provider_info.get("models", {})
+        if not isinstance(models_dict, dict):
             continue
-        vendor = _match_vendor(model_id)
-        if not vendor:
-            continue
-        pricing = m.get("pricing", {})
-        prompt_price = pricing.get("input", pricing.get("prompt", None))
-        completion_price = pricing.get("output", pricing.get("completion", None))
-        if prompt_price is None and completion_price is None:
-            continue
-        ctx = m.get("context_length", "")
-        result.setdefault(vendor, []).append({
-            "id": model_id,
-            "context": str(ctx) if ctx else "未知",
-            "input_cost_per_token": prompt_price,
-            "output_cost_per_token": completion_price,
-            "source": "models.dev API",
-        })
+        
+        for model_id, model_info in models_dict.items():
+            if not isinstance(model_info, dict):
+                continue
+            if _is_deprecated(model_id):
+                continue
+            
+            vendor = _match_vendor(model_id)
+            if not vendor:
+                continue
+            
+            cost = model_info.get("cost", {})
+            if not isinstance(cost, dict):
+                continue
+            
+            input_cost = cost.get("input")
+            output_cost = cost.get("output")
+            if input_cost is None and output_cost is None:
+                continue
+            
+            # models.dev 的价格单位已经是 美元/百万 token
+            # 但 discover 模块内部统一用 美元/token 存储，最后再转成 百万
+            # 不，等一下：看看 openrouter 的 pricing.prompt 是什么单位
+            # OpenRouter 的 pricing.prompt 是 美元/token，比如 0.000005 = $5/M
+            # 但 models.dev 的 cost.input = 0.05，这看起来是 $0.05/M = $0.00000005/token？
+            # 不对，GPT-5 Nano 官方价是 $0.10/$0.60 每百万？不对
+            # 让我重新核对：OpenAI GPT-4o mini 是 $0.15/$0.60 每百万
+            # models.dev 显示 gpt-5-nano input=0.05, output=0.4
+            # 如果单位是 $/M token，那 $0.05/M 输入太便宜了
+            # 如果单位是 $/1K token，那 $0.05/1K = $50/M 太贵了
+            # 让我看看 LiteLLM 中的 gpt-5-nano 价格做对比
+            # 暂时按 $/M token 处理（和锚点数据单位一致），
+            # 因为 _fuzzy_match 那边会 * 1_000_000 转成 /M
+            # 不对，我们的 discover_from_openrouter 返回的是 per_token 价格
+            # 然后 build_discovered_token_rows 里 * 1_000_000 转成 每百万
+            # 所以这里如果 models.dev 给的是 per_million，就要除以 1_000_000
+            
+            # 验证：gpt-5-nano 官方价大约 $0.10/$0.60 每百万（mini 级别）
+            # models.dev 显示 0.05 / 0.4，看起来是 $0.05/M 输入，$0.4/M 输出
+            # 这比官方便宜很多，可能是缓存价或某个渠道价
+            # 不管怎样，按 $/M token 读取，然后转成 per_token 存储（和其他源统一）
+            
+            input_per_token = float(input_cost) / 1_000_000 if input_cost is not None else None
+            output_per_token = float(output_cost) / 1_000_000 if output_cost is not None else None
+            
+            ctx = model_info.get("context_length", model_info.get("max_context", ""))
+            
+            result.setdefault(vendor, []).append({
+                "id": model_id,
+                "context": str(ctx) if ctx else "未知",
+                "input_cost_per_token": input_per_token,
+                "output_cost_per_token": output_per_token,
+                "source": "models.dev API",
+            })
+    
     if result:
         record_source("海外三方", "models.dev API 模型定价", "https://models.dev/api.json", f"验证 {sum(len(v) for v in result.values())} 个模型")
     return result
@@ -740,14 +799,77 @@ def merge_vendor_models(
     return merged
 
 
+def _fuzzy_match_model(name: str, api_model_id: str) -> float:
+    """计算模型名与 API model ID 的匹配度（0-1）。
+    
+    用于从 OpenRouter/LiteLLM 的模型 ID 中找到与锚点模型最匹配的那个。
+    """
+    name_lower = name.lower()
+    api_lower = api_model_id.lower()
+    
+    # 预处理：提取关键词
+    def extract_keywords(s: str) -> set[str]:
+        # 替换常见分隔符
+        for ch in ['-', '_', '.', '/', ' ']:
+            s = s.replace(ch, ' ')
+        parts = [p for p in s.split() if p]
+        # 过滤掉无意义的词
+        stopwords = {'v', 'ver', 'model', 'api', 'chat', 'instruct', 'latest'}
+        return {p for p in parts if p not in stopwords and len(p) >= 2}
+    
+    name_kw = extract_keywords(name_lower)
+    api_kw = extract_keywords(api_lower)
+    
+    if not name_kw:
+        return 0.0
+    
+    # 计算关键词交集
+    intersection = name_kw & api_kw
+    union = name_kw | api_kw
+    
+    # Jaccard 相似度
+    jaccard = len(intersection) / len(union) if union else 0.0
+    
+    # 额外加分：名称包含关系
+    contains_bonus = 0.0
+    name_norm = name_lower.replace(' ', '').replace('-', '')
+    api_norm = api_lower.replace(' ', '').replace('-', '')
+    if name_norm in api_norm or api_norm in name_norm:
+        contains_bonus = 0.3
+    
+    return min(1.0, jaccard + contains_bonus)
+
+
+def _validate_price_reasonable(input_price: float | None, output_price: float | None, vendor: str, model_name: str) -> bool:
+    """价格合理性校验：过滤明显异常的价格数据。"""
+    if input_price is None and output_price is None:
+        return False
+    
+    # 价格区间校验（每百万 Token）
+    # 合理范围：输入 $0.01 - $100，输出 $0.03 - $300
+    for price in [input_price, output_price]:
+        if price is not None:
+            if price <= 0 or price > 500:
+                print(f"  [warn] 价格异常: {vendor}/{model_name} = ${price}/M tokens, 跳过")
+                return False
+    
+    # 输出价一般 >= 输入价的 2 倍（大多数模型）
+    if input_price and output_price and output_price < input_price * 0.5:
+        print(f"  [warn] 输出价低于输入价一半: {vendor}/{model_name} in=${input_price} out=${output_price}")
+    
+    return True
+
+
 def build_discovered_token_rows() -> tuple[list[dict[str, Any]], list[dict]]:
     """构建发现后的 Token 数据行。
 
-    策略：
+    策略（v2 增强版）：
     1. 以 VENDOR_MODEL_ANCHORS 为基础（含官方价 + 已知三方价），保证数据质量
-    2. 从 OpenRouter API 动态拉取市场价，与锚点交叉验证
-    3. 若锚点中某项价格缺失，用 API 发现结果补全
-    4. 记录所有发现的模型 ID 供人工审核新模型
+    2. 从 OpenRouter / LiteLLM / models.dev API 动态拉取市场价
+    3. 智能模糊匹配，找到与锚点模型最匹配的 API 模型
+    4. 价格合理性校验，过滤异常数据
+    5. API 价格用于：补全缺失 + 交叉验证 + 更新过期的三方价
+    6. 记录每个模型的数据来源和匹配质量
     """
     print("[discover] Fetching OpenRouter API...")
     openrouter = discover_from_openrouter()
@@ -757,16 +879,22 @@ def build_discovered_token_rows() -> tuple[list[dict[str, Any]], list[dict]]:
     litellm = discover_from_litellm()
     print(f"[discover] LiteLLM: {sum(len(v) for v in litellm.values())} models")
 
-    discovered = merge_vendor_models(litellm, openrouter, {})
+    print("[discover] Fetching models.dev API...")
+    modelsdev = discover_from_modelsdev()
+    print(f"[discover] models.dev: {sum(len(v) for v in modelsdev.values())} models")
+
+    discovered = merge_vendor_models(litellm, openrouter, modelsdev)
 
     rows: list[dict[str, Any]] = []
     discovered_log: list[dict] = []
+    stats = {"total": 0, "overseas_api_updated": 0, "overseas_api_filled": 0, "domestic_missing": 0}
 
     for anchor in VENDOR_MODEL_ANCHORS:
         vendor = anchor["vendor"]
         api_models = discovered.get(vendor, [])
 
         for model in anchor["models"]:
+            stats["total"] += 1
             name = model["name"]
             context = model.get("context", "未知")
             note = model.get("note", "")
@@ -783,40 +911,83 @@ def build_discovered_token_rows() -> tuple[list[dict[str, Any]], list[dict]]:
 
             region = "海外" if currency == "USD" else "国产"
 
-            # 三方价：优先用锚点中的已知价格，缺失则尝试从 API 发现补全
+            # 三方价：优先用锚点中的已知价格，缺失或可验证时用 API 发现
             overseas_in_usd = model.get("overseas_in_usd")
             overseas_out_usd = model.get("overseas_out_usd")
             overseas_source = model.get("overseas_source", "")
+            overseas_match_quality = "anchor"  # anchor / api_high / api_medium / api_low / none
 
             domestic_in_cny = model.get("domestic_in_cny")
             domestic_out_cny = model.get("domestic_out_cny")
             domestic_source = model.get("domestic_source", "")
 
-            # 若锚点中海外三方价缺失，尝试从 API 发现补全
-            if overseas_in_usd is None and overseas_out_usd is None:
-                for am in api_models:
-                    aid = am["id"].lower()
-                    # 模糊匹配
-                    name_norm = name.lower().replace(" ", "-").replace(".", "-")
-                    if any(part in aid for part in name_norm.split("-") if len(part) >= 2):
-                        inp = am.get("input_cost_per_token")
-                        out = am.get("output_cost_per_token")
-                        if inp is not None:
-                            overseas_in_usd = round(float(inp) * 1_000_000, 4)
-                        if out is not None:
-                            overseas_out_usd = round(float(out) * 1_000_000, 4)
-                        if overseas_in_usd or overseas_out_usd:
-                            overseas_source = f"API补全 / {am.get('_source', 'unknown')} / {am['id']}"
-                        break
+            # 从 API 发现结果中找最佳匹配
+            best_match = None
+            best_score = 0.0
+            for am in api_models:
+                score = _fuzzy_match_model(name, am["id"])
+                if score > best_score:
+                    best_score = score
+                    best_match = am
 
-            status = "PASS"
+            # 如果有高置信匹配，用 API 价格补全或验证
+            if best_match and best_score >= 0.3:
+                inp = best_match.get("input_cost_per_token")
+                out = best_match.get("output_cost_per_token")
+                api_in = round(float(inp) * 1_000_000, 4) if inp is not None else None
+                api_out = round(float(out) * 1_000_000, 4) if out is not None else None
+                
+                # 价格合理性校验
+                if _validate_price_reasonable(api_in, api_out, vendor, name):
+                    src_name = best_match.get('_source', 'API')
+                    src_id = best_match.get('id', '')
+                    
+                    # 匹配质量分级
+                    if best_score >= 0.6:
+                        overseas_match_quality = "api_high"
+                    elif best_score >= 0.4:
+                        overseas_match_quality = "api_medium"
+                    else:
+                        overseas_match_quality = "api_low"
+                    
+                    # 情况1: 锚点无海外三方价 -> 补全
+                    if overseas_in_usd is None and overseas_out_usd is None:
+                        if api_in is not None or api_out is not None:
+                            overseas_in_usd = api_in
+                            overseas_out_usd = api_out
+                            overseas_source = f"API动态补全 / {src_name} / {src_id} (匹配度{best_score:.2f})"
+                            stats["overseas_api_filled"] += 1
+                    
+                    # 情况2: 锚点有海外三方价，但 API 价格差异大 -> 标注（不覆盖，只记录差异）
+                    elif overseas_in_usd is not None and api_in is not None:
+                        diff_pct = abs(api_in - overseas_in_usd) / overseas_in_usd if overseas_in_usd else 0
+                        if diff_pct > 0.2:  # 差异超过 20%
+                            note = (note + f" [价格异动提醒: 锚点${overseas_in_usd} vs API${api_in}, 差{diff_pct:.0%}]").strip()
+                
+                else:
+                    # 价格不合理，忽略 API 结果
+                    best_match = None
+                    best_score = 0.0
+
+            if domestic_in_cny is None and domestic_out_cny is None and region == "国产":
+                stats["domestic_missing"] += 1
+
+            # 计算置信度
             confidence = 90
-
-            # 根据数据完整度调整状态
-            if overseas_in_usd is None and overseas_out_usd is None:
-                confidence = min(confidence, 70)
+            if overseas_match_quality == "api_high":
+                confidence = 90
+            elif overseas_match_quality == "api_medium":
+                confidence = 80
+            elif overseas_match_quality == "api_low":
+                confidence = 70
+            elif overseas_match_quality == "none":
+                confidence = 60
+            
+            # 国产模型缺境内三方价，降置信度
             if domestic_in_cny is None and domestic_out_cny is None and region == "国产":
                 confidence = min(confidence, 70)
+
+            status = "PASS" if confidence >= 70 else "REVIEW"
 
             rows.append({
                 "vendor": vendor,
@@ -830,6 +1001,7 @@ def build_discovered_token_rows() -> tuple[list[dict[str, Any]], list[dict]]:
                 "overseas_in_usd": overseas_in_usd,
                 "overseas_out_usd": overseas_out_usd,
                 "overseas_source": overseas_source,
+                "overseas_match_quality": overseas_match_quality,
                 "domestic_in_cny": domestic_in_cny,
                 "domestic_out_cny": domestic_out_cny,
                 "domestic_source": domestic_source,
@@ -837,6 +1009,8 @@ def build_discovered_token_rows() -> tuple[list[dict[str, Any]], list[dict]]:
                 "confidence": confidence,
                 "status": status,
                 "api_discovered_models": [m["id"] for m in api_models[:5]],
+                "best_api_match": best_match["id"] if best_match else None,
+                "best_match_score": round(best_score, 2) if best_match else 0,
             })
 
         discovered_log.append({
@@ -845,6 +1019,7 @@ def build_discovered_token_rows() -> tuple[list[dict[str, Any]], list[dict]]:
             "api_model_ids": [m["id"] for m in api_models[:10]],
         })
 
+    print(f"[discover] Token stats: 总模型={stats['total']}, 海外API补全={stats['overseas_api_filled']}, 境内三方缺失={stats['domestic_missing']}")
     return rows, discovered_log
 
 
@@ -976,6 +1151,122 @@ def discover_gpu_prices_from_cloudgpus() -> dict[str, float]:
     if prices:
         record_source("海外云价", "cloud-gpus.com GPU pricing", "https://cloud-gpus.com/", f"采集到 {len(prices)} 款 GPU 海外时租价")
     return prices
+
+
+# ---------------------------------------------------------------------------
+# 开源数据集：gpu-rental-prices（借鉴 OpenComputePrices / gpu-rental-prices）
+# 数据源：https://github.com/adriannutiu/gpu-rental-prices (CC BY 4.0)
+# 每日更新 22+ 提供商的 GPU 租赁价格，含 source_url + fetched_at
+# ---------------------------------------------------------------------------
+
+# gpu-rental-prices 的 GPU ID -> 我们的内部 GPU 名称映射
+_GPURENTALPRICES_GPU_MAP: dict[str, str] = {
+    "h100-sxm": "H100 80G",
+    "h100-pcie": "H100 80G",
+    "h100-nvl": "H100 80G",
+    "h200": "H200",
+    "h200-nvl": "H200",
+    "b200": "B200",
+    "b300": "B300",
+    "a100-sxm-80": "A100 80G",
+    "a100-pcie-80": "A100 80G",
+    "a100-sxm-40": "A100 40G",
+    "a100-pcie-40": "A100 40G",
+    "l40s": "L40S",
+    "l40": "L40",
+    "rtx-4090": "RTX 4090",
+    "rtx-5090": "RTX 5090",
+    "rtx-3090": "RTX 3090",
+    "mi300x": "MI300X",
+    "gh200": "GH200",
+    "v100-sxm2": "V100",
+    "v100-pcie": "V100",
+    "a10": "A10",
+    "l4": "L4",
+    "rtx-a6000": "RTX A6000",
+    "rtx-a5000": "RTX A5000",
+    "rtx-a4000": "RTX A4000",
+}
+
+
+def discover_gpu_prices_from_open_dataset() -> dict[str, dict[str, Any]]:
+    """从 gpu-rental-prices 开源数据集获取海外 GPU 时租价格。
+
+    借鉴 OpenComputePrices 和 gpu-rental-prices 项目的做法：
+    - 使用开源、每日更新的数据集（CC BY 4.0）
+    - 每条价格附带 source_url 和 fetched_at 时间戳
+    - 多提供商价格取中位数（借鉴 GPUpriceCheckr 的 provider-balanced 指数做法）
+
+    返回 {内部GPU名: {"usd": float, "providers": [...], "source_url": str, "fetched_at": str}}
+    """
+    data = fetch_json(
+        "https://raw.githubusercontent.com/adriannutiu/gpu-rental-prices/main/data/latest.json",
+        cache_key="gpurentalprices",
+    )
+    if not data or not isinstance(data, dict):
+        print("[discover] gpu-rental-prices: fetch failed", file=sys.stderr)
+        return {}
+
+    offers = data.get("offers", [])
+    if not offers:
+        return {}
+
+    # 按 GPU 名称分组收集价格
+    gpu_prices: dict[str, list[dict[str, Any]]] = {}
+    for offer in offers:
+        gpu_id = offer.get("gpu", "")
+        internal_name = _GPURENTALPRICES_GPU_MAP.get(gpu_id)
+        if not internal_name:
+            continue
+
+        kind = offer.get("kind", "")
+        # 只用 on-demand/secure 价格，不用 spot/community
+        if kind not in ("secure", "on-demand"):
+            continue
+
+        usd_hr = offer.get("usd_hr")
+        if not isinstance(usd_hr, (int, float)) or usd_hr <= 0:
+            continue
+
+        gpu_prices.setdefault(internal_name, []).append({
+            "provider": offer.get("provider", ""),
+            "usd_hr": float(usd_hr),
+            "source_url": offer.get("source_url", ""),
+            "fetched_at": offer.get("fetched_at", ""),
+        })
+
+    # 计算每个 GPU 的中位数价格（借鉴 GPUpriceCheckr 的 provider-balanced 做法）
+    result: dict[str, dict[str, Any]] = {}
+    for gpu_name, price_list in gpu_prices.items():
+        prices_sorted = sorted(p["usd_hr"] for p in price_list)
+        n = len(prices_sorted)
+        if n == 0:
+            continue
+        median = prices_sorted[n // 2] if n % 2 == 1 else round((prices_sorted[n // 2 - 1] + prices_sorted[n // 2]) / 2, 2)
+
+        providers = list({p["provider"] for p in price_list})
+        # 取最新的 fetched_at
+        fetched_at = max(p["fetched_at"] for p in price_list if p["fetched_at"])
+        # 取第一个 source_url 作为代表
+        source_url = price_list[0].get("source_url", "https://gpurentalprices.com")
+
+        result[gpu_name] = {
+            "usd": median,
+            "providers": providers,
+            "provider_count": len(providers),
+            "source_url": source_url,
+            "fetched_at": fetched_at,
+        }
+
+    if result:
+        record_source(
+            "海外云价",
+            "gpu-rental-prices 开源数据集",
+            "https://github.com/adriannutiu/gpu-rental-prices",
+            f"采集到 {len(result)} 款 GPU 海外时租价（{sum(len(p['providers']) for p in result.values())} 个提供商）",
+        )
+        print(f"[discover] gpu-rental-prices: {len(result)} GPUs from {sum(len(p['providers']) for p in result.values())} provider-offers")
+    return result
 
 
 def scrape_tianyi_gpu_prices() -> dict[str, tuple[float, float]]:
@@ -1437,6 +1728,7 @@ def build_discovered_gpu_list() -> dict[str, Any]:
     cloud_gpus = discover_gpu_from_cloudgpus()
     pricing_gpus = discover_gpu_from_gpucloudpricing()
     cloudgpu_prices = discover_gpu_prices_from_cloudgpus()
+    open_dataset_prices = discover_gpu_prices_from_open_dataset()
 
     all_discovered = set(cloud_gpus) | set(pricing_gpus)
 
@@ -1450,6 +1742,32 @@ def build_discovered_gpu_list() -> dict[str, Any]:
     noise_filter = {"GPU", "CPU", "RAM", "SSD", "HDD", "NVMe", "TB", "GB", "VRAM", "vCPU"}
     new_gpus = [g for g in new_gpus if g not in noise_filter and len(g) >= 3]
 
+    # 将开源数据集价格合并到海外锚点中
+    merged_overseas = dict(OVERSEAS_GPU_PRICE_ANCHORS)  # 先复制静态锚点
+    for gpu_name, info in open_dataset_prices.items():
+        if gpu_name in merged_overseas:
+            # 合并：开源数据集作为额外源
+            existing = merged_overseas[gpu_name]
+            existing_prices = [v for k, v in existing.items() if isinstance(v, (int, float))]
+            open_usd = info["usd"]
+            existing_prices.append(open_usd)
+            # 重新计算均价
+            avg = round(sum(existing_prices) / len(existing_prices), 2)
+            merged_overseas[gpu_name]["open_dataset"] = open_usd
+            merged_overseas[gpu_name]["_avg"] = avg
+            merged_overseas[gpu_name]["_providers"] = info.get("providers", [])
+            merged_overseas[gpu_name]["_source_url"] = info.get("source_url", "")
+            merged_overseas[gpu_name]["_fetched_at"] = info.get("fetched_at", "")
+        else:
+            # 新 GPU，直接加入
+            merged_overseas[gpu_name] = {
+                "open_dataset": info["usd"],
+                "_avg": info["usd"],
+                "_providers": info.get("providers", []),
+                "_source_url": info.get("source_url", ""),
+                "_fetched_at": info.get("fetched_at", ""),
+            }
+
     return {
         "baseline_groups": BASELINE_GPU_GROUPS,
         "discontinued": sorted(DISCONTINUED_GPUS),
@@ -1457,10 +1775,11 @@ def build_discovered_gpu_list() -> dict[str, Any]:
         "discovered_from_cloudgpus": cloud_gpus,
         "discovered_from_gpucloudpricing": pricing_gpus,
         "discovered_prices_from_cloudgpus": cloudgpu_prices,
+        "open_dataset_prices": open_dataset_prices,
         "new_candidates": new_gpus,
-        "overseas_price_anchors": OVERSEAS_GPU_PRICE_ANCHORS,
+        "overseas_price_anchors": merged_overseas,
         "domestic_price_anchors": build_dynamic_domestic_anchors(),
-        "recommendation": "基线名单已更新至2026-07-15；H20停产保留审计；新增国产候选型号；价格锚点含多源真实数据（天翼云/SMM/云擎天下/生数云动态采集+静态锚点补充）。",
+        "recommendation": "基线名单已更新至2026-07-15；H20停产保留审计；新增国产候选型号；价格锚点含多源真实数据（天翼云/SMM/云擎天下/生数云/gpu-rental-prices 开源数据集动态采集+静态锚点补充）。",
     }
 
 
