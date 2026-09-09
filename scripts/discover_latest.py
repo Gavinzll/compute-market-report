@@ -1341,12 +1341,17 @@ def scrape_smm_gpu_prices() -> dict[str, dict[str, Any]]:
     text = re.sub(r'<[^>]+>', ' ', html)
     text = re.sub(r'\s+', ' ', text)
     results: dict[str, dict[str, Any]] = {}
+    # 按【SMM算力快讯】分段：每段是一条独立快讯，价格归属只在本段内判定，
+    # 避免"该型号主流报价区间…"这类省略主语的句式把价格误配给邻近新闻里的其它 GPU
+    segments = re.split(r'【SMM(?:算力)?快讯】', text)[1:]
     # SMM 文本格式多样，需优先匹配"主流报价区间"/"实际成交"/"报价集中"等关键词
     # 跳过"含电"报价（含电费的高价不是裸金属市场价）
     gpu_search = [
         ("H100 80G", [
             # 优先：主流报价区间 7.5-8万/月
             r'H100[^万]{0,40}?(?:主流报价区间|实际成交区间|报价集中|成交区间)[^万]{0,20}?(\d+\.?\d*)\s*[-—~]\s*(\d+\.?\d*)\s*万',
+            # 分段兜底：快讯正文用"该型号主流报价(区间)为/已升至 X万—Y万"指代 H100（2026-09-10 实测格式）
+            r'主流报价(?:区间)?[为已推升至]{0,8}?(\d+\.?\d*)\s*万\s*[-—~]\s*(\d+\.?\d*)\s*万',
             # 裸金属报价 X万以内
             r'H100[^万]{0,30}?裸金属[^万]{0,20}?(\d+\.?\d*)\s*万',
             # 排除含电的单值
@@ -1355,6 +1360,11 @@ def scrape_smm_gpu_prices() -> dict[str, dict[str, Any]]:
         ("A100 80G", [
             r'A100[^万]{0,40}?(\d+\.?\d*)\s*[-—~]\s*(\d+\.?\d*)\s*万\s*/\s*月',
             r'A100[^万]{0,40}?(\d+\.?\d*)\s*万\s*/\s*月',
+        ]),
+        ("H200", [
+            # 分段内：H200整机租赁月租 …升至 X万—Y万元区间（2026-09-03 起实测格式）
+            r'H200[\s\S]{0,80}?(\d+\.?\d*)\s*万\s*[-—~]\s*(\d+\.?\d*)\s*万元?区间',
+            r'H200[^万]{0,40}?(\d+\.?\d*)\s*[-—~]\s*(\d+\.?\d*)\s*万\s*/\s*月',
         ]),
         ("RTX 5090", [
             # 优先：区间格式 "5090整机租赁月租处于1.15万—1.35万元区间"（2026-09-05 加固：原单值正则曾误配 Pro 6000 月租报价）
@@ -1365,34 +1375,52 @@ def scrape_smm_gpu_prices() -> dict[str, dict[str, Any]]:
         ]),
         ("RTX 4090", [
             r'4090[^元万]{0,40}?(\d[\d,]*)\s*[-—~]\s*(\d[\d,]*)\s*元\s*/\s*台\s*/\s*月',
+            # 分段兜底：月租 7200元/台/月（华南年租挂牌，2026-09-10 实测格式）
+            r'月租(\d[\d,]*)\s*元\s*/\s*台\s*/\s*月',
+            # 分段兜底：月租报价上调至 8000元（2026-09-08 实测格式）
+            r'月租报价(?:上调至|为|报)?(\d[\d,]*)\s*元',
             r'4090[^元万]{0,30}?市场价报(\d[\d,]*)\s*元',
             r'4090[^元万]{0,30}?成交价(\d[\d,]*)\s*元',
         ]),
     ]
+    # GPU 名到快讯段的包含判定（H20 是 H200 的前缀，需词边界防误命中）
+    gpu_seg_match = {
+        "H100 80G": re.compile(r'H100(?![0-9A-Za-z])'),
+        "A100 80G": re.compile(r'A100(?![0-9A-Za-z])'),
+        "H200": re.compile(r'H200(?![0-9A-Za-z])'),
+        "RTX 5090": re.compile(r'5090(?![0-9A-Za-z])'),
+        "RTX 4090": re.compile(r'4090(?![0-9A-Za-z])'),
+    }
     for gpu, patterns in gpu_search:
+        # 段内文本：仅在该 GPU 被点名的快讯段里搜索（无分段时退回全文）
+        scoped_texts = [s for s in segments if gpu_seg_match[gpu].search(s)]
+        search_space: list[str] = scoped_texts if scoped_texts else [text]
         for pat in patterns:
-            m = re.search(pat, text, re.IGNORECASE)
-            if m:
-                try:
-                    if len(m.groups()) == 2:
-                        low = float(m.group(1).replace(",", ""))
-                        high = float(m.group(2).replace(",", ""))
-                        # 判断是万元还是元
-                        if "万" in text[m.start():m.end()+10]:
-                            mid = round((low + high) / 2, 2)
-                            results[gpu] = {"monthly_wan": mid, "note": f"SMM直播：{low}-{high}万/月，中位{mid}万"}
+            for seg in search_space:
+                m = re.search(pat, seg, re.IGNORECASE)
+                if m:
+                    try:
+                        if len(m.groups()) == 2:
+                            low = float(m.group(1).replace(",", ""))
+                            high = float(m.group(2).replace(",", ""))
+                            # 判断是万元还是元
+                            if "万" in seg[m.start():m.end()+10]:
+                                mid = round((low + high) / 2, 2)
+                                results[gpu] = {"monthly_wan": mid, "note": f"SMM直播：{low}-{high}万/月，中位{mid}万"}
+                            else:
+                                mid = round((low + high) / 2 / 10000, 2)
+                                results[gpu] = {"monthly_wan": mid, "note": f"SMM直播：{low}-{high}元/台/月，中位{mid}万"}
                         else:
-                            mid = round((low + high) / 2 / 10000, 2)
-                            results[gpu] = {"monthly_wan": mid, "note": f"SMM直播：{low}-{high}元/台/月，中位{mid}万"}
-                    else:
-                        val = float(m.group(1).replace(",", ""))
-                        if "万" in text[m.start():m.end()+10]:
-                            results[gpu] = {"monthly_wan": val, "note": f"SMM直播：{val}万/月"}
-                        elif val > 1000:
-                            results[gpu] = {"monthly_wan": round(val / 10000, 2), "note": f"SMM直播：{val}元/台/月"}
-                    break
-                except (ValueError, IndexError):
-                    pass
+                            val = float(m.group(1).replace(",", ""))
+                            if "万" in seg[m.start():m.end()+10]:
+                                results[gpu] = {"monthly_wan": val, "note": f"SMM直播：{val}万/月"}
+                            elif val > 1000:
+                                results[gpu] = {"monthly_wan": round(val / 10000, 2), "note": f"SMM直播：{val}元/台/月"}
+                        break
+                    except (ValueError, IndexError):
+                        pass
+            if gpu in results:
+                break
     if results:
         record_source("裸金属/行业", "SMM 算力快讯直播页", "https://news.smm.cn/live/metal/143", f"采集到 {len(results)} 款 GPU 裸金属月租价")
     print(f"[discover] smm: {len(results)} prices found: {list(results.keys())}")
