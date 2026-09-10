@@ -250,3 +250,109 @@ observed_at,category,model,vendor,metric,platform,old_value,new_value,change_pct
 2026-09-10T05:23:05.742885+08:00,gpu_overseas,H100 80G,,rental_price,,12.41,12.4,-0.1%,
 2026-09-10T05:23:05.742885+08:00,gpu_overseas,L40S,,rental_price,,5.45,5.37,-1.5%,
 2026-09-10T05:23:05.742885+08:00,gpu_overseas,RTX 5090,,rental_price,,3.05,2.98,-2.3%,
+2026-09-11T05:21:39.602115+08:00,token,GPT-5.5,OpenAI,input,overseas_3rd,USD 5.0/百万Token（约 ¥33.54；精确同名）,USD 5.0/百万Token（约 ¥33.53；精确同名）,N/A,OpenRouter / gpt-5.5
+2026-09-11T05:21:39.602115+08:00,token,GPT-5.5,OpenAI,output,overseas_3rd,USD 30.0/百万Token（约 ¥201.23；精确同名）,USD 30.0/百万Token（约 ¥201.19；精确同名）,N/A,OpenRouter / gpt-5.5
+2026-09-11T05:21:39.602115+08:00,token,GPT-5.5,OpenAI,input,domestic_3rd,CNY 33.54/百万Token（近似参考）,CNY 33.53/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:21:39.602115+08:00,token,GPT-5.5,OpenAI,output,domestic_3rd,CNY 201.23/百万Token（近似参考）,CNY 201.19/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:21:39.602115+08:00,token,GPT-5.4,OpenAI,output,overseas_3rd,USD 15.0/百万Token（约 ¥100.62；精确同名）,USD 15.0/百万Token（约 ¥100.59；精确同名）,N/A,OpenRouter / gpt-5.4
+2026-09-11T05:21:39.602115+08:00,token,GPT-5.4,OpenAI,output,domestic_3rd,CNY 100.62/百万Token（近似参考）,CNY 100.59/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:21:39.602115+08:00,token,GPT-5.4 mini,OpenAI,output,overseas_3rd,USD 4.5/百万Token（约 ¥30.19；精确同名）,USD 4.5/百万Token（约 ¥30.18；精确同名）,N/A,OpenRouter / gpt-5.4-mini
+2026-09-11T05:21:39.602115+08:00,token,GPT-5.4 mini,OpenAI,output,domestic_3rd,CNY 30.19/百万Token（近似参考）,CNY 30.18/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:21:39.602115+08:00,token,Claude Fable 5,Anthropic,input,overseas_3rd,USD 10.0/百万Token（约 ¥67.08；精确同名）,USD 10.0/百万Token（约 ¥67.06；精确同名）,N/A,OpenRouter / claude-fable-5
+2026-09-11T05:21:39.602115+08:00,token,Claude Fable 5,Anthropic,output,overseas_3rd,USD 50.0/百万Token（约 ¥335.39；精确同名）,USD 50.0/百万Token（约 ¥335.31；精确同名）,N/A,OpenRouter / claude-fable-5
+2026-09-11T05:21:39.602115+08:00,token,Claude Fable 5,Anthropic,input,domestic_3rd,CNY 67.08/百万Token（近似参考）,CNY 67.06/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:21:39.602115+08:00,token,Claude Fable 5,Anthropic,output,domestic_3rd,CNY 335.39/百万Token（近似参考）,CNY 335.31/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:21:39.602115+08:00,token,Claude Opus 4.8,Anthropic,input,overseas_3rd,USD 5.0/百万Token（约 ¥33.54；精确同名）,USD 5.0/百万Token（约 ¥33.53；精确同名）,N/A,OpenRouter / claude-opus-4.8
+2026-09-11T05:21:39.602115+08:00,token,Claude Opus 4.8,Anthropic,output,overseas_3rd,USD 25.0/百万Token（约 ¥167.69；精确同名）,USD 25.0/百万Token（约 ¥167.66；精确同名）,N/A,OpenRouter / claude-opus-4.8
+2026-09-11T05:21:39.602115+08:00,token,Claude Opus 4.8,Anthropic,input,domestic_3rd,CNY 33.54/百万Token（近似参考）,CNY 33.53/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:21:39.602115+08:00,token,Claude Opus 4.8,Anthropic,output,domestic_3rd,CNY 167.69/百万Token（近似参考）,CNY 167.66/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:21:39.602115+08:00,token,Claude Sonnet 5,Anthropic,input,overseas_3rd,USD 2.0/百万Token（约 ¥13.42；精确同名）,USD 2.0/百万Token（约 ¥13.41；精确同名）,N/A,OpenRouter / claude-sonnet-5
+2026-09-11T05:21:39.602115+08:00,token,Claude Sonnet 5,Anthropic,output,overseas_3rd,USD 10.0/百万Token（约 ¥67.08；精确同名）,USD 10.0/百万Token（约 ¥67.06；精确同名）,N/A,OpenRouter / claude-sonnet-5
+2026-09-11T05:21:39.602115+08:00,token,Claude Sonnet 5,Anthropic,input,domestic_3rd,CNY 13.42/百万Token（近似参考）,CNY 13.41/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:21:39.602115+08:00,token,Claude Sonnet 5,Anthropic,output,domestic_3rd,CNY 67.08/百万Token（近似参考）,CNY 67.06/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:21:39.602115+08:00,token,Claude Haiku 4.5,Anthropic,output,overseas_3rd,USD 5.0/百万Token（约 ¥33.54；精确同名）,USD 5.0/百万Token（约 ¥33.53；精确同名）,N/A,OpenRouter / claude-haiku-4.5
+2026-09-11T05:21:39.602115+08:00,token,Claude Haiku 4.5,Anthropic,output,domestic_3rd,CNY 33.54/百万Token（近似参考）,CNY 33.53/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:21:39.602115+08:00,token,Gemini 3.5 Flash,Google,output,overseas_3rd,USD 9.0/百万Token（约 ¥60.37；精确同名）,USD 9.0/百万Token（约 ¥60.36；精确同名）,N/A,OpenRouter / gemini-3.5-flash
+2026-09-11T05:21:39.602115+08:00,token,Gemini 3.5 Flash,Google,output,domestic_3rd,CNY 60.37/百万Token（近似参考）,CNY 60.36/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:21:39.602115+08:00,token,Gemini 3.1 Pro Preview,Google,input,overseas_3rd,USD 2.0/百万Token（约 ¥13.42；精确同名）,USD 2.0/百万Token（约 ¥13.41；精确同名）,N/A,OpenRouter / gemini-3.1-pro-preview
+2026-09-11T05:21:39.602115+08:00,token,Gemini 3.1 Pro Preview,Google,output,overseas_3rd,USD 12.0/百万Token（约 ¥80.49；精确同名）,USD 12.0/百万Token（约 ¥80.48；精确同名）,N/A,OpenRouter / gemini-3.1-pro-preview
+2026-09-11T05:21:39.602115+08:00,token,Gemini 3.1 Pro Preview,Google,input,domestic_3rd,CNY 13.42/百万Token（近似参考）,CNY 13.41/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:21:39.602115+08:00,token,Gemini 3.1 Pro Preview,Google,output,domestic_3rd,CNY 80.49/百万Token（近似参考）,CNY 80.48/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:21:39.602115+08:00,token,Mistral Medium 3.5,Mistral,output,overseas_3rd,USD 7.5/百万Token（约 ¥50.31；精确同名）,USD 7.5/百万Token（约 ¥50.3；精确同名）,N/A,OpenRouter / mistral-medium-3-5
+2026-09-11T05:21:39.602115+08:00,token,Mistral Medium 3.5,Mistral,input,domestic_3rd,CNY 13.42/百万Token（近似参考）,CNY 13.41/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:21:39.602115+08:00,token,Mistral Medium 3.5,Mistral,output,domestic_3rd,CNY 50.31/百万Token（近似参考）,CNY 50.3/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:21:39.602115+08:00,token,Command A+,Cohere,output,domestic_3rd,CNY 67.08/百万Token（近似参考）,CNY 67.06/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:21:39.602115+08:00,token,Command R+,Cohere,output,domestic_3rd,CNY 67.08/百万Token（近似参考）,CNY 67.06/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:21:39.602115+08:00,token,Grok 4.5,xAI Grok,input,overseas_3rd,USD 2.0/百万Token（约 ¥13.42；精确同名）,USD 2.0/百万Token（约 ¥13.41；精确同名）,N/A,OpenRouter / grok-4.5
+2026-09-11T05:21:39.602115+08:00,token,Grok 4.5,xAI Grok,output,overseas_3rd,USD 6.0/百万Token（约 ¥40.25；精确同名）,USD 6.0/百万Token（约 ¥40.24；精确同名）,N/A,OpenRouter / grok-4.5
+2026-09-11T05:21:39.602115+08:00,token,Grok 4.5,xAI Grok,input,domestic_3rd,CNY 13.42/百万Token（近似参考）,CNY 13.41/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:21:39.602115+08:00,token,Grok 4.5,xAI Grok,output,domestic_3rd,CNY 40.25/百万Token（近似参考）,CNY 40.24/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:21:39.602115+08:00,token,Grok 4.20,xAI Grok,input,domestic_3rd,CNY 13.42/百万Token（近似参考）,CNY 13.41/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:21:39.602115+08:00,token,Grok 4.20,xAI Grok,output,domestic_3rd,CNY 40.25/百万Token（近似参考）,CNY 40.24/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:21:39.602115+08:00,token,Qwen3.7-Plus,阿里云/通义千问,output,overseas_3rd,USD 1.28/百万Token（约 ¥8.59；精确同名）,USD 1.28/百万Token（约 ¥8.58；精确同名）,N/A,OpenRouter / Together.ai / Fireworks.ai / qwen3.7-plus
+2026-09-11T05:21:39.602115+08:00,token,Doubao-Seed 2.1 Pro,火山方舟/豆包,output,overseas_3rd,USD 2.41/百万Token（约 ¥16.17；精确同名）,USD 2.41/百万Token（约 ¥16.16；精确同名）,N/A,API动态补全 / models.dev / doubao-seed-2-0-pro (匹配度1.00)
+2026-09-11T05:21:39.602115+08:00,token,Doubao-Seed 2.0 Pro,火山方舟/豆包,output,overseas_3rd,USD 2.41/百万Token（约 ¥16.17；精确同名）,USD 2.41/百万Token（约 ¥16.16；精确同名）,N/A,API动态补全 / models.dev / doubao-seed-2-0-pro (匹配度1.00)
+2026-09-11T05:21:39.602115+08:00,token,Doubao-Seed-Evolving,火山方舟/豆包,output,overseas_3rd,USD 4.453/百万Token（约 ¥29.87；精确同名）,USD 4.453/百万Token（约 ¥29.86；精确同名）,N/A,API动态补全 / models.dev / doubao-seed-evolving (匹配度1.00)
+2026-09-11T05:21:39.602115+08:00,token,GLM-5.2,智谱 GLM / Z.ai,output,overseas_3rd,USD 2.8424/百万Token（约 ¥19.07；精确同名）,USD 2.8424/百万Token（约 ¥19.06；精确同名）,N/A,OpenRouter / glm-5.2
+2026-09-11T05:21:39.602115+08:00,token,Kimi K3,Kimi / Moonshot,output,overseas_3rd,USD 15.0/百万Token（约 ¥100.62；精确同名）,USD 15.0/百万Token（约 ¥100.59；精确同名）,N/A,OpenRouter / moonshotai/kimi-k3
+2026-09-11T05:21:39.602115+08:00,token,Kimi K2.7 Code,Kimi / Moonshot,output,overseas_3rd,USD 3.49/百万Token（约 ¥23.41；精确同名）,USD 3.49/百万Token（约 ¥23.4；精确同名）,N/A,OpenRouter / kimi-k2.7-code
+2026-09-11T05:21:39.602115+08:00,gpu_domestic,H200,,rental_price,,12.25,13.0,+6.1%,
+2026-09-11T05:21:39.602115+08:00,gpu_domestic,RTX 5090,,rental_price,,1.3,1.4,+7.7%,
+2026-09-11T05:21:39.602115+08:00,gpu_overseas,GB300,,rental_price,,51.43,51.41,-0.0%,
+2026-09-11T05:21:39.602115+08:00,gpu_overseas,GB200,,rental_price,,51.19,51.18,-0.0%,
+2026-09-11T05:21:39.602115+08:00,gpu_overseas,B300,,rental_price,,32.8,32.76,-0.1%,
+2026-09-11T05:21:39.602115+08:00,gpu_overseas,H200,,rental_price,,16.31,16.3,-0.1%,
+2026-09-11T05:21:39.602115+08:00,gpu_overseas,RTX 5090,,rental_price,,2.98,2.97,-0.3%,
+2026-09-11T05:22:08.468421+08:00,token,GPT-5.5,OpenAI,input,overseas_3rd,USD 5.0/百万Token（约 ¥33.54；精确同名）,USD 5.0/百万Token（约 ¥33.53；精确同名）,N/A,OpenRouter / gpt-5.5
+2026-09-11T05:22:08.468421+08:00,token,GPT-5.5,OpenAI,output,overseas_3rd,USD 30.0/百万Token（约 ¥201.23；精确同名）,USD 30.0/百万Token（约 ¥201.19；精确同名）,N/A,OpenRouter / gpt-5.5
+2026-09-11T05:22:08.468421+08:00,token,GPT-5.5,OpenAI,input,domestic_3rd,CNY 33.54/百万Token（近似参考）,CNY 33.53/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:22:08.468421+08:00,token,GPT-5.5,OpenAI,output,domestic_3rd,CNY 201.23/百万Token（近似参考）,CNY 201.19/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:22:08.468421+08:00,token,GPT-5.4,OpenAI,output,overseas_3rd,USD 15.0/百万Token（约 ¥100.62；精确同名）,USD 15.0/百万Token（约 ¥100.59；精确同名）,N/A,OpenRouter / gpt-5.4
+2026-09-11T05:22:08.468421+08:00,token,GPT-5.4,OpenAI,output,domestic_3rd,CNY 100.62/百万Token（近似参考）,CNY 100.59/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:22:08.468421+08:00,token,GPT-5.4 mini,OpenAI,output,overseas_3rd,USD 4.5/百万Token（约 ¥30.19；精确同名）,USD 4.5/百万Token（约 ¥30.18；精确同名）,N/A,OpenRouter / gpt-5.4-mini
+2026-09-11T05:22:08.468421+08:00,token,GPT-5.4 mini,OpenAI,output,domestic_3rd,CNY 30.19/百万Token（近似参考）,CNY 30.18/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:22:08.468421+08:00,token,Claude Fable 5,Anthropic,input,overseas_3rd,USD 10.0/百万Token（约 ¥67.08；精确同名）,USD 10.0/百万Token（约 ¥67.06；精确同名）,N/A,OpenRouter / claude-fable-5
+2026-09-11T05:22:08.468421+08:00,token,Claude Fable 5,Anthropic,output,overseas_3rd,USD 50.0/百万Token（约 ¥335.39；精确同名）,USD 50.0/百万Token（约 ¥335.31；精确同名）,N/A,OpenRouter / claude-fable-5
+2026-09-11T05:22:08.468421+08:00,token,Claude Fable 5,Anthropic,input,domestic_3rd,CNY 67.08/百万Token（近似参考）,CNY 67.06/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:22:08.468421+08:00,token,Claude Fable 5,Anthropic,output,domestic_3rd,CNY 335.39/百万Token（近似参考）,CNY 335.31/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:22:08.468421+08:00,token,Claude Opus 4.8,Anthropic,input,overseas_3rd,USD 5.0/百万Token（约 ¥33.54；精确同名）,USD 5.0/百万Token（约 ¥33.53；精确同名）,N/A,OpenRouter / claude-opus-4.8
+2026-09-11T05:22:08.468421+08:00,token,Claude Opus 4.8,Anthropic,output,overseas_3rd,USD 25.0/百万Token（约 ¥167.69；精确同名）,USD 25.0/百万Token（约 ¥167.66；精确同名）,N/A,OpenRouter / claude-opus-4.8
+2026-09-11T05:22:08.468421+08:00,token,Claude Opus 4.8,Anthropic,input,domestic_3rd,CNY 33.54/百万Token（近似参考）,CNY 33.53/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:22:08.468421+08:00,token,Claude Opus 4.8,Anthropic,output,domestic_3rd,CNY 167.69/百万Token（近似参考）,CNY 167.66/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:22:08.468421+08:00,token,Claude Sonnet 5,Anthropic,input,overseas_3rd,USD 2.0/百万Token（约 ¥13.42；精确同名）,USD 2.0/百万Token（约 ¥13.41；精确同名）,N/A,OpenRouter / claude-sonnet-5
+2026-09-11T05:22:08.468421+08:00,token,Claude Sonnet 5,Anthropic,output,overseas_3rd,USD 10.0/百万Token（约 ¥67.08；精确同名）,USD 10.0/百万Token（约 ¥67.06；精确同名）,N/A,OpenRouter / claude-sonnet-5
+2026-09-11T05:22:08.468421+08:00,token,Claude Sonnet 5,Anthropic,input,domestic_3rd,CNY 13.42/百万Token（近似参考）,CNY 13.41/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:22:08.468421+08:00,token,Claude Sonnet 5,Anthropic,output,domestic_3rd,CNY 67.08/百万Token（近似参考）,CNY 67.06/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:22:08.468421+08:00,token,Claude Haiku 4.5,Anthropic,output,overseas_3rd,USD 5.0/百万Token（约 ¥33.54；精确同名）,USD 5.0/百万Token（约 ¥33.53；精确同名）,N/A,OpenRouter / claude-haiku-4.5
+2026-09-11T05:22:08.468421+08:00,token,Claude Haiku 4.5,Anthropic,output,domestic_3rd,CNY 33.54/百万Token（近似参考）,CNY 33.53/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:22:08.468421+08:00,token,Gemini 3.5 Flash,Google,output,overseas_3rd,USD 9.0/百万Token（约 ¥60.37；精确同名）,USD 9.0/百万Token（约 ¥60.36；精确同名）,N/A,OpenRouter / gemini-3.5-flash
+2026-09-11T05:22:08.468421+08:00,token,Gemini 3.5 Flash,Google,output,domestic_3rd,CNY 60.37/百万Token（近似参考）,CNY 60.36/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:22:08.468421+08:00,token,Gemini 3.1 Pro Preview,Google,input,overseas_3rd,USD 2.0/百万Token（约 ¥13.42；精确同名）,USD 2.0/百万Token（约 ¥13.41；精确同名）,N/A,OpenRouter / gemini-3.1-pro-preview
+2026-09-11T05:22:08.468421+08:00,token,Gemini 3.1 Pro Preview,Google,output,overseas_3rd,USD 12.0/百万Token（约 ¥80.49；精确同名）,USD 12.0/百万Token（约 ¥80.48；精确同名）,N/A,OpenRouter / gemini-3.1-pro-preview
+2026-09-11T05:22:08.468421+08:00,token,Gemini 3.1 Pro Preview,Google,input,domestic_3rd,CNY 13.42/百万Token（近似参考）,CNY 13.41/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:22:08.468421+08:00,token,Gemini 3.1 Pro Preview,Google,output,domestic_3rd,CNY 80.49/百万Token（近似参考）,CNY 80.48/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:22:08.468421+08:00,token,Mistral Medium 3.5,Mistral,output,overseas_3rd,USD 7.5/百万Token（约 ¥50.31；精确同名）,USD 7.5/百万Token（约 ¥50.3；精确同名）,N/A,OpenRouter / mistral-medium-3-5
+2026-09-11T05:22:08.468421+08:00,token,Mistral Medium 3.5,Mistral,input,domestic_3rd,CNY 13.42/百万Token（近似参考）,CNY 13.41/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:22:08.468421+08:00,token,Mistral Medium 3.5,Mistral,output,domestic_3rd,CNY 50.31/百万Token（近似参考）,CNY 50.3/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:22:08.468421+08:00,token,Command A+,Cohere,output,domestic_3rd,CNY 67.08/百万Token（近似参考）,CNY 67.06/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:22:08.468421+08:00,token,Command R+,Cohere,output,domestic_3rd,CNY 67.08/百万Token（近似参考）,CNY 67.06/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:22:08.468421+08:00,token,Grok 4.5,xAI Grok,input,overseas_3rd,USD 2.0/百万Token（约 ¥13.42；精确同名）,USD 2.0/百万Token（约 ¥13.41；精确同名）,N/A,OpenRouter / grok-4.5
+2026-09-11T05:22:08.468421+08:00,token,Grok 4.5,xAI Grok,output,overseas_3rd,USD 6.0/百万Token（约 ¥40.25；精确同名）,USD 6.0/百万Token（约 ¥40.24；精确同名）,N/A,OpenRouter / grok-4.5
+2026-09-11T05:22:08.468421+08:00,token,Grok 4.5,xAI Grok,input,domestic_3rd,CNY 13.42/百万Token（近似参考）,CNY 13.41/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:22:08.468421+08:00,token,Grok 4.5,xAI Grok,output,domestic_3rd,CNY 40.25/百万Token（近似参考）,CNY 40.24/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:22:08.468421+08:00,token,Grok 4.20,xAI Grok,input,domestic_3rd,CNY 13.42/百万Token（近似参考）,CNY 13.41/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:22:08.468421+08:00,token,Grok 4.20,xAI Grok,output,domestic_3rd,CNY 40.25/百万Token（近似参考）,CNY 40.24/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-11T05:22:08.468421+08:00,token,Qwen3.7-Plus,阿里云/通义千问,output,overseas_3rd,USD 1.28/百万Token（约 ¥8.59；精确同名）,USD 1.28/百万Token（约 ¥8.58；精确同名）,N/A,OpenRouter / Together.ai / Fireworks.ai / qwen3.7-plus
+2026-09-11T05:22:08.468421+08:00,token,Doubao-Seed 2.1 Pro,火山方舟/豆包,output,overseas_3rd,USD 2.41/百万Token（约 ¥16.17；精确同名）,USD 2.41/百万Token（约 ¥16.16；精确同名）,N/A,API动态补全 / models.dev / doubao-seed-2-0-pro (匹配度1.00)
+2026-09-11T05:22:08.468421+08:00,token,Doubao-Seed 2.0 Pro,火山方舟/豆包,output,overseas_3rd,USD 2.41/百万Token（约 ¥16.17；精确同名）,USD 2.41/百万Token（约 ¥16.16；精确同名）,N/A,API动态补全 / models.dev / doubao-seed-2-0-pro (匹配度1.00)
+2026-09-11T05:22:08.468421+08:00,token,Doubao-Seed-Evolving,火山方舟/豆包,output,overseas_3rd,USD 4.453/百万Token（约 ¥29.87；精确同名）,USD 4.453/百万Token（约 ¥29.86；精确同名）,N/A,API动态补全 / models.dev / doubao-seed-evolving (匹配度1.00)
+2026-09-11T05:22:08.468421+08:00,token,GLM-5.2,智谱 GLM / Z.ai,output,overseas_3rd,USD 2.8424/百万Token（约 ¥19.07；精确同名）,USD 2.8424/百万Token（约 ¥19.06；精确同名）,N/A,OpenRouter / glm-5.2
+2026-09-11T05:22:08.468421+08:00,token,Kimi K3,Kimi / Moonshot,output,overseas_3rd,USD 15.0/百万Token（约 ¥100.62；精确同名）,USD 15.0/百万Token（约 ¥100.59；精确同名）,N/A,OpenRouter / moonshotai/kimi-k3
+2026-09-11T05:22:08.468421+08:00,token,Kimi K2.7 Code,Kimi / Moonshot,output,overseas_3rd,USD 3.49/百万Token（约 ¥23.41；精确同名）,USD 3.49/百万Token（约 ¥23.4；精确同名）,N/A,OpenRouter / kimi-k2.7-code
+2026-09-11T05:22:08.468421+08:00,gpu_domestic,H200,,rental_price,,12.25,13.0,+6.1%,
+2026-09-11T05:22:08.468421+08:00,gpu_domestic,RTX 5090,,rental_price,,1.3,1.4,+7.7%,
+2026-09-11T05:22:08.468421+08:00,gpu_overseas,GB300,,rental_price,,51.43,51.41,-0.0%,
+2026-09-11T05:22:08.468421+08:00,gpu_overseas,GB200,,rental_price,,51.19,51.18,-0.0%,
+2026-09-11T05:22:08.468421+08:00,gpu_overseas,B300,,rental_price,,32.8,32.76,-0.1%,
+2026-09-11T05:22:08.468421+08:00,gpu_overseas,H200,,rental_price,,16.31,16.3,-0.1%,
+2026-09-11T05:22:08.468421+08:00,gpu_overseas,RTX 5090,,rental_price,,2.98,2.97,-0.3%,
