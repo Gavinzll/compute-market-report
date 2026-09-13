@@ -312,6 +312,11 @@ def build_summary(data):
     # 价格变动追踪
     cs = data.get("change_summary", {})
     
+    # CMIS 指数
+    ci = data.get("cmis_indices", {})
+    gpu_cn_indices = ci.get("gpu_cn", [])
+    token_index = ci.get("token", {})
+    
     return {
         "freeze_time": data.get("freeze_time", "未记录"),
         "report_version": data.get("report_version", "unknown"),
@@ -344,6 +349,9 @@ def build_summary(data):
         # 价格变动追踪
         "change_count": cs.get("total_changes", 0),
         "change_notable": cs.get("notable_changes", []),
+        # CMIS 指数
+        "gpu_cn_indices": gpu_cn_indices,
+        "token_index": token_index,
     }
 
 
@@ -389,7 +397,29 @@ def build_card_success(s):
                 f"汇率：{s['fx_rate']}（{s['fx_source']}）"
             ),
         },
+        # CMIS 指数（借鉴 Silicon Data 指数化思路）
     ]
+    
+    # CMIS 指数摘要
+    gpu_indices = s.get("gpu_cn_indices", [])
+    token_idx = s.get("token_index", {})
+    if gpu_indices or token_idx:
+        idx_parts = []
+        # 展示 TOP 3 GPU 指数 + 7D 趋势
+        for idx in gpu_indices[:3]:
+            ticker = idx.get("ticker", "")
+            current = idx.get("current")
+            chg_7d = idx.get("change_7d_pct", "N/A")
+            if current is not None:
+                idx_parts.append(f"**{ticker}** {current:.1f}万 ({chg_7d} 7D)")
+        # Token 指数
+        if token_idx and token_idx.get("current") is not None:
+            idx_parts.append(f"**{token_idx['ticker']}** {token_idx['current']:.2f} ({token_idx.get('change_7d_pct', 'N/A')} 7D)")
+        if idx_parts:
+            elements.append({
+                "tag": "markdown",
+                "content": "📈 **CMIS 指数：** " + "　".join(idx_parts),
+            })
 
     # 降级告警提示（仅当评分低于 70 时添加）
     if alert_text:

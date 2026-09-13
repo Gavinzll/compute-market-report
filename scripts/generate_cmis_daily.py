@@ -24,6 +24,7 @@ from pathlib import Path
 # 导入价格变动追踪模块
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import change_log
+import cmis_index
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = Path(os.environ.get("CMIS_OUT", ROOT))
@@ -37,7 +38,7 @@ ASSET_VERSION = NOW.strftime("%Y%m%d%H%M%S")
 FX_USD_CNY = 7.20
 FX_SOURCE = "fallback (默认值)"
 FX_FETCHED_AT = None
-REPORT_VERSION = "v1.4.0"
+REPORT_VERSION = "v1.5.0"
 
 
 def _fetch_fx_from_api(url: str, rate_path: list[str], timeout: int = 10) -> float | None:
@@ -1857,6 +1858,149 @@ except Exception as e:
     print(f"[report] 价格变动追踪警告: {e}")
     CHANGE_SUMMARY = {"total_changes": 0, "by_category": {}, "notable_changes": [], "log_file": "price_changes.csv"}
 
+# === CMIS 价格指数（借鉴 Silicon Data 指数化思路）===
+try:
+    # 给海外数据附加汇率，方便指数模块计算美元价
+    _overseas_with_fx = []
+    for r in OVERSEAS_RENTAL:
+        rr = dict(r)
+        rr["_fx_rate"] = FX_USD_CNY
+        _overseas_with_fx.append(rr)
+    CMIS_INDICES = cmis_index.build_all_indices(DOMESTIC_RENTAL, _overseas_with_fx, TOKEN_DATA)
+    SNAPSHOT["cmis_indices"] = CMIS_INDICES
+    print(f"[report] CMIS 指数计算完成：国内 {len(CMIS_INDICES['gpu_cn'])} 个 · 海外 {len(CMIS_INDICES['gpu_us'])} 个 · Token 1 个")
+except Exception as e:
+    print(f"[report] CMIS 指数计算警告: {e}")
+    CMIS_INDICES = {"gpu_cn": [], "gpu_us": [], "token": {}, "as_of": DATE}
+
+# 预格式化指数 Dashboard HTML
+def _direction_arrow(direction: str) -> str:
+    if direction == "up":
+        return '<span style="color:#ff7a90">▲</span>'
+    elif direction == "down":
+        return '<span style="color:#22c55e">▼</span>'
+    else:
+        return '<span style="color:#9eb0c7">—</span>'
+
+def _change_color(change_pct: str) -> str:
+    if "+" in change_pct:
+        return "#ff7a90"
+    elif "-" in change_pct:
+        return "#22c55e"
+    return "var(--muted)"
+
+# 国内 GPU 指数卡片
+_index_cn_cards = ""
+for idx in CMIS_INDICES.get("gpu_cn", [])[:8]:  # 取前 8 个
+    gpu_name = idx["ticker"].replace("CMIS-", "").replace("-CN", "")
+    # 反向查找 GPU 型号中文名
+    cn_name = gpu_name
+    for cn, suffix in cmis_index.GPU_TICKER_MAP.items():
+        if suffix == gpu_name:
+            cn_name = cn
+            break
+    current_str = f"{idx['current']:.2f}" if idx["current"] is not None else "—"
+    arrow = _direction_arrow(idx["direction"])
+    chg_7d = idx["change_7d_pct"]
+    chg_color = _change_color(chg_7d)
+    _index_cn_cards += f'''<div class="index-card">
+      <div class="idx-ticker">{idx["ticker"]}</div>
+      <div class="idx-name">{cn_name}</div>
+      <div class="idx-price">{current_str}<small> 万/8卡/月</small></div>
+      <div class="idx-change" style="color:{chg_color}">{arrow} 7D {chg_7d}</div>
+      <div class="idx-sources">{idx["source_count"]} 源 · {idx["data_points_7d"]} 个数据点</div>
+    </div>'''
+
+if not _index_cn_cards:
+    _index_cn_cards = '<p class="muted">国内 GPU 指数计算中，将在积累更多历史数据后展示。</p>'
+
+# Token 指数展示
+_token_idx = CMIS_INDICES.get("token", {})
+_token_idx_html = ""
+if _token_idx.get("current") is not None:
+    arrow = _direction_arrow(_token_idx["direction"])
+    chg_7d = _token_idx["change_7d_pct"]
+    chg_color = _change_color(chg_7d)
+    _token_idx_html = f'''<div class="index-card token-index-card">
+      <div class="idx-ticker">{_token_idx["ticker"]}</div>
+      <div class="idx-name">LLM Token 综合指数</div>
+      <div class="idx-price">{_token_idx["current"]:.2f}<small> USD/1M in</small></div>
+      <div class="idx-change" style="color:{chg_color}">{arrow} 7D {chg_7d}</div>
+      <div class="idx-sources">{_token_idx["sample_size"]} 个模型 · 加权平均</div>
+    </div>'''
+
+# 方法论说明 HTML
+_methodology_html = '''
+<div class="methodology">
+  <h3>CMIS 指数方法论</h3>
+  <p class="note">CMIS（Compute Market Intelligence Service）价格指数借鉴 Silicon Data 的指数化思路，旨在提供标准化、可追踪的算力价格基准。</p>
+  <div class="method-grid">
+    <div class="method-item">
+      <strong>指数代码</strong>
+      <p>CMIS-{GPU}-CN：国内租赁指数（万元/8卡整机/月）<br/>CMIS-{GPU}-US：海外租赁指数（美元/卡/小时）<br/>CMIS-TOKEN-INDEX：Token 综合价格指数</p>
+    </div>
+    <div class="method-item">
+      <strong>计算方法</strong>
+      <p>基于多源数据聚合，取通过校验（PASS）的标准化价格作为指数值。国内主口径为 8 卡整机月租，海外主口径为单卡小时价。</p>
+    </div>
+    <div class="method-item">
+      <strong>趋势计算</strong>
+      <p>7 日 / 30 日涨跌幅基于历史快照对比计算。数据点不足时用最近可用日期近似（±3 天容错）。价格未变化时趋势标记为 flat。</p>
+    </div>
+    <div class="method-item">
+      <strong>Token 指数</strong>
+      <p>选取 11 个主流模型，按市场重要性加权计算平均输入价格。覆盖 GPT、Claude、Gemini、Grok、Llama、DeepSeek、Qwen、GLM 等主流厂商。</p>
+    </div>
+    <div class="method-item">
+      <strong>数据来源</strong>
+      <p>GPU 价格：SMM 算力直播、各云厂商公开价、开源数据集（gpu-rental-prices）等多源交叉验证。<br/>Token 价格：OpenRouter、LiteLLM、models.dev API 动态采集。</p>
+    </div>
+    <div class="method-item">
+      <strong>局限性说明</strong>
+      <p>指数为标准化参考价，实际成交价格受租赁期限、集群规模、地区、SLA 等因素影响。国产卡公开数据稀缺，指数仅供参考。</p>
+    </div>
+  </div>
+</div>
+'''
+
+# 手机版指数卡片
+_mobile_index_cards = ""
+for idx in CMIS_INDICES.get("gpu_cn", [])[:6]:
+    gpu_name = idx["ticker"].replace("CMIS-", "").replace("-CN", "")
+    cn_name = gpu_name
+    for cn, suffix in cmis_index.GPU_TICKER_MAP.items():
+        if suffix == gpu_name:
+            cn_name = cn
+            break
+    current_str = f"{idx['current']:.1f}" if idx["current"] is not None else "—"
+    arrow = _direction_arrow(idx["direction"])
+    chg_7d = idx["change_7d_pct"]
+    chg_color = _change_color(chg_7d)
+    _mobile_index_cards += f'''<div class="m-card compact" style="padding:10px;margin:0">
+      <div style="font-family:monospace;font-size:10px;color:var(--accent2);font-weight:600">{idx["ticker"]}</div>
+      <div style="font-size:13px;font-weight:600;margin-top:2px">{cn_name}</div>
+      <div style="font-size:22px;font-weight:800;margin-top:6px;letter-spacing:-.02em">{current_str}<small style="font-size:10px;color:var(--muted);font-weight:400;margin-left:2px">万/月</small></div>
+      <div style="font-size:11px;font-weight:600;margin-top:4px;color:{chg_color}">{arrow} 7D {chg_7d}</div>
+    </div>'''
+
+_mobile_token_index = ""
+if _token_idx.get("current") is not None:
+    arrow = _direction_arrow(_token_idx["direction"])
+    chg_7d = _token_idx["change_7d_pct"]
+    chg_color = _change_color(chg_7d)
+    _mobile_token_index = f'''<div class="m-card compact" style="margin-top:10px;padding:12px;background:linear-gradient(180deg,rgba(104,225,253,.1),rgba(104,225,253,.02));border-color:rgba(104,225,253,.25)">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <div style="font-family:monospace;font-size:10px;color:var(--accent2);font-weight:600">{_token_idx["ticker"]}</div>
+          <div style="font-size:13px;font-weight:600;margin-top:2px">LLM Token 综合指数</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:24px;font-weight:800;letter-spacing:-.02em">{_token_idx["current"]:.2f}<small style="font-size:10px;color:var(--muted);font-weight:400"> USD/1M</small></div>
+          <div style="font-size:11px;font-weight:600;color:{chg_color}">{arrow} 7D {chg_7d}</div>
+        </div>
+      </div>
+    </div>'''
+
 # 预格式化数据质量显示字符串（避免 HTML 模板中嵌套 f-string）
 _fx_time_str = f" · 更新于 {DATA_QUALITY['fx_fetched_at'][:16]}" if DATA_QUALITY['fx_fetched_at'] else ""
 _token_tag_class = "tag-live" if DATA_QUALITY['token']['using_dynamic'] else "tag-static"
@@ -2128,7 +2272,23 @@ def render_html(relative_prefix: str = "./") -> str:
     .tag-live{{background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.3)}}
     .tag-static{{background:rgba(100,116,139,.15);color:#94a3b8;border:1px solid rgba(100,116,139,.3)}}
     .tag-partial{{background:rgba(247,199,107,.15);color:#f7c76b;border:1px solid rgba(247,199,107,.3)}}
-    @media(max-width:768px){{h1{{font-size:28px}} h2{{margin-top:32px;font-size:20px}} .page{{padding:16px 0 40px}} header{{padding:28px 0 18px}} .metric strong{{font-size:24px}} .chart{{min-height:320px}} table{{min-width:800px;font-size:12px}} th,td{{padding:8px 10px}} figcaption{{font-size:12px}}}}
+    .index-grid{{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:16px}}
+    .index-card{{padding:18px 16px;border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid var(--rule);transition:border-color .2s,transform .2s}}
+    .index-card:hover{{border-color:rgba(104,225,253,.4);transform:translateY(-2px)}}
+    .idx-ticker{{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:11px;color:var(--accent2);letter-spacing:.05em;font-weight:600}}
+    .idx-name{{font-size:15px;font-weight:600;margin-top:6px;color:var(--ink)}}
+    .idx-price{{font-size:28px;font-weight:800;margin-top:10px;line-height:1.1;letter-spacing:-.02em}}
+    .idx-price small{{font-size:12px;font-weight:400;color:var(--muted);margin-left:4px}}
+    .idx-change{{font-size:13px;font-weight:600;margin-top:8px}}
+    .idx-sources{{font-size:11px;color:var(--muted);margin-top:6px}}
+    .token-index-card{{background:linear-gradient(180deg,rgba(104,225,253,.1),rgba(104,225,253,.02));border-color:rgba(104,225,253,.25)}}
+    .methodology{{margin-top:8px}}
+    .methodology h3{{font-size:16px;margin-bottom:12px}}
+    .method-grid{{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:12px}}
+    .method-item{{padding:14px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid var(--rule)}}
+    .method-item strong{{display:block;font-size:13px;color:var(--accent);margin-bottom:6px}}
+    .method-item p{{font-size:12px;color:var(--muted);line-height:1.6;margin:0}}
+    @media(max-width:768px){{h1{{font-size:28px}} h2{{margin-top:32px;font-size:20px}} .page{{padding:16px 0 40px}} header{{padding:28px 0 18px}} .metric strong{{font-size:24px}} .chart{{min-height:320px}} table{{min-width:800px;font-size:12px}} th,td{{padding:8px 10px}} figcaption{{font-size:12px}} .index-grid{{grid-template-columns:repeat(2,1fr)}} .method-grid{{grid-template-columns:1fr}}}}
     @media(max-width:900px){{.metrics{{grid-template-columns:1fr}} .page{{width:min(98vw,760px)}}}}
   </style>
 </head>
@@ -2226,6 +2386,25 @@ def render_html(relative_prefix: str = "./") -> str:
       {table(PROCUREMENT)}
       <h3>毛回本参考</h3>
       {table(GPU_PROFIT)}
+      </div></details>
+    </section>
+
+    <section id="cmis-index">
+      <h2>CMIS 价格指数</h2>
+      <p class="muted">借鉴 Silicon Data 指数化思路 · 每型号一个标准化基准价 · 7 日趋势追踪</p>
+
+      <h3 style="margin-top:24px">国内 GPU 租赁指数（万元/8卡整机/月）</h3>
+      <div class="index-grid">
+        {_index_cn_cards}
+      </div>
+
+      <h3 style="margin-top:24px">LLM Token 价格指数</h3>
+      <div class="index-grid">
+        {_token_idx_html}
+      </div>
+
+      <details style="margin-top:16px"><summary>指数方法论说明</summary><div class="details-body">
+        {_methodology_html}
       </div></details>
     </section>
 
@@ -2383,6 +2562,18 @@ def render_mobile_html(relative_prefix: str = "./", desktop_href: str = "latest.
       </article>
     </section>
 
+    <section id="m-index">
+      <h2>CMIS 价格指数</h2>
+      <p class="note" style="font-size:12px;margin-top:-4px">每型号标准化基准价 · 7 日趋势追踪</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
+        {_mobile_index_cards}
+      </div>
+      {_mobile_token_index}
+      <details style="margin-top:8px"><summary>指数方法论</summary><div class="details-body">
+        <p class="note" style="font-size:12px">CMIS 指数借鉴 Silicon Data 思路：基于多源数据聚合，取通过校验的标准化价格作为指数值。7 日 / 30 日涨跌幅基于历史快照对比。</p>
+      </div></details>
+    </section>
+
     <section id="domestic">
       <h2>国内租赁指数</h2>
       <figure><figcaption>国内指数：手机端横向条形图</figcaption><div id="chart-domestic-main" class="chart"></div></figure>
@@ -2446,7 +2637,7 @@ def render_mobile_html(relative_prefix: str = "./", desktop_href: str = "latest.
     </footer>
   </main>
   <nav class="quick-nav">
-    <a href="#summary">结论</a><a href="#domestic">国内</a><a href="#overseas">海外</a><a href="#token">Token</a><a href="#profit">利润</a><a href="#audit">审计</a><a href="#m-quality">质量</a>
+    <a href="#summary">结论</a><a href="#m-index">指数</a><a href="#domestic">国内</a><a href="#overseas">海外</a><a href="#token">Token</a><a href="#profit">利润</a><a href="#audit">审计</a><a href="#m-quality">质量</a>
   </nav>
   <script src="{relative_prefix}_shared/js/echarts.min.js"></script>
   <script src="{relative_prefix}assets/charts.js?v={ASSET_VERSION}-{REPORT_VERSION}"></script>
