@@ -134,6 +134,9 @@ Token 表必须展示 `三方价格匹配级别` 和 `同价原因`。匹配级�
 HTML 报告至少包含：
 
 - 今日摘要
+- CMIS 指数看板：国内 GPU 租赁指数卡（万元/8卡整机/月）、海外 GPU Cloud 指数卡（美元/卡/小时，含市场分段标签）、LLM Token 指数卡；每卡展示 ticker、当日值、7 日涨跌、源数量
+- 指数覆盖率：国内/海外基线 GPU 覆盖比例、海外数据源数、Token 模型覆盖比例（实算值，方法论见 `prompts/methodology.md`）
+- 海外市场分段价差：NeoCloud vs Hyperscaler 分段中位价与价差（仅当采集端保留了分供应商逐条报价时展示，不足时不展示）
 - Token 价格：Official vs Overseas Third-party vs Domestic Third-party
 - Token 输入价：官方 vs 海外三方 vs 境内三方
 - Token 输出价：官方 vs 海外三方 vs 境内三方
@@ -193,6 +196,7 @@ Token 表格固定列：
 - 主数据源
 - 辅助校验源
 - category
+- 市场分段（海外：NeoCloud / Hyperscaler / Aggregator / Marketplace；国内：CN-Main）
 - 原始价格
 - 原始单位
 - 标准化价格
@@ -327,6 +331,8 @@ SMM 现货指数、英伟达代理渠道、整机厂商报价、招投标结果�
 - 海外 GPU Cloud 原始价格即使是美元/卡/小时，也必须统一折算为“万元/8卡整机/月”用于图表和表格主展示；单卡小时价只作为辅助字段保留。
 - 对同一 GPU，同日至少保留 p25 / median / p90 或 min / median / max（如来源提供）。
 - 如 RunPod、Lambda、Vast.ai 同时有数据，必须计算 Source Consensus。
+- 同一 GPU 抓到多个供应商报价时，必须以 `provider_quotes: [{"provider": ..., "usd": ...}]` 逐条保留进动态发现结果，供指数做供应商级聚合与 NeoCloud / Hyperscaler 分段价差；不得只留一个数。
+- 采集海外报价时保留 `contract_period`（on-demand / 1mo / 6mo / 12mo / 24mo）；reserved/committed 价与 on-demand 价不得混合为单一读数。
 
 ### 8.3 GPU 采购价 / 整机价源池
 
