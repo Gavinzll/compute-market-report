@@ -16,6 +16,9 @@
 - CMIS-{GPU_MODEL}-CN  ：国内租赁指数（万元/8卡整机/月）
 - CMIS-{GPU_MODEL}-US  ：海外租赁指数（美元/卡/小时）
 - CMIS-TOKEN-INDEX     ：Token 综合价格指数（美元/百万输入 token，加权平均）
+# 治理结构对标 Silicon Data（silicondata.com）方法论五步：
+# 单位标准化 → 多级过滤 → 基差调整 → 供应商级聚合 → 加权平均；
+# 海外市场按 NeoCloud / Hyperscaler 分段披露价差。完整方法论见 prompts/methodology.md。
 """
 
 from __future__ import annotations
@@ -54,6 +57,160 @@ GPU_TICKER_MAP = {
     "MI300X": "MI300X",
     "MI300A": "MI300A",
 }
+
+
+# ---------------------------------------------------------------------------
+# 市场分段与供应商级聚合（对标 Silicon Data 方法论：
+# 单位标准化 → 多级过滤 → 基差调整 → 供应商级聚合 → 加权平均；
+# neo-cloud 与 hyperscaler 分段披露、不混合）
+# ---------------------------------------------------------------------------
+
+_SEGMENT_RULES: list[tuple[str, list[str]]] = [
+    ("Hyperscaler", ["oracle", "oci", "aws", "azure", "gcp", "google cloud",
+                      "paperspace", "ibm cloud"]),
+    ("NeoCloud", ["runpod", "lambda", "vast", "tensordock", "datacrunch", "cudo",
+                  "coreweave", "nebius", "crusoe", "fluidstack", "modal", "salad",
+                  "novita", "shadeform", "hyperstack"]),
+    ("Aggregator", ["cloud-gpus", "cloud_gpus", "cloud gpus", "gpucloudpricing",
+                    "gpu cloud pricing", "aggregat", "computestacker",
+                    "compute stacker", "gpu finder", "gpu-rental-prices"]),
+    ("Marketplace", ["marketplace", "broker", "exchange"]),
+]
+
+
+def segment_of(source: str) -> str:
+    """根据来源名推断海外市场分段。
+
+    返回 NeoCloud / Hyperscaler / Aggregator / Marketplace / Other。
+    分段只用于海外读数的分层披露与价差观察，不改变来源优先级规则。
+    """
+    s = (source or "").lower()
+    if not s:
+        return "Other"
+    for seg, keys in _SEGMENT_RULES:
+        if any(k in s for k in keys):
+            return seg
+    return "Other"
+
+
+def aggregate_quotes(quotes: list[dict[str, Any]]) -> dict[str, Any]:
+    """供应商级聚合（Silicon Data 式）：同型号多来源报价 → 置信度加权平均。
+
+    quotes 元素：{"source": str, "price": float, "confidence": int(0-100)}
+    - 单条来源：直接采用，method = single-source
+    - 多条来源：按 confidence 加权平均，同时计算中位数交叉核对；
+      加权均值与中位数差异 > 20% 时置 needs_review = True（防离群值扭曲）。
+    """
+    valid = [q for q in quotes
+             if isinstance(q.get("price"), (int, float)) and q["price"] > 0]
+    if not valid:
+        return {"value": None, "method": "no-valid-quote",
+                "source_count": 0, "sources": []}
+    if len(valid) == 1:
+        return {"value": float(valid[0]["price"]), "method": "single-source",
+                "source_count": 1, "sources": [valid[0].get("source", "")]}
+    confs = [max(1, int(q.get("confidence", 70))) for q in valid]
+    prices = [float(q["price"]) for q in valid]
+    weighted = sum(p * c for p, c in zip(prices, confs)) / sum(confs)
+    srt = sorted(prices)
+    n = len(srt)
+    median = srt[n // 2] if n % 2 else (srt[n // 2 - 1] + srt[n // 2]) / 2
+    needs_review = bool(median and abs(weighted - median) / median > 0.2)
+    return {
+        "value": round(weighted, 4),
+        "median": round(median, 4),
+        "method": "confidence-weighted-mean",
+        "needs_review": needs_review,
+        "source_count": len(valid),
+        "sources": [q.get("source", "") for q in valid],
+    }
+
+
+def index_coverage(domestic_rows: list[dict], overseas_rows: list[dict],
+                   token_data: list[dict],
+                   gpu_order: list[str] | None = None) -> dict[str, Any]:
+    """指数覆盖率统计（对标 Silicon Data 的市场覆盖披露口径）。
+
+    CMIS 口径（只报真实值，不夸大）：
+    - 可出国内指数 = 该型号存在校验状态 PASS 的标准化价格；
+    - 可出海外指数 = 该型号存在 PASS 的单卡小时价；
+    - 海外数据源 = PASS 样本的主数据源去重计数（多源拼接按 "+" 拆分）。
+    """
+    def _pct(a: int, b: int) -> float | None:
+        return round(a / b * 100, 1) if b else None
+
+    cn_total = len(gpu_order) if gpu_order else len(domestic_rows)
+    cn_covered = sum(1 for r in domestic_rows
+                     if r.get("校验状态") == "PASS" and r.get("标准化价格"))
+    us_covered = sum(1 for r in overseas_rows
+                    if r.get("校验状态") == "PASS" and r.get("单卡小时价（人民币）"))
+    us_source_set: set[str] = set()
+    for r in overseas_rows:
+        if r.get("校验状态") != "PASS":
+            continue
+        raw = (r.get("主数据源") or "").strip()
+        if not raw or raw in ("硬编码锚点（待动态更新）", "海外动态采集", "暂无公开来源"):
+            continue
+        for part in raw.split("+"):
+            part = part.strip()
+            if part:
+                us_source_set.add(part)
+    tk_total = len(token_data)
+    tk_covered = sum(1 for r in token_data if r.get("校验状态") == "PASS")
+    return {
+        "gpu_cn_total": cn_total,
+        "gpu_cn_covered": cn_covered,
+        "gpu_cn": _pct(cn_covered, cn_total),
+        "gpu_us_total": cn_total,
+        "gpu_us_covered": us_covered,
+        "gpu_us": _pct(us_covered, cn_total),
+        "overseas_providers": len(us_source_set),
+        "overseas_provider_list": sorted(us_source_set),
+        "token_total": tk_total,
+        "token_covered": tk_covered,
+        "token": _pct(tk_covered, tk_total),
+    }
+
+
+def calc_segment_spread(provider_quotes: list[dict[str, Any]] | None) -> list[dict[str, Any]]:
+    """海外市场分段价差（对标 Silicon Data：两段读数分开发布，展示价差）。
+
+    provider_quotes 元素：{"gpu": str, "provider": str, "price_usd_hr": float}
+    返回每个 GPU 的 NeoCloud / Hyperscaler 分段中位价与价差百分比
+    （Hyperscaler 相对 NeoCloud）。任一分段无样本时跳过该 GPU；
+    数据不足时返回空列表——不编造、不混合分段。
+    """
+    by_gpu: dict[str, dict[str, list[float]]] = {}
+    for q in provider_quotes or []:
+        gpu = q.get("gpu")
+        seg = segment_of(q.get("provider", ""))
+        price = q.get("price_usd_hr")
+        if (not gpu or seg not in ("NeoCloud", "Hyperscaler")
+                or not isinstance(price, (int, float)) or price <= 0):
+            continue
+        by_gpu.setdefault(gpu, {}).setdefault(seg, []).append(float(price))
+
+    def _med(xs: list[float]) -> float:
+        xs = sorted(xs)
+        n = len(xs)
+        return xs[n // 2] if n % 2 else (xs[n // 2 - 1] + xs[n // 2]) / 2
+
+    out = []
+    for gpu, segs in by_gpu.items():
+        neo, hyper = segs.get("NeoCloud") or [], segs.get("Hyperscaler") or []
+        if not neo or not hyper:
+            continue
+        neo_m, hyper_m = _med(neo), _med(hyper)
+        out.append({
+            "gpu": gpu,
+            "neocloud_median": round(neo_m, 4),
+            "neocloud_sources": len(neo),
+            "hyperscaler_median": round(hyper_m, 4),
+            "hyperscaler_sources": len(hyper),
+            "spread_pct": round((hyper_m - neo_m) / neo_m * 100, 1),
+        })
+    out.sort(key=lambda x: -abs(x["spread_pct"]))
+    return out
 
 
 def gpu_ticker(gpu_model: str, region: str = "CN") -> str:
@@ -405,8 +562,14 @@ def calc_token_index(token_data: list[dict]) -> dict[str, Any]:
 
 def build_all_indices(domestic_rental: list[dict],
                       overseas_rental: list[dict],
-                      token_data: list[dict]) -> dict[str, Any]:
-    """构建所有指数数据。"""
+                      token_data: list[dict],
+                      gpu_order: list[str] | None = None,
+                      provider_quotes: list[dict] | None = None) -> dict[str, Any]:
+    """构建所有指数数据（含市场分段、覆盖率与分段价差）。
+
+    provider_quotes（可选）：海外分供应商逐条报价 [{"gpu", "provider", "price_usd_hr"}]。
+    仅当采集端保留了分供应商报价时才计算分段价差；否则 segment_spread 为空列表。
+    """
     gpu_cn_indices: list[dict] = []
     gpu_us_indices: list[dict] = []
     
@@ -420,6 +583,8 @@ def build_all_indices(domestic_rental: list[dict],
             source = row.get("主数据源", "")
             source_count = source.count("+") + 1 if "+" in source else 1
             idx["source_count"] = source_count
+            idx["segment"] = "CN-Main"
+            idx["price_basis"] = row.get("价格口径", "")
             gpu_cn_indices.append(idx)
     
     # 海外 GPU 指数
@@ -433,6 +598,7 @@ def build_all_indices(domestic_rental: list[dict],
             source = row.get("主数据源", "")
             source_count = source.count("+") + 1 if "+" in source else 1
             idx["source_count"] = source_count
+            idx["segment"] = segment_of(source)
             gpu_us_indices.append(idx)
     
     # Token 指数
@@ -442,9 +608,16 @@ def build_all_indices(domestic_rental: list[dict],
     gpu_cn_indices.sort(key=lambda x: x["current"] or 0, reverse=True)
     gpu_us_indices.sort(key=lambda x: x["current"] or 0, reverse=True)
     
+    # 海外市场分段价差（仅当上游保留分供应商报价时计算，否则为空）
+    segment_spread = calc_segment_spread(provider_quotes)
+    # 指数覆盖率（真实披露，不夸大）
+    coverage = index_coverage(domestic_rental, overseas_rental, token_data, gpu_order)
+
     return {
         "gpu_cn": gpu_cn_indices,
         "gpu_us": gpu_us_indices,
         "token": token_idx,
+        "segment_spread": segment_spread,
+        "coverage": coverage,
         "as_of": DATE,
     }
