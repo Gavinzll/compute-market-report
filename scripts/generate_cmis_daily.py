@@ -38,7 +38,7 @@ ASSET_VERSION = NOW.strftime("%Y%m%d%H%M%S")
 FX_USD_CNY = 7.20
 FX_SOURCE = "fallback (默认值)"
 FX_FETCHED_AT = None
-REPORT_VERSION = "v1.5.0"
+REPORT_VERSION = "v1.6.0"
 
 
 def _fetch_fx_from_api(url: str, rate_path: list[str], timeout: int = 10) -> float | None:
@@ -1866,9 +1866,24 @@ try:
         rr = dict(r)
         rr["_fx_rate"] = FX_USD_CNY
         _overseas_with_fx.append(rr)
-    CMIS_INDICES = cmis_index.build_all_indices(DOMESTIC_RENTAL, _overseas_with_fx, TOKEN_DATA)
+    # 分供应商逐条报价（对标 Silicon Data 供应商级聚合）：
+    # 发现层（discover_latest）在同一 GPU 抓到多个供应商报价时，
+    # 以 provider_quotes: [{"provider": str, "usd": float}] 形式保留，供分段与聚合使用。
+    _provider_quotes = []
+    for _gpu, _dyn in _DYNAMIC_OVERSEAS.items():
+        for _q in (_dyn.get("provider_quotes") or []):
+            if _q.get("usd"):
+                _provider_quotes.append({
+                    "gpu": _gpu,
+                    "provider": _q.get("provider", ""),
+                    "price_usd_hr": _q.get("usd"),
+                })
+    CMIS_INDICES = cmis_index.build_all_indices(
+        DOMESTIC_RENTAL, _overseas_with_fx, TOKEN_DATA,
+        gpu_order=GPU_ORDER, provider_quotes=_provider_quotes)
     SNAPSHOT["cmis_indices"] = CMIS_INDICES
-    print(f"[report] CMIS 指数计算完成：国内 {len(CMIS_INDICES['gpu_cn'])} 个 · 海外 {len(CMIS_INDICES['gpu_us'])} 个 · Token 1 个")
+    _cov = CMIS_INDICES.get("coverage") or {}
+    print(f"[report] CMIS 指数计算完成：国内 {len(CMIS_INDICES['gpu_cn'])} 个 · 海外 {len(CMIS_INDICES['gpu_us'])} 个 · Token 1 个 · 覆盖率 CN {_cov.get('gpu_cn')}% / US {_cov.get('gpu_us')}%")
 except Exception as e:
     print(f"[report] CMIS 指数计算警告: {e}")
     CMIS_INDICES = {"gpu_cn": [], "gpu_us": [], "token": {}, "as_of": DATE}
@@ -1914,6 +1929,71 @@ for idx in CMIS_INDICES.get("gpu_cn", [])[:8]:  # 取前 8 个
 if not _index_cn_cards:
     _index_cn_cards = '<p class="muted">国内 GPU 指数计算中，将在积累更多历史数据后展示。</p>'
 
+# 海外 GPU Cloud 指数卡片（美元/卡/小时，含市场分段标签）
+_index_us_cards = ""
+for idx in CMIS_INDICES.get("gpu_us", [])[:6]:
+    gpu_name = idx["ticker"].replace("CMIS-", "").replace("-US", "")
+    cn_name = gpu_name
+    for cn, suffix in cmis_index.GPU_TICKER_MAP.items():
+        if suffix == gpu_name:
+            cn_name = cn
+            break
+    current_str = f"{idx['current']:.2f}" if idx["current"] is not None else "—"
+    arrow = _direction_arrow(idx["direction"])
+    chg_7d = idx["change_7d_pct"]
+    chg_color = _change_color(chg_7d)
+    _seg = idx.get("segment", "Other")
+    _index_us_cards += f'''<div class="index-card">
+      <div class="idx-ticker">{idx["ticker"]}</div>
+      <div class="idx-name">{cn_name}</div>
+      <div class="idx-price">{current_str}<small> USD/卡/小时</small></div>
+      <div class="idx-change" style="color:{chg_color}">{arrow} 7D {chg_7d}</div>
+      <div class="idx-sources">{idx["source_count"]} 源 · {_seg}</div>
+    </div>'''
+
+if not _index_us_cards:
+    _index_us_cards = '<p class="muted">海外 GPU Cloud 指数计算中，将在积累更多历史数据后展示。</p>'
+
+# 海外市场分段价差表（NeoCloud vs Hyperscaler；仅当发现层保留了分供应商报价时展示）
+_segment_spread_rows = ""
+for sp in CMIS_INDICES.get("segment_spread", []):
+    _spread_color = "#f7c76b" if abs(sp["spread_pct"]) > 20 else "var(--muted)"
+    _segment_spread_rows += (
+        f'<tr><td>{sp["gpu"]}</td>'
+        f'<td>${sp["neocloud_median"]:.2f}（{sp["neocloud_sources"]} 源）</td>'
+        f'<td>${sp["hyperscaler_median"]:.2f}（{sp["hyperscaler_sources"]} 源）</td>'
+        f'<td style="color:{_spread_color}">{sp["spread_pct"]:+.1f}%</td></tr>'
+    )
+_segment_spread_html = ""
+if _segment_spread_rows:
+    _segment_spread_html = (
+        '<h3 style="margin-top:24px">海外市场分段价差（NeoCloud vs Hyperscaler）</h3>'
+        '<p class="muted" style="font-size:12px">两段读数分开发布、不做混合（对标 Silicon Data 分段披露）；价差 = Hyperscaler 中位价相对 NeoCloud 中位价。</p>'
+        '<table class="data-table compact"><thead><tr><th>GPU 型号</th><th>NeoCloud 中位价</th><th>Hyperscaler 中位价</th><th>价差</th></tr></thead>'
+        f'<tbody>{_segment_spread_rows}</tbody></table>'
+    )
+
+# 指数覆盖率摘要（对标 Silicon Data 的市场覆盖披露口径）
+_index_coverage_html = ""
+_cov_summary_text = ""
+_cov = CMIS_INDICES.get("coverage") or {}
+if _cov:
+    _cov_parts = []
+    if _cov.get("gpu_cn") is not None:
+        _cov_parts.append(f"国内指数覆盖 {_cov['gpu_cn_covered']}/{_cov['gpu_cn_total']}（{_cov['gpu_cn']}%）")
+    if _cov.get("gpu_us") is not None:
+        _cov_parts.append(f"海外指数覆盖 {_cov['gpu_us_covered']}/{_cov['gpu_us_total']}（{_cov['gpu_us']}%）")
+    if _cov.get("overseas_providers"):
+        _cov_parts.append(f"海外数据源 {_cov['overseas_providers']} 个")
+    if _cov.get("token") is not None:
+        _cov_parts.append(f"Token 模型 {_cov['token_covered']}/{_cov['token_total']}（{_cov['token']}%）")
+    if _cov_parts:
+        _cov_summary_text = " · ".join(_cov_parts)
+        _index_coverage_html = (
+            f'<p class="note" style="margin-top:14px"><strong>指数覆盖率：</strong>{_cov_summary_text}。'
+            '指数方法论全文见仓库 <code>prompts/methodology.md</code>。</p>'
+        )
+
 # Token 指数展示
 _token_idx = CMIS_INDICES.get("token", {})
 _token_idx_html = ""
@@ -1933,7 +2013,7 @@ if _token_idx.get("current") is not None:
 _methodology_html = '''
 <div class="methodology">
   <h3>CMIS 指数方法论</h3>
-  <p class="note">CMIS（Compute Market Intelligence Service）价格指数借鉴 Silicon Data 的指数化思路，旨在提供标准化、可追踪的算力价格基准。</p>
+  <p class="note">CMIS（Compute Market Intelligence Service）价格指数借鉴 Silicon Data 的指数化思路（单位标准化 → 多级过滤 → 基差调整 → 供应商级聚合 → 加权平均），旨在提供标准化、可追踪的算力价格基准。完整方法论与口径差异说明见仓库 <code>prompts/methodology.md</code>。</p>
   <div class="method-grid">
     <div class="method-item">
       <strong>指数代码</strong>
@@ -1941,7 +2021,19 @@ _methodology_html = '''
     </div>
     <div class="method-item">
       <strong>计算方法</strong>
-      <p>基于多源数据聚合，取通过校验（PASS）的标准化价格作为指数值。国内主口径为 8 卡整机月租，海外主口径为单卡小时价。</p>
+      <p>取通过校验（PASS）的标准化价格作为指数值；同一型号存在多个 PASS 供应商报价时，先做供应商级聚合（置信度加权平均，中位数交叉核对，偏差 &gt; 20% 标记复核），单源时直接采用。国内主口径为 8 卡整机月租，海外主口径为单卡小时价。</p>
+    </div>
+    <div class="method-item">
+      <strong>单位标准化与基差调整</strong>
+      <p>所有报价先折算为标准单位（国内：万元/8卡整机/月；海外：美元/卡/小时，单位价 = 总租价 ÷ 卡数 ÷ 时长）。云实例价经 0.7 长协折扣系数做基差调整后仅作国产卡占位展示，标注"云价折算"，不进入指数与 ROI。</p>
+    </div>
+    <div class="method-item">
+      <strong>市场分段</strong>
+      <p>海外来源按 NeoCloud（RunPod / Lambda / CoreWeave 等）与 Hyperscaler（Oracle OCI / Azure 等）分段标注；两段读数分开发布、不做混合，具备分供应商报价时展示分段价差（对标 Silicon Data 分段披露）。</p>
+    </div>
+    <div class="method-item">
+      <strong>指数覆盖率</strong>
+      <p>每期公布真实覆盖率：国内/海外基线 GPU 中可出指数的比例、海外数据源个数、Token 模型覆盖比例。覆盖率不足时触发扩源补采，不以低覆盖样本冒充全市场指数。</p>
     </div>
     <div class="method-item">
       <strong>趋势计算</strong>
@@ -2000,6 +2092,33 @@ if _token_idx.get("current") is not None:
         </div>
       </div>
     </div>'''
+
+# 手机版海外 GPU Cloud 指数卡片
+_mobile_us_cards = ""
+for idx in CMIS_INDICES.get("gpu_us", [])[:4]:
+    gpu_name = idx["ticker"].replace("CMIS-", "").replace("-US", "")
+    cn_name = gpu_name
+    for cn, suffix in cmis_index.GPU_TICKER_MAP.items():
+        if suffix == gpu_name:
+            cn_name = cn
+            break
+    current_str = f"{idx['current']:.2f}" if idx["current"] is not None else "—"
+    arrow = _direction_arrow(idx["direction"])
+    chg_7d = idx["change_7d_pct"]
+    chg_color = _change_color(chg_7d)
+    _mobile_us_cards += f'''<div class="m-card compact" style="padding:10px;margin:0">
+      <div style="font-family:monospace;font-size:10px;color:var(--accent2);font-weight:600">{idx["ticker"]}</div>
+      <div style="font-size:13px;font-weight:600;margin-top:2px">{cn_name}</div>
+      <div style="font-size:22px;font-weight:800;margin-top:6px;letter-spacing:-.02em">${current_str}<small style="font-size:10px;color:var(--muted);font-weight:400;margin-left:2px">/卡时</small></div>
+      <div style="font-size:11px;font-weight:600;margin-top:4px;color:{chg_color}">{arrow} 7D {chg_7d}</div>
+    </div>'''
+
+# 手机版指数覆盖率摘要
+_mobile_coverage_html = ""
+if _cov_summary_text:
+    _mobile_coverage_html = (
+        f'<p class="note" style="font-size:11px;margin-top:10px"><strong>指数覆盖率：</strong>{_cov_summary_text}。</p>'
+    )
 
 # 预格式化数据质量显示字符串（避免 HTML 模板中嵌套 f-string）
 _fx_time_str = f" · 更新于 {DATA_QUALITY['fx_fetched_at'][:16]}" if DATA_QUALITY['fx_fetched_at'] else ""
@@ -2398,10 +2517,18 @@ def render_html(relative_prefix: str = "./") -> str:
         {_index_cn_cards}
       </div>
 
+      <h3 style="margin-top:24px">海外 GPU Cloud 指数（美元/卡/小时）</h3>
+      <div class="index-grid">
+        {_index_us_cards}
+      </div>
+
       <h3 style="margin-top:24px">LLM Token 价格指数</h3>
       <div class="index-grid">
         {_token_idx_html}
       </div>
+
+      {_segment_spread_html}
+      {_index_coverage_html}
 
       <details style="margin-top:16px"><summary>指数方法论说明</summary><div class="details-body">
         {_methodology_html}
@@ -2569,8 +2696,14 @@ def render_mobile_html(relative_prefix: str = "./", desktop_href: str = "latest.
         {_mobile_index_cards}
       </div>
       {_mobile_token_index}
+
+      <h3 style="margin-top:14px;font-size:15px">海外 GPU Cloud 指数（USD/卡/小时）</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+        {_mobile_us_cards}
+      </div>
+      {_mobile_coverage_html}
       <details style="margin-top:8px"><summary>指数方法论</summary><div class="details-body">
-        <p class="note" style="font-size:12px">CMIS 指数借鉴 Silicon Data 思路：基于多源数据聚合，取通过校验的标准化价格作为指数值。7 日 / 30 日涨跌幅基于历史快照对比。</p>
+        <p class="note" style="font-size:12px">CMIS 指数借鉴 Silicon Data 思路：基于多源数据聚合，取通过校验的标准化价格作为指数值；同型号多源时按置信度加权平均。海外读数按 NeoCloud / Hyperscaler 分段标注。7 日 / 30 日涨跌幅基于历史快照对比。完整方法论见仓库 <code>prompts/methodology.md</code>。</p>
       </div></details>
     </section>
 
