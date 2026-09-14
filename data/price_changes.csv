@@ -424,3 +424,24 @@ observed_at,category,model,vendor,metric,platform,old_value,new_value,change_pct
 2026-09-13T05:31:12.163537+08:00,gpu_overseas,L40S,,rental_price,,5.45,5.37,-1.5%,
 2026-09-14T05:22:45.210903+08:00,gpu_overseas,RTX 5090,,rental_price,,2.98,3.05,+2.3%,
 2026-09-14T05:22:45.210903+08:00,gpu_overseas,RTX 4090,,rental_price,,2.28,2.17,-4.8%,
+2026-09-15T05:26:53.612681+08:00,token,GPT-5.4,OpenAI,output,overseas_3rd,USD 15.0/百万Token（约 ¥100.62；精确同名）,USD 15.0/百万Token（约 ¥100.63；精确同名）,N/A,OpenRouter / gpt-5.4
+2026-09-15T05:26:53.612681+08:00,token,GPT-5.4,OpenAI,output,domestic_3rd,CNY 100.62/百万Token（近似参考）,CNY 100.63/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-15T05:26:53.612681+08:00,token,Claude Fable 5,Anthropic,output,overseas_3rd,USD 50.0/百万Token（约 ¥335.41；精确同名）,USD 50.0/百万Token（约 ¥335.42；精确同名）,N/A,OpenRouter / claude-fable-5
+2026-09-15T05:26:53.612681+08:00,token,Claude Fable 5,Anthropic,output,domestic_3rd,CNY 335.41/百万Token（近似参考）,CNY 335.42/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-15T05:26:53.612681+08:00,token,Claude Opus 4.8,Anthropic,output,overseas_3rd,USD 25.0/百万Token（约 ¥167.7；精确同名）,USD 25.0/百万Token（约 ¥167.71；精确同名）,N/A,OpenRouter / claude-opus-4.8
+2026-09-15T05:26:53.612681+08:00,token,Claude Opus 4.8,Anthropic,output,domestic_3rd,CNY 167.7/百万Token（近似参考）,CNY 167.71/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-15T05:26:53.612681+08:00,token,Gemini 3.5 Flash,Google,output,overseas_3rd,USD 9.0/百万Token（约 ¥60.37；精确同名）,USD 9.0/百万Token（约 ¥60.38；精确同名）,N/A,OpenRouter / gemini-3.5-flash
+2026-09-15T05:26:53.612681+08:00,token,Gemini 3.5 Flash,Google,output,domestic_3rd,CNY 60.37/百万Token（近似参考）,CNY 60.38/百万Token（近似参考）,N/A,；近似参考：官方价折算
+2026-09-15T05:26:53.612681+08:00,token,Mistral Small 4,Mistral,output,overseas_3rd,USD 0.6/百万Token（约 ¥4.02；精确同名）,USD 0.6/百万Token（约 ¥4.03；精确同名）,N/A,OpenRouter / mistral-small-2603
+2026-09-15T05:26:53.612681+08:00,token,Command A+,Cohere,output,overseas_3rd,USD 0.6/百万Token（约 ¥4.02；精确同名）,USD 0.6/百万Token（约 ¥4.03；精确同名）,N/A,API动态补全 / LiteLLM / command-r (匹配度0.50)
+2026-09-15T05:26:53.612681+08:00,token,Command R+,Cohere,output,overseas_3rd,USD 0.6/百万Token（约 ¥4.02；精确同名）,USD 0.6/百万Token（约 ¥4.03；精确同名）,N/A,API动态补全 / LiteLLM / command-r (匹配度0.80)
+2026-09-15T05:26:53.612681+08:00,token,DeepSeek-V4-Pro,DeepSeek,output,overseas_3rd,USD 3.48/百万Token（约 ¥23.34；精确同名）,USD 3.48/百万Token（约 ¥23.35；精确同名）,N/A,Together.ai / Fireworks.ai / deepseek-v4-pro
+2026-09-15T05:26:53.612681+08:00,token,ERNIE 5.1,百度文心,output,overseas_3rd,USD 3.0/百万Token（约 ¥20.12；精确同名）,USD 3.0/百万Token（约 ¥20.13；精确同名）,N/A,API动态补全 / models.dev / ernie-5.1 (匹配度1.00)
+2026-09-15T05:26:53.612681+08:00,token,Kimi K3,Kimi / Moonshot,input,overseas_3rd,USD 3.0/百万Token（约 ¥20.12；精确同名）,USD 3.0/百万Token（约 ¥20.13；精确同名）,N/A,OpenRouter / moonshotai/kimi-k3
+2026-09-15T05:26:53.612681+08:00,token,Kimi K3,Kimi / Moonshot,output,overseas_3rd,USD 15.0/百万Token（约 ¥100.62；精确同名）,USD 15.0/百万Token（约 ¥100.63；精确同名）,N/A,OpenRouter / moonshotai/kimi-k3
+2026-09-15T05:26:53.612681+08:00,token,Kimi K2.6,Kimi / Moonshot,output,overseas_3rd,USD 3.41/百万Token（约 ¥22.87；精确同名）,USD 3.41/百万Token（约 ¥22.88；精确同名）,N/A,OpenRouter / kimi-k2.6
+2026-09-15T05:26:53.612681+08:00,gpu_domestic,RTX 5090,,rental_price,,1.6,1.48,-7.5%,
+2026-09-15T05:26:53.612681+08:00,gpu_overseas,GB200,,rental_price,,51.19,51.2,+0.0%,
+2026-09-15T05:26:53.612681+08:00,gpu_overseas,B200,,rental_price,,24.27,24.11,-0.7%,
+2026-09-15T05:26:53.612681+08:00,gpu_overseas,RTX 5090,,rental_price,,3.05,2.98,-2.3%,
+2026-09-15T05:26:53.612681+08:00,gpu_overseas,RTX 4090,,rental_price,,2.17,2.4,+10.6%,
