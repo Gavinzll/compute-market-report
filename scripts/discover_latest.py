@@ -619,6 +619,19 @@ def _match_vendor(model_id: str) -> str | None:
 def discover_from_litellm() -> dict[str, list[dict]]:
     """从 LiteLLM JSON 发现模型。返回 vendor -> [models]。"""
     data = fetch_json("https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json", cache_key="litellm")
+    cache_note = ""
+    if not data or not isinstance(data, dict):
+        # 实时抓取失败时回退到最近的 raw 缓存（data/raw/litellm_*.json），
+        # 避免 raw.githubusercontent.com 临时不可达导致校验源整体缺失。
+        from change_log import get_raw_response
+        for back in range(1, 8):
+            prev = (NOW.date() - timedelta(days=back)).isoformat()
+            cached = get_raw_response("litellm", prev)
+            if cached and isinstance(cached, dict):
+                data = cached
+                cache_note = f"（实时抓取失败，使用 {prev} 缓存）"
+                print(f"[discover] LiteLLM: live fetch failed, fallback to raw cache {prev}", file=sys.stderr)
+                break
     if not data or not isinstance(data, dict):
         return {}
     result: dict[str, list[dict]] = {}
