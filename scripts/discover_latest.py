@@ -1447,6 +1447,19 @@ def scrape_omniyq_gpu_prices() -> dict[str, float]:
     页面直接列出各型号8卡整机月租价文本。
     返回 {GPU型号: 月租万元}
     """
+    # 优先读取 AI session 浏览器抓取缓存（urllib 对该站仅得 204 空响应）
+    omni_cache = ROOT / "data" / f"omniyq_{DATE}.json"
+    if omni_cache.exists():
+        try:
+            cached = json.loads(omni_cache.read_text(encoding="utf-8"))
+            if isinstance(cached, dict) and cached.get("scraped_at") == DATE:
+                print(f"[discover] omniyq: loaded from cache {omni_cache.name}")
+                cached_prices = {k: float(v) for k, v in cached.get("prices", {}).items() if float(v) > 0}
+                if cached_prices:
+                    record_source("裸金属/行业", "云擎天下 8卡整机裸金属月租", "https://www.omniyq.com/h-col-104.html", f"浏览器缓存采集到 {len(cached_prices)} 款 GPU 裸金属月租价")
+                return cached_prices
+        except (json.JSONDecodeError, KeyError, TypeError, ValueError):
+            pass
     html = fetch_text("https://www.omniyq.com/h-col-104.html")
     if not html:
         print("[discover] omniyq: fetch failed", file=sys.stderr)
