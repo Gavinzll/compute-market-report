@@ -1,0 +1,10 @@
+{
+  "scraped_at": "2026-09-27",
+  "source_url": "https://www.shengsuanyun.com/hashrate",
+  "note": "browser scraped (sandbox); single-card hourly CNY; 页面另有 A100 PCIE 6.42元/时、RTX 6000 Ada 5.28元/时、RTX 4090 2.27元/时",
+  "prices": {
+    "壁仞 天垓100": {"hourly_cny": 1.49, "source": "胜算云"},
+    "摩尔线程 MTT S4000": {"hourly_cny": 1.69, "source": "胜算云"},
+    "华为 Ascend 910": {"hourly_cny": 2.36, "source": "胜算云"}
+  }
+}
