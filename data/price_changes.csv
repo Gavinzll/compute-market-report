@@ -1331,3 +1331,7 @@ observed_at,category,model,vendor,metric,platform,old_value,new_value,change_pct
 2026-09-26T05:28:47.354382+08:00,gpu_overseas,A100 80G,,rental_price,,8.27,8.28,+0.1%,
 2026-09-26T05:28:47.354382+08:00,gpu_overseas,RTX 5090,,rental_price,,2.98,3.05,+2.3%,
 2026-09-26T05:28:47.354382+08:00,gpu_overseas,RTX 4090,,rental_price,,2.17,2.21,+1.8%,
+2026-09-27T05:24:18.998162+08:00,gpu_overseas,B300,,rental_price,,32.83,33.02,+0.6%,
+2026-09-27T05:24:18.998162+08:00,gpu_overseas,B200,,rental_price,,24.32,24.36,+0.2%,
+2026-09-27T05:24:18.998162+08:00,gpu_overseas,RTX 5090,,rental_price,,3.05,2.98,-2.3%,
+2026-09-27T05:24:18.998162+08:00,gpu_overseas,RTX 4090,,rental_price,,2.21,2.17,-1.8%,
