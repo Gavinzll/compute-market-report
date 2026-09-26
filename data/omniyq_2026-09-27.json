@@ -1,0 +1,19 @@
+{
+  "scraped_at": "2026-09-27",
+  "source_url": "https://www.omniyq.com/h-col-104.html",
+  "note": "browser scraped (urllib gets HTTP 204 empty body); 8卡整机裸金属月租, 万元/月; 页面另有 H20*96G 3.50万、H20*141G 4.70万、A100 pcie40G 0.90万、A100 nvlink80G 3.60万、单卡 A100 pcie40G 1200元/卡/月",
+  "prices": {
+    "昇腾 910B": 1.50,
+    "H100 80G": 7.90,
+    "H800": 7.50,
+    "H200": 13.00,
+    "A100 80G": 2.50,
+    "A800": 3.50,
+    "RTX 4090": 0.78,
+    "RTX 5090": 1.30,
+    "L40S": 1.60,
+    "L40": 1.40,
+    "B200": 19.00,
+    "B300": 29.00
+  }
+}
