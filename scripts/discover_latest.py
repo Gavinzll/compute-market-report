@@ -1550,16 +1550,17 @@ def scrape_gitee_ai_gpu_prices() -> dict[str, dict[str, Any]]:
         except (json.JSONDecodeError, KeyError):
             pass
 
-    # 硬编码 fallback（2026-07-15 人工验证值）
-    print("[discover] gitee-ai: SPA site, using hardcoded fallback (last verified 2026-07-15)", file=sys.stderr)
+    # 硬编码 fallback（2026-09-28 口径修正：模力方舟为多卡整机挂牌，hour_price 为整机价；
+    # 以下均为 单卡时价 = 整机价 ÷ 卡数，取代 2026-07-15 误将整机价当单卡价的旧值）
+    print("[discover] gitee-ai: SPA site, using hardcoded fallback (last verified 2026-09-28)", file=sys.stderr)
     return {
-        "海光 BW1000": {"hourly_cny": 3.00, "source": "模力方舟(fallback)"},
-        "摩尔线程 MTT S5000": {"hourly_cny": 8.00, "source": "模力方舟(fallback)"},
-        "壁仞 天垓150": {"hourly_cny": 3.00, "source": "模力方舟(fallback)"},
-        "壁仞 壁砺106M": {"hourly_cny": 2.00, "source": "模力方舟(fallback)"},
-        "天数智芯 智铠100": {"hourly_cny": 2.00, "source": "模力方舟(fallback)"},
-        "燧原 S60": {"hourly_cny": 2.00, "source": "模力方舟(fallback)"},
-        "昇腾 910B": {"hourly_cny": 3.50, "source": "模力方舟(fallback)"},
+        "海光 BW1000": {"hourly_cny": 0.375, "source": "模力方舟(fallback)"},
+        "摩尔线程 MTT S5000": {"hourly_cny": 1.00, "source": "模力方舟(fallback)"},
+        "壁仞 天垓150": {"hourly_cny": 0.3125, "source": "模力方舟(fallback)"},
+        "壁仞 壁砺106M": {"hourly_cny": 0.25, "source": "模力方舟(fallback)"},
+        "天数智芯 智铠100": {"hourly_cny": 0.1875, "source": "模力方舟(fallback)"},
+        "燧原 S60": {"hourly_cny": 0.25, "source": "模力方舟(fallback)"},
+        "昇腾 910B": {"hourly_cny": 0.50, "source": "模力方舟(fallback)"},
     }
 
 
