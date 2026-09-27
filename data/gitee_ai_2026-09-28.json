@@ -1,0 +1,14 @@
+{
+  "scraped_at": "2026-09-28",
+  "source_url": "https://ai.gitee.com/compute",
+  "note": "scraped via /api/base/market/products (93 items, paginated). 重要口径修正：当前站点全部为多卡整机挂牌（gpu_num 4-16），hour_price 为整机小时价（已由曦云C500卡片 ¥4.00/时 4卡、月价2736≈4×24×30 证实）；单卡时价 = hour_price ÷ gpu_num。昨日(09-27)缓存误将整机价记为单卡价，约高估8倍。本文件 prices 均为修正后单卡时价，取可租(idle>0)机器最低值。另：MTT S4000 0.50元/卡/时、曦云C500(沐曦)低至0.05、壁砺166M 0.625、Ascend 910B(16卡) 0.25但售罄、910B2C 0.25可租、910B1 0.75可租。",
+  "prices": {
+    "海光 BW1000": {"hourly_cny": 0.375, "source": "模力方舟"},
+    "摩尔线程 MTT S5000": {"hourly_cny": 1.00, "source": "模力方舟"},
+    "壁仞 天垓150": {"hourly_cny": 0.3125, "source": "模力方舟"},
+    "壁仞 壁砺106M": {"hourly_cny": 0.25, "source": "模力方舟"},
+    "天数智芯 智铠100": {"hourly_cny": 0.1875, "source": "模力方舟"},
+    "燧原 S60": {"hourly_cny": 0.25, "source": "模力方舟"},
+    "昇腾 910B": {"hourly_cny": 0.50, "source": "模力方舟(910B2,可租)"}
+  }
+}
