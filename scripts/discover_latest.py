@@ -1346,6 +1346,23 @@ def scrape_smm_gpu_prices() -> dict[str, dict[str, Any]]:
     URL: https://news.smm.cn/live/metal/143
     返回 {GPU型号: {"monthly_wan": float, "note": str}}
     """
+    # 优先读取 AI session 浏览器抓取缓存（该站对 urllib 强制压缩返回，fetch_text 常无法解码）
+    smm_cache = ROOT / "data" / f"smm_{DATE}.json"
+    if smm_cache.exists():
+        try:
+            cached = json.loads(smm_cache.read_text(encoding="utf-8"))
+            if isinstance(cached, dict) and cached.get("scraped_at") == DATE:
+                cached_prices = {
+                    k: {"monthly_wan": float(v["monthly_wan"]), "note": str(v.get("note", ""))}
+                    for k, v in cached.get("prices", {}).items()
+                    if float(v.get("monthly_wan", 0)) > 0
+                }
+                if cached_prices:
+                    print(f"[discover] smm: loaded from cache {smm_cache.name}")
+                    record_source("行业/SMM", "SMM 算力金属直播 8卡整机月租", "https://news.smm.cn/live/metal/143", f"浏览器缓存采集到 {len(cached_prices)} 款 GPU 月租价")
+                    return cached_prices
+        except (json.JSONDecodeError, KeyError, TypeError, ValueError):
+            pass
     html = fetch_text("https://news.smm.cn/live/metal/143")
     if not html:
         print("[discover] smm: fetch failed", file=sys.stderr)
