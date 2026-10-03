@@ -1972,3 +1972,8 @@ observed_at,category,model,vendor,metric,platform,old_value,new_value,change_pct
 2026-10-03T05:21:51.928297+08:00,token,Gemini 3.1 Pro Preview,Google,output,domestic_3rd,CNY 80.45/百万Token（近似参考）,CNY 80.46/百万Token（近似参考）,N/A,；近似参考：官方价折算
 2026-10-03T05:21:51.928297+08:00,token,Kimi K2.6,Kimi / Moonshot,input,overseas_3rd,USD 0.66/百万Token（约 ¥4.42；精确同名）,USD 0.66/百万Token（约 ¥4.43；精确同名）,N/A,OpenRouter / kimi-k2.6
 2026-10-03T05:21:51.928297+08:00,gpu_overseas,RTX 5090,,rental_price,,3.05,2.97,-2.6%,
+2026-10-04T05:17:15.751141+08:00,gpu_overseas,B300,,rental_price,,33.44,34.33,+2.7%,
+2026-10-04T05:17:15.751141+08:00,gpu_overseas,B200,,rental_price,,24.33,24.45,+0.5%,
+2026-10-04T05:17:15.751141+08:00,gpu_overseas,H200,,rental_price,,16.49,16.57,+0.5%,
+2026-10-04T05:17:15.751141+08:00,gpu_overseas,RTX 5090,,rental_price,,2.97,3.05,+2.7%,
+2026-10-04T05:17:15.751141+08:00,gpu_overseas,RTX 4090,,rental_price,,2.28,2.16,-5.3%,
