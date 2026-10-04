@@ -1,0 +1,39 @@
+{
+  "scraped_at": "2026-10-05",
+  "source_url": "https://ai.gitee.com/compute",
+  "note": "scraped via /api/base/market/products (90 items, paginated). hour_price 为多卡整机小时价，单卡时价 = hour_price ÷ gpu_num，取可租(idle>0)机器最低值。昇腾 910B: 0.5元/卡/时 <- Ascend 910B2 8卡整机4.0元/时 idle=7；燧原 S60: 0.25元/卡/时 <- 燧原 S60 8卡整机2.0元/时 idle=6；摩尔线程 MTT S4000: 0.5元/卡/时 <- MTT S4000 8卡整机4.0元/时 idle=8；摩尔线程 MTT S5000: 1.0元/卡/时 <- MTT S5000 8卡整机8.0元/时 idle=8；天数智芯 智铠100: 0.1875元/卡/时 <- 智铠100 8卡整机1.5元/时 idle=7；壁仞 天垓150: 0.3125元/卡/时 <- 天垓150 8卡整机2.5元/时 idle=8；壁仞 壁砺106M: 0.25元/卡/时 <- 壁砺 106M 8卡整机2.0元/时 idle=8；海光 BW1000: 0.375元/卡/时 <- BW1000 8卡整机3.0元/时 idle=8",
+  "prices": {
+    "昇腾 910B": {
+      "hourly_cny": 0.5,
+      "source": "模力方舟"
+    },
+    "燧原 S60": {
+      "hourly_cny": 0.25,
+      "source": "模力方舟"
+    },
+    "摩尔线程 MTT S4000": {
+      "hourly_cny": 0.5,
+      "source": "模力方舟"
+    },
+    "摩尔线程 MTT S5000": {
+      "hourly_cny": 1.0,
+      "source": "模力方舟"
+    },
+    "天数智芯 智铠100": {
+      "hourly_cny": 0.1875,
+      "source": "模力方舟"
+    },
+    "壁仞 天垓150": {
+      "hourly_cny": 0.3125,
+      "source": "模力方舟"
+    },
+    "壁仞 壁砺106M": {
+      "hourly_cny": 0.25,
+      "source": "模力方舟"
+    },
+    "海光 BW1000": {
+      "hourly_cny": 0.375,
+      "source": "模力方舟"
+    }
+  }
+}
