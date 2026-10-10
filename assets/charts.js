@@ -215,7 +215,7 @@
   // 图3: 散点图 - Cost per Task vs Intelligence（性价比概览，价格已换算为人民币）
   (function(){
     if (!DATA.benchmarkLabels || !DATA.benchmarkLabels.length) return;
-    var USD2CNY = 6.6921; // 动态获取汇率（Frankfurter / ECB，日期：2026-10-10）
+    var USD2CNY = 6.6921; // 动态获取汇率（Frankfurter / ECB，日期：2026-10-11）
     var scatterData = [];
     for (var i = 0; i < DATA.benchmarkLabels.length; i++) {
       var cost = DATA.benchmarkCost[i];
